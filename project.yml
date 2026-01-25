@@ -1,0 +1,78 @@
+name: VitalArc
+options:
+  bundleIdPrefix: com.vitalarc
+  deploymentTarget:
+    iOS: "17.0"
+  developmentLanguage: en
+
+settings:
+  SWIFT_VERSION: "5.9"
+  ENABLE_PREVIEWS: YES
+
+targets:
+  VitalArc:
+    type: application
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: VitalArc
+        excludes:
+          - "**/*.md"
+    settings:
+      PRODUCT_BUNDLE_IDENTIFIER: com.vitalarc.VitalArc
+      INFOPLIST_FILE: VitalArc/Info.plist
+      ENABLE_PREVIEWS: YES
+      SWIFT_VERSION: "5.9"
+      ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+      ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+      LD_RUNPATH_SEARCH_PATHS: "@executable_path/Frameworks"
+      SWIFT_EMIT_LOC_STRINGS: YES
+      SWIFT_OBJC_BRIDGING_HEADER: ""
+      CLANG_ENABLE_MODULES: YES
+      DEVELOPMENT_ASSET_PATHS: "\"VitalArc/Preview Content\""
+    dependencies:
+      - framework: SwiftUI.framework
+      - framework: SwiftData.framework
+      - framework: HealthKit.framework
+        type: framework
+      - framework: CloudKit.framework
+        type: framework
+    info:
+      path: VitalArc/Info.plist
+      properties:
+        UIApplicationSceneManifest:
+          UIApplicationSupportsMultipleScenes: false
+        UILaunchScreen: {}
+        NSHealthShareUsageDescription: "VitalArc needs access to your health data to provide personalized fitness and nutrition insights."
+        NSHealthUpdateUsageDescription: "VitalArc needs permission to save workout and health data."
+        ITSAppUsesNonExemptEncryption: false
+
+  VitalArcTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: VitalArcTests
+    dependencies:
+      - target: VitalArc
+    settings:
+      PRODUCT_BUNDLE_IDENTIFIER: com.vitalarc.VitalArcTests
+      SWIFT_VERSION: "5.9"
+
+schemes:
+  VitalArc:
+    build:
+      targets:
+        VitalArc: all
+        VitalArcTests: [test]
+    run:
+      config: Debug
+    test:
+      config: Debug
+      targets:
+        - VitalArcTests
+    profile:
+      config: Release
+    analyze:
+      config: Debug
+    archive:
+      config: Release

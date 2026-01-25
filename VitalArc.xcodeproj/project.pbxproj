@@ -1,0 +1,715 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0046F94F061484D814F3D02D /* SwiftData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E617B61A780E2D73CA38EA96 /* SwiftData.framework */; };
+		008815544EBF06868D4899A0 /* UserProfileModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD10C85A5C132BC6B41AE20C /* UserProfileModel.swift */; };
+		02B5969771941E4F60333D5E /* FoodEntryModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66B1095291E179B95FEBA497 /* FoodEntryModel.swift */; };
+		0371595B948C5BC645F95098 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A1AEF211C26EA8B094E605BF /* Preview Assets.xcassets */; };
+		0FA655C86256DB82F4AE50ED /* DependencyContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3A52E85B046CA26C9EC49EE /* DependencyContainer.swift */; };
+		24CE55FFA35FD9F9BD03EE1C /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 106C338F1B5889F687588AE5 /* UserProfile.swift */; };
+		281D7048E6267DDA0EC9B14F /* DailyNutritionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B40FA67720B77DD07745901F /* DailyNutritionModel.swift */; };
+		2CBF06198B783279E77F75E3 /* WorkoutRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54AE04B0B914B459BB6B3E97 /* WorkoutRepository.swift */; };
+		30E26CD91E85A8CD1B98AD18 /* WorkoutSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3827F28C27599BA559FFE3E7 /* WorkoutSet.swift */; };
+		32753CBC5716D4D749C8B664 /* HealthRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACBFF12A3407233947C9E257 /* HealthRepository.swift */; };
+		332842D0A328084E1674E3EB /* FoodModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5543E95CF2D3EA974E01F66F /* FoodModel.swift */; };
+		38C3A6B8D34517A4782982B9 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1ACCC0BC5A5FAE8B2A5E0DA0 /* SwiftUI.framework */; };
+		496BF5CFA00DF35D67625249 /* UserRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54BE18D10F70E33E0E20F52A /* UserRepository.swift */; };
+		4CE4C705866D50EB248D15A0 /* DailyNutrition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4DF78F8771F4E8ABAC964F /* DailyNutrition.swift */; };
+		4CED856882B128139A208B25 /* Exercise.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32CEC2869FDD4F2C79B9A995 /* Exercise.swift */; };
+		4DC08FF27E00CD8088177AA4 /* WorkoutSetModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6355764ECE698C5151E70479 /* WorkoutSetModel.swift */; };
+		509EA0E480F447DA34EE0CEB /* VitalArcTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A48F612DE6687B8B054BA9E3 /* VitalArcTests.swift */; };
+		5C9CCAEA7883E8182E683F59 /* SwiftUI.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1ACCC0BC5A5FAE8B2A5E0DA0 /* SwiftUI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		703CA568BF2BEF17070D20F2 /* HealthMetricsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED85BA1AEF7BA60C2B9C2348 /* HealthMetricsModel.swift */; };
+		7109F604DBEA008541327E4E /* Workout.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00DD0C786E8C63620DDD02F /* Workout.swift */; };
+		73BBD0A0959C1580E571EC77 /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 204E8B8260BD0D08D4AC708E /* HealthKit.framework */; };
+		7D0AF1F868FAFD915C0F87A9 /* CloudKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FD147BDBA0726382A62490D0 /* CloudKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		8DA7662F7DCF750D387AB41F /* HealthMetrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FB37AC62B482387392CA9DA /* HealthMetrics.swift */; };
+		8EB62E1A64BE2366199F3455 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FD147BDBA0726382A62490D0 /* CloudKit.framework */; };
+		97D1EE9F6C811BF5F9C6F3B7 /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BA1A6744D575B5C6C27D009 /* MainTabView.swift */; };
+		9F2A2137EB5979DE879D0B61 /* HealthKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 204E8B8260BD0D08D4AC708E /* HealthKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		A094098B432FE9718F4B660A /* WorkoutModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35DE7CB802E6DE638AC0D92C /* WorkoutModel.swift */; };
+		B843DDD04DEF700A4E5E1C15 /* FoodEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7F8FB8F8415501961023275 /* FoodEntry.swift */; };
+		B8628CF20D0FEE7D9BDEDCCA /* ExerciseModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB73F95C41B305BAD18EA115 /* ExerciseModel.swift */; };
+		C569BCDFF81AA812C41E8B64 /* NutritionRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA84A598D661B7486786B7D9 /* NutritionRepository.swift */; };
+		E952ED0C42942125C3BA0D5E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 22FF7055B0CD30B756F6F963 /* Assets.xcassets */; };
+		EA56F34550C02CDAB9C5A633 /* SwiftData.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E617B61A780E2D73CA38EA96 /* SwiftData.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		EF984FAADD688AF81520D265 /* VitalArcApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 270F7E00F8AA2538A300F8D8 /* VitalArcApp.swift */; };
+		FE5B77F8F3D6A0EE668CD919 /* Food.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2D37B25EDB480008B06EB2E /* Food.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		1EE56CC435AC1BC065F34F42 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6C76132B3F0947A6D7506B2D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C5E19D37CFFE919BA3956609;
+			remoteInfo = VitalArc;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		6DD3AE89351284A3BCBDB0CC /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				5C9CCAEA7883E8182E683F59 /* SwiftUI.framework in Embed Frameworks */,
+				EA56F34550C02CDAB9C5A633 /* SwiftData.framework in Embed Frameworks */,
+				9F2A2137EB5979DE879D0B61 /* HealthKit.framework in Embed Frameworks */,
+				7D0AF1F868FAFD915C0F87A9 /* CloudKit.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		106C338F1B5889F687588AE5 /* UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
+		1ACCC0BC5A5FAE8B2A5E0DA0 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SwiftUI.framework; sourceTree = "<group>"; };
+		204E8B8260BD0D08D4AC708E /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = HealthKit.framework; sourceTree = "<group>"; };
+		22FF7055B0CD30B756F6F963 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		270F7E00F8AA2538A300F8D8 /* VitalArcApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VitalArcApp.swift; sourceTree = "<group>"; };
+		2BA1A6744D575B5C6C27D009 /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
+		2D4DF78F8771F4E8ABAC964F /* DailyNutrition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyNutrition.swift; sourceTree = "<group>"; };
+		32CEC2869FDD4F2C79B9A995 /* Exercise.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Exercise.swift; sourceTree = "<group>"; };
+		35DE7CB802E6DE638AC0D92C /* WorkoutModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutModel.swift; sourceTree = "<group>"; };
+		3827F28C27599BA559FFE3E7 /* WorkoutSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutSet.swift; sourceTree = "<group>"; };
+		54AE04B0B914B459BB6B3E97 /* WorkoutRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutRepository.swift; sourceTree = "<group>"; };
+		54BE18D10F70E33E0E20F52A /* UserRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserRepository.swift; sourceTree = "<group>"; };
+		5543E95CF2D3EA974E01F66F /* FoodModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodModel.swift; sourceTree = "<group>"; };
+		5AFD41E5C7372D8AED2D6F0C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		5FB37AC62B482387392CA9DA /* HealthMetrics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthMetrics.swift; sourceTree = "<group>"; };
+		6355764ECE698C5151E70479 /* WorkoutSetModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutSetModel.swift; sourceTree = "<group>"; };
+		66B1095291E179B95FEBA497 /* FoodEntryModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodEntryModel.swift; sourceTree = "<group>"; };
+		6E27EDBF36C46FD360854511 /* VitalArc.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = VitalArc.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8EF8D49D1A2E5FF345303A06 /* VitalArcTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = VitalArcTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		A1AEF211C26EA8B094E605BF /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		A48F612DE6687B8B054BA9E3 /* VitalArcTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VitalArcTests.swift; sourceTree = "<group>"; };
+		AB73F95C41B305BAD18EA115 /* ExerciseModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseModel.swift; sourceTree = "<group>"; };
+		ACBFF12A3407233947C9E257 /* HealthRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthRepository.swift; sourceTree = "<group>"; };
+		AD10C85A5C132BC6B41AE20C /* UserProfileModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileModel.swift; sourceTree = "<group>"; };
+		B00DD0C786E8C63620DDD02F /* Workout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Workout.swift; sourceTree = "<group>"; };
+		B3A52E85B046CA26C9EC49EE /* DependencyContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DependencyContainer.swift; sourceTree = "<group>"; };
+		B40FA67720B77DD07745901F /* DailyNutritionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyNutritionModel.swift; sourceTree = "<group>"; };
+		CA84A598D661B7486786B7D9 /* NutritionRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NutritionRepository.swift; sourceTree = "<group>"; };
+		D7F8FB8F8415501961023275 /* FoodEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodEntry.swift; sourceTree = "<group>"; };
+		E617B61A780E2D73CA38EA96 /* SwiftData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SwiftData.framework; sourceTree = "<group>"; };
+		ED85BA1AEF7BA60C2B9C2348 /* HealthMetricsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthMetricsModel.swift; sourceTree = "<group>"; };
+		F2D37B25EDB480008B06EB2E /* Food.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Food.swift; sourceTree = "<group>"; };
+		FD147BDBA0726382A62490D0 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = CloudKit.framework; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		F3675A5257080DE8936112FA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				38C3A6B8D34517A4782982B9 /* SwiftUI.framework in Frameworks */,
+				0046F94F061484D814F3D02D /* SwiftData.framework in Frameworks */,
+				73BBD0A0959C1580E571EC77 /* HealthKit.framework in Frameworks */,
+				8EB62E1A64BE2366199F3455 /* CloudKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		09FDCE77DAF6751A77F53732 /* Entities */ = {
+			isa = PBXGroup;
+			children = (
+				1336668C0F75BB4E35664CC2 /* Health */,
+				CB47B95A7BFEBB150FBE2049 /* Nutrition */,
+				D36E6590259F13514063EAD2 /* User */,
+				3D1BD9A416DEEDBC9C583D7E /* Workout */,
+			);
+			path = Entities;
+			sourceTree = "<group>";
+		};
+		1336668C0F75BB4E35664CC2 /* Health */ = {
+			isa = PBXGroup;
+			children = (
+				5FB37AC62B482387392CA9DA /* HealthMetrics.swift */,
+			);
+			path = Health;
+			sourceTree = "<group>";
+		};
+		185A6B2CD83B1895217B067C = {
+			isa = PBXGroup;
+			children = (
+				702D8BDDD735335A9B3E51EA /* VitalArc */,
+				ABC114F052022B456FF84764 /* VitalArcTests */,
+				2C38C86BEF5B531302DD6132 /* Frameworks */,
+				B42AE21E55399E020C33D181 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		2C38C86BEF5B531302DD6132 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				FD147BDBA0726382A62490D0 /* CloudKit.framework */,
+				204E8B8260BD0D08D4AC708E /* HealthKit.framework */,
+				E617B61A780E2D73CA38EA96 /* SwiftData.framework */,
+				1ACCC0BC5A5FAE8B2A5E0DA0 /* SwiftUI.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		3D1BD9A416DEEDBC9C583D7E /* Workout */ = {
+			isa = PBXGroup;
+			children = (
+				32CEC2869FDD4F2C79B9A995 /* Exercise.swift */,
+				B00DD0C786E8C63620DDD02F /* Workout.swift */,
+				3827F28C27599BA559FFE3E7 /* WorkoutSet.swift */,
+			);
+			path = Workout;
+			sourceTree = "<group>";
+		};
+		408D1B54332CEDFF1FFF945A /* Workout */ = {
+			isa = PBXGroup;
+			children = (
+				AB73F95C41B305BAD18EA115 /* ExerciseModel.swift */,
+				35DE7CB802E6DE638AC0D92C /* WorkoutModel.swift */,
+				6355764ECE698C5151E70479 /* WorkoutSetModel.swift */,
+			);
+			path = Workout;
+			sourceTree = "<group>";
+		};
+		6533C4548A51FB361D8019AC /* User */ = {
+			isa = PBXGroup;
+			children = (
+				AD10C85A5C132BC6B41AE20C /* UserProfileModel.swift */,
+			);
+			path = User;
+			sourceTree = "<group>";
+		};
+		6BFA6731104F70FA8CF02C00 /* Tabs */ = {
+			isa = PBXGroup;
+			children = (
+				2BA1A6744D575B5C6C27D009 /* MainTabView.swift */,
+			);
+			path = Tabs;
+			sourceTree = "<group>";
+		};
+		6FE95E9ED01A4E24030B0060 /* Infrastructure */ = {
+			isa = PBXGroup;
+			children = (
+				B3A52E85B046CA26C9EC49EE /* DependencyContainer.swift */,
+			);
+			path = Infrastructure;
+			sourceTree = "<group>";
+		};
+		702D8BDDD735335A9B3E51EA /* VitalArc */ = {
+			isa = PBXGroup;
+			children = (
+				22FF7055B0CD30B756F6F963 /* Assets.xcassets */,
+				5AFD41E5C7372D8AED2D6F0C /* Info.plist */,
+				270F7E00F8AA2538A300F8D8 /* VitalArcApp.swift */,
+				D250AFB928D7E9F895B63D78 /* Data */,
+				AAC6DFF5BB9E8144C530183E /* Domain */,
+				6FE95E9ED01A4E24030B0060 /* Infrastructure */,
+				711140697514BC3C5CB267BE /* Presentation */,
+				77297D38CCEC42AFB4939494 /* Preview Content */,
+			);
+			path = VitalArc;
+			sourceTree = "<group>";
+		};
+		711140697514BC3C5CB267BE /* Presentation */ = {
+			isa = PBXGroup;
+			children = (
+				6BFA6731104F70FA8CF02C00 /* Tabs */,
+			);
+			path = Presentation;
+			sourceTree = "<group>";
+		};
+		77297D38CCEC42AFB4939494 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				A1AEF211C26EA8B094E605BF /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		9DCC8E8D249B04044BFF41B8 /* Nutrition */ = {
+			isa = PBXGroup;
+			children = (
+				B40FA67720B77DD07745901F /* DailyNutritionModel.swift */,
+				66B1095291E179B95FEBA497 /* FoodEntryModel.swift */,
+				5543E95CF2D3EA974E01F66F /* FoodModel.swift */,
+			);
+			path = Nutrition;
+			sourceTree = "<group>";
+		};
+		AAC6DFF5BB9E8144C530183E /* Domain */ = {
+			isa = PBXGroup;
+			children = (
+				09FDCE77DAF6751A77F53732 /* Entities */,
+				C6770ECE56FBAC93C60AED79 /* Repositories */,
+			);
+			path = Domain;
+			sourceTree = "<group>";
+		};
+		ABC114F052022B456FF84764 /* VitalArcTests */ = {
+			isa = PBXGroup;
+			children = (
+				A48F612DE6687B8B054BA9E3 /* VitalArcTests.swift */,
+			);
+			path = VitalArcTests;
+			sourceTree = "<group>";
+		};
+		B42AE21E55399E020C33D181 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				6E27EDBF36C46FD360854511 /* VitalArc.app */,
+				8EF8D49D1A2E5FF345303A06 /* VitalArcTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		C6770ECE56FBAC93C60AED79 /* Repositories */ = {
+			isa = PBXGroup;
+			children = (
+				ACBFF12A3407233947C9E257 /* HealthRepository.swift */,
+				CA84A598D661B7486786B7D9 /* NutritionRepository.swift */,
+				54BE18D10F70E33E0E20F52A /* UserRepository.swift */,
+				54AE04B0B914B459BB6B3E97 /* WorkoutRepository.swift */,
+			);
+			path = Repositories;
+			sourceTree = "<group>";
+		};
+		CB47B95A7BFEBB150FBE2049 /* Nutrition */ = {
+			isa = PBXGroup;
+			children = (
+				2D4DF78F8771F4E8ABAC964F /* DailyNutrition.swift */,
+				F2D37B25EDB480008B06EB2E /* Food.swift */,
+				D7F8FB8F8415501961023275 /* FoodEntry.swift */,
+			);
+			path = Nutrition;
+			sourceTree = "<group>";
+		};
+		D201D1C856718A39EAB449B6 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				EEEBA12852355824763CBC5D /* Health */,
+				9DCC8E8D249B04044BFF41B8 /* Nutrition */,
+				6533C4548A51FB361D8019AC /* User */,
+				408D1B54332CEDFF1FFF945A /* Workout */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		D250AFB928D7E9F895B63D78 /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				D201D1C856718A39EAB449B6 /* Models */,
+			);
+			path = Data;
+			sourceTree = "<group>";
+		};
+		D36E6590259F13514063EAD2 /* User */ = {
+			isa = PBXGroup;
+			children = (
+				106C338F1B5889F687588AE5 /* UserProfile.swift */,
+			);
+			path = User;
+			sourceTree = "<group>";
+		};
+		EEEBA12852355824763CBC5D /* Health */ = {
+			isa = PBXGroup;
+			children = (
+				ED85BA1AEF7BA60C2B9C2348 /* HealthMetricsModel.swift */,
+			);
+			path = Health;
+			sourceTree = "<group>";
+		};
+		"TEMP_5810E630-A3F8-4546-801B-041CA9626362" /* Common */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Common;
+			sourceTree = "<group>";
+		};
+		"TEMP_9A13E944-CEEB-4D2A-8D9F-B3D087A7C570" /* UseCases */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = UseCases;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		8856ABF41A48222260B998BE /* VitalArcTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 18AFD93798B8FE4CFA3CFB13 /* Build configuration list for PBXNativeTarget "VitalArcTests" */;
+			buildPhases = (
+				DAAE6C4BC8CF6CD181EE22E8 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				9F1F66EBD3463C2764D8DB20 /* PBXTargetDependency */,
+			);
+			name = VitalArcTests;
+			packageProductDependencies = (
+			);
+			productName = VitalArcTests;
+			productReference = 8EF8D49D1A2E5FF345303A06 /* VitalArcTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		C5E19D37CFFE919BA3956609 /* VitalArc */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AEF16C768D7EA61B1D91C9BA /* Build configuration list for PBXNativeTarget "VitalArc" */;
+			buildPhases = (
+				BCA54E608EFCE2296327D577 /* Sources */,
+				838174422926BE6ED7B673F9 /* Resources */,
+				F3675A5257080DE8936112FA /* Frameworks */,
+				6DD3AE89351284A3BCBDB0CC /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = VitalArc;
+			packageProductDependencies = (
+			);
+			productName = VitalArc;
+			productReference = 6E27EDBF36C46FD360854511 /* VitalArc.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		6C76132B3F0947A6D7506B2D /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+			};
+			buildConfigurationList = 45CAFC28C6A64BFC341A1A1C /* Build configuration list for PBXProject "VitalArc" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 185A6B2CD83B1895217B067C;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				C5E19D37CFFE919BA3956609 /* VitalArc */,
+				8856ABF41A48222260B998BE /* VitalArcTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		838174422926BE6ED7B673F9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E952ED0C42942125C3BA0D5E /* Assets.xcassets in Resources */,
+				0371595B948C5BC645F95098 /* Preview Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		BCA54E608EFCE2296327D577 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4CE4C705866D50EB248D15A0 /* DailyNutrition.swift in Sources */,
+				281D7048E6267DDA0EC9B14F /* DailyNutritionModel.swift in Sources */,
+				0FA655C86256DB82F4AE50ED /* DependencyContainer.swift in Sources */,
+				4CED856882B128139A208B25 /* Exercise.swift in Sources */,
+				B8628CF20D0FEE7D9BDEDCCA /* ExerciseModel.swift in Sources */,
+				FE5B77F8F3D6A0EE668CD919 /* Food.swift in Sources */,
+				B843DDD04DEF700A4E5E1C15 /* FoodEntry.swift in Sources */,
+				02B5969771941E4F60333D5E /* FoodEntryModel.swift in Sources */,
+				332842D0A328084E1674E3EB /* FoodModel.swift in Sources */,
+				8DA7662F7DCF750D387AB41F /* HealthMetrics.swift in Sources */,
+				703CA568BF2BEF17070D20F2 /* HealthMetricsModel.swift in Sources */,
+				32753CBC5716D4D749C8B664 /* HealthRepository.swift in Sources */,
+				97D1EE9F6C811BF5F9C6F3B7 /* MainTabView.swift in Sources */,
+				C569BCDFF81AA812C41E8B64 /* NutritionRepository.swift in Sources */,
+				24CE55FFA35FD9F9BD03EE1C /* UserProfile.swift in Sources */,
+				008815544EBF06868D4899A0 /* UserProfileModel.swift in Sources */,
+				496BF5CFA00DF35D67625249 /* UserRepository.swift in Sources */,
+				EF984FAADD688AF81520D265 /* VitalArcApp.swift in Sources */,
+				7109F604DBEA008541327E4E /* Workout.swift in Sources */,
+				A094098B432FE9718F4B660A /* WorkoutModel.swift in Sources */,
+				2CBF06198B783279E77F75E3 /* WorkoutRepository.swift in Sources */,
+				30E26CD91E85A8CD1B98AD18 /* WorkoutSet.swift in Sources */,
+				4DC08FF27E00CD8088177AA4 /* WorkoutSetModel.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DAAE6C4BC8CF6CD181EE22E8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				509EA0E480F447DA34EE0CEB /* VitalArcTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		9F1F66EBD3463C2764D8DB20 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C5E19D37CFFE919BA3956609 /* VitalArc */;
+			targetProxy = 1EE56CC435AC1BC065F34F42 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		00EEFB32AC90D14E311588F8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_ASSET_PATHS = "\"VitalArc/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\".\"",
+				);
+				INFOPLIST_FILE = VitalArc/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.vitalarc.VitalArc;
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		33F62839B35F7272E372228A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_ASSET_PATHS = "\"VitalArc/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\".\"",
+				);
+				INFOPLIST_FILE = VitalArc/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.vitalarc.VitalArc;
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		92E5E43A45B1D75607A34A97 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.9;
+			};
+			name = Release;
+		};
+		CD1379B1B88E16E63B6F4260 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.vitalarc.VitalArcTests;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/VitalArc.app/VitalArc";
+			};
+			name = Release;
+		};
+		D9BEB98829E4EE47EA201C4F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.9;
+			};
+			name = Debug;
+		};
+		F9E7C5307517DAE12EFE70EA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.vitalarc.VitalArcTests;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/VitalArc.app/VitalArc";
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		18AFD93798B8FE4CFA3CFB13 /* Build configuration list for PBXNativeTarget "VitalArcTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F9E7C5307517DAE12EFE70EA /* Debug */,
+				CD1379B1B88E16E63B6F4260 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		45CAFC28C6A64BFC341A1A1C /* Build configuration list for PBXProject "VitalArc" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D9BEB98829E4EE47EA201C4F /* Debug */,
+				92E5E43A45B1D75607A34A97 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		AEF16C768D7EA61B1D91C9BA /* Build configuration list for PBXNativeTarget "VitalArc" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				00EEFB32AC90D14E311588F8 /* Debug */,
+				33F62839B35F7272E372228A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 6C76132B3F0947A6D7506B2D /* Project object */;
+}
