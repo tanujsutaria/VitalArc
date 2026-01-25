@@ -185,9 +185,10 @@ final class SwiftDataNutritionRepository: NutritionRepository {
 
     func saveFood(_ food: Food) async throws {
         // Check if food already exists
+        let foodId = food.id
         let descriptor = FetchDescriptor<FoodModel>(
             predicate: #Predicate { foodModel in
-                foodModel.id == food.id
+                foodModel.id == foodId
             }
         )
 
@@ -469,8 +470,9 @@ final class SwiftDataUserRepository: UserRepository {
     }
 
     func updateUserProfile(_ profile: UserProfile) async throws {
+        let profileId = profile.id
         let descriptor = FetchDescriptor<UserProfileModel>(
-            predicate: #Predicate { $0.id == profile.id }
+            predicate: #Predicate { $0.id == profileId }
         )
 
         guard let existingProfile = try modelContext.fetch(descriptor).first else {

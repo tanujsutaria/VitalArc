@@ -9,7 +9,6 @@ import Foundation
 import HealthKit
 
 /// Manages HealthKit data access and synchronization
-@Observable
 final class HealthKitManager {
 
     // MARK: - Properties
