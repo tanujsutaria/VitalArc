@@ -98,7 +98,7 @@ struct HealthKitPermissions {
 
 // MARK: - Errors
 
-enum HealthKitError: LocalizedError {
+public enum HealthKitError: LocalizedError {
     case notAvailable
     case unauthorized
     case queryFailed

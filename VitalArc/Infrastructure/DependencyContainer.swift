@@ -10,15 +10,14 @@ import SwiftData
 import HealthKit
 
 /// Centralized dependency injection container
-@Observable
 final class DependencyContainer {
     let modelContext: ModelContext
 
-    // Repositories (initialized immediately, not lazy)
-    private(set) var workoutRepository: WorkoutRepository
-    private(set) var nutritionRepository: NutritionRepository
-    private(set) var healthRepository: HealthRepository
-    private(set) var userRepository: UserRepository
+    // Repositories (initialized immediately)
+    let workoutRepository: WorkoutRepository
+    let nutritionRepository: NutritionRepository
+    let healthRepository: HealthRepository
+    let userRepository: UserRepository
 
     init(modelContext: ModelContext) {
         self.modelContext = modelContext
@@ -346,10 +345,11 @@ final class SwiftDataHealthRepository: HealthRepository {
     func getHealthMetrics(for date: Date) async throws -> HealthMetrics? {
         let calendar = Calendar.current
         let startOfDay = calendar.startOfDay(for: date)
+        let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay)!
 
         let descriptor = FetchDescriptor<HealthMetricsModel>(
             predicate: #Predicate { metrics in
-                calendar.isDate(metrics.date, inSameDayAs: startOfDay)
+                metrics.date >= startOfDay && metrics.date < endOfDay
             }
         )
 
@@ -377,10 +377,11 @@ final class SwiftDataHealthRepository: HealthRepository {
         // Check if metrics for this date already exist
         let calendar = Calendar.current
         let startOfDay = calendar.startOfDay(for: metrics.date)
+        let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay)!
 
         let descriptor = FetchDescriptor<HealthMetricsModel>(
             predicate: #Predicate { model in
-                calendar.isDate(model.date, inSameDayAs: startOfDay)
+                model.date >= startOfDay && model.date < endOfDay
             }
         )
 
