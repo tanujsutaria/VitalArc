@@ -1,0 +1,45 @@
+Stream 2: Complete HealthKit integration and health dashboard
+
+Implemented comprehensive HealthKit integration following TDD principles:
+
+Infrastructure Layer:
+- HealthKitManager: HKHealthStore wrapper with async/await data fetching
+- HealthKitQuery: Helper utilities for building HealthKit queries
+- HealthKitPermissions: Authorization management for all required health types
+- HealthKitMapper: Converts HKSamples to domain HealthMetrics entities
+
+Data Layer:
+- Updated SwiftDataHealthRepository with HealthKit integration
+- Implements offline caching with SwiftData
+- Syncs last 7 days of health data
+- Upsert logic for daily metrics
+
+Presentation Layer:
+- HealthDashboardView: Main health tab with metrics and charts
+- HealthDashboardViewModel: State management and data coordination
+- MetricCardView: Individual metric display component
+- ChartView: Weekly trend visualization with Charts framework
+
+Features:
+- Tracks HRV, heart rate, steps, active energy, sleep, weight
+- Recovery indicator based on HRV values
+- Weekly trends with line charts
+- Weekly summary statistics
+- Pull-to-refresh for data sync
+- Empty state with HealthKit enable button
+- Error handling with retry
+- Loading states
+
+Testing:
+- Comprehensive test suite in HealthKitTests.swift
+- Tests for mapper, query helpers, permissions, and ViewModel
+- Mock repository for testing
+
+Integration:
+- Updated MainTabView to use real HealthDashboardView
+- Integrated with DependencyContainer for dependency injection
+- Info.plist already configured with HealthKit usage descriptions
+
+All deliverables completed. Ready for integration testing.
+
+Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
