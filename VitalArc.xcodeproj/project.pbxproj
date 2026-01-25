@@ -122,6 +122,7 @@
 		3E7DFF422F05B2EBBF2F2EB8 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		40DBB4D6BEF314C57F47B3B1 /* NutritionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NutritionTests.swift; sourceTree = "<group>"; };
 		4508F61108B98F38C7317287 /* FoodAPIModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodAPIModels.swift; sourceTree = "<group>"; };
+		51DE4534AC8CE83D7D7F10A3 /* VitalArc.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = VitalArc.entitlements; sourceTree = "<group>"; };
 		54AE04B0B914B459BB6B3E97 /* WorkoutRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutRepository.swift; sourceTree = "<group>"; };
 		54BE18D10F70E33E0E20F52A /* UserRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserRepository.swift; sourceTree = "<group>"; };
 		5543E95CF2D3EA974E01F66F /* FoodModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodModel.swift; sourceTree = "<group>"; };
@@ -374,6 +375,7 @@
 			children = (
 				22FF7055B0CD30B756F6F963 /* Assets.xcassets */,
 				5AFD41E5C7372D8AED2D6F0C /* Info.plist */,
+				51DE4534AC8CE83D7D7F10A3 /* VitalArc.entitlements */,
 				270F7E00F8AA2538A300F8D8 /* VitalArcApp.swift */,
 				D250AFB928D7E9F895B63D78 /* Data */,
 				AAC6DFF5BB9E8144C530183E /* Domain */,
@@ -617,7 +619,7 @@
 			path = Onboarding;
 			sourceTree = "<group>";
 		};
-		"TEMP_7166C8FF-71DF-4427-9279-A974BC1FB1E8" /* Common */ = {
+		"TEMP_A8A92E57-8BFE-4764-8E04-992C5183214A" /* Common */ = {
 			isa = PBXGroup;
 			children = (
 			);
@@ -811,6 +813,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = VitalArc/VitalArc.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				DEVELOPMENT_ASSET_PATHS = "\"VitalArc/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
@@ -832,6 +835,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = VitalArc/VitalArc.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				DEVELOPMENT_ASSET_PATHS = "\"VitalArc/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
