@@ -124,6 +124,15 @@ struct SettingsView: View {
 }
 
 #Preview {
-    @Previewable @State var mockRepo = MockUserRepository()
-    SettingsView(userRepository: mockRepo)
+    // Preview with mock conforming to UserRepository protocol
+    struct PreviewUserRepository: UserRepository {
+        func getUserProfile() async throws -> UserProfile? { nil }
+        func saveUserProfile(_ profile: UserProfile) async throws {}
+        func updateUserProfile(_ profile: UserProfile) async throws {}
+        func deleteUserProfile() async throws {}
+        func hasCompletedOnboarding() async -> Bool { true }
+        func setOnboardingCompleted(_ completed: Bool) async {}
+    }
+
+    SettingsView(userRepository: PreviewUserRepository())
 }

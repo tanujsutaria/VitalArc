@@ -200,6 +200,8 @@ struct ProfileView: View {
 
     @ViewBuilder
     private func editProfileView(viewModel: ProfileViewModel) -> some View {
+        @Bindable var vm = viewModel
+
         ScrollView {
             VStack(alignment: .leading, spacing: 24) {
                 Text("Edit Profile")
@@ -212,7 +214,7 @@ struct ProfileView: View {
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Name")
                             .font(.headline)
-                        TextField("Name", text: $viewModel.editName)
+                        TextField("Name", text: $vm.editName)
                             .textFieldStyle(.roundedBorder)
                     }
 
@@ -222,7 +224,7 @@ struct ProfileView: View {
                             .font(.headline)
                         DatePicker(
                             "Birth Date",
-                            selection: $viewModel.editBirthDate,
+                            selection: $vm.editBirthDate,
                             in: ...Date(),
                             displayedComponents: .date
                         )
@@ -234,7 +236,7 @@ struct ProfileView: View {
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Biological Sex")
                             .font(.headline)
-                        Picker("Sex", selection: $viewModel.editSex) {
+                        Picker("Sex", selection: $vm.editSex) {
                             ForEach(BiologicalSex.allCases, id: \.self) { sex in
                                 Text(sex.rawValue).tag(sex)
                             }
@@ -247,7 +249,7 @@ struct ProfileView: View {
                         Text("Height")
                             .font(.headline)
                         HStack {
-                            TextField("Height", value: $viewModel.editHeight, format: .number)
+                            TextField("Height", value: $vm.editHeight, format: .number)
                                 .keyboardType(.decimalPad)
                                 .textFieldStyle(.roundedBorder)
                             Text("cm")
@@ -260,7 +262,7 @@ struct ProfileView: View {
                         Text("Weight")
                             .font(.headline)
                         HStack {
-                            TextField("Weight", value: $viewModel.editWeight, format: .number)
+                            TextField("Weight", value: $vm.editWeight, format: .number)
                                 .keyboardType(.decimalPad)
                                 .textFieldStyle(.roundedBorder)
                             Text("kg")
@@ -272,7 +274,7 @@ struct ProfileView: View {
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Activity Level")
                             .font(.headline)
-                        Picker("Activity Level", selection: $viewModel.editActivityLevel) {
+                        Picker("Activity Level", selection: $vm.editActivityLevel) {
                             ForEach(ActivityLevel.allCases, id: \.self) { level in
                                 Text(level.rawValue).tag(level)
                             }
@@ -284,7 +286,7 @@ struct ProfileView: View {
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Weight Goal")
                             .font(.headline)
-                        Picker("Weight Goal", selection: $viewModel.editWeightGoal) {
+                        Picker("Weight Goal", selection: $vm.editWeightGoal) {
                             ForEach(WeightGoal.allCases, id: \.self) { goal in
                                 Text(goal.rawValue).tag(goal)
                             }

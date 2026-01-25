@@ -104,7 +104,7 @@ public enum HealthKitError: LocalizedError {
     case queryFailed
     case noData
 
-    var errorDescription: String? {
+    public var errorDescription: String? {
         switch self {
         case .notAvailable:
             return "HealthKit is not available on this device"

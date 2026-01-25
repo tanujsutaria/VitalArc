@@ -43,8 +43,8 @@ final class OnboardingViewModel {
     // MARK: - Navigation
 
     func nextStep() {
-        guard let nextStepRaw = currentStep.rawValue + 1,
-              nextStepRaw < OnboardingStep.allCases.count,
+        let nextStepRaw = currentStep.rawValue + 1
+        guard nextStepRaw < OnboardingStep.allCases.count,
               let nextStep = OnboardingStep(rawValue: nextStepRaw) else {
             return
         }
