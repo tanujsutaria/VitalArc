@@ -145,9 +145,17 @@ struct ProfileSetupView: View {
 }
 
 #Preview {
-    @Previewable @State var mockRepo = MockUserRepository()
+    struct PreviewUserRepository: UserRepository {
+        func getUserProfile() async throws -> UserProfile? { nil }
+        func saveUserProfile(_ profile: UserProfile) async throws {}
+        func updateUserProfile(_ profile: UserProfile) async throws {}
+        func deleteUserProfile() async throws {}
+        func hasCompletedOnboarding() async -> Bool { false }
+        func setOnboardingCompleted(_ completed: Bool) async {}
+    }
+
     ProfileSetupView(
-        viewModel: OnboardingViewModel(userRepository: mockRepo),
+        viewModel: OnboardingViewModel(userRepository: PreviewUserRepository()),
         onContinue: {},
         onBack: {}
     )
