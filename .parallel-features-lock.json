@@ -55,73 +55,73 @@
     {
       "id": "workout",
       "name": "Workout Module",
-      "agent": "workout-agent",
-      "status": "in_progress",
+      "agent": null,
+      "status": "completed",
       "files": [
         {
           "path": "VitalArc/Data/Seeds/ExerciseSeeds.swift",
-          "locked": true,
-          "agent": "workout-agent"
+          "locked": false,
+          "agent": null
         },
         {
           "path": "VitalArc/Domain/UseCases/Workout/CreateWorkoutUseCase.swift",
-          "locked": true,
-          "agent": "workout-agent"
+          "locked": false,
+          "agent": null
         },
         {
           "path": "VitalArc/Domain/UseCases/Workout/GetExercisesUseCase.swift",
-          "locked": true,
-          "agent": "workout-agent"
+          "locked": false,
+          "agent": null
         },
         {
           "path": "VitalArc/Domain/UseCases/Workout/CalculateProgressionUseCase.swift",
-          "locked": true,
-          "agent": "workout-agent"
+          "locked": false,
+          "agent": null
         },
         {
           "path": "VitalArc/Presentation/Tabs/Workout/ExerciseLibrary/ExerciseLibraryView.swift",
-          "locked": true,
-          "agent": "workout-agent"
+          "locked": false,
+          "agent": null
         },
         {
           "path": "VitalArc/Presentation/Tabs/Workout/ExerciseLibrary/ExerciseLibraryViewModel.swift",
-          "locked": true,
-          "agent": "workout-agent"
+          "locked": false,
+          "agent": null
         },
         {
           "path": "VitalArc/Presentation/Tabs/Workout/ExerciseLibrary/ExerciseRowView.swift",
-          "locked": true,
-          "agent": "workout-agent"
+          "locked": false,
+          "agent": null
         },
         {
           "path": "VitalArc/Presentation/Tabs/Workout/WorkoutLogging/WorkoutLoggingView.swift",
-          "locked": true,
-          "agent": "workout-agent"
+          "locked": false,
+          "agent": null
         },
         {
           "path": "VitalArc/Presentation/Tabs/Workout/WorkoutLogging/WorkoutLoggingViewModel.swift",
-          "locked": true,
-          "agent": "workout-agent"
+          "locked": false,
+          "agent": null
         },
         {
           "path": "VitalArc/Presentation/Tabs/Workout/WorkoutLogging/ExerciseSetView.swift",
-          "locked": true,
-          "agent": "workout-agent"
+          "locked": false,
+          "agent": null
         },
         {
           "path": "VitalArc/Presentation/Tabs/Workout/WorkoutLogging/SetRowView.swift",
-          "locked": true,
-          "agent": "workout-agent"
+          "locked": false,
+          "agent": null
         },
         {
           "path": "VitalArc/Presentation/Tabs/Workout/WorkoutHistory/WorkoutHistoryView.swift",
-          "locked": true,
-          "agent": "workout-agent"
+          "locked": false,
+          "agent": null
         },
         {
           "path": "VitalArc/Presentation/Tabs/Workout/WorkoutHistory/WorkoutHistoryViewModel.swift",
-          "locked": true,
-          "agent": "workout-agent"
+          "locked": false,
+          "agent": null
         }
       ],
       "tdd": {
