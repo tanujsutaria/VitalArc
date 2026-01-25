@@ -137,11 +137,11 @@ struct WorkoutLoggingView: View {
     private var exercisesList: some View {
         VStack(spacing: 16) {
             ForEach(viewModel.selectedExercises) { exercise in
-                if let sets = Binding(
+                let sets = Binding(
                     get: { viewModel.exerciseSets[exercise.id] ?? [] },
                     set: { viewModel.exerciseSets[exercise.id] = $0 }
-                ) {
-                    ExerciseSetView(
+                )
+                ExerciseSetView(
                         exercise: exercise,
                         sets: sets,
                         onAddSet: {
@@ -157,7 +157,6 @@ struct WorkoutLoggingView: View {
                             viewModel.removeExercise(exercise)
                         }
                     )
-                }
             }
 
             addExerciseButton

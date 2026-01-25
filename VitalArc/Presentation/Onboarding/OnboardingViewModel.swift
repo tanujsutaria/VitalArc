@@ -52,8 +52,8 @@ final class OnboardingViewModel {
     }
 
     func previousStep() {
-        guard let prevStepRaw = currentStep.rawValue - 1,
-              prevStepRaw >= 0,
+        let prevStepRaw = currentStep.rawValue - 1
+        guard prevStepRaw >= 0,
               let prevStep = OnboardingStep(rawValue: prevStepRaw) else {
             return
         }

@@ -31,12 +31,10 @@ targets:
       CLANG_ENABLE_MODULES: YES
       DEVELOPMENT_ASSET_PATHS: "\"VitalArc/Preview Content\""
     dependencies:
-      - framework: SwiftUI.framework
-      - framework: SwiftData.framework
-      - framework: HealthKit.framework
-        type: framework
-      - framework: CloudKit.framework
-        type: framework
+      - sdk: SwiftUI.framework
+      - sdk: SwiftData.framework
+      - sdk: HealthKit.framework
+      - sdk: CloudKit.framework
     info:
       path: VitalArc/Info.plist
       properties:

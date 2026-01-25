@@ -401,6 +401,14 @@ struct HealthDashboardView: View {
 
 // MARK: - Preview
 
+private struct PreviewHealthRepository: HealthRepository {
+    func getHealthMetrics(for date: Date) async throws -> HealthMetrics? { nil }
+    func getHealthMetrics(from startDate: Date, to endDate: Date) async throws -> [HealthMetrics] { [] }
+    func saveHealthMetrics(_ metrics: HealthMetrics) async throws {}
+    func syncFromHealthKit() async throws {}
+    func requestHealthKitAuthorization() async throws -> Bool { true }
+}
+
 #Preview {
-    HealthDashboardView(healthRepository: MockHealthRepository())
+    HealthDashboardView(healthRepository: PreviewHealthRepository())
 }

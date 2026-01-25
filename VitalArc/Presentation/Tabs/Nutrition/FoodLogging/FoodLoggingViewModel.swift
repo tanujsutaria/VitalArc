@@ -18,7 +18,7 @@ final class FoodLoggingViewModel {
     var selectedMeal: MealType = .breakfast
 
     private let logFoodUseCase: LogFoodUseCaseProtocol
-    private let repository: NutritionRepository
+    let repository: NutritionRepository
 
     init(logFoodUseCase: LogFoodUseCaseProtocol, repository: NutritionRepository) {
         self.logFoodUseCase = logFoodUseCase

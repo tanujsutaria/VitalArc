@@ -154,16 +154,16 @@ struct PermissionRow: View {
     }
 }
 
-#Preview {
-    struct PreviewUserRepository: UserRepository {
-        func getUserProfile() async throws -> UserProfile? { nil }
-        func saveUserProfile(_ profile: UserProfile) async throws {}
-        func updateUserProfile(_ profile: UserProfile) async throws {}
-        func deleteUserProfile() async throws {}
-        func hasCompletedOnboarding() async -> Bool { false }
-        func setOnboardingCompleted(_ completed: Bool) async {}
-    }
+private struct PreviewUserRepository: UserRepository {
+    func getUserProfile() async throws -> UserProfile? { nil }
+    func saveUserProfile(_ profile: UserProfile) async throws {}
+    func updateUserProfile(_ profile: UserProfile) async throws {}
+    func deleteUserProfile() async throws {}
+    func hasCompletedOnboarding() async -> Bool { false }
+    func setOnboardingCompleted(_ completed: Bool) async {}
+}
 
+#Preview {
     HealthKitPermissionView(
         viewModel: OnboardingViewModel(userRepository: PreviewUserRepository()),
         onComplete: {},

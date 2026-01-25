@@ -39,7 +39,6 @@
 		4DC85B91F11058C3375ED57F /* ChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69BDF4D1E5D56DA3098829C2 /* ChartView.swift */; };
 		509EA0E480F447DA34EE0CEB /* VitalArcTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A48F612DE6687B8B054BA9E3 /* VitalArcTests.swift */; };
 		55196D4FB9475859FC77B1BD /* UpdateUserPreferencesUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56955E4B4B5ADF5E3D9D6256 /* UpdateUserPreferencesUseCase.swift */; };
-		5C9CCAEA7883E8182E683F59 /* SwiftUI.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1ACCC0BC5A5FAE8B2A5E0DA0 /* SwiftUI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		5CDB1BA23C75E21B25E5EB9E /* HealthKitPermissions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9735188AE571358EA10AE1C /* HealthKitPermissions.swift */; };
 		60326FA0C2CD02293EC9F5C4 /* WorkoutLoggingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE0E62EFB26F5AF97553A972 /* WorkoutLoggingView.swift */; };
 		63408CF1BBECC1DA6E7EB488 /* FoodResultRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B15D3153DB278E04C21F09C /* FoodResultRowView.swift */; };
@@ -51,7 +50,6 @@
 		73BBD0A0959C1580E571EC77 /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 204E8B8260BD0D08D4AC708E /* HealthKit.framework */; };
 		758B61DC3E94EE424FD13126 /* OnboardingCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 948B0E147D40A08EE8BF7984 /* OnboardingCoordinator.swift */; };
 		793420AA8CBADCD1560DC533 /* SearchFoodUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5B15CB72047BACC53338408 /* SearchFoodUseCase.swift */; };
-		7D0AF1F868FAFD915C0F87A9 /* CloudKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FD147BDBA0726382A62490D0 /* CloudKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		7EBEE1CA40FAD57CE6BAFDD6 /* ProfileTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00D74DB92F2EF06B8D62FF9B /* ProfileTests.swift */; };
 		80179F66A8ADFDA6DEAE23B8 /* CreateUserProfileUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897F44E2DC3F04BBC9C04DF3 /* CreateUserProfileUseCase.swift */; };
 		86837097D76103FBE890CE29 /* HealthDashboardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94FDC23DCCC9E766167D3E7 /* HealthDashboardViewModel.swift */; };
@@ -62,7 +60,6 @@
 		8EB62E1A64BE2366199F3455 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FD147BDBA0726382A62490D0 /* CloudKit.framework */; };
 		942628D1F967B19230F8AD44 /* MacroRingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE948F5C7C7E7164BCAEE3AA /* MacroRingView.swift */; };
 		97D1EE9F6C811BF5F9C6F3B7 /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BA1A6744D575B5C6C27D009 /* MainTabView.swift */; };
-		9F2A2137EB5979DE879D0B61 /* HealthKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 204E8B8260BD0D08D4AC708E /* HealthKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		A094098B432FE9718F4B660A /* WorkoutModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35DE7CB802E6DE638AC0D92C /* WorkoutModel.swift */; };
 		A36BA008667F24A0C627E73C /* HealthKitPermissionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2A506CD9C6617924B59CB86 /* HealthKitPermissionView.swift */; };
 		A472D7AF0A7165225B42349A /* WorkoutHistoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D429840909FA8D90673F777B /* WorkoutHistoryViewModel.swift */; };
@@ -86,7 +83,6 @@
 		E44DE360602DC91F4D47E63C /* HealthDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED62B6AB234CF0E23406C77D /* HealthDashboardView.swift */; };
 		E952ED0C42942125C3BA0D5E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 22FF7055B0CD30B756F6F963 /* Assets.xcassets */; };
 		E9ACE76CAD2799F7230120BF /* SetRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96029B0B15EDC21F21B0EB06 /* SetRowView.swift */; };
-		EA56F34550C02CDAB9C5A633 /* SwiftData.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E617B61A780E2D73CA38EA96 /* SwiftData.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		EF984FAADD688AF81520D265 /* VitalArcApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 270F7E00F8AA2538A300F8D8 /* VitalArcApp.swift */; };
 		F4E088479E640461CC286BD1 /* ExerciseRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 168B4FFDBAB0E898338155BC /* ExerciseRowView.swift */; };
 		FA78ACED75968C458123000C /* MetricCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 863F76B52D3BE699B0B40B86 /* MetricCardView.swift */; };
@@ -103,23 +99,6 @@
 		};
 /* End PBXContainerItemProxy section */
 
-/* Begin PBXCopyFilesBuildPhase section */
-		6DD3AE89351284A3BCBDB0CC /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				5C9CCAEA7883E8182E683F59 /* SwiftUI.framework in Embed Frameworks */,
-				EA56F34550C02CDAB9C5A633 /* SwiftData.framework in Embed Frameworks */,
-				9F2A2137EB5979DE879D0B61 /* HealthKit.framework in Embed Frameworks */,
-				7D0AF1F868FAFD915C0F87A9 /* CloudKit.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
-
 /* Begin PBXFileReference section */
 		00D74DB92F2EF06B8D62FF9B /* ProfileTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileTests.swift; sourceTree = "<group>"; };
 		0B7BDED25BF9905034860989 /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
@@ -127,8 +106,8 @@
 		168B4FFDBAB0E898338155BC /* ExerciseRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseRowView.swift; sourceTree = "<group>"; };
 		18547D5100E844205BA8F7DB /* HealthKitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitTests.swift; sourceTree = "<group>"; };
 		18A7B9DD6D81924C0258E6FA /* FoodLoggingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodLoggingView.swift; sourceTree = "<group>"; };
-		1ACCC0BC5A5FAE8B2A5E0DA0 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SwiftUI.framework; sourceTree = "<group>"; };
-		204E8B8260BD0D08D4AC708E /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = HealthKit.framework; sourceTree = "<group>"; };
+		1ACCC0BC5A5FAE8B2A5E0DA0 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		204E8B8260BD0D08D4AC708E /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = System/Library/Frameworks/HealthKit.framework; sourceTree = SDKROOT; };
 		22FF7055B0CD30B756F6F963 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		270F7E00F8AA2538A300F8D8 /* VitalArcApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VitalArcApp.swift; sourceTree = "<group>"; };
 		284176C019E651CD1432F0DD /* ExerciseLibraryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseLibraryViewModel.swift; sourceTree = "<group>"; };
@@ -192,7 +171,7 @@
 		DEF33D965ACAE9DDD2ACEA76 /* ExerciseSeeds.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseSeeds.swift; sourceTree = "<group>"; };
 		DF73950C467F7AB125A07178 /* USDAFoodAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = USDAFoodAPI.swift; sourceTree = "<group>"; };
 		E3901168591C01E8766018CD /* NutritionSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NutritionSummaryView.swift; sourceTree = "<group>"; };
-		E617B61A780E2D73CA38EA96 /* SwiftData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SwiftData.framework; sourceTree = "<group>"; };
+		E617B61A780E2D73CA38EA96 /* SwiftData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftData.framework; path = System/Library/Frameworks/SwiftData.framework; sourceTree = SDKROOT; };
 		E7136C312A60E7F45BD0F51B /* OnboardingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewModel.swift; sourceTree = "<group>"; };
 		ED62B6AB234CF0E23406C77D /* HealthDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthDashboardView.swift; sourceTree = "<group>"; };
 		ED85BA1AEF7BA60C2B9C2348 /* HealthMetricsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthMetricsModel.swift; sourceTree = "<group>"; };
@@ -202,7 +181,7 @@
 		F647355BA6D6DB6ABA236775 /* ExerciseSetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseSetView.swift; sourceTree = "<group>"; };
 		F8884D90D84861BB481EF0F3 /* FoodLoggingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodLoggingViewModel.swift; sourceTree = "<group>"; };
 		FB1E474D17E03C8C73B3D3D2 /* GetExercisesUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetExercisesUseCase.swift; sourceTree = "<group>"; };
-		FD147BDBA0726382A62490D0 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = CloudKit.framework; sourceTree = "<group>"; };
+		FD147BDBA0726382A62490D0 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		FFBD82C68E9845BEF0BE4B8D /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -638,7 +617,7 @@
 			path = Onboarding;
 			sourceTree = "<group>";
 		};
-		"TEMP_F9D0C62E-00E3-43E8-8F92-0BBB18ADCC3D" /* Common */ = {
+		"TEMP_7166C8FF-71DF-4427-9279-A974BC1FB1E8" /* Common */ = {
 			isa = PBXGroup;
 			children = (
 			);
@@ -673,7 +652,6 @@
 				BCA54E608EFCE2296327D577 /* Sources */,
 				838174422926BE6ED7B673F9 /* Resources */,
 				F3675A5257080DE8936112FA /* Frameworks */,
-				6DD3AE89351284A3BCBDB0CC /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -836,10 +814,6 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				DEVELOPMENT_ASSET_PATHS = "\"VitalArc/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"\".\"",
-				);
 				INFOPLIST_FILE = VitalArc/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
@@ -861,10 +835,6 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				DEVELOPMENT_ASSET_PATHS = "\"VitalArc/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"\".\"",
-				);
 				INFOPLIST_FILE = VitalArc/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
