@@ -243,9 +243,10 @@ final class SwiftDataNutritionRepository: NutritionRepository {
 
     func saveFoodEntry(_ entry: FoodEntry) async throws {
         // Check if entry already exists
+        let entryId = entry.id
         let descriptor = FetchDescriptor<FoodEntryModel>(
             predicate: #Predicate { entryModel in
-                entryModel.id == entry.id
+                entryModel.id == entryId
             }
         )
 
@@ -406,7 +407,8 @@ final class SwiftDataHealthRepository: HealthRepository {
 
     func syncFromHealthKit() async throws {
         guard healthKitManager.isHealthKitAvailable() else {
-            throw HealthKitError.notAvailable
+            struct HealthKitNotAvailableError: Error {}
+            throw HealthKitNotAvailableError()
         }
 
         // Sync last 7 days of data
