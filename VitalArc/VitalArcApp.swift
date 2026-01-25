@@ -57,10 +57,42 @@ struct VitalArcApp: App {
 
     var body: some Scene {
         WindowGroup {
-            MainTabView()
+            RootView()
                 .modelContainer(modelContainer)
                 .environment(\.dependencyContainer, container)
         }
+    }
+}
+
+/// Root view that decides whether to show onboarding or main app
+struct RootView: View {
+    @Environment(\.dependencyContainer) private var container
+    @State private var hasCompletedOnboarding = false
+    @State private var isCheckingOnboarding = true
+
+    var body: some View {
+        Group {
+            if isCheckingOnboarding {
+                ProgressView("Loading...")
+            } else if hasCompletedOnboarding {
+                MainTabView()
+            } else {
+                OnboardingCoordinator(isOnboardingComplete: $hasCompletedOnboarding)
+            }
+        }
+        .task {
+            await checkOnboardingStatus()
+        }
+    }
+
+    private func checkOnboardingStatus() async {
+        guard let container = container else {
+            isCheckingOnboarding = false
+            return
+        }
+
+        hasCompletedOnboarding = await container.userRepository.hasCompletedOnboarding()
+        isCheckingOnboarding = false
     }
 }
 

@@ -46,49 +46,110 @@ final class SwiftDataWorkoutRepository: WorkoutRepository {
     }
 
     func getExercises() async throws -> [Exercise] {
-        // TODO: Implement in Stream 3
-        return []
+        let descriptor = FetchDescriptor<ExerciseModel>(
+            sortBy: [SortDescriptor(\.name)]
+        )
+        let models = try modelContext.fetch(descriptor)
+        return models.map { $0.toDomain() }
     }
 
     func getExercise(id: UUID) async throws -> Exercise? {
-        // TODO: Implement in Stream 3
-        return nil
+        var descriptor = FetchDescriptor<ExerciseModel>(
+            predicate: #Predicate { $0.id == id }
+        )
+        descriptor.fetchLimit = 1
+        let models = try modelContext.fetch(descriptor)
+        return models.first?.toDomain()
     }
 
     func searchExercises(query: String) async throws -> [Exercise] {
-        // TODO: Implement in Stream 3
-        return []
+        let lowercaseQuery = query.lowercased()
+        let descriptor = FetchDescriptor<ExerciseModel>(
+            sortBy: [SortDescriptor(\.name)]
+        )
+        let allModels = try modelContext.fetch(descriptor)
+        let filtered = allModels.filter { $0.name.lowercased().contains(lowercaseQuery) }
+        return filtered.map { $0.toDomain() }
     }
 
     func saveExercise(_ exercise: Exercise) async throws {
-        // TODO: Implement in Stream 3
+        let model = ExerciseModel.fromDomain(exercise)
+        modelContext.insert(model)
+        try modelContext.save()
     }
 
     func getWorkouts() async throws -> [Workout] {
-        // TODO: Implement in Stream 3
-        return []
+        let descriptor = FetchDescriptor<WorkoutModel>(
+            sortBy: [SortDescriptor(\.date, order: .reverse)]
+        )
+        let models = try modelContext.fetch(descriptor)
+        return models.map { $0.toDomain() }
     }
 
     func getWorkout(id: UUID) async throws -> Workout? {
-        // TODO: Implement in Stream 3
-        return nil
+        var descriptor = FetchDescriptor<WorkoutModel>(
+            predicate: #Predicate { $0.id == id }
+        )
+        descriptor.fetchLimit = 1
+        let models = try modelContext.fetch(descriptor)
+        return models.first?.toDomain()
     }
 
     func getWorkouts(from startDate: Date, to endDate: Date) async throws -> [Workout] {
-        // TODO: Implement in Stream 3
-        return []
+        let descriptor = FetchDescriptor<WorkoutModel>(
+            predicate: #Predicate { workout in
+                workout.date >= startDate && workout.date <= endDate
+            },
+            sortBy: [SortDescriptor(\.date, order: .reverse)]
+        )
+        let models = try modelContext.fetch(descriptor)
+        return models.map { $0.toDomain() }
     }
 
     func saveWorkout(_ workout: Workout) async throws {
-        // TODO: Implement in Stream 3
+        // Create set models
+        let setModels = workout.sets.map { WorkoutSetModel.fromDomain($0) }
+
+        // Insert sets first
+        for setModel in setModels {
+            modelContext.insert(setModel)
+        }
+
+        // Create workout model with sets
+        let workoutModel = WorkoutModel.fromDomain(workout, sets: setModels)
+        modelContext.insert(workoutModel)
+
+        try modelContext.save()
     }
 
     func deleteWorkout(id: UUID) async throws {
-        // TODO: Implement in Stream 3
+        var descriptor = FetchDescriptor<WorkoutModel>(
+            predicate: #Predicate { $0.id == id }
+        )
+        descriptor.fetchLimit = 1
+        let models = try modelContext.fetch(descriptor)
+
+        if let model = models.first {
+            modelContext.delete(model)
+            try modelContext.save()
+        }
     }
 
     func getLastWorkoutForExercise(_ exerciseId: UUID) async throws -> Workout? {
-        // TODO: Implement in Stream 3
+        // Get all workouts sorted by date descending
+        let descriptor = FetchDescriptor<WorkoutModel>(
+            sortBy: [SortDescriptor(\.date, order: .reverse)]
+        )
+        let models = try modelContext.fetch(descriptor)
+
+        // Find first workout that contains this exercise
+        for model in models {
+            let workout = model.toDomain()
+            if workout.sets.contains(where: { $0.exerciseId == exerciseId }) {
+                return workout
+            }
+        }
+
         return nil
     }
 }
@@ -102,76 +163,273 @@ final class SwiftDataNutritionRepository: NutritionRepository {
     }
 
     func searchFoods(query: String) async throws -> [Food] {
-        // TODO: Implement in Stream 4
-        return []
+        let descriptor = FetchDescriptor<FoodModel>(
+            predicate: #Predicate { food in
+                food.name.localizedStandardContains(query)
+            },
+            sortBy: [SortDescriptor(\.name)]
+        )
+
+        let models = try modelContext.fetch(descriptor)
+        return models.map { $0.toDomain() }
     }
 
     func getFood(id: UUID) async throws -> Food? {
-        // TODO: Implement in Stream 4
-        return nil
+        let descriptor = FetchDescriptor<FoodModel>(
+            predicate: #Predicate { food in
+                food.id == id
+            }
+        )
+
+        guard let model = try modelContext.fetch(descriptor).first else {
+            return nil
+        }
+
+        return model.toDomain()
     }
 
     func saveFood(_ food: Food) async throws {
-        // TODO: Implement in Stream 4
+        // Check if food already exists
+        let descriptor = FetchDescriptor<FoodModel>(
+            predicate: #Predicate { foodModel in
+                foodModel.id == food.id
+            }
+        )
+
+        if let existing = try modelContext.fetch(descriptor).first {
+            // Update existing
+            existing.name = food.name
+            existing.brand = food.brand
+            existing.servingSize = food.servingSize
+            existing.servingUnit = food.servingUnit
+            existing.calories = food.calories
+            existing.protein = food.protein
+            existing.carbs = food.carbs
+            existing.fat = food.fat
+            existing.fiber = food.fiber
+            existing.sugar = food.sugar
+            existing.source = food.source.rawValue
+        } else {
+            // Insert new
+            let model = FoodModel.fromDomain(food)
+            modelContext.insert(model)
+        }
+
+        try modelContext.save()
     }
 
     func getFoodEntries(for date: Date) async throws -> [FoodEntry] {
-        // TODO: Implement in Stream 4
-        return []
+        let calendar = Calendar.current
+        let startOfDay = calendar.startOfDay(for: date)
+        let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay)!
+
+        let descriptor = FetchDescriptor<FoodEntryModel>(
+            predicate: #Predicate { entry in
+                entry.date >= startOfDay && entry.date < endOfDay
+            },
+            sortBy: [SortDescriptor(\.date)]
+        )
+
+        let models = try modelContext.fetch(descriptor)
+        return models.map { $0.toDomain() }
     }
 
     func getFoodEntries(from startDate: Date, to endDate: Date) async throws -> [FoodEntry] {
-        // TODO: Implement in Stream 4
-        return []
+        let descriptor = FetchDescriptor<FoodEntryModel>(
+            predicate: #Predicate { entry in
+                entry.date >= startDate && entry.date <= endDate
+            },
+            sortBy: [SortDescriptor(\.date)]
+        )
+
+        let models = try modelContext.fetch(descriptor)
+        return models.map { $0.toDomain() }
     }
 
     func saveFoodEntry(_ entry: FoodEntry) async throws {
-        // TODO: Implement in Stream 4
+        // Check if entry already exists
+        let descriptor = FetchDescriptor<FoodEntryModel>(
+            predicate: #Predicate { entryModel in
+                entryModel.id == entry.id
+            }
+        )
+
+        if let existing = try modelContext.fetch(descriptor).first {
+            // Update existing
+            existing.foodId = entry.foodId
+            existing.date = entry.date
+            existing.meal = entry.meal.rawValue
+            existing.quantity = entry.quantity
+            existing.calories = entry.calories
+            existing.protein = entry.protein
+            existing.carbs = entry.carbs
+            existing.fat = entry.fat
+        } else {
+            // Insert new
+            let model = FoodEntryModel.fromDomain(entry)
+            modelContext.insert(model)
+        }
+
+        try modelContext.save()
     }
 
     func deleteFoodEntry(id: UUID) async throws {
-        // TODO: Implement in Stream 4
+        let descriptor = FetchDescriptor<FoodEntryModel>(
+            predicate: #Predicate { entry in
+                entry.id == id
+            }
+        )
+
+        guard let model = try modelContext.fetch(descriptor).first else {
+            return
+        }
+
+        modelContext.delete(model)
+        try modelContext.save()
     }
 
     func getDailyNutrition(for date: Date) async throws -> DailyNutrition? {
-        // TODO: Implement in Stream 4
-        return nil
+        let calendar = Calendar.current
+        let startOfDay = calendar.startOfDay(for: date)
+        let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay)!
+
+        let descriptor = FetchDescriptor<DailyNutritionModel>(
+            predicate: #Predicate { nutrition in
+                nutrition.date >= startOfDay && nutrition.date < endOfDay
+            }
+        )
+
+        guard let model = try modelContext.fetch(descriptor).first else {
+            return nil
+        }
+
+        return model.toDomain()
     }
 
     func saveDailyNutrition(_ nutrition: DailyNutrition) async throws {
-        // TODO: Implement in Stream 4
+        let calendar = Calendar.current
+        let startOfDay = calendar.startOfDay(for: nutrition.date)
+        let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay)!
+
+        let descriptor = FetchDescriptor<DailyNutritionModel>(
+            predicate: #Predicate { nutritionModel in
+                nutritionModel.date >= startOfDay && nutritionModel.date < endOfDay
+            }
+        )
+
+        if let existing = try modelContext.fetch(descriptor).first {
+            // Update existing
+            existing.caloriesConsumed = nutrition.caloriesConsumed
+            existing.proteinConsumed = nutrition.proteinConsumed
+            existing.carbsConsumed = nutrition.carbsConsumed
+            existing.fatConsumed = nutrition.fatConsumed
+            existing.calorieGoal = nutrition.calorieGoal
+            existing.proteinGoal = nutrition.proteinGoal
+            existing.carbsGoal = nutrition.carbsGoal
+            existing.fatGoal = nutrition.fatGoal
+        } else {
+            // Insert new
+            let model = DailyNutritionModel.fromDomain(nutrition)
+            modelContext.insert(model)
+        }
+
+        try modelContext.save()
     }
 }
 
 /// SwiftData implementation of HealthRepository
 final class SwiftDataHealthRepository: HealthRepository {
     private let modelContext: ModelContext
+    private let healthKitManager: HealthKitManager
 
-    init(modelContext: ModelContext) {
+    init(modelContext: ModelContext, healthKitManager: HealthKitManager = HealthKitManager()) {
         self.modelContext = modelContext
+        self.healthKitManager = healthKitManager
     }
 
     func getHealthMetrics(for date: Date) async throws -> HealthMetrics? {
-        // TODO: Implement in Stream 2
-        return nil
+        let calendar = Calendar.current
+        let startOfDay = calendar.startOfDay(for: date)
+
+        let descriptor = FetchDescriptor<HealthMetricsModel>(
+            predicate: #Predicate { metrics in
+                calendar.isDate(metrics.date, inSameDayAs: startOfDay)
+            }
+        )
+
+        let models = try modelContext.fetch(descriptor)
+        return models.first?.toDomain()
     }
 
     func getHealthMetrics(from startDate: Date, to endDate: Date) async throws -> [HealthMetrics] {
-        // TODO: Implement in Stream 2
-        return []
+        let calendar = Calendar.current
+        let start = calendar.startOfDay(for: startDate)
+        let end = calendar.startOfDay(for: endDate)
+
+        let descriptor = FetchDescriptor<HealthMetricsModel>(
+            predicate: #Predicate { metrics in
+                metrics.date >= start && metrics.date <= end
+            },
+            sortBy: [SortDescriptor(\.date, order: .forward)]
+        )
+
+        let models = try modelContext.fetch(descriptor)
+        return models.map { $0.toDomain() }
     }
 
     func saveHealthMetrics(_ metrics: HealthMetrics) async throws {
-        // TODO: Implement in Stream 2
+        // Check if metrics for this date already exist
+        let calendar = Calendar.current
+        let startOfDay = calendar.startOfDay(for: metrics.date)
+
+        let descriptor = FetchDescriptor<HealthMetricsModel>(
+            predicate: #Predicate { model in
+                calendar.isDate(model.date, inSameDayAs: startOfDay)
+            }
+        )
+
+        let existingModels = try modelContext.fetch(descriptor)
+
+        if let existingModel = existingModels.first {
+            // Update existing model
+            existingModel.heartRateVariability = metrics.heartRateVariability
+            existingModel.restingHeartRate = metrics.restingHeartRate
+            existingModel.activeEnergy = metrics.activeEnergy
+            existingModel.steps = metrics.steps
+            existingModel.sleepHours = metrics.sleepHours
+            existingModel.weight = metrics.weight
+        } else {
+            // Create new model
+            let model = HealthMetricsModel.fromDomain(metrics)
+            modelContext.insert(model)
+        }
+
+        try modelContext.save()
     }
 
     func syncFromHealthKit() async throws {
-        // TODO: Implement in Stream 2
+        guard healthKitManager.isHealthKitAvailable() else {
+            throw HealthKitError.notAvailable
+        }
+
+        // Sync last 7 days of data
+        let calendar = Calendar.current
+        let today = calendar.startOfDay(for: Date())
+        guard let weekAgo = calendar.date(byAdding: .day, value: -6, to: today) else {
+            return
+        }
+
+        // Fetch metrics from HealthKit
+        let metrics = try await healthKitManager.fetchHealthMetrics(from: weekAgo, to: today)
+
+        // Save to SwiftData
+        for metric in metrics {
+            try await saveHealthMetrics(metric)
+        }
     }
 
     func requestHealthKitAuthorization() async throws -> Bool {
-        // TODO: Implement in Stream 2
-        return false
+        return try await healthKitManager.requestAuthorization()
     }
 }
 
@@ -179,33 +437,78 @@ final class SwiftDataHealthRepository: HealthRepository {
 final class SwiftDataUserRepository: UserRepository {
     private let modelContext: ModelContext
 
+    // UserDefaults key for onboarding status
+    private let onboardingKey = "hasCompletedOnboarding"
+
     init(modelContext: ModelContext) {
         self.modelContext = modelContext
     }
 
     func getUserProfile() async throws -> UserProfile? {
-        // TODO: Implement in Stream 5
-        return nil
+        let descriptor = FetchDescriptor<UserProfileModel>()
+        let profiles = try modelContext.fetch(descriptor)
+
+        // Return the first profile (singleton pattern - only one profile per app)
+        return profiles.first?.toDomain()
     }
 
     func saveUserProfile(_ profile: UserProfile) async throws {
-        // TODO: Implement in Stream 5
+        // Check if a profile already exists (singleton)
+        let descriptor = FetchDescriptor<UserProfileModel>()
+        let existingProfiles = try modelContext.fetch(descriptor)
+
+        // Delete existing profiles to maintain singleton
+        for existingProfile in existingProfiles {
+            modelContext.delete(existingProfile)
+        }
+
+        // Create and insert new profile
+        let profileModel = UserProfileModel.fromDomain(profile)
+        modelContext.insert(profileModel)
+
+        try modelContext.save()
     }
 
     func updateUserProfile(_ profile: UserProfile) async throws {
-        // TODO: Implement in Stream 5
+        let descriptor = FetchDescriptor<UserProfileModel>(
+            predicate: #Predicate { $0.id == profile.id }
+        )
+
+        guard let existingProfile = try modelContext.fetch(descriptor).first else {
+            // If profile doesn't exist, create it
+            try await saveUserProfile(profile)
+            return
+        }
+
+        // Update existing profile
+        existingProfile.name = profile.name
+        existingProfile.birthDate = profile.birthDate
+        existingProfile.biologicalSex = profile.biologicalSex.rawValue
+        existingProfile.height = profile.height
+        existingProfile.weight = profile.weight
+        existingProfile.activityLevel = profile.activityLevel.rawValue
+        existingProfile.weightGoal = profile.weightGoal.rawValue
+        existingProfile.updatedAt = Date()
+
+        try modelContext.save()
     }
 
     func deleteUserProfile() async throws {
-        // TODO: Implement in Stream 5
+        let descriptor = FetchDescriptor<UserProfileModel>()
+        let profiles = try modelContext.fetch(descriptor)
+
+        for profile in profiles {
+            modelContext.delete(profile)
+        }
+
+        try modelContext.save()
     }
 
     func hasCompletedOnboarding() async -> Bool {
-        // TODO: Implement in Stream 5
-        return true // Default to true for now to skip onboarding
+        return UserDefaults.standard.bool(forKey: onboardingKey)
     }
 
     func setOnboardingCompleted(_ completed: Bool) async {
-        // TODO: Implement in Stream 5
+        UserDefaults.standard.set(completed, forKey: onboardingKey)
     }
 }
