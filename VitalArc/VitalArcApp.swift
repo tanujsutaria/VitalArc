@@ -81,16 +81,24 @@ struct RootView: View {
             }
         }
         .task {
-            await checkOnboardingStatus()
+            await initializeApp()
         }
     }
 
-    private func checkOnboardingStatus() async {
+    private func initializeApp() async {
         guard let container = container else {
             isCheckingOnboarding = false
             return
         }
 
+        // Seed exercise database if needed
+        do {
+            try await ExerciseSeeds.seedIfNeeded(repository: container.workoutRepository)
+        } catch {
+            print("Failed to seed exercises: \(error)")
+        }
+
+        // Check onboarding status
         hasCompletedOnboarding = await container.userRepository.hasCompletedOnboarding()
         isCheckingOnboarding = false
     }
