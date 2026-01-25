@@ -7,31 +7,27 @@
 
 import Foundation
 import SwiftData
+import HealthKit
 
 /// Centralized dependency injection container
 @Observable
 final class DependencyContainer {
     let modelContext: ModelContext
 
-    // Repositories (lazy initialization)
-    private(set) lazy var workoutRepository: WorkoutRepository = {
-        SwiftDataWorkoutRepository(modelContext: modelContext)
-    }()
-
-    private(set) lazy var nutritionRepository: NutritionRepository = {
-        SwiftDataNutritionRepository(modelContext: modelContext)
-    }()
-
-    private(set) lazy var healthRepository: HealthRepository = {
-        SwiftDataHealthRepository(modelContext: modelContext)
-    }()
-
-    private(set) lazy var userRepository: UserRepository = {
-        SwiftDataUserRepository(modelContext: modelContext)
-    }()
+    // Repositories (initialized immediately, not lazy)
+    private(set) var workoutRepository: WorkoutRepository
+    private(set) var nutritionRepository: NutritionRepository
+    private(set) var healthRepository: HealthRepository
+    private(set) var userRepository: UserRepository
 
     init(modelContext: ModelContext) {
         self.modelContext = modelContext
+
+        // Initialize all repositories
+        self.workoutRepository = SwiftDataWorkoutRepository(modelContext: modelContext)
+        self.nutritionRepository = SwiftDataNutritionRepository(modelContext: modelContext)
+        self.healthRepository = SwiftDataHealthRepository(modelContext: modelContext)
+        self.userRepository = SwiftDataUserRepository(modelContext: modelContext)
     }
 }
 
