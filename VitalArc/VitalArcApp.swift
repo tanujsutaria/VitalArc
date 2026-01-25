@@ -52,7 +52,11 @@ struct VitalArcApp: App {
         }
 
         // Initialize dependency injection container
-        container = DependencyContainer(modelContext: modelContainer.mainContext)
+        // Note: DependencyContainer is @MainActor, but init is called from main thread
+        let modelContext = modelContainer.mainContext
+        container = MainActor.assumeIsolated {
+            DependencyContainer(modelContext: modelContext)
+        }
     }
 
     var body: some Scene {

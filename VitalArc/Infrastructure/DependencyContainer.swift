@@ -10,6 +10,7 @@ import SwiftData
 import HealthKit
 
 /// Centralized dependency injection container
+@MainActor
 final class DependencyContainer {
     let modelContext: ModelContext
 
@@ -33,6 +34,7 @@ final class DependencyContainer {
 // MARK: - Repository Implementations (Placeholders for now)
 
 /// SwiftData implementation of WorkoutRepository
+@MainActor
 final class SwiftDataWorkoutRepository: WorkoutRepository {
     private let modelContext: ModelContext
 
@@ -150,6 +152,7 @@ final class SwiftDataWorkoutRepository: WorkoutRepository {
 }
 
 /// SwiftData implementation of NutritionRepository
+@MainActor
 final class SwiftDataNutritionRepository: NutritionRepository {
     private let modelContext: ModelContext
 
@@ -335,6 +338,7 @@ final class SwiftDataNutritionRepository: NutritionRepository {
 }
 
 /// SwiftData implementation of HealthRepository
+@MainActor
 final class SwiftDataHealthRepository: HealthRepository {
     private let modelContext: ModelContext
     private let healthKitManager: HealthKitManager
@@ -434,6 +438,7 @@ final class SwiftDataHealthRepository: HealthRepository {
 }
 
 /// SwiftData implementation of UserRepository
+@MainActor
 final class SwiftDataUserRepository: UserRepository {
     private let modelContext: ModelContext
 
