@@ -1,5 +1,86 @@
 # VitalArc Development Session Log
 
+## Session 4 - January 25, 2026 (Continued)
+
+### Session Start
+- **Time**: Continued from Session 3
+- **Focus**: User feedback fixes, HealthKit integration, consistency audit
+
+### Work Completed
+
+#### 1. **Workout Section Redesign** (User Feedback)
+User reported: "You have completely messed this up. The workout section is much worse than before"
+
+**Changes Made:**
+- Changed Workout tab to 3 segments: **Exercises | Templates | Mesocycles** (removed History, renamed Programs)
+- Rewrote `ExerciseLibraryView.swift` with body-part-only grouping (NO push/pull)
+- Added custom exercise categories and custom exercises support
+- Rewrote `CreateMesocycleView.swift` to use user's saved templates (not pre-built)
+- Added auto-progression settings (weight/rep increments in lbs)
+- Added `isCustom` property and `custom` case to Exercise entity
+
+#### 2. **Week-to-Week Mesocycle Analytics**
+- Added `WeeklyProgress` and `ExerciseWeeklyProgress` data structures
+- Calculate week-by-week volume, sets, RIR, and workout counts
+- Track per-exercise progression (max weight, reps, best sets)
+- Replaced "Coming soon" placeholders with actual Charts:
+  - Volume trend bar chart (weekly volume in lbs)
+  - RIR trend line chart (average RIR per week)
+  - Exercise progress charts with weight progression
+- Show week-over-week change percentages
+
+#### 3. **Apple Health Integration for Profile**
+- `ProfileViewModel` now syncs weight from HealthKit as primary source
+- Added `healthRepository` dependency to ProfileViewModel
+- Weight auto-updates from Apple Health
+- Manual override toggle when HealthKit data exists
+- "from Apple Health" indicator badge
+
+#### 4. **American Units Conversion**
+- All display now uses American units (lbs, ft/in)
+- Internal storage remains metric (kg/cm) for HealthKit compatibility
+- Added `UnitConversion` helpers:
+  - `kgToLbs()` / `lbsToKg()`
+  - `cmToFeetInches()` / `feetInchesToCm()`
+- Height picker: feet (4-7) + inches (0-11)
+- Weight display: "154.0 lbs"
+
+#### 5. **Codebase Consistency Audit**
+Performed comprehensive audit identifying:
+- 47+ hardcoded color violations
+- 100+ hardcoded spacing violations
+- Unit inconsistency across screens
+- 6 TODO items in Settings/About
+- Error handling inconsistencies
+
+### Commits
+- `4c577d2` - Redesign workout section with body-part grouping and custom exercises
+- `98982f7` - Add week-to-week progression tracking in mesocycle analytics
+- `c2c7115` - Sync weight from Apple Health with American units
+
+### Issues Identified (Consistency Audit)
+
+#### Critical
+1. **Unit System Inconsistency** - Onboarding uses cm/kg, Profile uses ft/in/lbs, Health Dashboard uses kg
+2. **Design System Violations** - 47+ instances of hardcoded colors (`.blue`, `.red`, `.green`)
+3. **System Colors** - 18+ instances of `Color(.systemGray6)` instead of design tokens
+
+#### High Priority
+1. **Unimplemented Features** - 6 TODOs in Settings/About sections
+2. **Hardcoded Spacing** - 100+ instances of pixel values instead of `Spacing.*`
+3. **Font System Bypass** - Direct `.font(.system(...))` calls
+
+#### Moderate
+1. **Error Handling** - Mix of silent failures, alerts, and proper error states
+2. **Preview Coverage** - Only 57% of presentation files have #Preview
+
+### Session End
+- **Status**: All requested features implemented, consistency audit complete
+- **Build Status**: ✅ Passing (0 errors)
+- **Next Steps**: Fix consistency issues, then plan next feature phase
+
+---
+
 ## Session 3 - January 25, 2026 (Late Night)
 
 ### Session Start
