@@ -1,0 +1,113 @@
+# Labeler configuration for automatic PR labeling based on files changed
+
+# Architecture layers
+domain:
+  - changed-files:
+      - any-glob-to-any-file: 'VitalArc/Domain/**/*'
+
+data:
+  - changed-files:
+      - any-glob-to-any-file: 'VitalArc/Data/**/*'
+
+infrastructure:
+  - changed-files:
+      - any-glob-to-any-file: 'VitalArc/Infrastructure/**/*'
+
+presentation:
+  - changed-files:
+      - any-glob-to-any-file: 'VitalArc/Presentation/**/*'
+
+# Feature areas
+workout:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'VitalArc/Domain/Entities/Workout*'
+          - 'VitalArc/Domain/Entities/Exercise*'
+          - 'VitalArc/Domain/UseCases/*Workout*'
+          - 'VitalArc/Data/Models/Workout*'
+          - 'VitalArc/Presentation/Tabs/Workout/**/*'
+
+nutrition:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'VitalArc/Domain/Entities/Food*'
+          - 'VitalArc/Domain/Entities/Meal*'
+          - 'VitalArc/Domain/UseCases/*Food*'
+          - 'VitalArc/Domain/UseCases/*Meal*'
+          - 'VitalArc/Data/Models/Food*'
+          - 'VitalArc/Data/Models/Meal*'
+          - 'VitalArc/Presentation/Tabs/Nutrition/**/*'
+          - 'VitalArc/Infrastructure/Networking/*Food*'
+          - 'VitalArc/Infrastructure/Networking/*Nutrition*'
+
+health:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'VitalArc/Domain/Entities/Health*'
+          - 'VitalArc/Domain/UseCases/*Health*'
+          - 'VitalArc/Infrastructure/HealthKit/**/*'
+          - 'VitalArc/Presentation/Tabs/Health/**/*'
+
+analytics:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'VitalArc/Domain/UseCases/*Analytics*'
+          - 'VitalArc/Domain/UseCases/*Recovery*'
+          - 'VitalArc/Presentation/Tabs/Analytics/**/*'
+
+training:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'VitalArc/Domain/Entities/Mesocycle*'
+          - 'VitalArc/Domain/Entities/Template*'
+          - 'VitalArc/Domain/UseCases/*Mesocycle*'
+          - 'VitalArc/Domain/UseCases/*Template*'
+          - 'VitalArc/Data/Models/Training/**/*'
+          - 'VitalArc/Presentation/Tabs/Training/**/*'
+
+profile:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'VitalArc/Domain/Entities/UserProfile*'
+          - 'VitalArc/Presentation/Tabs/Profile/**/*'
+
+# Design system
+design-system:
+  - changed-files:
+      - any-glob-to-any-file: 'VitalArc/Presentation/Common/DesignSystem/**/*'
+
+ui:
+  - changed-files:
+      - any-glob-to-any-file: 'VitalArc/Presentation/**/*'
+
+# Testing
+testing:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'VitalArcTests/**/*'
+          - 'VitalArcUITests/**/*'
+
+# Configuration
+configuration:
+  - changed-files:
+      - any-glob-to-any-file:
+          - '*.yml'
+          - '*.yaml'
+          - '*.json'
+          - '.github/**/*'
+          - '.swiftlint.yml'
+
+# Documentation
+documentation:
+  - changed-files:
+      - any-glob-to-any-file:
+          - '*.md'
+          - 'docs/**/*'
+
+# Dependencies
+dependencies:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'VitalArc.xcodeproj/project.pbxproj'
+          - 'Package.swift'
+          - 'Package.resolved'

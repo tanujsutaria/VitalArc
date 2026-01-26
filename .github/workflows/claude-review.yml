@@ -1,0 +1,159 @@
+name: Claude Code Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, ready_for_review]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  claude-review:
+    name: AI Code Review
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v44
+        with:
+          files: |
+            **/*.swift
+
+      - name: Review with Claude
+        if: steps.changed-files.outputs.any_changed == 'true'
+        uses: actions/github-script@v7
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        with:
+          script: |
+            const changedFiles = '${{ steps.changed-files.outputs.all_changed_files }}'.split(' ').filter(f => f);
+
+            if (changedFiles.length === 0) {
+              console.log('No Swift files changed');
+              return;
+            }
+
+            // Skip if no API key configured
+            if (!process.env.ANTHROPIC_API_KEY) {
+              console.log('ANTHROPIC_API_KEY not configured - skipping AI review');
+              return;
+            }
+
+            const fs = require('fs');
+            const https = require('https');
+
+            // Collect file contents (limit to prevent token overflow)
+            let codeContext = '';
+            const maxFiles = 10;
+            const maxCharsPerFile = 5000;
+
+            for (const file of changedFiles.slice(0, maxFiles)) {
+              try {
+                const content = fs.readFileSync(file, 'utf8');
+                const truncated = content.substring(0, maxCharsPerFile);
+                codeContext += `\n--- ${file} ---\n${truncated}\n`;
+                if (content.length > maxCharsPerFile) {
+                  codeContext += `\n[... truncated, ${content.length - maxCharsPerFile} more chars ...]\n`;
+                }
+              } catch (e) {
+                console.log(`Could not read ${file}: ${e.message}`);
+              }
+            }
+
+            if (changedFiles.length > maxFiles) {
+              codeContext += `\n[... and ${changedFiles.length - maxFiles} more files ...]\n`;
+            }
+
+            // Get PR diff for context
+            const { data: diff } = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.payload.pull_request.number,
+              mediaType: { format: 'diff' }
+            });
+
+            const truncatedDiff = diff.substring(0, 10000);
+
+            const prompt = `You are reviewing a Pull Request for VitalArc, an iOS fitness app built with SwiftUI and SwiftData.
+
+            PR Title: ${context.payload.pull_request.title}
+            PR Description: ${context.payload.pull_request.body || 'No description provided'}
+
+            Changed files:
+            ${changedFiles.join('\n')}
+
+            Diff (truncated):
+            \`\`\`diff
+            ${truncatedDiff}
+            \`\`\`
+
+            File contents:
+            ${codeContext}
+
+            Please review this code and provide:
+            1. A brief summary of the changes (2-3 sentences)
+            2. Any potential bugs or issues (be specific with file:line if possible)
+            3. Code quality suggestions (following Swift/SwiftUI best practices)
+            4. Security considerations if applicable
+
+            Keep your review concise and actionable. Focus on significant issues, not style nitpicks.
+            Format your response as markdown suitable for a GitHub PR comment.`;
+
+            // Call Claude API
+            const requestData = JSON.stringify({
+              model: 'claude-sonnet-4-20250514',
+              max_tokens: 2048,
+              messages: [{
+                role: 'user',
+                content: prompt
+              }]
+            });
+
+            const options = {
+              hostname: 'api.anthropic.com',
+              port: 443,
+              path: '/v1/messages',
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'x-api-key': process.env.ANTHROPIC_API_KEY,
+                'anthropic-version': '2023-06-01'
+              }
+            };
+
+            const response = await new Promise((resolve, reject) => {
+              const req = https.request(options, (res) => {
+                let data = '';
+                res.on('data', chunk => data += chunk);
+                res.on('end', () => {
+                  if (res.statusCode === 200) {
+                    resolve(JSON.parse(data));
+                  } else {
+                    reject(new Error(`API error: ${res.statusCode} - ${data}`));
+                  }
+                });
+              });
+              req.on('error', reject);
+              req.write(requestData);
+              req.end();
+            });
+
+            const reviewContent = response.content[0].text;
+
+            // Post review as comment
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+              body: `## 🤖 Claude Code Review\n\n${reviewContent}\n\n---\n*Automated review by Claude. This is advisory - always verify suggestions.*`
+            });
+
+            console.log('Review posted successfully');

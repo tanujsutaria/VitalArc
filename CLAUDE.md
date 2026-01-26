@@ -137,7 +137,7 @@ All repositories and ViewModels use `@MainActor` isolation for SwiftData thread 
 
 **Always use design tokens instead of hardcoded values.**
 
-> **Note**: Design system adoption is currently ~58%. Many older views still use hardcoded colors (`.blue`, `.red`, `Color(.systemGray6)`) and spacing values. When modifying these views, migrate to design tokens.
+> **Note**: Design system adoption is currently ~90%. A few older views still have minor hardcoded values. When modifying these views, migrate to design tokens.
 
 ### Colors
 ```swift
@@ -196,10 +196,10 @@ UnitConversion.feetInchesToCm(feet:inches:)       // ft/in → cm
 
 ## Codebase Statistics
 
-- **146 Swift files**, ~34,800 lines of code
-- **66 presentation views**, 10 ViewModels, 16 use cases
-- **14 design system files** (complete), 58% view adoption
-- **6 test files**, ~57% preview coverage
+- **152 Swift files**, ~35,000 lines of code
+- **70 presentation views**, 10 ViewModels, 16 use cases
+- **14 design system files** (complete), ~90% view adoption
+- **6 test files**, ~68% preview coverage
 
 ## API Configuration
 
@@ -209,6 +209,29 @@ Food APIs have placeholder keys that need to be configured:
 - `OpenFoodFactsAPI.swift`: No key required (public API)
 
 Food search will fail or be rate-limited until proper keys are set.
+
+## GitHub Workflows & CI/CD
+
+Automated workflows are configured in `.github/workflows/`:
+
+| Workflow | Purpose |
+|----------|---------|
+| `ci.yml` | Build verification, tests, SwiftLint on PRs and main |
+| `pr-automation.yml` | Auto-labeling, PR size tracking, welcome messages |
+| `claude-review.yml` | AI-powered code review (requires `ANTHROPIC_API_KEY` secret) |
+
+**PR Requirements:**
+- Title must follow conventional commits format
+- CI checks must pass (build + tests)
+- SwiftLint warnings should be addressed
+
+**Labels are auto-applied based on:**
+- Files changed (architecture layers, feature areas)
+- Branch name patterns
+- Conventional commit type in title
+- PR size (XS/S/M/L/XL)
+
+See `.github/GITHUB_INTEGRATION.md` for full setup documentation.
 
 ## Current Status
 
