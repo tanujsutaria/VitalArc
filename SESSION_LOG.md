@@ -73,6 +73,16 @@ Created and integrated `CalculateRecoveryScoreUseCase.swift` with Whoop/Oura-sty
 
 **Design system adoption now ~90%**
 
+#### Preview Coverage Improvements
+Added preview blocks to 5 additional views:
+- ExerciseSetView: Interactive preview with sample workout data
+- TemplateDetailView: Preview with sample template
+- VolumeChartView: Empty state preview
+- ProgressChartView: Empty state preview
+- PersonalRecordsView: Empty state preview
+
+**Preview coverage improved from 57% to 68%** (47/69 files)
+
 #### Project Status Updates
 - Updated PROJECT_STATUS.md: Design system adoption → 85%, Workout views fixed
 - Updated Architecture Quality table: Design system ✅, Error handling ✅
