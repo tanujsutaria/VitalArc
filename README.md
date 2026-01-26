@@ -131,7 +131,7 @@ See [docs/specs/ROADMAP.md](docs/specs/ROADMAP.md) for the complete development 
 | Exercise Library | ✅ 200+ exercises seeded |
 | Templates & Mesocycles | ✅ Built |
 | Nutrition Logging | ✅ Built |
-| Food Search (API) | ✅ Multi-source (USDA, OpenFoodFacts, Nutritionix) |
+| Food Search (API) | ⚠️ Built, **API keys not configured** |
 | Health Dashboard | ✅ Built |
 | Analytics Dashboard | ✅ Built |
 | Design System | ⚠️ 58% adoption |

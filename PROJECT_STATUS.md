@@ -30,7 +30,7 @@ The app compiles and runs. Core features exist but are **not MVP-ready** due to:
 | **Templates System** | Built | ✅ Day-by-day editor now wired |
 | **Mesocycle System** | Built | Week-to-week charts need testing |
 | **Analytics Dashboard** | Built | Hardcoded colors, system colors |
-| **Nutrition Tracking** | Built | Hardcoded colors in meal sections |
+| **Nutrition Tracking** | Built | Hardcoded colors in meal sections, **API keys not configured** |
 | **Design System** | Built | Not uniformly applied |
 | **Data Layer** | Built | - |
 | **Profile/Settings** | Built | 6 unimplemented TODOs |
@@ -125,6 +125,13 @@ The app compiles and runs. Core features exist but are **not MVP-ready** due to:
    - Some views: silent `try?` failures
 
 8. **Preview Coverage**: ~57% of presentation files have #Preview blocks
+
+9. **API Configuration Pending**
+   ```
+   NutritionixAPI.swift: YOUR_APP_ID, YOUR_APP_KEY (placeholder)
+   USDAFoodAPI.swift: DEMO_KEY (rate-limited demo key)
+   ```
+   Food search will fail or be rate-limited until proper API keys are configured.
 
 ---
 

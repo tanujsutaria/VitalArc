@@ -163,6 +163,15 @@ UnitConversion.feetInchesToCm(feet:inches:)       // ft/in → cm
 - **14 design system files** (complete), 58% view adoption
 - **6 test files**, ~57% preview coverage
 
+## API Configuration
+
+Food APIs have placeholder keys that need to be configured:
+- `NutritionixAPI.swift`: `YOUR_APP_ID`, `YOUR_APP_KEY` → Get from nutritionix.com
+- `USDAFoodAPI.swift`: `DEMO_KEY` → Get from fdc.nal.usda.gov
+- `OpenFoodFactsAPI.swift`: No key required (public API)
+
+Food search will fail or be rate-limited until proper keys are set.
+
 ## Current Status
 
 See `PROJECT_STATUS.md` for current feature status and MVP blockers.
