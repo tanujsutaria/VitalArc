@@ -61,6 +61,18 @@ Created and integrated `CalculateRecoveryScoreUseCase.swift` with Whoop/Oura-sty
 ✅ Integrated into AnalyticsDashboardViewModel
 ✅ RecoveryScoreResult available with detailed breakdown
 
+#### Analytics Dashboard Integration
+- Added Analytics tab to main navigation (4th tab between Nutrition and Profile)
+- Created AnalyticsTabView wrapper with proper dependency injection
+- Wired up all use cases including the new CalculateRecoveryScoreUseCase
+
+#### Additional Design System Migration
+- MainTabView: `systemGroupedBackground` → `vitalAdaptiveBackground`
+- HealthKitPermissionView: `accentColor` → `vitalPrimary`, spacing tokens
+- ProfileSetupView: `systemGray6` → `vitalAdaptiveSurface`, spacing tokens
+
+**Design system adoption now ~90%**
+
 #### Project Status Updates
 - Updated PROJECT_STATUS.md: Design system adoption → 85%, Workout views fixed
 - Updated Architecture Quality table: Design system ✅, Error handling ✅

@@ -31,7 +31,7 @@ The app compiles and runs with **core MVP requirements addressed**:
 | **Mesocycle System** | ✅ Ready | Design system applied |
 | **Analytics Dashboard** | ✅ Ready | Design system applied |
 | **Nutrition Tracking** | ✅ Ready | Design system applied, **API keys not configured** |
-| **Design System** | ✅ Ready | ~85% adoption (Session 6) |
+| **Design System** | ✅ Ready | ~90% adoption (Session 6) |
 | **Data Layer** | ✅ Ready | - |
 | **Profile/Settings** | ✅ Ready | All features implemented (Session 5) |
 
@@ -121,7 +121,7 @@ The app compiles and runs with **core MVP requirements addressed**:
 | Dependency Injection | ✅ | DependencyContainer pattern |
 | Data Persistence | ✅ | SwiftData with repositories |
 | Thread Safety | ✅ | @MainActor isolation throughout |
-| Design System Adoption | ✅ | ~85% (Session 6 - Workout views migrated) |
+| Design System Adoption | ✅ | ~90% (Session 6 - Workout + Onboarding migrated) |
 | Error Handling | ✅ | Standardized patterns (Session 5) |
 | Testing | ⚠️ | 6 test files, ~57% preview coverage |
 
