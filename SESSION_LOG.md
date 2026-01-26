@@ -48,16 +48,18 @@ Migrated 9 Workout view files from hardcoded colors to design tokens:
 
 **Design system adoption now ~85%** (up from 75%)
 
-#### Recovery Score Use Case (Created, needs Xcode integration)
-Created `CalculateRecoveryScoreUseCase.swift` with Whoop/Oura-style algorithm:
+#### Recovery Score Use Case (Fully Integrated)
+Created and integrated `CalculateRecoveryScoreUseCase.swift` with Whoop/Oura-style algorithm:
 - 60-day HRV baseline calculation using median
-- Resting HR baseline comparison
-- Sleep duration scoring
+- Resting HR baseline comparison (inverse - lower is better)
+- Sleep duration scoring vs target
 - Weighted formula: 50% HRV + 30% HR + 20% Sleep
 - Readiness levels: Optimal/Good/Moderate/Low/Very Low
 - Personalized recommendations based on breakdown
 
-**Note**: File created at `Domain/UseCases/Analytics/` but needs to be added to Xcode project manually, then integrated into AnalyticsDashboardViewModel.
+✅ Added to Xcode project (project.pbxproj)
+✅ Integrated into AnalyticsDashboardViewModel
+✅ RecoveryScoreResult available with detailed breakdown
 
 #### Project Status Updates
 - Updated PROJECT_STATUS.md: Design system adoption → 85%, Workout views fixed
