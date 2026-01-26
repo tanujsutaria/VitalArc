@@ -24,6 +24,7 @@ struct SettingsView: View {
     @AppStorage("enableMealReminders") private var enableMealReminders = false
 
     @State private var showingDeleteConfirmation = false
+    @State private var showingFeedback = false
     @State private var isSyncing = false
     @State private var lastSyncDate: Date?
     @State private var syncError: String?
@@ -100,17 +101,23 @@ struct SettingsView: View {
 
                 // App Section
                 Section("App") {
+                    Button {
+                        showingFeedback = true
+                    } label: {
+                        HStack {
+                            Label("Send Feedback", systemImage: "envelope.fill")
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.vitalCaption)
+                                .foregroundStyle(Color.vitalAdaptiveTextSecondary)
+                        }
+                    }
+
                     HStack {
                         Text("Version")
                         Spacer()
                         Text(appVersion)
                             .foregroundStyle(Color.vitalAdaptiveTextSecondary)
-                    }
-
-                    Button(action: {
-                        dismiss()
-                    }) {
-                        Text("Done")
                     }
                 }
 
@@ -168,6 +175,9 @@ struct SettingsView: View {
                 if let error = deleteError {
                     Text(error)
                 }
+            }
+            .sheet(isPresented: $showingFeedback) {
+                FeedbackView()
             }
         }
     }

@@ -155,6 +155,7 @@
 		CALCRECSCRBLD01B2C3D4E567 /* CalculateRecoveryScoreUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = CALCRECSCORE01B2C3D4E5F67 /* CalculateRecoveryScoreUseCase.swift */; };
 		CSVEXPBLD01A2B3C4D5E6F789 /* CSVExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = CSVEXP01A2B3C4D5E6F7890AB /* CSVExporter.swift */; };
 		PDFEXPBLD01A2B3C4D5E6F789 /* PDFExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = PDFEXP01A2B3C4D5E6F7890AB /* PDFExporter.swift */; };
+		FBKVIEWBLD01A2B3C4D5E6F789 /* FeedbackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBKVIEW01A2B3C4D5E6F7890A /* FeedbackView.swift */; };
 		FA78ACED75968C458123000C /* MetricCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 863F76B52D3BE699B0B40B86 /* MetricCardView.swift */; };
 		FC68713CB1A8EE76A45DC165 /* VolumeMetrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85AD2A1D24A042F236CB606D /* VolumeMetrics.swift */; };
 		FD4AE6FC632257910F12BB15 /* TrainingBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3FBA5288426C1146D80EADB /* TrainingBlock.swift */; };
@@ -206,6 +207,7 @@
 		CALCRECSCORE01B2C3D4E5F67 /* CalculateRecoveryScoreUseCase.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CalculateRecoveryScoreUseCase.swift; path = Analytics/CalculateRecoveryScoreUseCase.swift; sourceTree = "<group>"; };
 		CSVEXP01A2B3C4D5E6F7890AB /* CSVExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSVExporter.swift; sourceTree = "<group>"; };
 		PDFEXP01A2B3C4D5E6F7890AB /* PDFExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFExporter.swift; sourceTree = "<group>"; };
+		FBKVIEW01A2B3C4D5E6F7890A /* FeedbackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackView.swift; sourceTree = "<group>"; };
 		270F7E00F8AA2538A300F8D8 /* VitalArcApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VitalArcApp.swift; sourceTree = "<group>"; };
 		284176C019E651CD1432F0DD /* ExerciseLibraryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseLibraryViewModel.swift; sourceTree = "<group>"; };
 		2BA1A6744D575B5C6C27D009 /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
@@ -782,6 +784,7 @@
 		A39F33FC020C0271104CE089 /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				FBKVIEW01A2B3C4D5E6F7890A /* FeedbackView.swift */,
 				F91113ED785DF807D1B546F9 /* DesignSystem */,
 			);
 			name = Common;
@@ -1106,6 +1109,7 @@
 				426945A51D2DDBB7074CF960 /* CalculateProgressionUseCase.swift in Sources */,
 				CSVEXPBLD01A2B3C4D5E6F789 /* CSVExporter.swift in Sources */,
 				PDFEXPBLD01A2B3C4D5E6F789 /* PDFExporter.swift in Sources */,
+				FBKVIEWBLD01A2B3C4D5E6F789 /* FeedbackView.swift in Sources */,
 				4DC85B91F11058C3375ED57F /* ChartView.swift in Sources */,
 				80179F66A8ADFDA6DEAE23B8 /* CreateUserProfileUseCase.swift in Sources */,
 				88AE01B19AF462A40EB3CFEB /* CreateWorkoutUseCase.swift in Sources */,
