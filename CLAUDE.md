@@ -1,0 +1,161 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Build Commands
+
+```bash
+# Build the app
+xcodebuild -scheme VitalArc -destination 'platform=iOS Simulator,name=iPhone 17 Pro' build
+
+# Run tests
+xcodebuild -scheme VitalArc -destination 'platform=iOS Simulator,name=iPhone 17 Pro' test
+
+# Quick build check (grep for errors)
+xcodebuild -scheme VitalArc -destination 'platform=iOS Simulator,name=iPhone 17 Pro' build 2>&1 | grep -E "(error:|BUILD SUCCEEDED|BUILD FAILED)"
+```
+
+HealthKit features require a physical device with Apple Developer account and HealthKit entitlements configured.
+
+## Architecture Overview
+
+VitalArc uses **Clean Architecture** with **MVVM** pattern:
+
+```
+VitalArc/
+├── Domain/           # Pure Swift business logic (no framework dependencies)
+│   ├── Entities/     # Business models (UserProfile, Workout, Food, HealthMetrics, Mesocycle)
+│   ├── Repositories/ # Protocol definitions for data access
+│   └── UseCases/     # Business logic operations (single responsibility)
+├── Data/
+│   ├── Models/       # SwiftData @Model classes (persist Domain entities)
+│   └── Seeds/        # Exercise database seeds (200+ exercises by body part)
+├── Infrastructure/
+│   ├── HealthKit/    # HealthKitManager, permissions, queries
+│   ├── Networking/   # Food API clients (Nutritionix, OpenFoodFacts, USDA)
+│   ├── Cache/        # FoodCache for API response caching
+│   └── Export/       # PDF/CSV export utilities
+└── Presentation/
+    ├── Common/       # Design system, shared components
+    ├── Onboarding/   # Welcome, profile setup, HealthKit permissions
+    └── Tabs/         # Main app tabs (Health, Workout, Nutrition, Profile)
+```
+
+### Key Architectural Patterns
+
+**Dependency Injection**: `DependencyContainer` holds all repositories and is injected via SwiftUI environment:
+```swift
+@Environment(\.dependencyContainer) private var container
+```
+
+**Repository Pattern**: Domain defines protocols, Data provides SwiftData implementations:
+```swift
+// Domain/Repositories/WorkoutRepository.swift - protocol
+// Infrastructure/DependencyContainer.swift - SwiftDataWorkoutRepository implementation
+```
+
+**Use Cases**: Single-purpose business operations that ViewModels call:
+```swift
+let workout = try await createWorkoutUseCase.execute(sets: workoutSets)
+```
+
+**ViewModels**: `@Observable` classes that hold view state and call use cases:
+```swift
+@Observable
+final class ProfileViewModel {
+    var profile: UserProfile?
+    var isLoading = false
+}
+```
+
+### Data Flow
+
+1. View calls ViewModel method
+2. ViewModel calls UseCase
+3. UseCase calls Repository protocol
+4. Repository implementation (SwiftData) performs operation
+5. Domain entity returned up the chain
+
+### SwiftData Models
+
+All persistence uses SwiftData. Models have `fromDomain()` and `toDomain()` converters:
+```swift
+// Data model stores data
+@Model class WorkoutModel { ... }
+
+// Domain entity for business logic
+struct Workout { ... }
+
+// Conversions
+WorkoutModel.fromDomain(workout)  // Domain → Data
+workoutModel.toDomain()           // Data → Domain
+```
+
+### Thread Safety
+
+All repositories and ViewModels use `@MainActor` isolation for SwiftData thread safety.
+
+## Design System
+
+**Always use design tokens instead of hardcoded values.**
+
+### Colors
+```swift
+Color.vitalPrimary              // Primary actions (indigo)
+Color.vitalDanger               // Errors, destructive (red)
+Color.vitalSuccess              // Success states (green)
+Color.vitalWarning              // Warnings (amber)
+Color.vitalInfo                 // Information (blue)
+Color.vitalAdaptiveBackground   // Screen backgrounds
+Color.vitalAdaptiveSurface      // Card/elevated surfaces
+Color.vitalAdaptiveTextPrimary  // Primary text
+Color.vitalAdaptiveTextSecondary // Secondary text
+```
+
+### Spacing
+```swift
+Spacing.xs (4)    Spacing.sm (8)     Spacing.md (12)
+Spacing.lg (16)   Spacing.xl (24)    Spacing.xxl (48)
+Spacing.screenPadding (20)          Spacing.cardPadding (16)
+Spacing.radiusSmall (8)             Spacing.radiusMedium (12)
+```
+
+### Typography
+```swift
+.font(.vitalDisplayLarge)   // 34pt bold
+.font(.vitalH1)             // 22pt bold
+.font(.vitalH2)             // 20pt semibold
+.font(.vitalBody)           // 14pt regular
+.font(.vitalCaption)        // 12pt
+```
+
+### Components
+- `VitalCard` - Standard card container
+- `VitalButton` - Primary/secondary/danger buttons
+- `VitalTextField` - Text input with validation
+- `VitalEmptyState` - Empty state placeholder
+
+## Unit System
+
+Internal storage uses **metric** (kg, cm) for HealthKit compatibility. Display uses **American units** (lbs, ft/in) by default.
+
+Use `UnitConversion` helpers in `ProfileViewModel.swift`:
+```swift
+UnitConversion.kgToLbs(weight)                    // kg → lbs
+UnitConversion.lbsToKg(weight)                    // lbs → kg
+UnitConversion.cmToFeetInches(height)             // cm → (feet, inches)
+UnitConversion.feetInchesToCm(feet:inches:)       // ft/in → cm
+```
+
+## Key Files
+
+- `VitalArcApp.swift` - App entry, SwiftData schema, DependencyContainer setup
+- `DependencyContainer.swift` - All repository implementations
+- `MainTabView.swift` - Main app navigation (Health, Workout, Nutrition, Profile tabs)
+- `Presentation/Common/DesignSystem/` - Colors, Typography, Spacing, Components
+
+## Current Status
+
+See `PROJECT_STATUS.md` for current feature status and MVP blockers.
+See `EXECUTION_PLAN_SESSION5.md` for planned work.
+See `SESSION_LOG.md` for development history.
