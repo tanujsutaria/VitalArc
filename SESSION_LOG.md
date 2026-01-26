@@ -1,5 +1,51 @@
 # VitalArc Development Session Log
 
+## Session 4.5 - January 25, 2026 (Late Night)
+
+### Session Start
+- **Time**: Late night continuation
+- **Focus**: Fix template editor wiring issue
+
+### Issue Identified
+User reported confusion: "Where is the day by day tracking in the template?"
+
+**Root Cause:**
+- `TemplateEditorView.swift` (day-by-day editor with 7 columns) already existed
+- But app was using `CreateTemplateView` (simple form) instead
+- Both MainTabView.swift and WorkoutTemplatesView.swift were wired to wrong view
+
+### Work Completed
+
+#### Template Editor Wiring Fix
+1. **Updated `TemplateEditorView`** to:
+   - Accept `WorkoutTemplatesViewModel` parameter
+   - Add `templateDescription` and `selectedCategory` fields
+   - Enhanced header to show/edit category and description
+   - Implemented proper `saveTemplate()` that converts day-based exercises to domain model
+   - Added loading state during save
+
+2. **Wired `TemplateEditorView`** in place of `CreateTemplateView`:
+   - `MainTabView.swift` line 230
+   - `WorkoutTemplatesView.swift` line 53
+
+**Features now working:**
+- 7 scrollable day columns (Day 1 through Day 7)
+- Tap day names to rename them
+- Tap **+ Add** to select exercises from body-part grouped picker
+- Swipe left on exercises to delete
+- Tap template name to edit name, description, and category
+- Proper persistence to repository on Save
+
+### Commits
+- `fb39b9a` - Wire day-by-day template editor into Templates section
+
+### Session End
+- **Status**: Template editor properly wired and functional
+- **Build Status**: ✅ Passing (0 errors)
+- **Updated**: EXECUTION_PLAN_SESSION5.md (marked Agent 3C as complete)
+
+---
+
 ## Session 4 - January 25, 2026 (Continued)
 
 ### Session Start

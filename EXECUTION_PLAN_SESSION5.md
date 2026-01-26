@@ -364,40 +364,20 @@ Commit: "Apply design system tokens across all views"
    - Use NavigationLink instead of Link
 ```
 
-### Agent 3C: Template Exercise Picker
+### Agent 3C: Template Exercise Picker ✅ COMPLETED (Session 4.5)
 
-**File:** `VitalArc/Presentation/Tabs/Workout/Templates/CreateTemplateView.swift`
+**Status:** DONE - Wired `TemplateEditorView` (day-by-day editor) into the app
 
-**Instructions:**
-```
-1. Find the placeholder exercise picker
-2. Replace with actual ExerciseLibraryView integration:
-   ```swift
-   .sheet(isPresented: $showingExercisePicker) {
-       NavigationStack {
-           ExerciseLibraryView(
-               getExercisesUseCase: GetExercisesUseCase(
-                   repository: container.workoutRepository
-               )
-           ) { selectedExercise in
-               // Add to template
-               addExerciseToDay(selectedExercise, day: selectedDay)
-               showingExercisePicker = false
-           }
-           .navigationTitle("Add Exercise")
-           .toolbar {
-               ToolbarItem(placement: .cancellationAction) {
-                   Button("Cancel") {
-                       showingExercisePicker = false
-                   }
-               }
-           }
-       }
-   }
-   ```
-3. Implement addExerciseToDay() method
-4. Update the template data structure to store exercises per day
-```
+**Completed:**
+- Replaced `CreateTemplateView` with `TemplateEditorView` in MainTabView.swift and WorkoutTemplatesView.swift
+- TemplateEditorView now accepts WorkoutTemplatesViewModel and saves to repository
+- Day columns (Day 1-7) with horizontal scroll
+- Exercises added via body-part grouped `TemplateExercisePickerView`
+- Swipe-to-delete on exercises
+- Category and description editing
+- Proper persistence via SaveWorkoutTemplateUseCase
+
+**Commit:** `fb39b9a` - Wire day-by-day template editor into Templates section
 
 ### Phase 3 Verification
 

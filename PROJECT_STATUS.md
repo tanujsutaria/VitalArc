@@ -1,6 +1,6 @@
 # VitalArc Project Status
 
-**Last Updated**: January 25, 2026 (Session 4)
+**Last Updated**: January 25, 2026 (Session 4.5)
 **Build Status**: ✅ Passing
 **Stage**: Pre-MVP (Foundation Built, Polish Required)
 
@@ -27,7 +27,7 @@ The app compiles and runs. Core features exist but are **not MVP-ready** due to:
 | **Health Dashboard** | Built | Uses kg instead of lbs |
 | **Workout Tracking** | Built | Hardcoded colors/spacing |
 | **Exercise Library** | Built | - |
-| **Templates System** | Built | Placeholder exercise picker |
+| **Templates System** | Built | ✅ Day-by-day editor now wired |
 | **Mesocycle System** | Built | Week-to-week charts need testing |
 | **Analytics Dashboard** | Built | Hardcoded colors, system colors |
 | **Nutrition Tracking** | Built | Hardcoded colors in meal sections |
@@ -91,14 +91,14 @@ The app compiles and runs. Core features exist but are **not MVP-ready** due to:
 
 ### High Priority
 
-4. **Unimplemented TODOs** (6 items)
+4. **Unimplemented TODOs** (5 items remaining)
    ```
    SettingsView.swift:86  - TODO: Implement reset onboarding
    SettingsView.swift:92  - TODO: Implement delete all data
    SettingsView.swift:121 - syncHealthKitData() is empty placeholder
    AboutView.swift:85     - TODO: Add privacy policy link
    AboutView.swift:101    - TODO: Add terms of service link
-   CreateTemplateView.swift:87 - Placeholder exercise picker
+   ✅ CreateTemplateView.swift - FIXED: Now uses TemplateEditorView with day columns
    ```
 
 5. **Hardcoded Spacing** (100+ instances)
@@ -142,10 +142,10 @@ The app compiles and runs. Core features exist but are **not MVP-ready** due to:
 
 | Commit | Description |
 |--------|-------------|
+| `fb39b9a` | Wire day-by-day template editor into Templates section |
 | `c2c7115` | Sync weight from Apple Health with American units |
 | `98982f7` | Add week-to-week progression tracking in mesocycle analytics |
 | `4c577d2` | Redesign workout section with body-part grouping and custom exercises |
-| `db068a7` | Previous session commits |
 | `bd0ed67` | Add @MainActor isolation for SwiftData thread safety |
 
 ---
@@ -172,7 +172,7 @@ The app compiles and runs. Core features exist but are **not MVP-ready** due to:
 - [ ] SettingsView: Implement syncHealthKitData()
 - [ ] AboutView: Add privacy policy link
 - [ ] AboutView: Add terms of service link
-- [ ] CreateTemplateView: Replace placeholder exercise picker
+- [x] ~~CreateTemplateView: Replace placeholder exercise picker~~ ✅ Done (Session 4.5)
 
 **4. Error Handling Standardization**
 - [ ] Replace silent `try?` failures with user feedback
