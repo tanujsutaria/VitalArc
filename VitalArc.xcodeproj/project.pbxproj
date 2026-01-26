@@ -86,6 +86,8 @@
 		86837097D76103FBE890CE29 /* HealthDashboardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94FDC23DCCC9E766167D3E7 /* HealthDashboardViewModel.swift */; };
 		88AE01B19AF462A40EB3CFEB /* CreateWorkoutUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA23797AD567763B372F0FA5 /* CreateWorkoutUseCase.swift */; };
 		88F81590291C1A4FC1E3E88F /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D55D70E93F4957258E6B4261 /* AboutView.swift */; };
+		PRVPOL01A2B3C4D5E6F78901 /* PrivacyPolicyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = PRVPOL02A2B3C4D5E6F78901 /* PrivacyPolicyView.swift */; };
+		TRMSRV01A2B3C4D5E6F78901 /* TermsOfServiceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = TRMSRV02A2B3C4D5E6F78901 /* TermsOfServiceView.swift */; };
 		89C25ECF64BE6526F6CC4CDD /* FoodSearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65B865736A863CB7A2AB29F2 /* FoodSearchViewModel.swift */; };
 		8A75F292F8B7C06AB78151C5 /* WorkoutTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EF3FB3E969CF72E22FF105C /* WorkoutTemplate.swift */; };
 		8DA7662F7DCF750D387AB41F /* HealthMetrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FB37AC62B482387392CA9DA /* HealthMetrics.swift */; };
@@ -294,6 +296,8 @@
 		D0523F13714345129B78EEA2 /* PersonalRecordsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PersonalRecordsView.swift; path = Analytics/PersonalRecordsView.swift; sourceTree = "<group>"; };
 		D429840909FA8D90673F777B /* WorkoutHistoryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutHistoryViewModel.swift; sourceTree = "<group>"; };
 		D55D70E93F4957258E6B4261 /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
+		PRVPOL02A2B3C4D5E6F78901 /* PrivacyPolicyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyPolicyView.swift; sourceTree = "<group>"; };
+		TRMSRV02A2B3C4D5E6F78901 /* TermsOfServiceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TermsOfServiceView.swift; sourceTree = "<group>"; };
 		D5FB9F85B78B552543DD55C6 /* MetricCard.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MetricCard.swift; sourceTree = "<group>"; };
 		D7F8FB8F8415501961023275 /* FoodEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodEntry.swift; sourceTree = "<group>"; };
 		D9735188AE571358EA10AE1C /* HealthKitPermissions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitPermissions.swift; sourceTree = "<group>"; };
@@ -516,9 +520,11 @@
 			isa = PBXGroup;
 			children = (
 				D55D70E93F4957258E6B4261 /* AboutView.swift */,
+				PRVPOL02A2B3C4D5E6F78901 /* PrivacyPolicyView.swift */,
 				3E7DFF422F05B2EBBF2F2EB8 /* ProfileView.swift */,
 				5EB0DE2A5AC60E63405C877D /* ProfileViewModel.swift */,
 				FFBD82C68E9845BEF0BE4B8D /* SettingsView.swift */,
+				TRMSRV02A2B3C4D5E6F78901 /* TermsOfServiceView.swift */,
 			);
 			path = Profile;
 			sourceTree = "<group>";
@@ -1077,6 +1083,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				88F81590291C1A4FC1E3E88F /* AboutView.swift in Sources */,
+				PRVPOL01A2B3C4D5E6F78901 /* PrivacyPolicyView.swift in Sources */,
+				TRMSRV01A2B3C4D5E6F78901 /* TermsOfServiceView.swift in Sources */,
 				AB5E4C8FB07080EFD2129F44 /* CalculateNutritionUseCase.swift in Sources */,
 				426945A51D2DDBB7074CF960 /* CalculateProgressionUseCase.swift in Sources */,
 				4DC85B91F11058C3375ED57F /* ChartView.swift in Sources */,

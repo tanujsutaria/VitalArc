@@ -41,7 +41,10 @@ struct ProfileView: View {
             }
             .sheet(isPresented: $showSettings) {
                 if let container = container {
-                    SettingsView(userRepository: container.userRepository)
+                    SettingsView(
+                        userRepository: container.userRepository,
+                        healthRepository: container.healthRepository
+                    )
                 }
             }
             .sheet(isPresented: $showAbout) {

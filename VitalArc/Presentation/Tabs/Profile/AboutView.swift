@@ -84,14 +84,12 @@ struct AboutView: View {
 
                     // Links
                     VStack(spacing: Spacing.md) {
-                        Button(action: {
-                            // TODO: Add privacy policy link
-                        }) {
+                        NavigationLink(destination: PrivacyPolicyView()) {
                             HStack {
                                 Image(systemName: "lock.shield")
                                 Text("Privacy Policy")
                                 Spacer()
-                                Image(systemName: "arrow.up.right")
+                                Image(systemName: "chevron.right")
                                     .font(.vitalCaption)
                             }
                             .padding(Spacing.lg)
@@ -100,14 +98,12 @@ struct AboutView: View {
                         }
                         .foregroundColor(Color.vitalAdaptiveTextPrimary)
 
-                        Button(action: {
-                            // TODO: Add terms of service link
-                        }) {
+                        NavigationLink(destination: TermsOfServiceView()) {
                             HStack {
                                 Image(systemName: "doc.text")
                                 Text("Terms of Service")
                                 Spacer()
-                                Image(systemName: "arrow.up.right")
+                                Image(systemName: "chevron.right")
                                     .font(.vitalCaption)
                             }
                             .padding(Spacing.lg)
