@@ -27,6 +27,7 @@ struct SettingsView: View {
     @State private var isSyncing = false
     @State private var lastSyncDate: Date?
     @State private var syncError: String?
+    @State private var deleteError: String?
 
     init(userRepository: UserRepository, healthRepository: HealthRepository? = nil) {
         self.userRepository = userRepository
@@ -145,13 +146,28 @@ struct SettingsView: View {
                 Button("Cancel", role: .cancel) { }
                 Button("Delete", role: .destructive) {
                     Task {
-                        try? await userRepository.deleteUserProfile()
-                        await userRepository.setOnboardingCompleted(false)
-                        NotificationCenter.default.post(name: .resetToOnboarding, object: nil)
+                        do {
+                            try await userRepository.deleteUserProfile()
+                            await userRepository.setOnboardingCompleted(false)
+                            NotificationCenter.default.post(name: .resetToOnboarding, object: nil)
+                        } catch {
+                            print("[Settings] Failed to delete user profile: \(error)")
+                            deleteError = "Failed to delete data. Please try again."
+                        }
                     }
                 }
             } message: {
                 Text("This will permanently delete all your data. This cannot be undone.")
+            }
+            .alert("Delete Error", isPresented: .init(
+                get: { deleteError != nil },
+                set: { if !$0 { deleteError = nil } }
+            )) {
+                Button("OK") { deleteError = nil }
+            } message: {
+                if let error = deleteError {
+                    Text(error)
+                }
             }
         }
     }

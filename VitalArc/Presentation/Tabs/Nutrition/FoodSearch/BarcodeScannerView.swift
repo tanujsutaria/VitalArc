@@ -183,6 +183,8 @@ struct CameraPreview: UIViewRepresentable {
         func setupCamera(in view: UIView) {
             let session = AVCaptureSession()
 
+            // Silent failure acceptable - camera initialization failure means hardware is unavailable
+            // The guard handles this gracefully by returning early
             guard let videoCaptureDevice = AVCaptureDevice.default(for: .video),
                   let videoInput = try? AVCaptureDeviceInput(device: videoCaptureDevice),
                   session.canAddInput(videoInput) else {

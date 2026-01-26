@@ -349,6 +349,7 @@ struct AddCustomExerciseView: View {
     @State private var selectedBodyPart: BodyPartCategory = .chest
     @State private var notes = ""
     @State private var isSaving = false
+    @State private var saveError: String?
 
     let onSave: (Exercise) -> Void
 
@@ -391,6 +392,16 @@ struct AddCustomExerciseView: View {
                     .disabled(name.trimmingCharacters(in: .whitespaces).isEmpty || isSaving)
                 }
             }
+            .alert("Error Saving Exercise", isPresented: .init(
+                get: { saveError != nil },
+                set: { if !$0 { saveError = nil } }
+            )) {
+                Button("OK") { saveError = nil }
+            } message: {
+                if let error = saveError {
+                    Text(error)
+                }
+            }
         }
     }
 
@@ -410,11 +421,17 @@ struct AddCustomExerciseView: View {
         )
 
         Task {
-            if let container = container {
-                try? await container.workoutRepository.saveExercise(exercise)
+            do {
+                if let container = container {
+                    try await container.workoutRepository.saveExercise(exercise)
+                }
+                onSave(exercise)
+                dismiss()
+            } catch {
+                print("[ExerciseLibrary] Failed to save exercise: \(error)")
+                saveError = "Failed to save exercise. Please try again."
+                isSaving = false
             }
-            onSave(exercise)
-            dismiss()
         }
     }
 

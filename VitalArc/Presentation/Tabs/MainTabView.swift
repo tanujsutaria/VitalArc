@@ -112,7 +112,8 @@ struct WorkoutTabView: View {
                     )
                 }
                 .task {
-                    // Seed exercises on first launch
+                    // Silent failure acceptable - exercise seeding is non-critical initialization
+                    // that will retry on next launch if it fails
                     try? await ExerciseSeeds.seedIfNeeded(repository: container.workoutRepository)
                 }
             }
@@ -360,6 +361,7 @@ struct NutritionTabView: View {
     @Environment(\.dependencyContainer) private var container
     @State private var selectedView: NutritionView = .logging
     @State private var dailyNutrition: DailyNutrition?
+    @State private var nutritionLoadError: String?
 
     enum NutritionView {
         case logging
@@ -387,6 +389,17 @@ struct NutritionTabView: View {
                     } else {
                         ScrollView {
                             VStack(spacing: 16) {
+                                if let error = nutritionLoadError {
+                                    VStack(spacing: Spacing.sm) {
+                                        Image(systemName: "exclamationmark.triangle")
+                                            .font(.largeTitle)
+                                            .foregroundStyle(Color.vitalWarning)
+                                        Text(error)
+                                            .font(.vitalBody)
+                                            .foregroundStyle(Color.vitalAdaptiveTextSecondary)
+                                    }
+                                    .padding()
+                                }
                                 NutritionSummaryView(dailyNutrition: dailyNutrition)
                             }
                             .padding()
@@ -409,7 +422,13 @@ struct NutritionTabView: View {
         guard let container = container else { return }
 
         let calculateUseCase = CalculateNutritionUseCase(repository: container.nutritionRepository)
-        dailyNutrition = try? await calculateUseCase.execute(for: Date())
+        do {
+            dailyNutrition = try await calculateUseCase.execute(for: Date())
+            nutritionLoadError = nil
+        } catch {
+            print("[Nutrition] Failed to load daily nutrition: \(error)")
+            nutritionLoadError = "Unable to load nutrition data"
+        }
     }
 }
 

@@ -40,7 +40,8 @@ final class WorkoutLoggingViewModel {
 
         selectedExercises.append(exercise)
 
-        // Get suggested weight from progression
+        // Silent failure acceptable - progression calculation has sensible fallback of 20.0
+        // User can always adjust the suggested weight manually
         let suggestedWeight = (try? await calculateProgressionUseCase.execute(exerciseId: exercise.id)) ?? 20.0
 
         // Initialize with one empty set
