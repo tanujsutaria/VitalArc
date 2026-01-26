@@ -1,0 +1,175 @@
+name: PR Automation
+
+on:
+  pull_request:
+    types: [opened, ready_for_review, synchronize]
+  pull_request_review:
+    types: [submitted]
+
+permissions:
+  pull-requests: write
+  contents: read
+
+jobs:
+  label-pr:
+    name: Label PR
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Label by files changed
+        uses: actions/labeler@v5
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          configuration-path: .github/labeler.yml
+
+      - name: Label by branch name
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const branch = context.payload.pull_request.head.ref;
+            const labels = [];
+
+            // Add labels based on branch prefix
+            if (branch.startsWith('dev/')) {
+              labels.push('development');
+            }
+            if (branch.includes('fix') || branch.includes('bug')) {
+              labels.push('bug');
+            }
+            if (branch.includes('feat') || branch.includes('feature')) {
+              labels.push('enhancement');
+            }
+            if (branch.includes('docs')) {
+              labels.push('documentation');
+            }
+            if (branch.includes('refactor')) {
+              labels.push('refactor');
+            }
+            if (branch.includes('test')) {
+              labels.push('testing');
+            }
+
+            // Add labels based on conventional commit title
+            const title = context.payload.pull_request.title;
+            if (title.startsWith('feat')) {
+              labels.push('enhancement');
+            } else if (title.startsWith('fix')) {
+              labels.push('bug');
+            } else if (title.startsWith('docs')) {
+              labels.push('documentation');
+            } else if (title.startsWith('refactor')) {
+              labels.push('refactor');
+            } else if (title.startsWith('test')) {
+              labels.push('testing');
+            } else if (title.startsWith('chore')) {
+              labels.push('chore');
+            } else if (title.startsWith('perf')) {
+              labels.push('performance');
+            }
+
+            if (labels.length > 0) {
+              // Deduplicate labels
+              const uniqueLabels = [...new Set(labels)];
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.payload.pull_request.number,
+                labels: uniqueLabels
+              });
+            }
+
+  pr-size:
+    name: PR Size Label
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - name: Label PR size
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { additions, deletions } = context.payload.pull_request;
+            const totalChanges = additions + deletions;
+
+            let sizeLabel;
+            if (totalChanges < 10) {
+              sizeLabel = 'size/XS';
+            } else if (totalChanges < 50) {
+              sizeLabel = 'size/S';
+            } else if (totalChanges < 200) {
+              sizeLabel = 'size/M';
+            } else if (totalChanges < 500) {
+              sizeLabel = 'size/L';
+            } else {
+              sizeLabel = 'size/XL';
+            }
+
+            // Remove existing size labels
+            const existingLabels = context.payload.pull_request.labels.map(l => l.name);
+            const sizeLabels = existingLabels.filter(l => l.startsWith('size/'));
+
+            for (const label of sizeLabels) {
+              if (label !== sizeLabel) {
+                try {
+                  await github.rest.issues.removeLabel({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    issue_number: context.payload.pull_request.number,
+                    name: label
+                  });
+                } catch (e) {
+                  // Label might not exist
+                }
+              }
+            }
+
+            // Add new size label
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+              labels: [sizeLabel]
+            });
+
+  welcome-first-pr:
+    name: Welcome First-Time Contributors
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' && github.event.action == 'opened'
+
+    steps:
+      - name: Check if first PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const creator = context.payload.pull_request.user.login;
+            const { data: pullRequests } = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'all',
+              creator: creator
+            });
+
+            if (pullRequests.length === 1) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.payload.pull_request.number,
+                body: `Welcome to VitalArc, @${creator}! 🎉\n\nThank you for your first pull request! A maintainer will review it soon.\n\nPlease make sure:\n- [ ] Your PR title follows [conventional commits](https://www.conventionalcommits.org/) format\n- [ ] All CI checks pass\n- [ ] You've tested your changes locally`
+              });
+            }
+
+  auto-merge-dependabot:
+    name: Auto-merge Dependabot PRs
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' && github.actor == 'dependabot[bot]'
+
+    steps:
+      - name: Enable auto-merge for Dependabot PRs
+        run: gh pr merge --auto --squash "$PR_URL"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

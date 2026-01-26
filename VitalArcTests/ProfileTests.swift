@@ -176,8 +176,9 @@ final class ProfileTests: XCTestCase {
         viewModel.userName = "Test User"
         viewModel.birthDate = Date()
         viewModel.selectedSex = .male
-        viewModel.height = 180.0
-        viewModel.weight = 75.0
+        viewModel.heightFeet = 5      // ~180cm = 5'11"
+        viewModel.heightInches = 11
+        viewModel.weightLbs = 165.0   // ~75kg = 165lbs
         viewModel.selectedActivityLevel = .moderate
         viewModel.selectedWeightGoal = .maintain
 
@@ -221,8 +222,9 @@ final class ProfileTests: XCTestCase {
 
         // When - Valid data
         viewModel.userName = "Test User"
-        viewModel.height = 180.0
-        viewModel.weight = 75.0
+        viewModel.heightFeet = 5
+        viewModel.heightInches = 10
+        viewModel.weightLbs = 165.0
 
         // Then
         XCTAssertTrue(viewModel.canProceedFromProfileSetup)

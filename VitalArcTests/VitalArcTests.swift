@@ -68,9 +68,13 @@ final class VitalArcTests: XCTestCase {
     }
 
     func testUserProfileBMI() throws {
+        // Use a deterministic date calculation
+        let calendar = Calendar.current
+        let birthDate = calendar.date(byAdding: .year, value: -30, to: Date())!
+
         let profile = UserProfile(
             name: "Test User",
-            birthDate: Date().addingTimeInterval(-30 * 365 * 24 * 60 * 60), // 30 years ago
+            birthDate: birthDate,
             biologicalSex: .male,
             height: 180, // cm
             weight: 80, // kg
@@ -79,8 +83,7 @@ final class VitalArcTests: XCTestCase {
 
         // BMI = weight / (height in m)^2 = 80 / 1.8^2 = 24.69
         XCTAssertEqual(profile.bmi, 24.69, accuracy: 0.1)
-        XCTAssertGreaterThan(profile.age, 29)
-        XCTAssertLessThan(profile.age, 31)
+        XCTAssertEqual(profile.age, 30)
     }
 
     func testHealthMetricsRecoveryIndicator() throws {

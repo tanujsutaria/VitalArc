@@ -66,8 +66,8 @@ final class NutritionTests: XCTestCase {
             calorieGoal: 2000
         )
 
-        XCTAssertEqual(nutrition.calorieProgress, 75, accuracy: 0.1)
-        XCTAssertEqual(nutrition.caloriesRemaining, 500, accuracy: 0.1)
+        XCTAssertEqual(nutrition.calorieProgress ?? 0, 75, accuracy: 0.1)
+        XCTAssertEqual(nutrition.caloriesRemaining ?? 0, 500, accuracy: 0.1)
     }
 
     func testDailyNutritionExceedsGoal() throws {
@@ -80,8 +80,8 @@ final class NutritionTests: XCTestCase {
             calorieGoal: 2000
         )
 
-        XCTAssertEqual(nutrition.calorieProgress, 125, accuracy: 0.1)
-        XCTAssertEqual(nutrition.caloriesRemaining, -500, accuracy: 0.1)
+        XCTAssertEqual(nutrition.calorieProgress ?? 0, 125, accuracy: 0.1)
+        XCTAssertEqual(nutrition.caloriesRemaining ?? 0, -500, accuracy: 0.1)
     }
 
     func testDailyNutritionNoGoal() throws {

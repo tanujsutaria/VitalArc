@@ -34,8 +34,8 @@ final class HealthKitTests: XCTestCase {
         )
 
         XCTAssertNotNil(metrics)
-        XCTAssertEqual(metrics?.heartRateVariability, 75.5, accuracy: 0.1)
-        XCTAssertEqual(metrics?.date.timeIntervalSince1970, date.timeIntervalSince1970, accuracy: 1.0)
+        XCTAssertEqual(metrics?.heartRateVariability ?? 0, 75.5, accuracy: 0.1)
+        XCTAssertEqual(metrics?.date.timeIntervalSince1970 ?? 0, date.timeIntervalSince1970, accuracy: 1.0)
     }
 
     func testHealthKitMapperHeartRate() throws {
@@ -59,7 +59,7 @@ final class HealthKitTests: XCTestCase {
         )
 
         XCTAssertNotNil(metrics)
-        XCTAssertEqual(metrics?.restingHeartRate, 65.0, accuracy: 0.1)
+        XCTAssertEqual(metrics?.restingHeartRate ?? 0, 65.0, accuracy: 0.1)
     }
 
     func testHealthKitMapperActiveEnergy() throws {
@@ -83,7 +83,7 @@ final class HealthKitTests: XCTestCase {
         )
 
         XCTAssertNotNil(metrics)
-        XCTAssertEqual(metrics?.activeEnergy, 450.0, accuracy: 0.1)
+        XCTAssertEqual(metrics?.activeEnergy ?? 0, 450.0, accuracy: 0.1)
     }
 
     func testHealthKitMapperSteps() throws {
@@ -131,7 +131,7 @@ final class HealthKitTests: XCTestCase {
         )
 
         XCTAssertNotNil(metrics)
-        XCTAssertEqual(metrics?.weight, 75.5, accuracy: 0.1)
+        XCTAssertEqual(metrics?.weight ?? 0, 75.5, accuracy: 0.1)
     }
 
     func testHealthKitMapperAllMetrics() throws {
@@ -183,11 +183,11 @@ final class HealthKitTests: XCTestCase {
         )
 
         XCTAssertNotNil(metrics)
-        XCTAssertEqual(metrics?.heartRateVariability, 75.5, accuracy: 0.1)
-        XCTAssertEqual(metrics?.restingHeartRate, 65.0, accuracy: 0.1)
-        XCTAssertEqual(metrics?.activeEnergy, 450.0, accuracy: 0.1)
+        XCTAssertEqual(metrics?.heartRateVariability ?? 0, 75.5, accuracy: 0.1)
+        XCTAssertEqual(metrics?.restingHeartRate ?? 0, 65.0, accuracy: 0.1)
+        XCTAssertEqual(metrics?.activeEnergy ?? 0, 450.0, accuracy: 0.1)
         XCTAssertEqual(metrics?.steps, 10000)
-        XCTAssertEqual(metrics?.weight, 75.5, accuracy: 0.1)
+        XCTAssertEqual(metrics?.weight ?? 0, 75.5, accuracy: 0.1)
     }
 
     // MARK: - HealthKitQuery Tests
@@ -269,7 +269,7 @@ final class HealthKitTests: XCTestCase {
         await viewModel.loadTodayMetrics()
 
         XCTAssertNotNil(viewModel.todayMetrics)
-        XCTAssertEqual(viewModel.todayMetrics?.heartRateVariability, 75.0, accuracy: 0.1)
+        XCTAssertEqual(viewModel.todayMetrics?.heartRateVariability ?? 0, 75.0, accuracy: 0.1)
         XCTAssertEqual(viewModel.todayMetrics?.steps, 10000)
         XCTAssertFalse(viewModel.isLoading)
     }
