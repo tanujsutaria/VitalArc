@@ -89,7 +89,7 @@ The app compiles and runs with **core MVP requirements addressed**:
    ProfileView.swift: .red (in edit mode) - minor
    ```
 
-7. **Preview Coverage**: ~57% of presentation files have #Preview blocks
+7. **Preview Coverage**: ~68% of presentation files have #Preview blocks (Session 6)
 
 8. **API Configuration Pending**
    ```
@@ -123,7 +123,7 @@ The app compiles and runs with **core MVP requirements addressed**:
 | Thread Safety | ✅ | @MainActor isolation throughout |
 | Design System Adoption | ✅ | ~90% (Session 6 - Workout + Onboarding migrated) |
 | Error Handling | ✅ | Standardized patterns (Session 5) |
-| Testing | ⚠️ | 6 test files, ~57% preview coverage |
+| Testing | ⚠️ | 6 test files, ~68% preview coverage (Session 6) |
 
 ---
 
