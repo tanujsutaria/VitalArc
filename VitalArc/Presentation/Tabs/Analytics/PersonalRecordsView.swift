@@ -167,3 +167,10 @@ struct FilterChip: View {
         }
     }
 }
+
+#Preview("Empty State") {
+    NavigationStack {
+        PersonalRecordsView(records: [])
+            .navigationTitle("Personal Records")
+    }
+}

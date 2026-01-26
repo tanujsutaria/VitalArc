@@ -97,3 +97,35 @@ struct ExerciseSetView: View {
         sets.reduce(0) { $0 + ($1.weight * Double($1.reps)) }
     }
 }
+
+private struct ExerciseSetPreview: View {
+    static let exerciseId = UUID()
+
+    @State private var sets: [WorkoutSetData] = [
+        WorkoutSetData(exerciseId: exerciseId, weight: 60, reps: 10, setNumber: 1, completed: true),
+        WorkoutSetData(exerciseId: exerciseId, weight: 70, reps: 8, setNumber: 2, completed: true),
+        WorkoutSetData(exerciseId: exerciseId, weight: 80, reps: 6, setNumber: 3, completed: false)
+    ]
+
+    var body: some View {
+        ExerciseSetView(
+            exercise: Exercise(
+                name: "Bench Press",
+                category: .push,
+                primaryMuscles: [.chest],
+                secondaryMuscles: [.triceps, .shoulders],
+                equipment: .barbell
+            ),
+            sets: $sets,
+            onAddSet: { sets.append(WorkoutSetData(exerciseId: Self.exerciseId, weight: 80, reps: 6, setNumber: sets.count + 1, completed: false)) },
+            onRemoveSet: { sets.remove(at: $0) },
+            onUpdateSet: { sets[$1] = $0 },
+            onRemoveExercise: {}
+        )
+        .padding()
+    }
+}
+
+#Preview {
+    ExerciseSetPreview()
+}

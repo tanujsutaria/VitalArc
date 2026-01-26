@@ -164,3 +164,7 @@ struct VolumeChartView: View {
         }
     }
 }
+
+#Preview("Empty State") {
+    VolumeChartView(metrics: [])
+}

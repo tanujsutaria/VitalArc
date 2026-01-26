@@ -240,3 +240,23 @@ struct ExerciseDetailRow: View {
         .padding(.horizontal, Spacing.screenPadding)
     }
 }
+
+#Preview {
+    NavigationStack {
+        TemplateDetailView(
+            template: WorkoutTemplate(
+                name: "Push Day",
+                description: "Chest, shoulders, and triceps focus",
+                exercises: [
+                    TemplateExercise(exerciseId: UUID(), orderIndex: 0, sets: 4, repsMin: 8, repsMax: 12, restSeconds: 90),
+                    TemplateExercise(exerciseId: UUID(), orderIndex: 1, sets: 3, repsMin: 10, repsMax: 15, restSeconds: 60),
+                    TemplateExercise(exerciseId: UUID(), orderIndex: 2, sets: 3, repsMin: 12, repsMax: 15, restSeconds: 60)
+                ],
+                category: .pushPullLegs,
+                estimatedDuration: 60
+            ),
+            onUseTemplate: { _ in },
+            onDeleteTemplate: { _ in }
+        )
+    }
+}

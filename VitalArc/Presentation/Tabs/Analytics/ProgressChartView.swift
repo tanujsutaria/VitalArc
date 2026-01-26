@@ -264,3 +264,7 @@ struct ProgressChartView: View {
         }
     }
 }
+
+#Preview("Empty State") {
+    ProgressChartView(snapshots: [])
+}
