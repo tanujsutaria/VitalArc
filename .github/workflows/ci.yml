@@ -12,7 +12,6 @@ concurrency:
 
 env:
   SCHEME: VitalArc
-  DESTINATION: 'platform=iOS Simulator,name=iPhone 16 Pro,OS=18.2'
 
 jobs:
   build:
@@ -30,6 +29,9 @@ jobs:
       - name: Show Xcode version
         run: xcodebuild -version
 
+      - name: List available simulators
+        run: xcrun simctl list devices available | grep -E "iPhone|iPad" | head -20
+
       - name: Cache DerivedData
         uses: actions/cache@v4
         with:
@@ -40,9 +42,12 @@ jobs:
 
       - name: Build
         run: |
+          # Find first available iPhone simulator
+          DESTINATION=$(xcrun simctl list devices available | grep "iPhone" | head -1 | sed 's/.*(\([^)]*\)).*/\1/')
+          echo "Using simulator: $DESTINATION"
           xcodebuild build \
             -scheme "$SCHEME" \
-            -destination "$DESTINATION" \
+            -destination "platform=iOS Simulator,id=$DESTINATION" \
             -configuration Debug \
             CODE_SIGNING_ALLOWED=NO \
             | xcpretty --color && exit ${PIPESTATUS[0]}
@@ -70,9 +75,12 @@ jobs:
 
       - name: Run Tests
         run: |
+          # Find first available iPhone simulator
+          DESTINATION=$(xcrun simctl list devices available | grep "iPhone" | head -1 | sed 's/.*(\([^)]*\)).*/\1/')
+          echo "Using simulator: $DESTINATION"
           xcodebuild test \
             -scheme "$SCHEME" \
-            -destination "$DESTINATION" \
+            -destination "platform=iOS Simulator,id=$DESTINATION" \
             -configuration Debug \
             -resultBundlePath TestResults.xcresult \
             CODE_SIGNING_ALLOWED=NO \
