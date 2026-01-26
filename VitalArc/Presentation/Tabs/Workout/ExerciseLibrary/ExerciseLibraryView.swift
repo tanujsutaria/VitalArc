@@ -45,18 +45,18 @@ enum BodyPartCategory: String, CaseIterable, Identifiable, Codable {
 
     var color: Color {
         switch self {
-        case .chest: return .red
-        case .back: return .blue
-        case .shoulders: return .orange
-        case .biceps: return .purple
-        case .triceps: return .pink
-        case .quads: return .green
-        case .hamstrings: return .teal
-        case .glutes: return .indigo
-        case .calves: return .mint
-        case .core: return .yellow
-        case .forearms: return .brown
-        case .custom: return .gray
+        case .chest: return .vitalDanger
+        case .back: return .vitalInfo
+        case .shoulders: return .vitalWarning
+        case .biceps: return .vitalAccent
+        case .triceps: return .vitalSecondary
+        case .quads: return .vitalSuccess
+        case .hamstrings: return .vitalInfo
+        case .glutes: return .vitalPrimary
+        case .calves: return .vitalSuccess
+        case .core: return .vitalWarning
+        case .forearms: return .vitalSecondary
+        case .custom: return .vitalAdaptiveTextSecondary
         }
     }
 
@@ -248,12 +248,12 @@ struct ExerciseLibraryView: View {
                         HStack(spacing: Spacing.md) {
                             ZStack {
                                 RoundedRectangle(cornerRadius: Spacing.radiusSmall)
-                                    .fill(Color.gray.opacity(0.15))
+                                    .fill(Color.vitalAdaptiveTextSecondary.opacity(0.15))
                                     .frame(width: 40, height: 40)
 
                                 Image(systemName: "star.fill")
                                     .font(.system(size: 16, weight: .semibold))
-                                    .foregroundStyle(Color.gray)
+                                    .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                             }
 
                             VStack(alignment: .leading, spacing: Spacing.xxs) {

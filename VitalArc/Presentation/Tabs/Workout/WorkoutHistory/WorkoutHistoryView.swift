@@ -76,9 +76,9 @@ struct WorkoutHistoryView: View {
                 icon: "scalemass"
             )
         }
-        .padding()
-        .background(Color(.systemGray6))
-        .clipShape(RoundedRectangle(cornerRadius: 12))
+        .padding(Spacing.lg)
+        .background(Color.vitalAdaptiveSurface)
+        .clipShape(RoundedRectangle(cornerRadius: Spacing.radiusMedium))
     }
 
     // MARK: - Date Range Filter
@@ -93,19 +93,19 @@ struct WorkoutHistoryView: View {
                         }
                     } label: {
                         Text(range.rawValue)
-                            .font(.subheadline)
+                            .font(.vitalBody)
                             .fontWeight(.medium)
-                            .padding(.horizontal, 16)
-                            .padding(.vertical, 8)
+                            .padding(.horizontal, Spacing.lg)
+                            .padding(.vertical, Spacing.sm)
                             .background(
                                 viewModel.selectedDateRange == range
-                                    ? Color.accentColor
-                                    : Color.secondary.opacity(0.1)
+                                    ? Color.vitalPrimary
+                                    : Color.vitalAdaptiveSurface
                             )
                             .foregroundStyle(
                                 viewModel.selectedDateRange == range
                                     ? .white
-                                    : .primary
+                                    : Color.vitalAdaptiveTextPrimary
                             )
                             .clipShape(Capsule())
                     }
@@ -190,18 +190,18 @@ struct StatisticView: View {
     let icon: String
 
     var body: some View {
-        VStack(spacing: 8) {
+        VStack(spacing: Spacing.sm) {
             Image(systemName: icon)
                 .font(.title2)
-                .foregroundStyle(Color.accentColor)
+                .foregroundStyle(Color.vitalPrimary)
 
             Text(value)
-                .font(.title3)
+                .font(.vitalH3)
                 .fontWeight(.bold)
 
             Text(title)
-                .font(.caption)
-                .foregroundStyle(.secondary)
+                .font(.vitalCaption)
+                .foregroundStyle(Color.vitalAdaptiveTextSecondary)
         }
         .frame(maxWidth: .infinity)
     }

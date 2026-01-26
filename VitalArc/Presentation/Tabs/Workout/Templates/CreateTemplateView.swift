@@ -154,23 +154,23 @@ struct TemplateExerciseRow: View {
     let onDelete: () -> Void
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: Spacing.sm) {
             HStack {
                 Text(exercise.exerciseName)
-                    .font(.headline)
+                    .font(.vitalH4)
                 Spacer()
                 Button(action: onDelete) {
                     Image(systemName: "trash")
-                        .foregroundStyle(.red)
+                        .foregroundStyle(Color.vitalDanger)
                 }
             }
 
-            HStack(spacing: 16) {
+            HStack(spacing: Spacing.lg) {
                 Stepper("Sets: \(exercise.sets)", value: $exercise.sets, in: 1...10)
                     .frame(maxWidth: .infinity)
             }
 
-            HStack(spacing: 16) {
+            HStack(spacing: Spacing.lg) {
                 Stepper("Min: \(exercise.repsMin)", value: $exercise.repsMin, in: 1...50)
                     .frame(maxWidth: .infinity)
                 Stepper("Max: \(exercise.repsMax)", value: $exercise.repsMax, in: 1...50)
@@ -179,7 +179,7 @@ struct TemplateExerciseRow: View {
 
             Stepper("Rest: \(exercise.restSeconds)s", value: $exercise.restSeconds, in: 30...300, step: 15)
         }
-        .padding(.vertical, 4)
+        .padding(.vertical, Spacing.xs)
     }
 }
 

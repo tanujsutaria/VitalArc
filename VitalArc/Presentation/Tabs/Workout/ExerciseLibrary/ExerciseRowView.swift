@@ -102,7 +102,7 @@ struct ExerciseRowView: View {
         case .calisthenics: return .vitalInfo
         case .plyometrics: return .vitalWarning
         case .mobility: return .vitalSuccess
-        case .custom: return .gray
+        case .custom: return .vitalAdaptiveTextSecondary
         }
     }
 

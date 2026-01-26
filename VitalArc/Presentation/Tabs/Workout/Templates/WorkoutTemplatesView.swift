@@ -169,29 +169,29 @@ struct TemplateRow: View {
     let onQuickStart: () -> Void
 
     var body: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: Spacing.md) {
             // Category icon
             Image(systemName: template.category.icon)
                 .font(.title2)
-                .foregroundStyle(.blue)
+                .foregroundStyle(Color.vitalPrimary)
                 .frame(width: 40)
 
             // Template details
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .leading, spacing: Spacing.xs) {
                 Text(template.name)
-                    .font(.headline)
+                    .font(.vitalH4)
 
-                HStack(spacing: 12) {
+                HStack(spacing: Spacing.md) {
                     Label("\(template.exerciseCount) exercises", systemImage: "figure.strengthtraining.traditional")
                     Label("\(template.estimatedDuration) min", systemImage: "clock")
                 }
-                .font(.caption)
-                .foregroundStyle(.secondary)
+                .font(.vitalCaption)
+                .foregroundStyle(Color.vitalAdaptiveTextSecondary)
 
                 if let description = template.description, !description.isEmpty {
                     Text(description)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .font(.vitalCaption)
+                        .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                         .lineLimit(2)
                 }
             }
@@ -200,17 +200,17 @@ struct TemplateRow: View {
 
             // Usage stats
             if template.useCount > 0 {
-                VStack(alignment: .trailing, spacing: 4) {
+                VStack(alignment: .trailing, spacing: Spacing.xs) {
                     Text("\(template.useCount)")
-                        .font(.title3)
+                        .font(.vitalH3)
                         .fontWeight(.semibold)
                     Text("uses")
-                        .font(.caption2)
-                        .foregroundStyle(.secondary)
+                        .font(.vitalCaptionSmall)
+                        .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                 }
             }
         }
-        .padding(.vertical, 4)
+        .padding(.vertical, Spacing.xs)
         .contentShape(Rectangle())
     }
 }
@@ -222,28 +222,28 @@ struct StartWorkoutFromTemplateSheet: View {
 
     var body: some View {
         NavigationStack {
-            VStack(spacing: 20) {
+            VStack(spacing: Spacing.xl) {
                 // Template info
-                VStack(spacing: 8) {
+                VStack(spacing: Spacing.sm) {
                     Image(systemName: template.category.icon)
                         .font(.system(size: 48))
-                        .foregroundStyle(.blue)
+                        .foregroundStyle(Color.vitalPrimary)
 
                     Text(template.name)
-                        .font(.title2)
+                        .font(.vitalH2)
                         .fontWeight(.bold)
 
                     if let description = template.description {
                         Text(description)
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
+                            .font(.vitalBody)
+                            .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                             .multilineTextAlignment(.center)
                     }
                 }
-                .padding()
+                .padding(Spacing.lg)
 
                 // Stats
-                HStack(spacing: 40) {
+                HStack(spacing: Spacing.xl) {
                     StatItem(value: "\(template.exerciseCount)", label: "Exercises")
                     StatItem(value: "\(template.totalSets)", label: "Sets")
                     StatItem(value: "\(template.estimatedDuration) min", label: "Duration")
@@ -252,18 +252,18 @@ struct StartWorkoutFromTemplateSheet: View {
                 // Exercise list
                 List {
                     ForEach(template.exercises.sorted(by: { $0.orderIndex < $1.orderIndex })) { exercise in
-                        VStack(alignment: .leading, spacing: 4) {
+                        VStack(alignment: .leading, spacing: Spacing.xs) {
                             Text("Exercise \(exercise.orderIndex + 1)")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
+                                .font(.vitalCaption)
+                                .foregroundStyle(Color.vitalAdaptiveTextSecondary)
 
                             HStack {
                                 Text("\(exercise.sets) × \(exercise.repsDisplay) reps")
-                                    .font(.subheadline)
+                                    .font(.vitalBody)
                                 Spacer()
                                 Text("Rest: \(exercise.restDisplay)")
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
+                                    .font(.vitalCaption)
+                                    .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                             }
                         }
                     }
@@ -276,14 +276,14 @@ struct StartWorkoutFromTemplateSheet: View {
                     dismiss()
                 } label: {
                     Text("Start Workout")
-                        .font(.headline)
+                        .font(.vitalH3)
                         .foregroundStyle(.white)
                         .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color.blue)
-                        .cornerRadius(12)
+                        .padding(Spacing.lg)
+                        .background(Color.vitalPrimary)
+                        .cornerRadius(Spacing.radiusMedium)
                 }
-                .padding()
+                .padding(Spacing.screenPadding)
             }
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -302,13 +302,13 @@ private struct StatItem: View {
     let label: String
 
     var body: some View {
-        VStack(spacing: 4) {
+        VStack(spacing: Spacing.xs) {
             Text(value)
-                .font(.title2)
+                .font(.vitalH2)
                 .fontWeight(.bold)
             Text(label)
-                .font(.caption)
-                .foregroundStyle(.secondary)
+                .font(.vitalCaption)
+                .foregroundStyle(Color.vitalAdaptiveTextSecondary)
         }
     }
 }

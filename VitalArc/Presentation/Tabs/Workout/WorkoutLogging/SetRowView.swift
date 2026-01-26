@@ -63,7 +63,7 @@ struct SetRowView: View {
             } label: {
                 Image(systemName: setData.completed ? "checkmark.circle.fill" : "circle")
                     .font(.title2)
-                    .foregroundStyle(setData.completed ? .green : .secondary)
+                    .foregroundStyle(setData.completed ? Color.vitalSuccess : .secondary)
             }
             .buttonStyle(.plain)
 
@@ -71,7 +71,7 @@ struct SetRowView: View {
             Button(role: .destructive, action: onDelete) {
                 Image(systemName: "trash")
                     .font(.body)
-                    .foregroundStyle(.red)
+                    .foregroundStyle(Color.vitalDanger)
             }
             .buttonStyle(.plain)
         }

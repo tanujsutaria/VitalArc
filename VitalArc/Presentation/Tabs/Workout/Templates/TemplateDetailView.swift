@@ -19,38 +19,38 @@ struct TemplateDetailView: View {
         ScrollView {
             VStack(spacing: 24) {
                 // Header
-                VStack(spacing: 12) {
+                VStack(spacing: Spacing.md) {
                     Image(systemName: template.category.icon)
                         .font(.system(size: 60))
-                        .foregroundStyle(.blue)
+                        .foregroundStyle(Color.vitalPrimary)
 
                     Text(template.name)
-                        .font(.title)
+                        .font(.vitalDisplayMedium)
                         .fontWeight(.bold)
                         .multilineTextAlignment(.center)
 
                     if let description = template.description {
                         Text(description)
-                            .font(.body)
-                            .foregroundStyle(.secondary)
+                            .font(.vitalBody)
+                            .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                             .multilineTextAlignment(.center)
                     }
 
                     // Category badge
                     HStack {
                         Label(template.category.displayName, systemImage: template.category.icon)
-                            .font(.caption)
-                            .padding(.horizontal, 12)
-                            .padding(.vertical, 6)
-                            .background(Color.blue.opacity(0.1))
-                            .foregroundStyle(.blue)
-                            .cornerRadius(8)
+                            .font(.vitalCaption)
+                            .padding(.horizontal, Spacing.md)
+                            .padding(.vertical, Spacing.sm)
+                            .background(Color.vitalPrimary.opacity(0.1))
+                            .foregroundStyle(Color.vitalPrimary)
+                            .cornerRadius(Spacing.radiusSmall)
                     }
                 }
-                .padding()
+                .padding(Spacing.lg)
 
                 // Stats
-                HStack(spacing: 40) {
+                HStack(spacing: Spacing.xl) {
                     StatColumn(
                         value: "\(template.exerciseCount)",
                         label: "Exercises",
@@ -69,54 +69,54 @@ struct TemplateDetailView: View {
                         icon: "clock"
                     )
                 }
-                .padding()
-                .background(Color(.systemGray6))
-                .cornerRadius(12)
-                .padding(.horizontal)
+                .padding(Spacing.lg)
+                .background(Color.vitalAdaptiveSurface)
+                .cornerRadius(Spacing.radiusMedium)
+                .padding(.horizontal, Spacing.screenPadding)
 
                 // Usage stats
                 if template.useCount > 0 {
-                    HStack(spacing: 40) {
-                        VStack(spacing: 4) {
+                    HStack(spacing: Spacing.xl) {
+                        VStack(spacing: Spacing.xs) {
                             Text("\(template.useCount)")
-                                .font(.title2)
+                                .font(.vitalH2)
                                 .fontWeight(.bold)
                             Text("Times Used")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
+                                .font(.vitalCaption)
+                                .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                         }
 
                         if let lastUsed = template.lastUsed {
-                            VStack(spacing: 4) {
+                            VStack(spacing: Spacing.xs) {
                                 Text(lastUsed, style: .relative)
-                                    .font(.title3)
+                                    .font(.vitalH3)
                                     .fontWeight(.semibold)
                                 Text("Last Used")
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
+                                    .font(.vitalCaption)
+                                    .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                             }
                         }
                     }
-                    .padding()
-                    .background(Color(.systemGray6))
-                    .cornerRadius(12)
-                    .padding(.horizontal)
+                    .padding(Spacing.lg)
+                    .background(Color.vitalAdaptiveSurface)
+                    .cornerRadius(Spacing.radiusMedium)
+                    .padding(.horizontal, Spacing.screenPadding)
                 }
 
                 // Exercise list
-                VStack(alignment: .leading, spacing: 12) {
+                VStack(alignment: .leading, spacing: Spacing.md) {
                     Text("Exercises")
-                        .font(.headline)
-                        .padding(.horizontal)
+                        .font(.vitalH3)
+                        .padding(.horizontal, Spacing.screenPadding)
 
                     ForEach(template.exercises.sorted(by: { $0.orderIndex < $1.orderIndex })) { exercise in
                         ExerciseDetailRow(exercise: exercise, index: exercise.orderIndex)
                     }
                 }
-                .padding(.bottom)
+                .padding(.bottom, Spacing.lg)
 
                 // Action buttons
-                VStack(spacing: 12) {
+                VStack(spacing: Spacing.md) {
                     Button {
                         onUseTemplate(template)
                     } label: {
@@ -124,12 +124,12 @@ struct TemplateDetailView: View {
                             Image(systemName: "play.fill")
                             Text("Start Workout")
                         }
-                        .font(.headline)
+                        .font(.vitalH3)
                         .foregroundStyle(.white)
                         .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color.blue)
-                        .cornerRadius(12)
+                        .padding(Spacing.lg)
+                        .background(Color.vitalPrimary)
+                        .cornerRadius(Spacing.radiusMedium)
                     }
 
                     Button(role: .destructive) {
@@ -139,14 +139,15 @@ struct TemplateDetailView: View {
                             Image(systemName: "trash")
                             Text("Delete Template")
                         }
-                        .font(.subheadline)
+                        .font(.vitalBody)
+                        .foregroundStyle(Color.vitalDanger)
                         .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color(.systemGray6))
-                        .cornerRadius(12)
+                        .padding(Spacing.lg)
+                        .background(Color.vitalAdaptiveSurface)
+                        .cornerRadius(Spacing.radiusMedium)
                     }
                 }
-                .padding()
+                .padding(Spacing.screenPadding)
             }
         }
         .navigationBarTitleDisplayMode(.inline)
@@ -168,18 +169,18 @@ struct StatColumn: View {
     let icon: String
 
     var body: some View {
-        VStack(spacing: 8) {
+        VStack(spacing: Spacing.sm) {
             Image(systemName: icon)
                 .font(.title3)
-                .foregroundStyle(.blue)
+                .foregroundStyle(Color.vitalPrimary)
 
             Text(value)
-                .font(.title2)
+                .font(.vitalH2)
                 .fontWeight(.bold)
 
             Text(label)
-                .font(.caption)
-                .foregroundStyle(.secondary)
+                .font(.vitalCaption)
+                .foregroundStyle(Color.vitalAdaptiveTextSecondary)
         }
     }
 }
@@ -189,53 +190,53 @@ struct ExerciseDetailRow: View {
     let index: Int
 
     var body: some View {
-        HStack(alignment: .top, spacing: 16) {
+        HStack(alignment: .top, spacing: Spacing.lg) {
             // Order number
             Text("\(index + 1)")
-                .font(.title2)
+                .font(.vitalH2)
                 .fontWeight(.bold)
-                .foregroundStyle(.blue)
+                .foregroundStyle(Color.vitalPrimary)
                 .frame(width: 40, height: 40)
-                .background(Color.blue.opacity(0.1))
+                .background(Color.vitalPrimary.opacity(0.1))
                 .clipShape(Circle())
 
             // Exercise details
-            VStack(alignment: .leading, spacing: 8) {
+            VStack(alignment: .leading, spacing: Spacing.sm) {
                 Text("Exercise \(index + 1)")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .font(.vitalCaption)
+                    .foregroundStyle(Color.vitalAdaptiveTextSecondary)
 
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: Spacing.xs) {
                     HStack {
                         Image(systemName: "number")
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                             .frame(width: 20)
                         Text("\(exercise.sets) sets × \(exercise.repsDisplay) reps")
                     }
-                    .font(.subheadline)
+                    .font(.vitalBody)
 
                     HStack {
                         Image(systemName: "timer")
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                             .frame(width: 20)
                         Text("Rest: \(exercise.restDisplay)")
                     }
-                    .font(.subheadline)
+                    .font(.vitalBody)
                 }
 
                 if let notes = exercise.notes, !notes.isEmpty {
                     Text(notes)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .padding(.top, 4)
+                        .font(.vitalCaption)
+                        .foregroundStyle(Color.vitalAdaptiveTextSecondary)
+                        .padding(.top, Spacing.xs)
                 }
             }
 
             Spacer()
         }
-        .padding()
-        .background(Color(.systemGray6))
-        .cornerRadius(12)
-        .padding(.horizontal)
+        .padding(Spacing.lg)
+        .background(Color.vitalAdaptiveSurface)
+        .cornerRadius(Spacing.radiusMedium)
+        .padding(.horizontal, Spacing.screenPadding)
     }
 }

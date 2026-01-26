@@ -127,9 +127,9 @@ struct WorkoutLoggingView: View {
                 .textFieldStyle(.roundedBorder)
                 .lineLimit(2...4)
         }
-        .padding()
-        .background(Color(.systemGray6))
-        .clipShape(RoundedRectangle(cornerRadius: 12))
+        .padding(Spacing.lg)
+        .background(Color.vitalAdaptiveSurface)
+        .clipShape(RoundedRectangle(cornerRadius: Spacing.radiusMedium))
     }
 
     // MARK: - Exercises List
@@ -194,12 +194,12 @@ struct WorkoutLoggingView: View {
             viewModel.showingExerciseLibrary = true
         } label: {
             Label("Add Exercise", systemImage: "plus.circle.fill")
-                .font(.headline)
+                .font(.vitalH3)
                 .frame(maxWidth: .infinity)
-                .padding()
-                .background(Color.accentColor)
+                .padding(Spacing.lg)
+                .background(Color.vitalPrimary)
                 .foregroundStyle(.white)
-                .clipShape(RoundedRectangle(cornerRadius: 12))
+                .clipShape(RoundedRectangle(cornerRadius: Spacing.radiusMedium))
         }
     }
 

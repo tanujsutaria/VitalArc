@@ -65,32 +65,32 @@ struct ExerciseSetView: View {
                 onAddSet()
             } label: {
                 Label("Add Set", systemImage: "plus.circle.fill")
-                    .font(.subheadline)
+                    .font(.vitalBody)
                     .fontWeight(.medium)
                     .frame(maxWidth: .infinity)
-                    .padding(.vertical, 12)
-                    .background(Color.accentColor.opacity(0.1))
-                    .foregroundStyle(Color.accentColor)
-                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                    .padding(.vertical, Spacing.md)
+                    .background(Color.vitalPrimary.opacity(0.1))
+                    .foregroundStyle(Color.vitalPrimary)
+                    .clipShape(RoundedRectangle(cornerRadius: Spacing.radiusSmall))
             }
             .buttonStyle(.plain)
 
             // Set Summary
             HStack {
                 Text("\(sets.count) sets")
-                    .font(.caption)
+                    .font(.vitalCaption)
                     .foregroundStyle(.secondary)
 
                 Spacer()
 
                 Text("Volume: \(totalVolume, specifier: "%.0f") kg")
-                    .font(.caption)
+                    .font(.vitalCaption)
                     .foregroundStyle(.secondary)
             }
         }
-        .padding()
-        .background(Color(.systemGray6))
-        .clipShape(RoundedRectangle(cornerRadius: 12))
+        .padding(Spacing.lg)
+        .background(Color.vitalAdaptiveSurface)
+        .clipShape(RoundedRectangle(cornerRadius: Spacing.radiusMedium))
     }
 
     private var totalVolume: Double {
