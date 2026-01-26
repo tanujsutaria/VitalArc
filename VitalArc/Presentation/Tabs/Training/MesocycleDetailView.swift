@@ -235,7 +235,7 @@ struct MesocycleDetailView: View {
                 ], spacing: 16) {
                     StatItem(title: "Total Sets", value: "\(summary.totalSets)")
                     StatItem(title: "Completed", value: "\(summary.completedSets)")
-                    StatItem(title: "Total Volume", value: String(format: "%.0f kg", summary.totalVolume))
+                    StatItem(title: "Total Volume", value: String(format: "%.0f lbs", summary.totalVolume))
                     if let avgRIR = summary.averageRIR {
                         StatItem(title: "Avg RIR", value: String(format: "%.1f", avgRIR))
                     }
@@ -297,12 +297,17 @@ struct MesocycleDetailView: View {
                 // Week Progress Card
                 weekProgressCard(summary: summary)
 
-                // Volume Chart
-                volumeChartCard
+                // Volume Chart (week-by-week)
+                volumeChartCard(summary: summary)
 
-                // RIR Trend
+                // RIR Trend Chart
                 if summary.averageRIR != nil {
-                    rirTrendCard
+                    rirTrendCard(summary: summary)
+                }
+
+                // Exercise Progress (per-exercise tracking)
+                if !summary.exerciseProgress.isEmpty {
+                    exerciseProgressSection(summary: summary)
                 }
             } else {
                 Text("No progress data available")
@@ -343,32 +348,202 @@ struct MesocycleDetailView: View {
         .cornerRadius(12)
     }
 
-    private var volumeChartCard: some View {
+    private func volumeChartCard(summary: MesocycleProgressSummary) -> some View {
         VStack(alignment: .leading, spacing: 12) {
             Label("Volume Trend", systemImage: "chart.bar.fill")
                 .font(.headline)
 
-            Text("Coming soon: Weekly volume tracking")
-                .font(.caption)
-                .foregroundStyle(.secondary)
+            if summary.weeklyProgress.isEmpty {
+                Text("Complete workouts to see volume trends")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            } else {
+                Chart(summary.weeklyProgress) { week in
+                    BarMark(
+                        x: .value("Week", "W\(week.weekNumber)"),
+                        y: .value("Volume", week.totalVolume)
+                    )
+                    .foregroundStyle(.blue.gradient)
+                    .cornerRadius(4)
+                }
+                .frame(height: 180)
+                .chartYAxis {
+                    AxisMarks(position: .leading) { value in
+                        if let vol = value.as(Double.self) {
+                            AxisValueLabel {
+                                Text("\(Int(vol / 1000))k")
+                                    .font(.caption2)
+                            }
+                        }
+                    }
+                }
+
+                // Volume summary
+                HStack {
+                    VStack(alignment: .leading) {
+                        Text("Total Volume")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        Text("\(Int(summary.totalVolume)) lbs")
+                            .font(.headline)
+                    }
+                    Spacer()
+                    if summary.weeklyProgress.count >= 2 {
+                        let change = calculateVolumeChange(summary.weeklyProgress)
+                        VStack(alignment: .trailing) {
+                            Text("Week-over-Week")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                            HStack(spacing: 2) {
+                                Image(systemName: change >= 0 ? "arrow.up" : "arrow.down")
+                                    .font(.caption)
+                                Text("\(abs(Int(change)))%")
+                                    .font(.headline)
+                            }
+                            .foregroundStyle(change >= 0 ? .green : .red)
+                        }
+                    }
+                }
+            }
         }
         .padding()
         .background(Color(.systemBackground))
         .cornerRadius(12)
     }
 
-    private var rirTrendCard: some View {
+    private func rirTrendCard(summary: MesocycleProgressSummary) -> some View {
         VStack(alignment: .leading, spacing: 12) {
             Label("RIR Trend", systemImage: "chart.line.uptrend.xyaxis")
                 .font(.headline)
 
-            Text("Coming soon: RIR tracking over time")
-                .font(.caption)
-                .foregroundStyle(.secondary)
+            let weeksWithRIR = summary.weeklyProgress.filter { $0.averageRIR != nil }
+
+            if weeksWithRIR.isEmpty {
+                Text("Log RIR values to see trends")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            } else {
+                Chart(weeksWithRIR) { week in
+                    LineMark(
+                        x: .value("Week", "W\(week.weekNumber)"),
+                        y: .value("RIR", week.averageRIR ?? 0)
+                    )
+                    .foregroundStyle(.orange)
+                    .symbol(Circle().strokeBorder(lineWidth: 2))
+
+                    PointMark(
+                        x: .value("Week", "W\(week.weekNumber)"),
+                        y: .value("RIR", week.averageRIR ?? 0)
+                    )
+                    .foregroundStyle(.orange)
+                }
+                .frame(height: 120)
+                .chartYScale(domain: 0...5)
+                .chartYAxis {
+                    AxisMarks(values: [0, 1, 2, 3, 4, 5])
+                }
+
+                HStack {
+                    Text("Average RIR:")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    Text(String(format: "%.1f", summary.averageRIR ?? 0))
+                        .font(.headline)
+                        .foregroundStyle(.orange)
+                    Text("reps in reserve")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
         }
         .padding()
         .background(Color(.systemBackground))
         .cornerRadius(12)
+    }
+
+    private func exerciseProgressSection(summary: MesocycleProgressSummary) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Label("Exercise Progress", systemImage: "figure.strengthtraining.traditional")
+                .font(.headline)
+
+            ForEach(summary.exerciseProgress.prefix(5)) { exercise in
+                exerciseProgressRow(exercise)
+            }
+
+            if summary.exerciseProgress.count > 5 {
+                Text("+ \(summary.exerciseProgress.count - 5) more exercises")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .padding()
+        .background(Color(.systemBackground))
+        .cornerRadius(12)
+    }
+
+    private func exerciseProgressRow(_ exercise: ExerciseWeeklyProgress) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text(exercise.exerciseName)
+                .font(.subheadline)
+                .fontWeight(.medium)
+
+            if exercise.weeklyData.count >= 2 {
+                // Show progression chart
+                Chart(exercise.weeklyData) { data in
+                    LineMark(
+                        x: .value("Week", "W\(data.weekNumber)"),
+                        y: .value("Weight", data.maxWeight)
+                    )
+                    .foregroundStyle(.blue)
+
+                    PointMark(
+                        x: .value("Week", "W\(data.weekNumber)"),
+                        y: .value("Weight", data.maxWeight)
+                    )
+                    .foregroundStyle(.blue)
+                    .annotation(position: .top) {
+                        Text("\(Int(data.maxWeight))")
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+                .frame(height: 60)
+                .chartYAxis(.hidden)
+
+                // Progress indicator
+                let firstWeight = exercise.weeklyData.first?.maxWeight ?? 0
+                let lastWeight = exercise.weeklyData.last?.maxWeight ?? 0
+                let change = firstWeight > 0 ? ((lastWeight - firstWeight) / firstWeight) * 100 : 0
+
+                HStack {
+                    Text("Best: \(exercise.weeklyData.last?.bestSet ?? "-")")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    Spacer()
+                    HStack(spacing: 2) {
+                        Image(systemName: change >= 0 ? "arrow.up.circle.fill" : "arrow.down.circle.fill")
+                            .font(.caption)
+                        Text("\(abs(Int(change)))% from start")
+                            .font(.caption)
+                    }
+                    .foregroundStyle(change >= 0 ? .green : .red)
+                }
+            } else if let latest = exercise.weeklyData.last {
+                Text("Best: \(latest.bestSet)")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
+            Divider()
+        }
+    }
+
+    private func calculateVolumeChange(_ weeks: [WeeklyProgress]) -> Double {
+        guard weeks.count >= 2 else { return 0 }
+        let lastWeek = weeks[weeks.count - 1].totalVolume
+        let prevWeek = weeks[weeks.count - 2].totalVolume
+        guard prevWeek > 0 else { return 0 }
+        return ((lastWeek - prevWeek) / prevWeek) * 100
     }
 
     // MARK: - Helper Views

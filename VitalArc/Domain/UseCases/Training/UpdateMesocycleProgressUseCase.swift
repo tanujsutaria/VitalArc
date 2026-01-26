@@ -209,6 +209,20 @@ final class UpdateMesocycleProgressUseCase {
         let totalVolume = mesocycleSets.reduce(0.0) { $0 + $1.volume }
         let averageRIR = calculateAverageRIR(sets: mesocycleSets)
 
+        // Calculate week-by-week progress
+        let weeklyProgress = calculateWeeklyProgress(
+            workouts: workouts,
+            mesocycleId: mesocycleId,
+            mesocycle: mesocycle
+        )
+
+        // Calculate per-exercise progress
+        let exerciseProgress = try await calculateExerciseProgress(
+            workouts: workouts,
+            mesocycleId: mesocycleId,
+            mesocycle: mesocycle
+        )
+
         return MesocycleProgressSummary(
             mesocycleId: mesocycleId,
             currentWeek: mesocycle.currentWeek ?? 0,
@@ -218,8 +232,123 @@ final class UpdateMesocycleProgressUseCase {
             completedSets: completedSets,
             totalVolume: totalVolume,
             averageRIR: averageRIR,
-            progressPercentage: mesocycle.progressPercentage
+            progressPercentage: mesocycle.progressPercentage,
+            weeklyProgress: weeklyProgress,
+            exerciseProgress: exerciseProgress
         )
+    }
+
+    /// Calculate week-by-week progress data
+    private func calculateWeeklyProgress(
+        workouts: [Workout],
+        mesocycleId: UUID,
+        mesocycle: Mesocycle
+    ) -> [WeeklyProgress] {
+        let calendar = Calendar.current
+        var weeklyData: [Int: (volume: Double, sets: Int, completed: Int, rirs: [Int], workouts: Int)] = [:]
+
+        for workout in workouts {
+            // Determine which week this workout belongs to
+            let daysSinceStart = calendar.dateComponents([.day], from: mesocycle.startDate, to: workout.date).day ?? 0
+            let weekNumber = max(1, (daysSinceStart / 7) + 1)
+
+            guard weekNumber <= mesocycle.durationWeeks else { continue }
+
+            let sets = workout.sets.filter { $0.mesocycleId == mesocycleId }
+            guard !sets.isEmpty else { continue }
+
+            var data = weeklyData[weekNumber] ?? (volume: 0, sets: 0, completed: 0, rirs: [], workouts: 0)
+            data.volume += sets.reduce(0.0) { $0 + $1.volume }
+            data.sets += sets.count
+            data.completed += sets.filter { $0.completed }.count
+            data.rirs += sets.compactMap { $0.rir }
+            data.workouts += 1
+            weeklyData[weekNumber] = data
+        }
+
+        // Create WeeklyProgress for each week up to current
+        let currentWeek = mesocycle.currentWeek ?? 1
+        return (1...currentWeek).map { weekNum in
+            let data = weeklyData[weekNum]
+            let avgRIR: Double? = {
+                guard let rirs = data?.rirs, !rirs.isEmpty else { return nil }
+                return Double(rirs.reduce(0, +)) / Double(rirs.count)
+            }()
+
+            return WeeklyProgress(
+                weekNumber: weekNum,
+                totalVolume: data?.volume ?? 0,
+                totalSets: data?.sets ?? 0,
+                completedSets: data?.completed ?? 0,
+                averageRIR: avgRIR,
+                workoutCount: data?.workouts ?? 0
+            )
+        }
+    }
+
+    /// Calculate per-exercise progress across weeks
+    private func calculateExerciseProgress(
+        workouts: [Workout],
+        mesocycleId: UUID,
+        mesocycle: Mesocycle
+    ) async throws -> [ExerciseWeeklyProgress] {
+        let calendar = Calendar.current
+
+        // Get all exercises for name lookup
+        let exercises = try await workoutRepository.getExercises()
+        let exerciseNames: [UUID: String] = Dictionary(uniqueKeysWithValues: exercises.map { ($0.id, $0.name) })
+
+        // Group sets by exercise
+        var exerciseData: [UUID: (name: String, weekData: [Int: (maxWeight: Double, totalReps: Int, sets: Int, bestSet: (weight: Double, reps: Int))])] = [:]
+
+        for workout in workouts {
+            let daysSinceStart = calendar.dateComponents([.day], from: mesocycle.startDate, to: workout.date).day ?? 0
+            let weekNumber = max(1, (daysSinceStart / 7) + 1)
+
+            guard weekNumber <= mesocycle.durationWeeks else { continue }
+
+            for set in workout.sets where set.mesocycleId == mesocycleId && set.completed {
+                let exerciseId = set.exerciseId
+
+                // Get exercise name from lookup
+                let exerciseName = exerciseNames[exerciseId] ?? "Unknown Exercise"
+
+                var data = exerciseData[exerciseId] ?? (name: exerciseName, weekData: [:])
+                var weekEntry = data.weekData[weekNumber] ?? (maxWeight: 0, totalReps: 0, sets: 0, bestSet: (weight: 0, reps: 0))
+
+                weekEntry.maxWeight = max(weekEntry.maxWeight, set.weight)
+                weekEntry.totalReps += set.reps
+                weekEntry.sets += 1
+
+                // Track best set (highest weight with most reps)
+                if set.weight > weekEntry.bestSet.weight ||
+                   (set.weight == weekEntry.bestSet.weight && set.reps > weekEntry.bestSet.reps) {
+                    weekEntry.bestSet = (set.weight, set.reps)
+                }
+
+                data.weekData[weekNumber] = weekEntry
+                exerciseData[exerciseId] = data
+            }
+        }
+
+        // Convert to ExerciseWeeklyProgress
+        return exerciseData.map { exerciseId, data in
+            let weeklyData = data.weekData.map { weekNum, weekData in
+                ExerciseWeekData(
+                    weekNumber: weekNum,
+                    maxWeight: weekData.maxWeight,
+                    totalReps: weekData.totalReps,
+                    totalSets: weekData.sets,
+                    bestSet: "\(Int(weekData.bestSet.weight)) x \(weekData.bestSet.reps)"
+                )
+            }.sorted { $0.weekNumber < $1.weekNumber }
+
+            return ExerciseWeeklyProgress(
+                exerciseId: exerciseId,
+                exerciseName: data.name,
+                weeklyData: weeklyData
+            )
+        }.sorted { $0.exerciseName < $1.exerciseName }
     }
 
     private func calculateAverageRIR(sets: [WorkoutSet]) -> Double? {
@@ -240,4 +369,34 @@ struct MesocycleProgressSummary {
     let totalVolume: Double
     let averageRIR: Double?
     let progressPercentage: Double
+    let weeklyProgress: [WeeklyProgress]
+    let exerciseProgress: [ExerciseWeeklyProgress]
+}
+
+/// Weekly progress data for charts
+struct WeeklyProgress: Identifiable {
+    let id = UUID()
+    let weekNumber: Int
+    let totalVolume: Double // in lbs
+    let totalSets: Int
+    let completedSets: Int
+    let averageRIR: Double?
+    let workoutCount: Int
+}
+
+/// Per-exercise weekly progress for tracking specific lifts
+struct ExerciseWeeklyProgress: Identifiable {
+    let id = UUID()
+    let exerciseId: UUID
+    let exerciseName: String
+    let weeklyData: [ExerciseWeekData]
+}
+
+struct ExerciseWeekData: Identifiable {
+    let id = UUID()
+    let weekNumber: Int
+    let maxWeight: Double // in lbs
+    let totalReps: Int
+    let totalSets: Int
+    let bestSet: String // e.g., "225 x 8"
 }
