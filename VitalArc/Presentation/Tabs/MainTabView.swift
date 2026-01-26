@@ -413,7 +413,7 @@ struct NutritionTabView: View {
                             }
                             .padding()
                         }
-                        .background(Color(.systemGroupedBackground))
+                        .background(Color.vitalAdaptiveBackground)
                         .task {
                             await loadDailyNutrition()
                         }

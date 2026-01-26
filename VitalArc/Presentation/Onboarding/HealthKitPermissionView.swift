@@ -85,12 +85,12 @@ struct HealthKitPermissionView: View {
                             Text("Enable Health Sync")
                         }
                     }
-                    .font(.headline)
+                    .font(.vitalH3)
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(Color.accentColor)
-                    .cornerRadius(12)
+                    .padding(Spacing.lg)
+                    .background(Color.vitalPrimary)
+                    .cornerRadius(Spacing.radiusMedium)
                 }
                 .disabled(isRequesting)
 
@@ -107,8 +107,8 @@ struct HealthKitPermissionView: View {
 
                 Button(action: onBack) {
                     Text("Back")
-                        .font(.subheadline)
-                        .foregroundColor(.accentColor)
+                        .font(.vitalBody)
+                        .foregroundColor(Color.vitalPrimary)
                 }
             }
             .padding(.horizontal)

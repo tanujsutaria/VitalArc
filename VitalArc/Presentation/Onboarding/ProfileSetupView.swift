@@ -125,12 +125,12 @@ struct ProfileSetupView: View {
                 HStack(spacing: 16) {
                     Button(action: onBack) {
                         Text("Back")
-                            .font(.headline)
-                            .foregroundColor(.accentColor)
+                            .font(.vitalH3)
+                            .foregroundColor(Color.vitalPrimary)
                             .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(Color(.systemGray6))
-                            .cornerRadius(12)
+                            .padding(Spacing.lg)
+                            .background(Color.vitalAdaptiveSurface)
+                            .cornerRadius(Spacing.radiusMedium)
                     }
 
                     Button(action: onContinue) {
@@ -138,12 +138,12 @@ struct ProfileSetupView: View {
                             .font(.headline)
                             .foregroundColor(.white)
                             .frame(maxWidth: .infinity)
-                            .padding()
+                            .padding(Spacing.lg)
                             .background(
                                 viewModel.canProceedFromProfileSetup ?
-                                Color.accentColor : Color.gray
+                                Color.vitalPrimary : Color.vitalAdaptiveTextSecondary
                             )
-                            .cornerRadius(12)
+                            .cornerRadius(Spacing.radiusMedium)
                     }
                     .disabled(!viewModel.canProceedFromProfileSetup)
                 }
