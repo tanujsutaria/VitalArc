@@ -2,25 +2,38 @@
 
 **Last Updated**: January 25, 2026 (Session 4)
 **Build Status**: ✅ Passing
-**Overall Completion**: ~65%
+**Stage**: Pre-MVP (Foundation Built, Polish Required)
+
+---
+
+## Current State
+
+The app compiles and runs. Core features exist but are **not MVP-ready** due to:
+- Inconsistent units across screens
+- Design system not uniformly applied
+- Unimplemented settings/about features
+- Error handling gaps
+
+**The real work begins after consistency is fixed.**
 
 ---
 
 ## Feature Status Overview
 
-### Fully Implemented (✅)
+### Foundation Built (Needs Polish)
 
-| Feature | Description | Key Files |
-|---------|-------------|-----------|
-| **Health Dashboard** | HealthKit integration for HRV, HR, steps, sleep, weight, energy | `HealthKitManager.swift`, `HealthDashboardView.swift` |
-| **Workout Tracking** | Exercise logging with sets/reps/weight, RIR/RPE tracking, rest timer | `WorkoutLoggingView.swift`, `ExerciseSetView.swift` |
-| **Exercise Library** | 200+ exercises, body-part grouping, custom exercises, search | `ExerciseLibraryView.swift`, `ExerciseSeeds*.swift` |
-| **Templates System** | Visual day-by-day editor, save/reuse templates | `TemplateEditorView.swift`, `CreateTemplateView.swift` |
-| **Mesocycle System** | Auto-regulation, 4 progression schemes, phase generation | `MesocycleViewModel.swift`, `CreateMesocycleView.swift` |
-| **Analytics Dashboard** | Score rings, heatmaps, charts, trends, PRs | `AnalyticsDashboardView.swift`, `Components/*.swift` |
-| **Nutrition Tracking** | Multi-source API (USDA, Nutritionix, OpenFoodFacts), barcode scanning | `FoodSearchView.swift`, `FoodAPICoordinator.swift` |
-| **Design System** | 11 components, dark mode, accessibility | `Common/DesignSystem/*.swift` |
-| **Data Layer** | SwiftData persistence, repository pattern, clean architecture | `DependencyContainer.swift`, `*Repository.swift` |
+| Feature | Status | Blocking Issues |
+|---------|--------|-----------------|
+| **Health Dashboard** | Built | Uses kg instead of lbs |
+| **Workout Tracking** | Built | Hardcoded colors/spacing |
+| **Exercise Library** | Built | - |
+| **Templates System** | Built | Placeholder exercise picker |
+| **Mesocycle System** | Built | Week-to-week charts need testing |
+| **Analytics Dashboard** | Built | Hardcoded colors, system colors |
+| **Nutrition Tracking** | Built | Hardcoded colors in meal sections |
+| **Design System** | Built | Not uniformly applied |
+| **Data Layer** | Built | - |
+| **Profile/Settings** | Built | 6 unimplemented TODOs |
 
 ### Partially Implemented (⚠️)
 
@@ -137,27 +150,57 @@
 
 ---
 
-## Recommended Next Steps
+## Path to MVP
 
-### Phase 1: Consistency Fixes (Immediate)
-1. [ ] Fix unit system - enforce American units everywhere
-2. [ ] Replace 47+ hardcoded colors with design tokens
-3. [ ] Implement 6 TODOs in Settings/About
+### MVP Blockers (Must Fix Before Launch)
 
-### Phase 2: Algorithm Completion (Short-term)
-1. [ ] Implement Recovery score calculation (HRV baseline)
-2. [ ] Implement TDEE estimation for nutrition
-3. [ ] Add real-time workout progression suggestions
+**1. Unit Consistency**
+- [ ] Onboarding: Convert to American units (ft/in, lbs)
+- [ ] Health Dashboard: Convert to American units
+- [ ] Enforce settings toggle across all screens
+- [ ] Test all screens for unit display
 
-### Phase 3: New Features (Medium-term)
-1. [ ] Notifications system (reminders)
-2. [ ] Home screen widgets
-3. [ ] CloudKit sync
+**2. Design System Enforcement**
+- [ ] Replace 47+ hardcoded colors with design tokens
+- [ ] Replace 100+ hardcoded spacing values
+- [ ] Replace direct font calls with typography tokens
+- [ ] Replace `Color(.systemGray6)` with `Color.vitalAdaptiveSurface`
 
-### Phase 4: Advanced (Long-term)
-1. [ ] Apple Watch companion app
-2. [ ] AI-powered insights
-3. [ ] Social features
+**3. Complete Unfinished Features**
+- [ ] SettingsView: Implement reset onboarding
+- [ ] SettingsView: Implement delete all data
+- [ ] SettingsView: Implement syncHealthKitData()
+- [ ] AboutView: Add privacy policy link
+- [ ] AboutView: Add terms of service link
+- [ ] CreateTemplateView: Replace placeholder exercise picker
+
+**4. Error Handling Standardization**
+- [ ] Replace silent `try?` failures with user feedback
+- [ ] Standardize error display pattern (alert vs inline)
+- [ ] Add error states to all async operations
+
+**5. Testing & Polish**
+- [ ] Add #Preview to remaining 20 presentation files
+- [ ] Test all flows end-to-end in simulator
+- [ ] Verify HealthKit permissions flow
+- [ ] Test on multiple device sizes
+
+### Post-MVP Enhancements
+
+**Phase 1: Algorithm Completion**
+- [ ] Recovery score calculation (HRV baseline)
+- [ ] TDEE estimation for nutrition
+- [ ] Real-time workout progression suggestions
+
+**Phase 2: Platform Features**
+- [ ] Notifications (reminders)
+- [ ] Home screen widgets
+- [ ] CloudKit sync
+
+**Phase 3: Advanced**
+- [ ] Apple Watch companion
+- [ ] AI-powered insights
+- [ ] Social features
 
 ---
 
