@@ -16,6 +16,7 @@ final class AnalyticsDashboardViewModel {
     private let calculateVolumeUseCase: CalculateVolumeUseCase
     private let trackProgressiveOverloadUseCase: TrackProgressiveOverloadUseCase
     private let generateProgressReportUseCase: GenerateProgressReportUseCase
+    private let calculateRecoveryScoreUseCase: CalculateRecoveryScoreUseCase
     private let analyticsRepository: AnalyticsRepository
     private let healthRepository: HealthRepository
     private let nutritionRepository: NutritionRepository
@@ -28,6 +29,7 @@ final class AnalyticsDashboardViewModel {
 
     // Overview Scores
     var recoveryScore: Double = 0
+    var recoveryResult: RecoveryScoreResult?
     var strainScore: Double = 0
     var sleepScore: Double = 0
     var weeklyTrainingVolume: Double = 0
@@ -77,6 +79,7 @@ final class AnalyticsDashboardViewModel {
         calculateVolumeUseCase: CalculateVolumeUseCase,
         trackProgressiveOverloadUseCase: TrackProgressiveOverloadUseCase,
         generateProgressReportUseCase: GenerateProgressReportUseCase,
+        calculateRecoveryScoreUseCase: CalculateRecoveryScoreUseCase,
         analyticsRepository: AnalyticsRepository,
         healthRepository: HealthRepository,
         nutritionRepository: NutritionRepository
@@ -84,6 +87,7 @@ final class AnalyticsDashboardViewModel {
         self.calculateVolumeUseCase = calculateVolumeUseCase
         self.trackProgressiveOverloadUseCase = trackProgressiveOverloadUseCase
         self.generateProgressReportUseCase = generateProgressReportUseCase
+        self.calculateRecoveryScoreUseCase = calculateRecoveryScoreUseCase
         self.analyticsRepository = analyticsRepository
         self.healthRepository = healthRepository
         self.nutritionRepository = nutritionRepository
@@ -299,24 +303,16 @@ final class AnalyticsDashboardViewModel {
     }
 
     private func calculateScores() {
-        // Recovery Score (based on HRV, sleep, resting HR)
-        var recoveryFactors: [Double] = []
-
-        if let latestHRV = hrvTrend7Day.last?.value, let baseline = hrvBaseline {
-            let hrvScore = min(max((latestHRV / baseline) * 100, 0), 100)
-            recoveryFactors.append(hrvScore)
-        }
-
-        if let latestSleep = sleepTrend.last?.totalHours {
-            let sleepScore = min(max((latestSleep / sleepTargetHours) * 100, 0), 100)
-            recoveryFactors.append(sleepScore)
-        }
-
-        if !recoveryFactors.isEmpty {
-            recoveryScore = recoveryFactors.reduce(0, +) / Double(recoveryFactors.count)
-        } else {
-            // Generate demo score if no data
-            recoveryScore = Double.random(in: 65...95)
+        // Calculate Recovery Score using the dedicated use case
+        Task {
+            do {
+                let result = try await calculateRecoveryScoreUseCase.execute()
+                recoveryResult = result
+                recoveryScore = Double(result.score)
+            } catch {
+                // Fallback to demo score if calculation fails
+                recoveryScore = Double.random(in: 65...95)
+            }
         }
 
         // Sleep Score (based on duration and consistency)

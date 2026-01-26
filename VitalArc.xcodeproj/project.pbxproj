@@ -152,6 +152,7 @@
 		F5305B3EBD2644E69E6DA603 /* FoodCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14389D381A9041C8B8B0903E /* FoodCache.swift */; };
 		F5C7CDAE4DB39D1E519291B4 /* VitalCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8434AB0E1D16EF78D00CD674 /* VitalCard.swift */; };
 		F65A35BA0412BE0B2AA62090 /* CalculateVolumeUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24DDA3E1DCD3373B4807583B /* CalculateVolumeUseCase.swift */; };
+		CALCRECSCRBLD01B2C3D4E567 /* CalculateRecoveryScoreUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = CALCRECSCORE01B2C3D4E5F67 /* CalculateRecoveryScoreUseCase.swift */; };
 		FA78ACED75968C458123000C /* MetricCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 863F76B52D3BE699B0B40B86 /* MetricCardView.swift */; };
 		FC68713CB1A8EE76A45DC165 /* VolumeMetrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85AD2A1D24A042F236CB606D /* VolumeMetrics.swift */; };
 		FD4AE6FC632257910F12BB15 /* TrainingBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3FBA5288426C1146D80EADB /* TrainingBlock.swift */; };
@@ -200,6 +201,7 @@
 		22FA1B8DD726955D4A465BB4 /* TrainingBlockModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TrainingBlockModel.swift; path = Training/TrainingBlockModel.swift; sourceTree = "<group>"; };
 		22FF7055B0CD30B756F6F963 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		24DDA3E1DCD3373B4807583B /* CalculateVolumeUseCase.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CalculateVolumeUseCase.swift; path = Analytics/CalculateVolumeUseCase.swift; sourceTree = "<group>"; };
+		CALCRECSCORE01B2C3D4E5F67 /* CalculateRecoveryScoreUseCase.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CalculateRecoveryScoreUseCase.swift; path = Analytics/CalculateRecoveryScoreUseCase.swift; sourceTree = "<group>"; };
 		270F7E00F8AA2538A300F8D8 /* VitalArcApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VitalArcApp.swift; sourceTree = "<group>"; };
 		284176C019E651CD1432F0DD /* ExerciseLibraryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseLibraryViewModel.swift; sourceTree = "<group>"; };
 		2BA1A6744D575B5C6C27D009 /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
@@ -714,6 +716,7 @@
 		8CC8772351611C45D5405A4D /* Analytics */ = {
 			isa = PBXGroup;
 			children = (
+				CALCRECSCORE01B2C3D4E5F67 /* CalculateRecoveryScoreUseCase.swift */,
 				24DDA3E1DCD3373B4807583B /* CalculateVolumeUseCase.swift */,
 				FAC49DABAB42DA0A749D56EA /* GenerateProgressReportUseCase.swift */,
 				648FD3748FCCB2E7E2B8E09B /* TrackProgressiveOverloadUseCase.swift */,
@@ -1170,6 +1173,7 @@
 				16047A5DC8E85C5132B5E6DF /* CreateMesocycleUseCase.swift in Sources */,
 				22A79A0727C95CA8DD061C96 /* UpdateMesocycleProgressUseCase.swift in Sources */,
 				F65A35BA0412BE0B2AA62090 /* CalculateVolumeUseCase.swift in Sources */,
+				CALCRECSCRBLD01B2C3D4E567 /* CalculateRecoveryScoreUseCase.swift in Sources */,
 				B8C173115B4DE4C0E1F4C77F /* GenerateProgressReportUseCase.swift in Sources */,
 				1EC90E085CB6DB04B799C38F /* TrackProgressiveOverloadUseCase.swift in Sources */,
 				1B154E03E4D87418BB30D26A /* LoadWorkoutTemplateUseCase.swift in Sources */,
