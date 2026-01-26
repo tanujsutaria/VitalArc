@@ -17,17 +17,67 @@ You are starting a new development session for the VitalArc iOS fitness app.
 - **Uncommitted Changes**:
 !`cd /Users/tanujsutaria/Development/VitalArc && git status --short`
 
-## Phase 1: Sync with Remote
+## Phase 1: Sync with Remote and Create Feature Branch
 
-Pull the latest changes:
+### Step 1a: Stash any uncommitted changes
+
+Before switching branches, stash any uncommitted work to prevent loss:
 
 ```bash
 cd /Users/tanujsutaria/Development/VitalArc
+if [ -n "$(git status --porcelain)" ]; then
+    echo "Stashing uncommitted changes..."
+    git stash push -m "Auto-stash before session start $(date +%Y-%m-%d-%H%M)"
+fi
+```
+
+### Step 1b: Sync with main
+
+```bash
 git fetch origin
+git checkout main
 git pull origin main --ff-only || echo "Pull failed - check for conflicts"
 ```
 
 Report any merge conflicts or diverged branches.
+
+### Step 1c: Create feature branch with session versioning
+
+Determine the session number from SESSION_LOG.md (major version), then find the next available minor version for today:
+
+```bash
+# Get current session number from SESSION_LOG.md (e.g., "Session 8" -> 8)
+SESSION_NUM=$(grep -m1 "^## Session" SESSION_LOG.md | sed 's/## Session \([0-9]*\).*/\1/')
+
+# Find existing branches for this session today and get next minor version
+TODAY=$(date +%Y-%m-%d)
+EXISTING=$(git branch -a | grep -E "dev/session-${SESSION_NUM}\.[0-9]+-${TODAY}" | wc -l | tr -d ' ')
+MINOR=$EXISTING
+
+# Create branch: dev/session-8.0-2026-01-26 or dev/session-8.1-2026-01-26
+BRANCH_NAME="dev/session-${SESSION_NUM}.${MINOR}-${TODAY}"
+git checkout -b "$BRANCH_NAME"
+echo "Created branch: $BRANCH_NAME"
+```
+
+If $ARGUMENTS was provided, include it in the branch name:
+```bash
+# Example: dev/nutrition-8.0-2026-01-26
+BRANCH_NAME="dev/$ARGUMENTS-${SESSION_NUM}.${MINOR}-${TODAY}"
+git checkout -b "$BRANCH_NAME"
+```
+
+### Step 1d: Restore stashed changes (if any)
+
+```bash
+TODAY=$(date +%Y-%m-%d)
+if git stash list | grep -q "Auto-stash before session start $TODAY"; then
+    echo "Restoring stashed changes..."
+    git stash pop
+fi
+```
+
+**Note**: All development work should happen on feature branches, not main. The branch will be merged to main via PR when work is complete.
 
 ## Phase 2: Explore Codebase State
 
@@ -69,8 +119,8 @@ Add a new session entry to SESSION_LOG.md with this format:
 ### Session Start
 - **Time**: [Current time]
 - **Focus**: [From $ARGUMENTS if provided, otherwise "General development"]
-- **Branch**: [Current git branch]
-- **Last Commit**: [Most recent commit hash and message]
+- **Branch**: [Feature branch created for this session]
+- **Base**: main @ [Most recent commit hash and message]
 
 ### Pre-Session Status
 - **Build**: [Run quick build check]
@@ -107,8 +157,8 @@ Output a structured summary for the coding session:
 ===========================================================
 
 PROJECT STATE
-  Branch: [branch]
-  Last Commit: [hash] [message]
+  Feature Branch: [branch created for this session]
+  Base (main): [hash] [message]
   Uncommitted: [count] files
 
 CODEBASE METRICS
@@ -135,9 +185,10 @@ WARNINGS
 ## Final Output
 
 After completing all phases, confirm:
-1. Codebase is synced and builds
-2. Session log entry created
-3. Context summary displayed
-4. Ready for coding work
+1. Codebase is synced with main and builds
+2. Feature branch created for this session
+3. Session log entry created
+4. Context summary displayed
+5. Ready for coding work on feature branch
 
 If $ARGUMENTS was provided (e.g., "Nutrition" or "Design System"), focus the context summary on that area.

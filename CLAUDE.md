@@ -17,6 +17,44 @@ xcodebuild -scheme VitalArc -destination 'platform=iOS Simulator,name=iPhone 17 
 
 HealthKit features require a physical device with Apple Developer account and HealthKit entitlements configured.
 
+## Git Workflow
+
+**Branch naming**: `dev/<focus>-<session>.<minor>-YYYY-MM-DD`
+- Example: `dev/nutrition-8.0-2026-01-26`
+
+**Conventional Commits**: All commits must follow this format:
+
+```
+<type>(<scope>): <description>
+
+[optional body]
+
+Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
+```
+
+**Types:**
+| Type | Description |
+|------|-------------|
+| `feat` | New feature or functionality |
+| `fix` | Bug fix |
+| `docs` | Documentation only changes |
+| `style` | Code style (formatting, whitespace) |
+| `refactor` | Code change that neither fixes nor adds features |
+| `perf` | Performance improvement |
+| `test` | Adding or updating tests |
+| `build` | Build system or dependency changes |
+| `chore` | Other maintenance tasks |
+
+**Scopes:** `workout`, `nutrition`, `health`, `analytics`, `ui`, `infra`, `session`
+
+**Examples:**
+```
+feat(workout): add custom exercise creation
+fix(nutrition): correct calorie calculation for meals
+docs(session): update session 8 documentation
+refactor(ui): migrate ProfileView to design tokens
+```
+
 ## Architecture Overview
 
 VitalArc uses **Clean Architecture** with **MVVM** pattern:
