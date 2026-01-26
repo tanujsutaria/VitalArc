@@ -96,7 +96,7 @@ struct ChartView: View {
 // MARK: - Preview
 
 #Preview {
-    VStack(spacing: 16) {
+    VStack(spacing: Spacing.md) {
         ChartView(
             title: "HRV Trend (7 Days)",
             data: [
@@ -108,17 +108,17 @@ struct ChartView: View {
                 ChartDataPoint(date: Date().addingTimeInterval(-1 * 86400), value: 78),
                 ChartDataPoint(date: Date(), value: 80)
             ],
-            color: .red,
+            color: .vitalDanger,
             unit: "ms"
         )
 
         ChartView(
             title: "Steps Trend (7 Days)",
             data: [],
-            color: .blue,
+            color: .vitalInfo,
             unit: "steps"
         )
     }
     .padding()
-    .background(Color(.systemGroupedBackground))
+    .background(Color.vitalAdaptiveBackground)
 }

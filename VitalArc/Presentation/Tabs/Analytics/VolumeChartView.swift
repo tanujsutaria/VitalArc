@@ -14,12 +14,12 @@ struct VolumeChartView: View {
 
     var body: some View {
         ScrollView {
-            VStack(spacing: 24) {
+            VStack(spacing: Spacing.xl) {
                 if !metrics.isEmpty {
                     // Weekly Volume Trend
-                    VStack(alignment: .leading, spacing: 12) {
+                    VStack(alignment: .leading, spacing: Spacing.md) {
                         Text("Weekly Volume Trend")
-                            .font(.headline)
+                            .font(.vitalH3)
 
                         Chart {
                             ForEach(metrics) { metric in
@@ -27,7 +27,7 @@ struct VolumeChartView: View {
                                     x: .value("Week", metric.weekStartDate),
                                     y: .value("Volume", metric.totalVolume)
                                 )
-                                .foregroundStyle(.blue)
+                                .foregroundStyle(Color.vitalPrimary)
                                 .interpolationMethod(.catmullRom)
 
                                 AreaMark(
@@ -36,7 +36,7 @@ struct VolumeChartView: View {
                                 )
                                 .foregroundStyle(
                                     LinearGradient(
-                                        colors: [.blue.opacity(0.3), .clear],
+                                        colors: [Color.vitalPrimary.opacity(0.3), .clear],
                                         startPoint: .top,
                                         endPoint: .bottom
                                     )
@@ -62,14 +62,14 @@ struct VolumeChartView: View {
                             }
                         }
                     }
-                    .padding()
-                    .background(Color(.systemGray6))
-                    .cornerRadius(12)
+                    .padding(Spacing.lg)
+                    .background(Color.vitalAdaptiveSurface)
+                    .cornerRadius(Spacing.radiusMedium)
 
                     // Workout Count
-                    VStack(alignment: .leading, spacing: 12) {
+                    VStack(alignment: .leading, spacing: Spacing.md) {
                         Text("Workout Frequency")
-                            .font(.headline)
+                            .font(.vitalH3)
 
                         Chart {
                             ForEach(metrics) { metric in
@@ -77,7 +77,7 @@ struct VolumeChartView: View {
                                     x: .value("Week", metric.weekStartDate),
                                     y: .value("Workouts", metric.workoutCount)
                                 )
-                                .foregroundStyle(.green)
+                                .foregroundStyle(Color.vitalSuccess)
                             }
                         }
                         .frame(height: 180)
@@ -88,54 +88,53 @@ struct VolumeChartView: View {
                             }
                         }
                     }
-                    .padding()
-                    .background(Color(.systemGray6))
-                    .cornerRadius(12)
+                    .padding(Spacing.lg)
+                    .background(Color.vitalAdaptiveSurface)
+                    .cornerRadius(Spacing.radiusMedium)
 
                     // Top Exercises by Volume
                     if let latestMetric = metrics.last {
-                        VStack(alignment: .leading, spacing: 12) {
+                        VStack(alignment: .leading, spacing: Spacing.md) {
                             Text("Top Exercises This Week")
-                                .font(.headline)
+                                .font(.vitalH3)
 
                             ForEach(latestMetric.topExercises(limit: 5)) { exercise in
                                 HStack {
-                                    VStack(alignment: .leading, spacing: 4) {
+                                    VStack(alignment: .leading, spacing: Spacing.xs) {
                                         Text(exercise.exerciseName)
-                                            .font(.subheadline)
-                                        Text("\(exercise.sets) sets × \(Int(exercise.avgReps)) reps")
-                                            .font(.caption)
-                                            .foregroundStyle(.secondary)
+                                            .font(.vitalBody)
+                                        Text("\(exercise.sets) sets x \(Int(exercise.avgReps)) reps")
+                                            .font(.vitalCaption)
+                                            .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                                     }
 
                                     Spacer()
 
-                                    VStack(alignment: .trailing, spacing: 4) {
+                                    VStack(alignment: .trailing, spacing: Spacing.xs) {
                                         Text("\(Int(exercise.totalWeight)) kg")
-                                            .font(.subheadline)
-                                            .fontWeight(.semibold)
+                                            .font(.vitalLabel)
                                         Text("total volume")
-                                            .font(.caption)
-                                            .foregroundStyle(.secondary)
+                                            .font(.vitalCaption)
+                                            .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                                     }
                                 }
-                                .padding(.vertical, 8)
+                                .padding(.vertical, Spacing.sm)
 
                                 if exercise.id != latestMetric.topExercises(limit: 5).last?.id {
                                     Divider()
                                 }
                             }
                         }
-                        .padding()
-                        .background(Color(.systemGray6))
-                        .cornerRadius(12)
+                        .padding(Spacing.lg)
+                        .background(Color.vitalAdaptiveSurface)
+                        .cornerRadius(Spacing.radiusMedium)
                     }
 
                     // Volume Distribution (if data available)
                     if let latestMetric = metrics.last, !latestMetric.exerciseVolumes.isEmpty {
-                        VStack(alignment: .leading, spacing: 12) {
+                        VStack(alignment: .leading, spacing: Spacing.md) {
                             Text("Volume Distribution")
-                                .font(.headline)
+                                .font(.vitalH3)
 
                             Chart {
                                 ForEach(latestMetric.topExercises(limit: 8)) { exercise in
@@ -149,9 +148,9 @@ struct VolumeChartView: View {
                             }
                             .frame(height: 250)
                         }
-                        .padding()
-                        .background(Color(.systemGray6))
-                        .cornerRadius(12)
+                        .padding(Spacing.lg)
+                        .background(Color.vitalAdaptiveSurface)
+                        .cornerRadius(Spacing.radiusMedium)
                     }
                 } else {
                     ContentUnavailableView(
@@ -161,7 +160,7 @@ struct VolumeChartView: View {
                     )
                 }
             }
-            .padding()
+            .padding(Spacing.lg)
         }
     }
 }

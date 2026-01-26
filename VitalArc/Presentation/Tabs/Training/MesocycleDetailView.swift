@@ -29,7 +29,7 @@ struct MesocycleDetailView: View {
                 }
             }
             .pickerStyle(.segmented)
-            .padding()
+            .padding(Spacing.lg)
 
             // Content
             ScrollView {
@@ -42,7 +42,7 @@ struct MesocycleDetailView: View {
                     progressContent
                 }
             }
-            .background(Color(.systemGroupedBackground))
+            .background(Color.vitalAdaptiveBackground)
         }
         .navigationTitle(mesocycle.name)
         .navigationBarTitleDisplayMode(.large)
@@ -54,7 +54,7 @@ struct MesocycleDetailView: View {
     // MARK: - Overview Tab
 
     private var overviewContent: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: Spacing.lg) {
             // Status Card
             statusCard
 
@@ -70,86 +70,86 @@ struct MesocycleDetailView: View {
             // Quick Stats
             quickStatsCard
         }
-        .padding()
+        .padding(Spacing.lg)
     }
 
     private var statusCard: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: Spacing.md) {
             Label("Status", systemImage: "info.circle")
-                .font(.headline)
+                .font(.vitalH3)
 
             HStack {
                 Text(mesocycle.status.rawValue)
-                    .font(.title2)
+                    .font(.vitalH2)
                     .fontWeight(.bold)
                     .foregroundStyle(Color(mesocycle.status.color))
 
                 Spacer()
 
                 if mesocycle.status == .active {
-                    VStack(alignment: .trailing, spacing: 4) {
+                    VStack(alignment: .trailing, spacing: Spacing.xs) {
                         Text("Week \(mesocycle.currentWeek ?? 0)")
-                            .font(.headline)
+                            .font(.vitalH3)
                         Text("of \(mesocycle.durationWeeks)")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .font(.vitalCaption)
+                            .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                     }
                 }
             }
 
             if mesocycle.status == .active {
                 ProgressView(value: mesocycle.progressPercentage / 100)
-                    .tint(.blue)
+                    .tint(Color.vitalPrimary)
 
                 Text("\(Int(mesocycle.progressPercentage))% Complete")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .font(.vitalCaption)
+                    .foregroundStyle(Color.vitalAdaptiveTextSecondary)
             }
         }
-        .padding()
-        .background(Color(.systemBackground))
-        .cornerRadius(12)
+        .padding(Spacing.lg)
+        .background(Color.vitalAdaptiveSurface)
+        .cornerRadius(Spacing.radiusMedium)
     }
 
     private var goalCard: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: Spacing.md) {
             Label("Training Goal", systemImage: mesocycle.goal.icon)
-                .font(.headline)
+                .font(.vitalH3)
 
-            HStack(spacing: 12) {
+            HStack(spacing: Spacing.md) {
                 Image(systemName: mesocycle.goal.icon)
                     .font(.system(size: 32))
-                    .foregroundStyle(.blue)
+                    .foregroundStyle(Color.vitalPrimary)
 
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: Spacing.xs) {
                     Text(mesocycle.goal.rawValue)
-                        .font(.title3)
+                        .font(.vitalH3)
                         .fontWeight(.semibold)
 
                     Text(mesocycle.goal.description)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .font(.vitalCaption)
+                        .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                 }
             }
         }
-        .padding()
-        .background(Color(.systemBackground))
-        .cornerRadius(12)
+        .padding(Spacing.lg)
+        .background(Color.vitalAdaptiveSurface)
+        .cornerRadius(Spacing.radiusMedium)
     }
 
     private var timelineCard: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: Spacing.md) {
             Label("Timeline", systemImage: "calendar")
-                .font(.headline)
+                .font(.vitalH3)
 
-            VStack(spacing: 8) {
+            VStack(spacing: Spacing.sm) {
                 HStack {
                     Text("Start")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .font(.vitalCaption)
+                        .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                     Spacer()
                     Text(formatDate(mesocycle.startDate))
-                        .font(.subheadline)
+                        .font(.vitalBody)
                         .fontWeight(.medium)
                 }
 
@@ -157,11 +157,11 @@ struct MesocycleDetailView: View {
 
                 HStack {
                     Text("End")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .font(.vitalCaption)
+                        .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                     Spacer()
                     Text(formatDate(mesocycle.endDate))
-                        .font(.subheadline)
+                        .font(.vitalBody)
                         .fontWeight(.medium)
                 }
 
@@ -169,47 +169,47 @@ struct MesocycleDetailView: View {
 
                 HStack {
                     Text("Duration")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .font(.vitalCaption)
+                        .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                     Spacer()
                     Text("\(mesocycle.durationWeeks) weeks")
-                        .font(.subheadline)
+                        .font(.vitalBody)
                         .fontWeight(.medium)
                 }
             }
         }
-        .padding()
-        .background(Color(.systemBackground))
-        .cornerRadius(12)
+        .padding(Spacing.lg)
+        .background(Color.vitalAdaptiveSurface)
+        .cornerRadius(Spacing.radiusMedium)
     }
 
     private var phaseTimelineCard: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: Spacing.md) {
             Label("Phase Timeline", systemImage: "chart.line.uptrend.xyaxis")
-                .font(.headline)
+                .font(.vitalH3)
 
             if mesocycle.phases.isEmpty {
                 Text("No phases defined")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .font(.vitalCaption)
+                    .foregroundStyle(Color.vitalAdaptiveTextSecondary)
             } else {
-                VStack(spacing: 8) {
+                VStack(spacing: Spacing.sm) {
                     ForEach(phaseGroups, id: \.phaseType) { group in
-                        HStack(spacing: 8) {
+                        HStack(spacing: Spacing.sm) {
                             Image(systemName: group.phaseType.icon)
                                 .foregroundStyle(Color(group.phaseType.color))
                                 .frame(width: 24)
 
                             Text(group.phaseType.rawValue)
-                                .font(.subheadline)
+                                .font(.vitalBody)
                                 .fontWeight(.medium)
                                 .frame(maxWidth: .infinity, alignment: .leading)
 
                             Text("Weeks \(formatWeekRange(group.weeks))")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
+                                .font(.vitalCaption)
+                                .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                         }
-                        .padding(.vertical, 4)
+                        .padding(.vertical, Spacing.xs)
 
                         if group.phaseType != phaseGroups.last?.phaseType {
                             Divider()
@@ -218,21 +218,21 @@ struct MesocycleDetailView: View {
                 }
             }
         }
-        .padding()
-        .background(Color(.systemBackground))
-        .cornerRadius(12)
+        .padding(Spacing.lg)
+        .background(Color.vitalAdaptiveSurface)
+        .cornerRadius(Spacing.radiusMedium)
     }
 
     private var quickStatsCard: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: Spacing.md) {
             Label("Quick Stats", systemImage: "chart.bar")
-                .font(.headline)
+                .font(.vitalH3)
 
             if let summary = viewModel.progressSummary {
                 LazyVGrid(columns: [
                     GridItem(.flexible()),
                     GridItem(.flexible())
-                ], spacing: 16) {
+                ], spacing: Spacing.lg) {
                     StatItem(title: "Total Sets", value: "\(summary.totalSets)")
                     StatItem(title: "Completed", value: "\(summary.completedSets)")
                     StatItem(title: "Total Volume", value: String(format: "%.0f lbs", summary.totalVolume))
@@ -242,19 +242,19 @@ struct MesocycleDetailView: View {
                 }
             } else {
                 Text("No workout data yet")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .font(.vitalCaption)
+                    .foregroundStyle(Color.vitalAdaptiveTextSecondary)
             }
         }
-        .padding()
-        .background(Color(.systemBackground))
-        .cornerRadius(12)
+        .padding(Spacing.lg)
+        .background(Color.vitalAdaptiveSurface)
+        .cornerRadius(Spacing.radiusMedium)
     }
 
     // MARK: - Schedule Tab
 
     private var scheduleContent: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: Spacing.lg) {
             if mesocycle.trainingBlocks.isEmpty {
                 emptyScheduleView
             } else {
@@ -263,25 +263,25 @@ struct MesocycleDetailView: View {
                 }
             }
         }
-        .padding()
+        .padding(Spacing.lg)
     }
 
     private var emptyScheduleView: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: Spacing.lg) {
             Image(systemName: "calendar.badge.plus")
                 .font(.system(size: 60))
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Color.vitalAdaptiveTextSecondary)
 
             Text("No Training Schedule")
-                .font(.title2)
+                .font(.vitalH2)
                 .fontWeight(.semibold)
 
             Text("Add training blocks to define your weekly workout schedule")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
+                .font(.vitalBody)
+                .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                 .multilineTextAlignment(.center)
         }
-        .padding()
+        .padding(Spacing.lg)
         .frame(maxWidth: .infinity)
     }
 
@@ -292,7 +292,7 @@ struct MesocycleDetailView: View {
     // MARK: - Progress Tab
 
     private var progressContent: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: Spacing.lg) {
             if let summary = viewModel.progressSummary {
                 // Week Progress Card
                 weekProgressCard(summary: summary)
@@ -311,28 +311,28 @@ struct MesocycleDetailView: View {
                 }
             } else {
                 Text("No progress data available")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                    .padding()
+                    .font(.vitalBody)
+                    .foregroundStyle(Color.vitalAdaptiveTextSecondary)
+                    .padding(Spacing.lg)
             }
         }
-        .padding()
+        .padding(Spacing.lg)
     }
 
     private func weekProgressCard(summary: MesocycleProgressSummary) -> some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: Spacing.md) {
             Label("Week Progress", systemImage: "calendar.badge.clock")
-                .font(.headline)
+                .font(.vitalH3)
 
             HStack {
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: Spacing.xs) {
                     Text("Week \(summary.currentWeek)")
-                        .font(.title)
+                        .font(.vitalH1)
                         .fontWeight(.bold)
 
                     if let phase = summary.currentPhase {
                         Label(phase.phaseType.rawValue, systemImage: phase.phaseType.icon)
-                            .font(.caption)
+                            .font(.vitalCaption)
                             .foregroundStyle(Color(phase.phaseType.color))
                     }
                 }
@@ -343,28 +343,28 @@ struct MesocycleDetailView: View {
                     .frame(width: 80, height: 80)
             }
         }
-        .padding()
-        .background(Color(.systemBackground))
-        .cornerRadius(12)
+        .padding(Spacing.lg)
+        .background(Color.vitalAdaptiveSurface)
+        .cornerRadius(Spacing.radiusMedium)
     }
 
     private func volumeChartCard(summary: MesocycleProgressSummary) -> some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: Spacing.md) {
             Label("Volume Trend", systemImage: "chart.bar.fill")
-                .font(.headline)
+                .font(.vitalH3)
 
             if summary.weeklyProgress.isEmpty {
                 Text("Complete workouts to see volume trends")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .font(.vitalCaption)
+                    .foregroundStyle(Color.vitalAdaptiveTextSecondary)
             } else {
                 Chart(summary.weeklyProgress) { week in
                     BarMark(
                         x: .value("Week", "W\(week.weekNumber)"),
                         y: .value("Volume", week.totalVolume)
                     )
-                    .foregroundStyle(.blue.gradient)
-                    .cornerRadius(4)
+                    .foregroundStyle(Color.vitalPrimary.gradient)
+                    .cornerRadius(Spacing.xs)
                 }
                 .frame(height: 180)
                 .chartYAxis {
@@ -372,7 +372,7 @@ struct MesocycleDetailView: View {
                         if let vol = value.as(Double.self) {
                             AxisValueLabel {
                                 Text("\(Int(vol / 1000))k")
-                                    .font(.caption2)
+                                    .font(.vitalCaptionSmall)
                             }
                         }
                     }
@@ -382,60 +382,60 @@ struct MesocycleDetailView: View {
                 HStack {
                     VStack(alignment: .leading) {
                         Text("Total Volume")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .font(.vitalCaption)
+                            .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                         Text("\(Int(summary.totalVolume)) lbs")
-                            .font(.headline)
+                            .font(.vitalH3)
                     }
                     Spacer()
                     if summary.weeklyProgress.count >= 2 {
                         let change = calculateVolumeChange(summary.weeklyProgress)
                         VStack(alignment: .trailing) {
                             Text("Week-over-Week")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                            HStack(spacing: 2) {
+                                .font(.vitalCaption)
+                                .foregroundStyle(Color.vitalAdaptiveTextSecondary)
+                            HStack(spacing: Spacing.xxs) {
                                 Image(systemName: change >= 0 ? "arrow.up" : "arrow.down")
-                                    .font(.caption)
+                                    .font(.vitalCaption)
                                 Text("\(abs(Int(change)))%")
-                                    .font(.headline)
+                                    .font(.vitalH3)
                             }
-                            .foregroundStyle(change >= 0 ? .green : .red)
+                            .foregroundStyle(change >= 0 ? Color.vitalSuccess : Color.vitalDanger)
                         }
                     }
                 }
             }
         }
-        .padding()
-        .background(Color(.systemBackground))
-        .cornerRadius(12)
+        .padding(Spacing.lg)
+        .background(Color.vitalAdaptiveSurface)
+        .cornerRadius(Spacing.radiusMedium)
     }
 
     private func rirTrendCard(summary: MesocycleProgressSummary) -> some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: Spacing.md) {
             Label("RIR Trend", systemImage: "chart.line.uptrend.xyaxis")
-                .font(.headline)
+                .font(.vitalH3)
 
             let weeksWithRIR = summary.weeklyProgress.filter { $0.averageRIR != nil }
 
             if weeksWithRIR.isEmpty {
                 Text("Log RIR values to see trends")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .font(.vitalCaption)
+                    .foregroundStyle(Color.vitalAdaptiveTextSecondary)
             } else {
                 Chart(weeksWithRIR) { week in
                     LineMark(
                         x: .value("Week", "W\(week.weekNumber)"),
                         y: .value("RIR", week.averageRIR ?? 0)
                     )
-                    .foregroundStyle(.orange)
+                    .foregroundStyle(Color.vitalWarning)
                     .symbol(Circle().strokeBorder(lineWidth: 2))
 
                     PointMark(
                         x: .value("Week", "W\(week.weekNumber)"),
                         y: .value("RIR", week.averageRIR ?? 0)
                     )
-                    .foregroundStyle(.orange)
+                    .foregroundStyle(Color.vitalWarning)
                 }
                 .frame(height: 120)
                 .chartYScale(domain: 0...5)
@@ -445,26 +445,26 @@ struct MesocycleDetailView: View {
 
                 HStack {
                     Text("Average RIR:")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .font(.vitalCaption)
+                        .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                     Text(String(format: "%.1f", summary.averageRIR ?? 0))
-                        .font(.headline)
-                        .foregroundStyle(.orange)
+                        .font(.vitalH3)
+                        .foregroundStyle(Color.vitalWarning)
                     Text("reps in reserve")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .font(.vitalCaption)
+                        .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                 }
             }
         }
-        .padding()
-        .background(Color(.systemBackground))
-        .cornerRadius(12)
+        .padding(Spacing.lg)
+        .background(Color.vitalAdaptiveSurface)
+        .cornerRadius(Spacing.radiusMedium)
     }
 
     private func exerciseProgressSection(summary: MesocycleProgressSummary) -> some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: Spacing.md) {
             Label("Exercise Progress", systemImage: "figure.strengthtraining.traditional")
-                .font(.headline)
+                .font(.vitalH3)
 
             ForEach(summary.exerciseProgress.prefix(5)) { exercise in
                 exerciseProgressRow(exercise)
@@ -472,19 +472,19 @@ struct MesocycleDetailView: View {
 
             if summary.exerciseProgress.count > 5 {
                 Text("+ \(summary.exerciseProgress.count - 5) more exercises")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .font(.vitalCaption)
+                    .foregroundStyle(Color.vitalAdaptiveTextSecondary)
             }
         }
-        .padding()
-        .background(Color(.systemBackground))
-        .cornerRadius(12)
+        .padding(Spacing.lg)
+        .background(Color.vitalAdaptiveSurface)
+        .cornerRadius(Spacing.radiusMedium)
     }
 
     private func exerciseProgressRow(_ exercise: ExerciseWeeklyProgress) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: Spacing.sm) {
             Text(exercise.exerciseName)
-                .font(.subheadline)
+                .font(.vitalBody)
                 .fontWeight(.medium)
 
             if exercise.weeklyData.count >= 2 {
@@ -494,17 +494,17 @@ struct MesocycleDetailView: View {
                         x: .value("Week", "W\(data.weekNumber)"),
                         y: .value("Weight", data.maxWeight)
                     )
-                    .foregroundStyle(.blue)
+                    .foregroundStyle(Color.vitalPrimary)
 
                     PointMark(
                         x: .value("Week", "W\(data.weekNumber)"),
                         y: .value("Weight", data.maxWeight)
                     )
-                    .foregroundStyle(.blue)
+                    .foregroundStyle(Color.vitalPrimary)
                     .annotation(position: .top) {
                         Text("\(Int(data.maxWeight))")
-                            .font(.caption2)
-                            .foregroundStyle(.secondary)
+                            .font(.vitalCaptionSmall)
+                            .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                     }
                 }
                 .frame(height: 60)
@@ -517,21 +517,21 @@ struct MesocycleDetailView: View {
 
                 HStack {
                     Text("Best: \(exercise.weeklyData.last?.bestSet ?? "-")")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .font(.vitalCaption)
+                        .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                     Spacer()
-                    HStack(spacing: 2) {
+                    HStack(spacing: Spacing.xxs) {
                         Image(systemName: change >= 0 ? "arrow.up.circle.fill" : "arrow.down.circle.fill")
-                            .font(.caption)
+                            .font(.vitalCaption)
                         Text("\(abs(Int(change)))% from start")
-                            .font(.caption)
+                            .font(.vitalCaption)
                     }
-                    .foregroundStyle(change >= 0 ? .green : .red)
+                    .foregroundStyle(change >= 0 ? Color.vitalSuccess : Color.vitalDanger)
                 }
             } else if let latest = exercise.weeklyData.last {
                 Text("Best: \(latest.bestSet)")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .font(.vitalCaption)
+                    .foregroundStyle(Color.vitalAdaptiveTextSecondary)
             }
 
             Divider()
@@ -588,58 +588,58 @@ struct TrainingBlockCard: View {
     let block: TrainingBlock
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: Spacing.md) {
             HStack {
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: Spacing.xs) {
                     Text(block.name)
-                        .font(.headline)
+                        .font(.vitalH3)
 
                     Text(block.dayName)
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
+                        .font(.vitalBody)
+                        .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                 }
 
                 Spacer()
 
-                VStack(alignment: .trailing, spacing: 4) {
+                VStack(alignment: .trailing, spacing: Spacing.xs) {
                     Text("\(block.exercises.count)")
-                        .font(.title2)
+                        .font(.vitalH2)
                         .fontWeight(.bold)
-                        .foregroundStyle(.blue)
+                        .foregroundStyle(Color.vitalPrimary)
 
                     Text("exercises")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .font(.vitalCaption)
+                        .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                 }
             }
 
             if !block.exercises.isEmpty {
                 Divider()
 
-                VStack(spacing: 8) {
+                VStack(spacing: Spacing.sm) {
                     ForEach(block.exercises.sorted(by: { $0.orderIndex < $1.orderIndex })) { exercise in
                         HStack {
                             Text("\(exercise.orderIndex + 1).")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
+                                .font(.vitalCaption)
+                                .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                                 .frame(width: 24)
 
-                            VStack(alignment: .leading, spacing: 2) {
+                            VStack(alignment: .leading, spacing: Spacing.xxs) {
                                 Text(exercise.prescription)
-                                    .font(.subheadline)
+                                    .font(.vitalBody)
 
                                 if let notes = exercise.notes {
                                     Text(notes)
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .font(.vitalCaption)
+                                        .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                                 }
                             }
 
                             Spacer()
 
                             Label(exercise.progressionScheme.rawValue, systemImage: exercise.progressionScheme.icon)
-                                .font(.caption2)
-                                .foregroundStyle(.secondary)
+                                .font(.vitalCaptionSmall)
+                                .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                         }
                     }
                 }
@@ -649,19 +649,19 @@ struct TrainingBlockCard: View {
 
             HStack {
                 Label("\(block.totalSets) sets", systemImage: "number")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .font(.vitalCaption)
+                    .foregroundStyle(Color.vitalAdaptiveTextSecondary)
 
                 Spacer()
 
                 Label("\(block.estimatedDuration) min", systemImage: "clock")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .font(.vitalCaption)
+                    .foregroundStyle(Color.vitalAdaptiveTextSecondary)
             }
         }
-        .padding()
-        .background(Color(.systemBackground))
-        .cornerRadius(12)
+        .padding(Spacing.lg)
+        .background(Color.vitalAdaptiveSurface)
+        .cornerRadius(Spacing.radiusMedium)
     }
 }
 
@@ -670,15 +670,15 @@ private struct StatItem: View {
     let value: String
 
     var body: some View {
-        VStack(spacing: 4) {
+        VStack(spacing: Spacing.xs) {
             Text(value)
-                .font(.title2)
+                .font(.vitalH2)
                 .fontWeight(.bold)
-                .foregroundStyle(.blue)
+                .foregroundStyle(Color.vitalPrimary)
 
             Text(title)
-                .font(.caption)
-                .foregroundStyle(.secondary)
+                .font(.vitalCaption)
+                .foregroundStyle(Color.vitalAdaptiveTextSecondary)
         }
         .frame(maxWidth: .infinity)
     }
@@ -690,16 +690,16 @@ struct CircularProgressView: View {
     var body: some View {
         ZStack {
             Circle()
-                .stroke(Color.gray.opacity(0.2), lineWidth: 8)
+                .stroke(Color.vitalAdaptiveTextSecondary.opacity(0.2), lineWidth: 8)
 
             Circle()
                 .trim(from: 0, to: progress)
-                .stroke(Color.blue, style: StrokeStyle(lineWidth: 8, lineCap: .round))
+                .stroke(Color.vitalPrimary, style: StrokeStyle(lineWidth: 8, lineCap: .round))
                 .rotationEffect(.degrees(-90))
                 .animation(.easeInOut, value: progress)
 
             Text("\(Int(progress * 100))%")
-                .font(.headline)
+                .font(.vitalH3)
                 .fontWeight(.bold)
         }
     }

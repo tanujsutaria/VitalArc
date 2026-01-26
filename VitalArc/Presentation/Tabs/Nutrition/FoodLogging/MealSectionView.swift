@@ -15,17 +15,17 @@ struct MealSectionView: View {
     let onDeleteEntry: (FoodEntry) -> Void
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: Spacing.md) {
             // Header
             HStack {
                 // Meal icon and name
-                HStack(spacing: 8) {
+                HStack(spacing: Spacing.sm) {
                     Image(systemName: mealIcon)
-                        .font(.title3)
+                        .font(.vitalH2)
                         .foregroundStyle(mealColor)
 
                     Text(meal.rawValue)
-                        .font(.headline)
+                        .font(.vitalH3)
                 }
 
                 Spacer()
@@ -33,8 +33,8 @@ struct MealSectionView: View {
                 // Totals
                 if !entries.isEmpty {
                     Text("\(Int(totals.calories)) cal")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
+                        .font(.vitalBody)
+                        .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                 }
 
                 // Add button
@@ -42,7 +42,7 @@ struct MealSectionView: View {
                     onAddFood()
                 } label: {
                     Image(systemName: "plus.circle.fill")
-                        .font(.title3)
+                        .font(.vitalH2)
                         .foregroundStyle(mealColor)
                 }
             }
@@ -62,8 +62,8 @@ struct MealSectionView: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 12))
+        .background(Color.vitalAdaptiveSurface)
+        .clipShape(RoundedRectangle(cornerRadius: Spacing.radiusMedium))
         .shadow(color: .black.opacity(0.05), radius: 5, x: 0, y: 2)
     }
 
@@ -83,13 +83,13 @@ struct MealSectionView: View {
     private var mealColor: Color {
         switch meal {
         case .breakfast:
-            return .orange
+            return .vitalWarning
         case .lunch:
-            return .yellow
+            return .vitalPrimary
         case .dinner:
-            return .purple
+            return .vitalInfo
         case .snack:
-            return .green
+            return .vitalSuccess
         }
     }
 }
@@ -99,9 +99,9 @@ struct MealSectionView: View {
 private struct EmptyMealView: View {
     var body: some View {
         Text("No foods logged")
-            .font(.subheadline)
-            .foregroundStyle(.tertiary)
-            .padding(.vertical, 8)
+            .font(.vitalBody)
+            .foregroundStyle(Color.vitalAdaptiveTextSecondary)
+            .padding(.vertical, Spacing.sm)
     }
 }
 
@@ -110,20 +110,20 @@ private struct FoodEntryRowView: View {
     let onDelete: () -> Void
 
     var body: some View {
-        HStack(alignment: .top, spacing: 12) {
-            VStack(alignment: .leading, spacing: 4) {
+        HStack(alignment: .top, spacing: Spacing.md) {
+            VStack(alignment: .leading, spacing: Spacing.xs) {
                 Text("\(Int(entry.quantity))g")
-                    .font(.subheadline)
+                    .font(.vitalBody)
                     .fontWeight(.medium)
 
                 // Macros
-                HStack(spacing: 8) {
-                    MacroText(value: Int(entry.calories), unit: "cal", color: .orange)
-                    MacroText(value: Int(entry.protein), unit: "P", color: .blue)
-                    MacroText(value: Int(entry.carbs), unit: "C", color: .green)
-                    MacroText(value: Int(entry.fat), unit: "F", color: .red)
+                HStack(spacing: Spacing.sm) {
+                    MacroText(value: Int(entry.calories), unit: "cal", color: .vitalPrimary)
+                    MacroText(value: Int(entry.protein), unit: "P", color: .vitalInfo)
+                    MacroText(value: Int(entry.carbs), unit: "C", color: .vitalWarning)
+                    MacroText(value: Int(entry.fat), unit: "F", color: .vitalDanger)
                 }
-                .font(.caption)
+                .font(.vitalCaption)
             }
 
             Spacer()
@@ -132,12 +132,12 @@ private struct FoodEntryRowView: View {
                 onDelete()
             } label: {
                 Image(systemName: "trash")
-                    .font(.caption)
-                    .foregroundStyle(.red)
+                    .font(.vitalCaption)
+                    .foregroundStyle(Color.vitalDanger)
             }
             .buttonStyle(.plain)
         }
-        .padding(.vertical, 4)
+        .padding(.vertical, Spacing.xs)
     }
 }
 
@@ -161,29 +161,29 @@ private struct MealTotalsView: View {
 
     var body: some View {
         Divider()
-            .padding(.vertical, 4)
+            .padding(.vertical, Spacing.xs)
 
         HStack {
             Text("Total")
-                .font(.subheadline)
+                .font(.vitalBody)
                 .fontWeight(.semibold)
 
             Spacer()
 
-            HStack(spacing: 12) {
-                MacroText(value: Int(totals.calories), unit: "cal", color: .orange)
-                MacroText(value: Int(totals.protein), unit: "P", color: .blue)
-                MacroText(value: Int(totals.carbs), unit: "C", color: .green)
-                MacroText(value: Int(totals.fat), unit: "F", color: .red)
+            HStack(spacing: Spacing.md) {
+                MacroText(value: Int(totals.calories), unit: "cal", color: .vitalPrimary)
+                MacroText(value: Int(totals.protein), unit: "P", color: .vitalInfo)
+                MacroText(value: Int(totals.carbs), unit: "C", color: .vitalWarning)
+                MacroText(value: Int(totals.fat), unit: "F", color: .vitalDanger)
             }
-            .font(.subheadline)
+            .font(.vitalBody)
         }
     }
 }
 
 #Preview {
     ScrollView {
-        VStack(spacing: 16) {
+        VStack(spacing: Spacing.lg) {
             MealSectionView(
                 meal: .breakfast,
                 entries: [
@@ -212,5 +212,5 @@ private struct MealTotalsView: View {
         }
         .padding()
     }
-    .background(Color(.systemGroupedBackground))
+    .background(Color.vitalAdaptiveBackground)
 }

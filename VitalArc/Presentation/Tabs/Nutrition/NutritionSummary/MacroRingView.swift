@@ -73,7 +73,7 @@ struct MacroRingView: View {
 }
 
 #Preview {
-    HStack(spacing: 32) {
+    HStack(spacing: Spacing.xl) {
         MacroRingView(
             name: "Calories",
             consumed: 1500,

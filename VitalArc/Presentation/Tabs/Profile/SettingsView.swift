@@ -50,8 +50,8 @@ struct SettingsView: View {
                             Text("HealthKit Permissions")
                             Spacer()
                             Image(systemName: "arrow.up.right.square")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
+                                .font(.vitalCaption)
+                                .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                         }
                     }
 
@@ -70,7 +70,7 @@ struct SettingsView: View {
                         Text("Version")
                         Spacer()
                         Text(appVersion)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                     }
 
                     Button(action: {

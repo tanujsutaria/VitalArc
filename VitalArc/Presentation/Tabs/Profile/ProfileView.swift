@@ -267,25 +267,27 @@ struct ProfileView: View {
         @Bindable var vm = viewModel
 
         ScrollView {
-            VStack(alignment: .leading, spacing: 24) {
+            VStack(alignment: .leading, spacing: Spacing.xl) {
                 Text("Edit Profile")
-                    .font(.title2)
-                    .fontWeight(.bold)
+                    .font(.vitalH2)
+                    .foregroundStyle(Color.vitalAdaptiveTextPrimary)
                     .padding(.horizontal)
 
-                VStack(alignment: .leading, spacing: 16) {
+                VStack(alignment: .leading, spacing: Spacing.lg) {
                     // Name
-                    VStack(alignment: .leading, spacing: 8) {
+                    VStack(alignment: .leading, spacing: Spacing.sm) {
                         Text("Name")
-                            .font(.headline)
+                            .font(.vitalH3)
+                            .foregroundStyle(Color.vitalAdaptiveTextPrimary)
                         TextField("Name", text: $vm.editName)
                             .textFieldStyle(.roundedBorder)
                     }
 
                     // Birth Date
-                    VStack(alignment: .leading, spacing: 8) {
+                    VStack(alignment: .leading, spacing: Spacing.sm) {
                         Text("Birth Date")
-                            .font(.headline)
+                            .font(.vitalH3)
+                            .foregroundStyle(Color.vitalAdaptiveTextPrimary)
                         DatePicker(
                             "Birth Date",
                             selection: $vm.editBirthDate,
@@ -297,9 +299,10 @@ struct ProfileView: View {
                     }
 
                     // Biological Sex
-                    VStack(alignment: .leading, spacing: 8) {
+                    VStack(alignment: .leading, spacing: Spacing.sm) {
                         Text("Biological Sex")
-                            .font(.headline)
+                            .font(.vitalH3)
+                            .foregroundStyle(Color.vitalAdaptiveTextPrimary)
                         Picker("Sex", selection: $vm.editSex) {
                             ForEach(BiologicalSex.allCases, id: \.self) { sex in
                                 Text(sex.rawValue).tag(sex)
@@ -309,10 +312,11 @@ struct ProfileView: View {
                     }
 
                     // Height (American units)
-                    VStack(alignment: .leading, spacing: 8) {
+                    VStack(alignment: .leading, spacing: Spacing.sm) {
                         Text("Height")
-                            .font(.headline)
-                        HStack(spacing: 12) {
+                            .font(.vitalH3)
+                            .foregroundStyle(Color.vitalAdaptiveTextPrimary)
+                        HStack(spacing: Spacing.md) {
                             HStack {
                                 Picker("Feet", selection: $vm.editHeightFeet) {
                                     ForEach(4...7, id: \.self) { feet in
@@ -321,7 +325,7 @@ struct ProfileView: View {
                                 }
                                 .pickerStyle(.menu)
                                 Text("ft")
-                                    .foregroundStyle(.secondary)
+                                    .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                             }
 
                             HStack {
@@ -332,16 +336,17 @@ struct ProfileView: View {
                                 }
                                 .pickerStyle(.menu)
                                 Text("in")
-                                    .foregroundStyle(.secondary)
+                                    .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                             }
                         }
                     }
 
                     // Weight (American units with HealthKit indicator)
-                    VStack(alignment: .leading, spacing: 8) {
+                    VStack(alignment: .leading, spacing: Spacing.sm) {
                         HStack {
                             Text("Weight")
-                                .font(.headline)
+                                .font(.vitalH3)
+                                .foregroundStyle(Color.vitalAdaptiveTextPrimary)
                             Spacer()
                             if vm.healthKitWeight != nil {
                                 Toggle("Manual override", isOn: $vm.useManualWeight)
@@ -354,21 +359,20 @@ struct ProfileView: View {
                             // Show HealthKit weight (read-only)
                             HStack {
                                 Text(String(format: "%.1f lbs", UnitConversion.kgToLbs(vm.healthKitWeight!)))
-                                    .font(.title2)
-                                    .fontWeight(.semibold)
+                                    .font(.vitalH2)
                                 Spacer()
-                                HStack(spacing: 4) {
+                                HStack(spacing: Spacing.xs) {
                                     Image(systemName: "heart.fill")
-                                        .foregroundStyle(.red)
-                                        .font(.caption)
+                                        .foregroundStyle(Color.vitalDanger)
+                                        .font(.vitalCaption)
                                     Text("from Apple Health")
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .font(.vitalCaption)
+                                        .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                                 }
                             }
-                            .padding()
-                            .background(Color(.systemGray6))
-                            .cornerRadius(8)
+                            .padding(Spacing.lg)
+                            .background(Color.vitalAdaptiveSurface)
+                            .cornerRadius(Spacing.radiusSmall)
                         } else {
                             // Manual weight entry
                             HStack {
@@ -376,15 +380,16 @@ struct ProfileView: View {
                                     .keyboardType(.decimalPad)
                                     .textFieldStyle(.roundedBorder)
                                 Text("lbs")
-                                    .foregroundStyle(.secondary)
+                                    .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                             }
                         }
                     }
 
                     // Activity Level
-                    VStack(alignment: .leading, spacing: 8) {
+                    VStack(alignment: .leading, spacing: Spacing.sm) {
                         Text("Activity Level")
-                            .font(.headline)
+                            .font(.vitalH3)
+                            .foregroundStyle(Color.vitalAdaptiveTextPrimary)
                         Picker("Activity Level", selection: $vm.editActivityLevel) {
                             ForEach(ActivityLevel.allCases, id: \.self) { level in
                                 Text(level.rawValue).tag(level)
@@ -394,9 +399,10 @@ struct ProfileView: View {
                     }
 
                     // Weight Goal
-                    VStack(alignment: .leading, spacing: 8) {
+                    VStack(alignment: .leading, spacing: Spacing.sm) {
                         Text("Weight Goal")
-                            .font(.headline)
+                            .font(.vitalH3)
+                            .foregroundStyle(Color.vitalAdaptiveTextPrimary)
                         Picker("Weight Goal", selection: $vm.editWeightGoal) {
                             ForEach(WeightGoal.allCases, id: \.self) { goal in
                                 Text(goal.rawValue).tag(goal)
@@ -408,15 +414,15 @@ struct ProfileView: View {
                 .padding(.horizontal)
 
                 // Action Buttons
-                HStack(spacing: 16) {
+                HStack(spacing: Spacing.lg) {
                     Button(action: { viewModel.cancelEditing() }) {
                         Text("Cancel")
-                            .font(.headline)
-                            .foregroundColor(.red)
+                            .font(.vitalH3)
+                            .foregroundColor(Color.vitalDanger)
                             .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(Color(.systemGray6))
-                            .cornerRadius(12)
+                            .padding(Spacing.lg)
+                            .background(Color.vitalAdaptiveSurface)
+                            .cornerRadius(Spacing.radiusMedium)
                     }
 
                     Button(action: {
@@ -431,17 +437,17 @@ struct ProfileView: View {
                                 Text("Save")
                             }
                         }
-                        .font(.headline)
+                        .font(.vitalH3)
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(viewModel.canSave ? Color.accentColor : Color.gray)
-                        .cornerRadius(12)
+                        .padding(Spacing.lg)
+                        .background(viewModel.canSave ? Color.vitalPrimary : Color.vitalAdaptiveTextSecondary)
+                        .cornerRadius(Spacing.radiusMedium)
                     }
                     .disabled(!viewModel.canSave || viewModel.isLoading)
                 }
                 .padding(.horizontal)
-                .padding(.top, 8)
+                .padding(.top, Spacing.sm)
             }
             .padding(.vertical)
         }

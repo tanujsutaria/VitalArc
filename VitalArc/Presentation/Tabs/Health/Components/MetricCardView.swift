@@ -63,7 +63,7 @@ struct MetricCardView: View {
                     .font(.vitalLabelSmall)
                     .foregroundStyle(Color.vitalAdaptiveTextSecondary)
 
-                HStack(alignment: .firstTextBaseline, spacing: 4) {
+                HStack(alignment: .firstTextBaseline, spacing: Spacing.xs) {
                     Text(value)
                         .font(.vitalNumberMedium)
                         .foregroundStyle(Color.vitalAdaptiveTextPrimary)
@@ -86,8 +86,8 @@ struct MetricCardView: View {
                 .font(.system(size: 10, weight: .semibold))
         }
         .foregroundStyle(trend.color)
-        .padding(.horizontal, 6)
-        .padding(.vertical, 3)
+        .padding(.horizontal, Spacing.xs + Spacing.xxs)
+        .padding(.vertical, Spacing.xxs + 1)
         .background(trend.color.opacity(0.15))
         .cornerRadius(6)
     }
@@ -96,13 +96,13 @@ struct MetricCardView: View {
 // MARK: - Preview
 
 #Preview {
-    VStack(spacing: 16) {
+    VStack(spacing: Spacing.md) {
         MetricCardView(
             title: "Heart Rate Variability",
             value: "75",
             unit: "ms",
             icon: "heart.fill",
-            color: .red,
+            color: .vitalDanger,
             trend: .up
         )
 
@@ -111,7 +111,7 @@ struct MetricCardView: View {
             value: "10,000",
             unit: "steps",
             icon: "figure.walk",
-            color: .blue
+            color: .vitalInfo
         )
 
         MetricCardView(
@@ -119,10 +119,10 @@ struct MetricCardView: View {
             value: "450",
             unit: "kcal",
             icon: "flame.fill",
-            color: .orange,
+            color: .vitalWarning,
             trend: .down
         )
     }
     .padding()
-    .background(Color(.systemGroupedBackground))
+    .background(Color.vitalAdaptiveBackground)
 }

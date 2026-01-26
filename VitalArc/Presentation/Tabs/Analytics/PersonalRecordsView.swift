@@ -37,7 +37,7 @@ struct PersonalRecordsView: View {
             if !records.isEmpty {
                 // Record type filter
                 ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 8) {
+                    HStack(spacing: Spacing.sm) {
                         FilterChip(
                             title: "All",
                             isSelected: selectedRecordType == nil
@@ -54,7 +54,7 @@ struct PersonalRecordsView: View {
                             }
                         }
                     }
-                    .padding()
+                    .padding(Spacing.lg)
                 }
 
                 // Records list
@@ -84,7 +84,7 @@ struct PersonalRecordRow: View {
     let record: PersonalRecord
 
     var body: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: Spacing.md) {
             // Icon
             Image(systemName: record.recordType.icon)
                 .font(.title2)
@@ -92,61 +92,60 @@ struct PersonalRecordRow: View {
                 .frame(width: 40)
 
             // Details
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .leading, spacing: Spacing.xs) {
                 HStack {
                     Text(record.recordType.displayName)
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
+                        .font(.vitalBody)
+                        .foregroundStyle(Color.vitalAdaptiveTextSecondary)
 
                     if record.isRecent {
                         Text("NEW")
-                            .font(.caption2)
+                            .font(.vitalCaptionSmall)
                             .fontWeight(.bold)
-                            .padding(.horizontal, 6)
+                            .padding(.horizontal, Spacing.sm)
                             .padding(.vertical, 2)
-                            .background(Color.red)
+                            .background(Color.vitalDanger)
                             .foregroundStyle(.white)
-                            .cornerRadius(4)
+                            .cornerRadius(Spacing.xs)
                     }
                 }
 
                 Text(record.displayValue)
-                    .font(.headline)
+                    .font(.vitalH3)
 
                 Text(record.date.formatted(date: .abbreviated, time: .omitted))
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .font(.vitalCaption)
+                    .foregroundStyle(Color.vitalAdaptiveTextSecondary)
             }
 
             Spacer()
 
             // Days since
-            VStack(alignment: .trailing, spacing: 4) {
+            VStack(alignment: .trailing, spacing: Spacing.xs) {
                 Text("\(record.daysSince)")
-                    .font(.title3)
-                    .fontWeight(.semibold)
+                    .font(.vitalH2)
                 Text("days ago")
-                    .font(.caption2)
-                    .foregroundStyle(.secondary)
+                    .font(.vitalCaptionSmall)
+                    .foregroundStyle(Color.vitalAdaptiveTextSecondary)
             }
         }
-        .padding(.vertical, 4)
+        .padding(.vertical, Spacing.xs)
     }
 
     private var iconColor: Color {
         switch record.recordType {
         case .oneRepMax:
-            return .yellow
+            return Color.vitalWarning
         case .threeRepMax:
-            return .orange
+            return Color.vitalWarning.opacity(0.8)
         case .fiveRepMax:
-            return .red
+            return Color.vitalDanger
         case .tenRepMax:
-            return .purple
+            return Color.vitalAccent
         case .maxVolume:
-            return .blue
+            return Color.vitalInfo
         case .maxReps:
-            return .green
+            return Color.vitalSuccess
         }
     }
 }
@@ -159,12 +158,12 @@ struct FilterChip: View {
     var body: some View {
         Button(action: action) {
             Text(title)
-                .font(.caption)
-                .padding(.horizontal, 12)
-                .padding(.vertical, 6)
-                .background(isSelected ? Color.blue : Color(.systemGray5))
-                .foregroundStyle(isSelected ? .white : .primary)
-                .cornerRadius(8)
+                .font(.vitalCaption)
+                .padding(.horizontal, Spacing.md)
+                .padding(.vertical, Spacing.sm)
+                .background(isSelected ? Color.vitalPrimary : Color.vitalAdaptiveSurface)
+                .foregroundStyle(isSelected ? .white : Color.vitalAdaptiveTextPrimary)
+                .cornerRadius(Spacing.radiusSmall)
         }
     }
 }

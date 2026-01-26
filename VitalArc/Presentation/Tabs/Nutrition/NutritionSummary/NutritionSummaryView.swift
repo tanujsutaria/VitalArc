@@ -160,7 +160,7 @@ private struct EmptyNutritionView: View {
 
 #Preview {
     ScrollView {
-        VStack(spacing: 16) {
+        VStack(spacing: Spacing.lg) {
             NutritionSummaryView(
                 dailyNutrition: DailyNutrition(
                     date: Date(),
@@ -179,5 +179,5 @@ private struct EmptyNutritionView: View {
         }
         .padding()
     }
-    .background(Color(.systemGroupedBackground))
+    .background(Color.vitalAdaptiveBackground)
 }

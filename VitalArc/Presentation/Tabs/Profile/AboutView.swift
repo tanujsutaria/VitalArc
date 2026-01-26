@@ -13,45 +13,48 @@ struct AboutView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(spacing: 32) {
+                VStack(spacing: Spacing.xxl) {
                     // App Icon
                     Image(systemName: "heart.circle.fill")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 100, height: 100)
-                        .foregroundStyle(.pink.gradient)
-                        .padding(.top, 32)
+                        .foregroundStyle(Color.vitalPrimary.gradient)
+                        .padding(.top, Spacing.xxl)
 
                     // App Name & Version
-                    VStack(spacing: 8) {
+                    VStack(spacing: Spacing.sm) {
                         Text("VitalArc")
-                            .font(.system(size: 32, weight: .bold, design: .rounded))
+                            .font(.vitalDisplayLarge)
+                            .foregroundStyle(Color.vitalAdaptiveTextPrimary)
 
                         Text("Version \(appVersion)")
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
+                            .font(.vitalBody)
+                            .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                     }
 
                     // Description
-                    VStack(spacing: 16) {
+                    VStack(spacing: Spacing.lg) {
                         Text("Your Personal Health & Fitness Companion")
-                            .font(.headline)
+                            .font(.vitalH3)
+                            .foregroundStyle(Color.vitalAdaptiveTextPrimary)
                             .multilineTextAlignment(.center)
 
                         Text("VitalArc helps you track your workouts, monitor your nutrition, and achieve your fitness goals with comprehensive health insights powered by HealthKit integration.")
-                            .font(.body)
-                            .foregroundStyle(.secondary)
+                            .font(.vitalBody)
+                            .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                             .multilineTextAlignment(.center)
                             .padding(.horizontal)
                     }
 
                     // Features
-                    VStack(alignment: .leading, spacing: 16) {
+                    VStack(alignment: .leading, spacing: Spacing.lg) {
                         Text("Features")
-                            .font(.headline)
+                            .font(.vitalH3)
+                            .foregroundStyle(Color.vitalAdaptiveTextPrimary)
                             .padding(.horizontal)
 
-                        VStack(spacing: 12) {
+                        VStack(spacing: Spacing.md) {
                             FeatureItem(
                                 icon: "dumbbell.fill",
                                 title: "Workout Tracking",
@@ -80,7 +83,7 @@ struct AboutView: View {
                     }
 
                     // Links
-                    VStack(spacing: 12) {
+                    VStack(spacing: Spacing.md) {
                         Button(action: {
                             // TODO: Add privacy policy link
                         }) {
@@ -89,13 +92,13 @@ struct AboutView: View {
                                 Text("Privacy Policy")
                                 Spacer()
                                 Image(systemName: "arrow.up.right")
-                                    .font(.caption)
+                                    .font(.vitalCaption)
                             }
-                            .padding()
-                            .background(Color(.systemGray6))
-                            .cornerRadius(12)
+                            .padding(Spacing.lg)
+                            .background(Color.vitalAdaptiveSurface)
+                            .cornerRadius(Spacing.radiusMedium)
                         }
-                        .foregroundColor(.primary)
+                        .foregroundColor(Color.vitalAdaptiveTextPrimary)
 
                         Button(action: {
                             // TODO: Add terms of service link
@@ -105,13 +108,13 @@ struct AboutView: View {
                                 Text("Terms of Service")
                                 Spacer()
                                 Image(systemName: "arrow.up.right")
-                                    .font(.caption)
+                                    .font(.vitalCaption)
                             }
-                            .padding()
-                            .background(Color(.systemGray6))
-                            .cornerRadius(12)
+                            .padding(Spacing.lg)
+                            .background(Color.vitalAdaptiveSurface)
+                            .cornerRadius(Spacing.radiusMedium)
                         }
-                        .foregroundColor(.primary)
+                        .foregroundColor(Color.vitalAdaptiveTextPrimary)
 
                         Button(action: {
                             if let url = URL(string: "mailto:support@vitalarc.app") {
@@ -123,30 +126,30 @@ struct AboutView: View {
                                 Text("Contact Support")
                                 Spacer()
                                 Image(systemName: "arrow.up.right")
-                                    .font(.caption)
+                                    .font(.vitalCaption)
                             }
-                            .padding()
-                            .background(Color(.systemGray6))
-                            .cornerRadius(12)
+                            .padding(Spacing.lg)
+                            .background(Color.vitalAdaptiveSurface)
+                            .cornerRadius(Spacing.radiusMedium)
                         }
-                        .foregroundColor(.primary)
+                        .foregroundColor(Color.vitalAdaptiveTextPrimary)
                     }
                     .padding(.horizontal)
 
                     // Credits
-                    VStack(spacing: 8) {
+                    VStack(spacing: Spacing.sm) {
                         Text("Made with")
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                        HStack(spacing: 4) {
+                            .font(.vitalBody)
+                            .foregroundStyle(Color.vitalAdaptiveTextSecondary)
+                        HStack(spacing: Spacing.xs) {
                             Image(systemName: "heart.fill")
-                                .foregroundStyle(.pink)
+                                .foregroundStyle(Color.vitalPrimary)
                             Text("by the VitalArc Team")
-                                .font(.subheadline)
-                                .foregroundStyle(.secondary)
+                                .font(.vitalBody)
+                                .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                         }
                     }
-                    .padding(.bottom, 32)
+                    .padding(.bottom, Spacing.xxl)
                 }
             }
             .navigationTitle("About")
@@ -174,25 +177,26 @@ struct FeatureItem: View {
     let description: String
 
     var body: some View {
-        HStack(alignment: .top, spacing: 12) {
+        HStack(alignment: .top, spacing: Spacing.md) {
             Image(systemName: icon)
-                .font(.title3)
-                .foregroundStyle(.pink)
+                .font(.vitalH2)
+                .foregroundStyle(Color.vitalPrimary)
                 .frame(width: 32)
 
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .leading, spacing: Spacing.xs) {
                 Text(title)
-                    .font(.headline)
+                    .font(.vitalH3)
+                    .foregroundStyle(Color.vitalAdaptiveTextPrimary)
                 Text(description)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .font(.vitalBody)
+                    .foregroundStyle(Color.vitalAdaptiveTextSecondary)
             }
 
             Spacer()
         }
-        .padding()
-        .background(Color(.systemGray6))
-        .cornerRadius(12)
+        .padding(Spacing.lg)
+        .background(Color.vitalAdaptiveSurface)
+        .cornerRadius(Spacing.radiusMedium)
     }
 }
 

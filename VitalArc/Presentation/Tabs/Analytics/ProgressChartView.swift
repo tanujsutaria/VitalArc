@@ -18,13 +18,13 @@ struct ProgressChartView: View {
 
     var body: some View {
         ScrollView {
-            VStack(spacing: 24) {
+            VStack(spacing: Spacing.xl) {
                 if !snapshots.isEmpty {
                     // Body Weight Chart
                     if snapshots.contains(where: { $0.bodyWeight != nil }) {
-                        VStack(alignment: .leading, spacing: 12) {
+                        VStack(alignment: .leading, spacing: Spacing.md) {
                             Text("Body Weight")
-                                .font(.headline)
+                                .font(.vitalH3)
 
                             Chart {
                                 ForEach(sortedSnapshots.filter { $0.bodyWeight != nil }) { snapshot in
@@ -32,14 +32,14 @@ struct ProgressChartView: View {
                                         x: .value("Date", snapshot.date),
                                         y: .value("Weight", snapshot.bodyWeight ?? 0)
                                     )
-                                    .foregroundStyle(.blue)
+                                    .foregroundStyle(Color.vitalInfo)
                                     .interpolationMethod(.catmullRom)
 
                                     PointMark(
                                         x: .value("Date", snapshot.date),
                                         y: .value("Weight", snapshot.bodyWeight ?? 0)
                                     )
-                                    .foregroundStyle(.blue)
+                                    .foregroundStyle(Color.vitalInfo)
                                 }
                             }
                             .frame(height: 200)
@@ -63,39 +63,37 @@ struct ProgressChartView: View {
                                 let changePercent = (change / firstWeight) * 100
 
                                 HStack {
-                                    VStack(alignment: .leading, spacing: 4) {
+                                    VStack(alignment: .leading, spacing: Spacing.xs) {
                                         Text("Total Change")
-                                            .font(.caption)
-                                            .foregroundStyle(.secondary)
+                                            .font(.vitalCaption)
+                                            .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                                         Text(String(format: "%+.1f kg", change))
-                                            .font(.title3)
-                                            .fontWeight(.semibold)
+                                            .font(.vitalH2)
                                     }
 
                                     Spacer()
 
-                                    VStack(alignment: .trailing, spacing: 4) {
+                                    VStack(alignment: .trailing, spacing: Spacing.xs) {
                                         Text("Percentage")
-                                            .font(.caption)
-                                            .foregroundStyle(.secondary)
+                                            .font(.vitalCaption)
+                                            .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                                         Text(String(format: "%+.1f%%", changePercent))
-                                            .font(.title3)
-                                            .fontWeight(.semibold)
+                                            .font(.vitalH2)
                                     }
                                 }
-                                .padding(.top, 8)
+                                .padding(.top, Spacing.sm)
                             }
                         }
-                        .padding()
-                        .background(Color(.systemGray6))
-                        .cornerRadius(12)
+                        .padding(Spacing.lg)
+                        .background(Color.vitalAdaptiveSurface)
+                        .cornerRadius(Spacing.radiusMedium)
                     }
 
                     // Body Fat Percentage
                     if snapshots.contains(where: { $0.bodyFatPercentage != nil }) {
-                        VStack(alignment: .leading, spacing: 12) {
+                        VStack(alignment: .leading, spacing: Spacing.md) {
                             Text("Body Fat Percentage")
-                                .font(.headline)
+                                .font(.vitalH3)
 
                             Chart {
                                 ForEach(sortedSnapshots.filter { $0.bodyFatPercentage != nil }) { snapshot in
@@ -103,14 +101,14 @@ struct ProgressChartView: View {
                                         x: .value("Date", snapshot.date),
                                         y: .value("Body Fat", snapshot.bodyFatPercentage ?? 0)
                                     )
-                                    .foregroundStyle(.orange)
+                                    .foregroundStyle(Color.vitalWarning)
                                     .interpolationMethod(.catmullRom)
 
                                     PointMark(
                                         x: .value("Date", snapshot.date),
                                         y: .value("Body Fat", snapshot.bodyFatPercentage ?? 0)
                                     )
-                                    .foregroundStyle(.orange)
+                                    .foregroundStyle(Color.vitalWarning)
                                 }
                             }
                             .frame(height: 180)
@@ -121,43 +119,43 @@ struct ProgressChartView: View {
                                 }
                             }
                         }
-                        .padding()
-                        .background(Color(.systemGray6))
-                        .cornerRadius(12)
+                        .padding(Spacing.lg)
+                        .background(Color.vitalAdaptiveSurface)
+                        .cornerRadius(Spacing.radiusMedium)
                     }
 
                     // Body Measurements
                     if !sortedSnapshots.flatMap({ $0.measurements }).isEmpty {
-                        VStack(alignment: .leading, spacing: 12) {
+                        VStack(alignment: .leading, spacing: Spacing.md) {
                             Text("Body Measurements")
-                                .font(.headline)
+                                .font(.vitalH3)
 
                             // Measurement selector
                             ScrollView(.horizontal, showsIndicators: false) {
-                                HStack(spacing: 8) {
+                                HStack(spacing: Spacing.sm) {
                                     ForEach(BodyPart.allCases, id: \.self) { bodyPart in
                                         if hasMeasurements(for: bodyPart) {
                                             Button {
                                                 selectedMeasurement = selectedMeasurement == bodyPart ? nil : bodyPart
                                             } label: {
                                                 Text(bodyPart.displayName)
-                                                    .font(.caption)
-                                                    .padding(.horizontal, 12)
-                                                    .padding(.vertical, 6)
+                                                    .font(.vitalCaption)
+                                                    .padding(.horizontal, Spacing.md)
+                                                    .padding(.vertical, Spacing.sm)
                                                     .background(
                                                         selectedMeasurement == bodyPart ?
-                                                        Color.blue : Color(.systemGray5)
+                                                        Color.vitalPrimary : Color.vitalAdaptiveSurface
                                                     )
                                                     .foregroundStyle(
                                                         selectedMeasurement == bodyPart ?
-                                                        .white : .primary
+                                                        .white : Color.vitalAdaptiveTextPrimary
                                                     )
-                                                    .cornerRadius(8)
+                                                    .cornerRadius(Spacing.radiusSmall)
                                             }
                                         }
                                     }
                                 }
-                                .padding(.vertical, 4)
+                                .padding(.vertical, Spacing.xs)
                             }
 
                             // Chart for selected measurement
@@ -169,14 +167,14 @@ struct ProgressChartView: View {
                                                 x: .value("Date", snapshot.date),
                                                 y: .value("Measurement", measurement.value)
                                             )
-                                            .foregroundStyle(.purple)
+                                            .foregroundStyle(Color.vitalAccent)
                                             .interpolationMethod(.catmullRom)
 
                                             PointMark(
                                                 x: .value("Date", snapshot.date),
                                                 y: .value("Measurement", measurement.value)
                                             )
-                                            .foregroundStyle(.purple)
+                                            .foregroundStyle(Color.vitalAccent)
                                         }
                                     }
                                 }
@@ -199,55 +197,54 @@ struct ProgressChartView: View {
                                 }
                             } else {
                                 Text("Select a measurement to view chart")
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
+                                    .font(.vitalCaption)
+                                    .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                                     .frame(maxWidth: .infinity)
-                                    .padding()
+                                    .padding(Spacing.lg)
                             }
                         }
-                        .padding()
-                        .background(Color(.systemGray6))
-                        .cornerRadius(12)
+                        .padding(Spacing.lg)
+                        .background(Color.vitalAdaptiveSurface)
+                        .cornerRadius(Spacing.radiusMedium)
                     }
 
                     // Latest Snapshot Details
                     if let latestSnapshot = sortedSnapshots.last {
-                        VStack(alignment: .leading, spacing: 12) {
+                        VStack(alignment: .leading, spacing: Spacing.md) {
                             Text("Latest Snapshot")
-                                .font(.headline)
+                                .font(.vitalH3)
 
                             Text(latestSnapshot.date.formatted(date: .long, time: .omitted))
-                                .font(.subheadline)
-                                .foregroundStyle(.secondary)
+                                .font(.vitalBody)
+                                .foregroundStyle(Color.vitalAdaptiveTextSecondary)
 
                             if let notes = latestSnapshot.notes, !notes.isEmpty {
                                 Text(notes)
-                                    .font(.body)
-                                    .padding(.top, 4)
+                                    .font(.vitalBody)
+                                    .padding(.top, Spacing.xs)
                             }
 
                             if !latestSnapshot.measurements.isEmpty {
                                 Divider()
-                                    .padding(.vertical, 4)
+                                    .padding(.vertical, Spacing.xs)
 
-                                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
+                                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: Spacing.md) {
                                     ForEach(latestSnapshot.measurements) { measurement in
-                                        VStack(alignment: .leading, spacing: 4) {
+                                        VStack(alignment: .leading, spacing: Spacing.xs) {
                                             Text(measurement.bodyPart.displayName)
-                                                .font(.caption)
-                                                .foregroundStyle(.secondary)
+                                                .font(.vitalCaption)
+                                                .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                                             Text("\(String(format: "%.1f", measurement.value)) cm")
-                                                .font(.subheadline)
-                                                .fontWeight(.semibold)
+                                                .font(.vitalLabel)
                                         }
                                         .frame(maxWidth: .infinity, alignment: .leading)
                                     }
                                 }
                             }
                         }
-                        .padding()
-                        .background(Color(.systemGray6))
-                        .cornerRadius(12)
+                        .padding(Spacing.lg)
+                        .background(Color.vitalAdaptiveSurface)
+                        .cornerRadius(Spacing.radiusMedium)
                     }
                 } else {
                     ContentUnavailableView(
@@ -257,7 +254,7 @@ struct ProgressChartView: View {
                     )
                 }
             }
-            .padding()
+            .padding(Spacing.lg)
         }
     }
 

@@ -22,7 +22,7 @@ struct FoodLoggingView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(spacing: 16) {
+                VStack(spacing: Spacing.lg) {
                     // Date selector
                     DateSelectorView(
                         selectedDate: $viewModel.selectedDate,
@@ -56,7 +56,7 @@ struct FoodLoggingView: View {
                 }
                 .padding(.vertical)
             }
-            .background(Color(.systemGroupedBackground))
+            .background(Color.vitalAdaptiveBackground)
             .navigationTitle("Food Log")
             .task {
                 await viewModel.loadEntries()
@@ -135,7 +135,7 @@ private struct DateSelectorView: View {
                 onToday()
             } label: {
                 Text(dateText)
-                    .font(.headline)
+                    .font(.vitalH3)
             }
 
             Spacer()
@@ -148,7 +148,7 @@ private struct DateSelectorView: View {
             }
             .buttonStyle(.bordered)
         }
-        .padding(.vertical, 8)
+        .padding(.vertical, Spacing.sm)
     }
 }
 
@@ -175,12 +175,12 @@ private struct QuantityInputView: View {
             Form {
                 Section("Food") {
                     Text(food.name)
-                        .font(.headline)
+                        .font(.vitalH3)
 
                     if let brand = food.brand {
                         Text(brand)
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
+                            .font(.vitalBody)
+                            .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                     }
                 }
 
@@ -196,10 +196,10 @@ private struct QuantityInputView: View {
                 }
 
                 Section("Nutrition") {
-                    NutritionRow(label: "Calories", value: "\(Int(scaledFood.calories))", color: .orange)
-                    NutritionRow(label: "Protein", value: "\(Int(scaledFood.protein))g", color: .blue)
-                    NutritionRow(label: "Carbs", value: "\(Int(scaledFood.carbs))g", color: .green)
-                    NutritionRow(label: "Fat", value: "\(Int(scaledFood.fat))g", color: .red)
+                    NutritionRow(label: "Calories", value: "\(Int(scaledFood.calories))", color: .vitalPrimary)
+                    NutritionRow(label: "Protein", value: "\(Int(scaledFood.protein))g", color: .vitalInfo)
+                    NutritionRow(label: "Carbs", value: "\(Int(scaledFood.carbs))g", color: .vitalWarning)
+                    NutritionRow(label: "Fat", value: "\(Int(scaledFood.fat))g", color: .vitalDanger)
                 }
             }
             .navigationTitle("Log Food")
