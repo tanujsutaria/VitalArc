@@ -2,12 +2,22 @@
 name: vitalarc-end
 description: Finalize a VitalArc development session - update logs, verify builds, commit documentation, push changes, summarize work
 allowed-tools: Read, Grep, Glob, Bash, Write, Edit
-argument-hint: [commit-message-hint]
+argument-hint: [commit-message-summary]
+disable-model-invocation: true
 ---
 
 # VitalArc Session Finalization
 
 You are ending a development session for the VitalArc iOS fitness app.
+
+## Session Summary (Auto-Fetched)
+
+- **Recent Commits**:
+!`cd /Users/tanujsutaria/Development/VitalArc && git log --oneline --since="6 hours ago" 2>/dev/null || git log --oneline -5`
+- **Current Status**:
+!`cd /Users/tanujsutaria/Development/VitalArc && git status --short`
+- **Files Changed**:
+!`cd /Users/tanujsutaria/Development/VitalArc && git diff --stat HEAD~5 2>/dev/null | tail -5`
 
 ## Phase 1: Verify Build Status
 
@@ -24,22 +34,17 @@ If build fails, report errors but continue with documentation.
 
 1. **Get commits made this session**:
    ```bash
-   git log --oneline --since="4 hours ago"
+   git log --oneline --since="6 hours ago"
    ```
 
-2. **Check current status**:
+2. **Count changes**:
    ```bash
-   git status --short
+   git diff --stat HEAD~10 2>/dev/null | tail -3
    ```
 
-3. **Count changes**:
+3. **Find files modified today**:
    ```bash
-   git diff --stat HEAD~5 2>/dev/null || git diff --stat
-   ```
-
-4. **Find files modified today**:
-   ```bash
-   find VitalArc -name "*.swift" -mtime 0 -type f | head -20
+   find VitalArc -name "*.swift" -mtime 0 -type f 2>/dev/null | head -20
    ```
 
 ## Phase 3: Update SESSION_LOG.md
@@ -56,7 +61,7 @@ Read the current SESSION_LOG.md and update the most recent session entry:
    ```markdown
    ### Session End
    - **Status**: [Summary of what was accomplished]
-   - **Build Status**: [✅ Passing / ❌ Failing with reason]
+   - **Build Status**: [Passing / Failing with reason]
    - **Commits**: [Number] commits pushed
    - **Next Steps**: [What should be done next session]
    ```
@@ -89,12 +94,12 @@ git add SESSION_LOG.md PROJECT_STATUS.md CLAUDE.md EXECUTION_PLAN*.md 2>/dev/nul
 git status --short
 ```
 
-If there are staged changes, commit them:
+If there are staged changes, commit them with $ARGUMENTS as the summary (or auto-generate):
 
 ```bash
 git commit -m "Update session documentation
 
-[Summary of session work]
+[Summary of session work or $ARGUMENTS]
 
 Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
 ```
@@ -114,42 +119,41 @@ Report push status.
 Output a final session summary:
 
 ```
-═══════════════════════════════════════════════════════════
-                 VITALARC SESSION COMPLETE
-═══════════════════════════════════════════════════════════
+===========================================================
+              VITALARC SESSION COMPLETE
+===========================================================
 
-📅 SESSION SUMMARY
-   Duration: [estimate based on commits]
-   Commits: [count]
-   Files Changed: [count]
+SESSION SUMMARY
+  Duration: [estimate based on commits]
+  Commits: [count]
+  Files Changed: [count]
 
-✅ WORK COMPLETED
-   - [item 1]
-   - [item 2]
-   - [item 3]
+WORK COMPLETED
+  - [item 1]
+  - [item 2]
+  - [item 3]
 
-📝 COMMITS MADE
-   [hash1] [message1]
-   [hash2] [message2]
-   ...
+COMMITS MADE
+  [hash1] [message1]
+  [hash2] [message2]
 
-🔨 BUILD STATUS
-   [✅ Passing / ❌ Failing]
+BUILD STATUS
+  [Passing / Failing]
 
-📊 PROJECT METRICS (updated)
-   Design System Adoption: [X]%
-   MVP Blockers Remaining: [count]
-   TODOs Remaining: [count]
+PROJECT METRICS (updated)
+  Design System Adoption: [X]%
+  MVP Blockers Remaining: [count]
+  TODOs Remaining: [count]
 
-🚀 PUSHED TO REMOTE
-   [✅ Success / ❌ Failed with reason]
+PUSHED TO REMOTE
+  [Success / Failed with reason]
 
-📋 NEXT SESSION PRIORITIES
-   1. [priority 1]
-   2. [priority 2]
-   3. [priority 3]
+NEXT SESSION PRIORITIES
+  1. [priority 1]
+  2. [priority 2]
+  3. [priority 3]
 
-═══════════════════════════════════════════════════════════
+===========================================================
 ```
 
 ## Phase 9: Cleanup Reminders
