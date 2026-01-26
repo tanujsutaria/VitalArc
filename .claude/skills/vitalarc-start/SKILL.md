@@ -70,7 +70,8 @@ git checkout -b "$BRANCH_NAME"
 ### Step 1d: Restore stashed changes (if any)
 
 ```bash
-if git stash list | grep -q "Auto-stash before session start"; then
+TODAY=$(date +%Y-%m-%d)
+if git stash list | grep -q "Auto-stash before session start $TODAY"; then
     echo "Restoring stashed changes..."
     git stash pop
 fi

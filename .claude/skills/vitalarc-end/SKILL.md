@@ -116,7 +116,8 @@ All commits should follow the format: `<type>(<scope>): <description>`
 - `refactor` - Code change that neither fixes nor adds features
 - `perf` - Performance improvement
 - `test` - Adding or updating tests
-- `chore` - Build process, tooling, dependencies
+- `build` - Build system or dependency changes
+- `chore` - Other maintenance tasks
 
 **Scopes (optional):**
 - `session` - Session documentation

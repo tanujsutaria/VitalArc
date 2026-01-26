@@ -42,7 +42,8 @@ Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
 | `refactor` | Code change that neither fixes nor adds features |
 | `perf` | Performance improvement |
 | `test` | Adding or updating tests |
-| `chore` | Build process, tooling, dependencies |
+| `build` | Build system or dependency changes |
+| `chore` | Other maintenance tasks |
 
 **Scopes:** `workout`, `nutrition`, `health`, `analytics`, `ui`, `infra`, `session`
 
