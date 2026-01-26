@@ -19,10 +19,21 @@ You are starting a new development session for the VitalArc iOS fitness app.
 
 ## Phase 1: Sync with Remote and Create Feature Branch
 
-Pull the latest changes from main:
+### Step 1a: Stash any uncommitted changes
+
+Before switching branches, stash any uncommitted work to prevent loss:
 
 ```bash
 cd /Users/tanujsutaria/Development/VitalArc
+if [ -n "$(git status --porcelain)" ]; then
+    echo "Stashing uncommitted changes..."
+    git stash push -m "Auto-stash before session start $(date +%Y-%m-%d-%H%M)"
+fi
+```
+
+### Step 1b: Sync with main
+
+```bash
 git fetch origin
 git checkout main
 git pull origin main --ff-only || echo "Pull failed - check for conflicts"
@@ -30,18 +41,39 @@ git pull origin main --ff-only || echo "Pull failed - check for conflicts"
 
 Report any merge conflicts or diverged branches.
 
-Then create a feature branch for this session's work:
+### Step 1c: Create feature branch with session versioning
+
+Determine the session number from SESSION_LOG.md (major version), then find the next available minor version for today:
 
 ```bash
-# Create branch name based on date and optional focus area
-# Format: dev/session-YYYY-MM-DD or dev/[focus-area]-YYYY-MM-DD
-git checkout -b dev/session-$(date +%Y-%m-%d) || git checkout dev/session-$(date +%Y-%m-%d)
+# Get current session number from SESSION_LOG.md (e.g., "Session 8" -> 8)
+SESSION_NUM=$(grep -m1 "^## Session" SESSION_LOG.md | sed 's/## Session \([0-9]*\).*/\1/')
+
+# Find existing branches for this session today and get next minor version
+TODAY=$(date +%Y-%m-%d)
+EXISTING=$(git branch -a | grep -E "dev/session-${SESSION_NUM}\.[0-9]+-${TODAY}" | wc -l | tr -d ' ')
+MINOR=$EXISTING
+
+# Create branch: dev/session-8.0-2026-01-26 or dev/session-8.1-2026-01-26
+BRANCH_NAME="dev/session-${SESSION_NUM}.${MINOR}-${TODAY}"
+git checkout -b "$BRANCH_NAME"
+echo "Created branch: $BRANCH_NAME"
 ```
 
-If $ARGUMENTS was provided, use it for a more descriptive branch name:
+If $ARGUMENTS was provided, include it in the branch name:
 ```bash
-# Example: dev/nutrition-2026-01-26
-git checkout -b dev/$ARGUMENTS-$(date +%Y-%m-%d) 2>/dev/null || git checkout dev/$ARGUMENTS-$(date +%Y-%m-%d)
+# Example: dev/nutrition-8.0-2026-01-26
+BRANCH_NAME="dev/$ARGUMENTS-${SESSION_NUM}.${MINOR}-${TODAY}"
+git checkout -b "$BRANCH_NAME"
+```
+
+### Step 1d: Restore stashed changes (if any)
+
+```bash
+if git stash list | grep -q "Auto-stash before session start"; then
+    echo "Restoring stashed changes..."
+    git stash pop
+fi
 ```
 
 **Note**: All development work should happen on feature branches, not main. The branch will be merged to main via PR when work is complete.
