@@ -101,16 +101,17 @@ struct ProfileView: View {
                         ], spacing: Spacing.md) {
                             StatCard(
                                 title: "Height",
-                                value: String(format: "%.0f cm", profile.height),
+                                value: viewModel.displayHeight,
                                 icon: "ruler",
                                 color: .vitalInfo
                             )
 
-                            StatCard(
+                            StatCardWithSource(
                                 title: "Weight",
-                                value: String(format: "%.1f kg", profile.weight),
+                                value: viewModel.displayWeight,
                                 icon: "scalemass",
-                                color: .vitalSuccess
+                                color: .vitalSuccess,
+                                source: viewModel.weightSource
                             )
 
                             StatCard(
@@ -128,6 +129,27 @@ struct ProfileView: View {
                             )
                         }
                         .padding(.horizontal, Spacing.screenPadding)
+
+                        // HealthKit Sync Status
+                        if viewModel.isHealthKitAvailable {
+                            HStack(spacing: Spacing.sm) {
+                                Image(systemName: "heart.fill")
+                                    .foregroundStyle(.red)
+                                    .font(.caption)
+                                Text("Synced with Apple Health")
+                                    .font(.vitalCaption)
+                                    .foregroundStyle(Color.vitalAdaptiveTextSecondary)
+                                Spacer()
+                                Button {
+                                    Task { await viewModel.syncFromHealthKit() }
+                                } label: {
+                                    Image(systemName: "arrow.clockwise")
+                                        .font(.caption)
+                                        .foregroundStyle(Color.vitalPrimary)
+                                }
+                            }
+                            .padding(.horizontal, Spacing.screenPadding)
+                        }
                     }
 
                     // Goals Section
@@ -286,29 +308,76 @@ struct ProfileView: View {
                         .pickerStyle(.segmented)
                     }
 
-                    // Height
+                    // Height (American units)
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Height")
                             .font(.headline)
-                        HStack {
-                            TextField("Height", value: $vm.editHeight, format: .number)
-                                .keyboardType(.decimalPad)
-                                .textFieldStyle(.roundedBorder)
-                            Text("cm")
-                                .foregroundStyle(.secondary)
+                        HStack(spacing: 12) {
+                            HStack {
+                                Picker("Feet", selection: $vm.editHeightFeet) {
+                                    ForEach(4...7, id: \.self) { feet in
+                                        Text("\(feet)").tag(feet)
+                                    }
+                                }
+                                .pickerStyle(.menu)
+                                Text("ft")
+                                    .foregroundStyle(.secondary)
+                            }
+
+                            HStack {
+                                Picker("Inches", selection: $vm.editHeightInches) {
+                                    ForEach(0...11, id: \.self) { inches in
+                                        Text("\(inches)").tag(inches)
+                                    }
+                                }
+                                .pickerStyle(.menu)
+                                Text("in")
+                                    .foregroundStyle(.secondary)
+                            }
                         }
                     }
 
-                    // Weight
+                    // Weight (American units with HealthKit indicator)
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("Weight")
-                            .font(.headline)
                         HStack {
-                            TextField("Weight", value: $vm.editWeight, format: .number)
-                                .keyboardType(.decimalPad)
-                                .textFieldStyle(.roundedBorder)
-                            Text("kg")
-                                .foregroundStyle(.secondary)
+                            Text("Weight")
+                                .font(.headline)
+                            Spacer()
+                            if vm.healthKitWeight != nil {
+                                Toggle("Manual override", isOn: $vm.useManualWeight)
+                                    .labelsHidden()
+                                    .scaleEffect(0.8)
+                            }
+                        }
+
+                        if vm.healthKitWeight != nil && !vm.useManualWeight {
+                            // Show HealthKit weight (read-only)
+                            HStack {
+                                Text(String(format: "%.1f lbs", UnitConversion.kgToLbs(vm.healthKitWeight!)))
+                                    .font(.title2)
+                                    .fontWeight(.semibold)
+                                Spacer()
+                                HStack(spacing: 4) {
+                                    Image(systemName: "heart.fill")
+                                        .foregroundStyle(.red)
+                                        .font(.caption)
+                                    Text("from Apple Health")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                            }
+                            .padding()
+                            .background(Color(.systemGray6))
+                            .cornerRadius(8)
+                        } else {
+                            // Manual weight entry
+                            HStack {
+                                TextField("Weight", value: $vm.editWeightLbs, format: .number)
+                                    .keyboardType(.decimalPad)
+                                    .textFieldStyle(.roundedBorder)
+                                Text("lbs")
+                                    .foregroundStyle(.secondary)
+                            }
                         }
                     }
 
@@ -380,7 +449,10 @@ struct ProfileView: View {
 
     private func setupViewModel() {
         guard let container = container else { return }
-        let vm = ProfileViewModel(userRepository: container.userRepository)
+        let vm = ProfileViewModel(
+            userRepository: container.userRepository,
+            healthRepository: container.healthRepository
+        )
         viewModel = vm
         Task {
             await vm.loadProfile()
@@ -416,6 +488,51 @@ struct StatCard: View {
                 Text(title)
                     .font(.vitalBodySmall)
                     .foregroundStyle(Color.vitalAdaptiveTextSecondary)
+            }
+            .frame(maxWidth: .infinity)
+        }
+    }
+}
+
+struct StatCardWithSource: View {
+    let title: String
+    let value: String
+    let icon: String
+    let color: Color
+    let source: String
+
+    var body: some View {
+        VitalCard {
+            VStack(spacing: Spacing.sm) {
+                ZStack {
+                    Circle()
+                        .fill(color.opacity(0.15))
+                        .frame(width: 48, height: 48)
+
+                    Image(systemName: icon)
+                        .font(.system(size: 20, weight: .semibold))
+                        .foregroundStyle(color)
+                }
+
+                Text(value)
+                    .font(.vitalNumberMedium)
+                    .foregroundStyle(Color.vitalAdaptiveTextPrimary)
+
+                Text(title)
+                    .font(.vitalBodySmall)
+                    .foregroundStyle(Color.vitalAdaptiveTextSecondary)
+
+                // Source indicator
+                HStack(spacing: 2) {
+                    if source.contains("Apple Health") {
+                        Image(systemName: "heart.fill")
+                            .font(.system(size: 8))
+                            .foregroundStyle(.red)
+                    }
+                    Text(source)
+                        .font(.system(size: 9))
+                        .foregroundStyle(Color.vitalAdaptiveTextTertiary)
+                }
             }
             .frame(maxWidth: .infinity)
         }

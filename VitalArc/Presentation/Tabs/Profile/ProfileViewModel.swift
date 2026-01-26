@@ -11,6 +11,7 @@ import SwiftUI
 @Observable
 final class ProfileViewModel {
     private let userRepository: UserRepository
+    private let healthRepository: HealthRepository?
     private let updatePreferencesUseCase: UpdateUserPreferencesUseCase
 
     // MARK: - State
@@ -19,17 +20,25 @@ final class ProfileViewModel {
     var errorMessage: String?
     var isEditMode = false
 
-    // MARK: - Edit State
+    // HealthKit sync state
+    var healthKitWeight: Double? // in kg from HealthKit
+    var isHealthKitAvailable = false
+    var lastHealthKitSync: Date?
+
+    // MARK: - Edit State (stored in American units for display)
     var editName: String = ""
     var editBirthDate: Date = Date()
     var editSex: BiologicalSex = .male
-    var editHeight: Double = 170.0
-    var editWeight: Double = 70.0
+    var editHeightFeet: Int = 5
+    var editHeightInches: Int = 10
+    var editWeightLbs: Double = 154.0
     var editActivityLevel: ActivityLevel = .moderate
     var editWeightGoal: WeightGoal = .maintain
+    var useManualWeight: Bool = false
 
-    init(userRepository: UserRepository) {
+    init(userRepository: UserRepository, healthRepository: HealthRepository? = nil) {
         self.userRepository = userRepository
+        self.healthRepository = healthRepository
         self.updatePreferencesUseCase = UpdateUserPreferencesUseCase(repository: userRepository)
     }
 
@@ -45,10 +54,57 @@ final class ProfileViewModel {
             if let profile = profile {
                 populateEditFields(from: profile)
             }
+
+            // Try to sync from HealthKit
+            await syncFromHealthKit()
+
             isLoading = false
         } catch {
             isLoading = false
             errorMessage = error.localizedDescription
+        }
+    }
+
+    @MainActor
+    func syncFromHealthKit() async {
+        guard let healthRepository = healthRepository else { return }
+
+        do {
+            // Request authorization if needed
+            isHealthKitAvailable = try await healthRepository.requestHealthKitAuthorization()
+
+            if isHealthKitAvailable {
+                // Sync latest data
+                try await healthRepository.syncFromHealthKit()
+
+                // Get today's metrics (includes weight)
+                if let metrics = try await healthRepository.getHealthMetrics(for: Date()) {
+                    healthKitWeight = metrics.weight
+                    lastHealthKitSync = Date()
+
+                    // Update profile weight if we have HealthKit data and not using manual
+                    if let weight = healthKitWeight, !useManualWeight, var currentProfile = profile {
+                        currentProfile = UserProfile(
+                            id: currentProfile.id,
+                            name: currentProfile.name,
+                            birthDate: currentProfile.birthDate,
+                            biologicalSex: currentProfile.biologicalSex,
+                            height: currentProfile.height,
+                            weight: weight,
+                            activityLevel: currentProfile.activityLevel,
+                            weightGoal: currentProfile.weightGoal,
+                            createdAt: currentProfile.createdAt,
+                            updatedAt: Date()
+                        )
+                        try await userRepository.updateUserProfile(currentProfile)
+                        profile = currentProfile
+                        editWeightLbs = UnitConversion.kgToLbs(weight)
+                    }
+                }
+            }
+        } catch {
+            // HealthKit sync failed silently - user can still use manual entry
+            print("HealthKit sync error: \(error)")
         }
     }
 
@@ -71,13 +127,17 @@ final class ProfileViewModel {
         errorMessage = nil
 
         do {
+            // Convert American units back to metric for storage
+            let heightCm = UnitConversion.feetInchesToCm(feet: editHeightFeet, inches: editHeightInches)
+            let weightKg = UnitConversion.lbsToKg(editWeightLbs)
+
             let updatedProfile = UserProfile(
                 id: currentProfile.id,
                 name: editName.trimmingCharacters(in: .whitespaces),
                 birthDate: editBirthDate,
                 biologicalSex: editSex,
-                height: editHeight,
-                weight: editWeight,
+                height: heightCm,
+                weight: weightKg,
                 activityLevel: editActivityLevel,
                 weightGoal: editWeightGoal,
                 createdAt: currentProfile.createdAt,
@@ -100,15 +160,69 @@ final class ProfileViewModel {
         editName = profile.name
         editBirthDate = profile.birthDate
         editSex = profile.biologicalSex
-        editHeight = profile.height
-        editWeight = profile.weight
+
+        // Convert metric to American units
+        let (feet, inches) = UnitConversion.cmToFeetInches(profile.height)
+        editHeightFeet = feet
+        editHeightInches = inches
+        editWeightLbs = UnitConversion.kgToLbs(profile.weight)
+
         editActivityLevel = profile.activityLevel
         editWeightGoal = profile.weightGoal
     }
 
     var canSave: Bool {
         !editName.trimmingCharacters(in: .whitespaces).isEmpty &&
-        editHeight > 0 &&
-        editWeight > 0
+        editHeightFeet > 0 &&
+        editWeightLbs > 0
+    }
+
+    // Display helpers
+    var displayWeight: String {
+        if let profile = profile {
+            return String(format: "%.1f lbs", UnitConversion.kgToLbs(profile.weight))
+        }
+        return "-"
+    }
+
+    var displayHeight: String {
+        if let profile = profile {
+            let (feet, inches) = UnitConversion.cmToFeetInches(profile.height)
+            return "\(feet)'\(inches)\""
+        }
+        return "-"
+    }
+
+    var weightSource: String {
+        if healthKitWeight != nil && !useManualWeight {
+            return "from Apple Health"
+        }
+        return "manual entry"
+    }
+}
+
+// MARK: - Unit Conversion Helpers
+
+enum UnitConversion {
+    // Weight conversions
+    static func kgToLbs(_ kg: Double) -> Double {
+        return kg * 2.20462
+    }
+
+    static func lbsToKg(_ lbs: Double) -> Double {
+        return lbs / 2.20462
+    }
+
+    // Height conversions
+    static func cmToFeetInches(_ cm: Double) -> (feet: Int, inches: Int) {
+        let totalInches = cm / 2.54
+        let feet = Int(totalInches) / 12
+        let inches = Int(totalInches.rounded()) % 12
+        return (feet, inches)
+    }
+
+    static func feetInchesToCm(feet: Int, inches: Int) -> Double {
+        let totalInches = Double(feet * 12 + inches)
+        return totalInches * 2.54
     }
 }
