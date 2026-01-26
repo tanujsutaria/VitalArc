@@ -90,7 +90,6 @@ jobs:
     runs-on: macos-15
     timeout-minutes: 30
     needs: build
-    continue-on-error: true  # Tests have outdated code - make non-blocking until fixed
 
     steps:
       - name: Checkout
