@@ -3,13 +3,14 @@
 //  VitalArc
 //
 //  Exercise Library - Browse and search exercises grouped by body part
+//  Supports custom categories and custom exercises
 //
 
 import SwiftUI
 
-// MARK: - Exercise Body Part Definition (for grouping exercises in the library)
+// MARK: - Body Part Categories
 
-enum ExerciseBodyPart: String, CaseIterable, Identifiable {
+enum BodyPartCategory: String, CaseIterable, Identifiable, Codable {
     case chest = "Chest"
     case back = "Back"
     case shoulders = "Shoulders"
@@ -18,8 +19,10 @@ enum ExerciseBodyPart: String, CaseIterable, Identifiable {
     case quads = "Quads"
     case hamstrings = "Hamstrings"
     case glutes = "Glutes"
+    case calves = "Calves"
     case core = "Core"
-    case fullBody = "Full Body"
+    case forearms = "Forearms"
+    case custom = "Custom"
 
     var id: String { rawValue }
 
@@ -33,56 +36,57 @@ enum ExerciseBodyPart: String, CaseIterable, Identifiable {
         case .quads: return "figure.walk"
         case .hamstrings: return "figure.run"
         case .glutes: return "figure.climbing"
+        case .calves: return "shoeprints.fill"
         case .core: return "circle.grid.cross.fill"
-        case .fullBody: return "figure.flexibility"
+        case .forearms: return "hand.raised.fill"
+        case .custom: return "star.fill"
         }
     }
 
     var color: Color {
         switch self {
-        case .chest: return .vitalDanger
-        case .back: return .vitalInfo
-        case .shoulders: return .vitalWarning
-        case .biceps: return .vitalSecondary
-        case .triceps: return .vitalAccent
-        case .quads: return .vitalSuccess
-        case .hamstrings: return .vitalPrimary
-        case .glutes: return .vitalAccent
-        case .core: return .vitalWarning
-        case .fullBody: return .vitalInfo
+        case .chest: return .red
+        case .back: return .blue
+        case .shoulders: return .orange
+        case .biceps: return .purple
+        case .triceps: return .pink
+        case .quads: return .green
+        case .hamstrings: return .teal
+        case .glutes: return .indigo
+        case .calves: return .mint
+        case .core: return .yellow
+        case .forearms: return .brown
+        case .custom: return .gray
         }
     }
 
-    /// Maps MuscleGroup to ExerciseBodyPart for grouping
-    static func from(muscleGroup: MuscleGroup) -> ExerciseBodyPart {
+    /// Maps MuscleGroup to BodyPartCategory
+    static func from(muscleGroup: MuscleGroup) -> BodyPartCategory {
         switch muscleGroup {
-        case .chest:
-            return .chest
-        case .upperBack, .lowerBack, .lats, .traps, .back:
-            return .back
-        case .shoulders, .rearDelts:
-            return .shoulders
-        case .biceps, .forearms:
-            return .biceps
-        case .triceps:
-            return .triceps
-        case .quadriceps:
-            return .quads
-        case .hamstrings, .hipFlexors, .adductors, .abductors:
-            return .hamstrings
-        case .glutes, .calves:
-            return .glutes
-        case .abs, .obliques, .serratus:
-            return .core
-        case .fullBody:
-            return .fullBody
+        case .chest: return .chest
+        case .upperBack, .lowerBack, .lats, .traps, .back: return .back
+        case .shoulders, .rearDelts: return .shoulders
+        case .biceps: return .biceps
+        case .triceps: return .triceps
+        case .quadriceps: return .quads
+        case .hamstrings, .hipFlexors, .adductors, .abductors: return .hamstrings
+        case .glutes: return .glutes
+        case .calves: return .calves
+        case .abs, .obliques, .serratus: return .core
+        case .forearms: return .forearms
+        case .fullBody: return .custom
         }
     }
 }
 
 struct ExerciseLibraryView: View {
+    @Environment(\.dependencyContainer) private var container
     @State private var viewModel: ExerciseLibraryViewModel
-    @State private var expandedSections: Set<ExerciseBodyPart> = Set(ExerciseBodyPart.allCases)
+    @State private var expandedSections: Set<BodyPartCategory> = Set(BodyPartCategory.allCases)
+    @State private var showingAddExercise = false
+    @State private var showingAddCategory = false
+    @State private var customCategories: [String] = []
+
     let onSelectExercise: (Exercise) -> Void
 
     init(
@@ -94,47 +98,107 @@ struct ExerciseLibraryView: View {
     }
 
     var body: some View {
-        NavigationStack {
-            VStack(spacing: 0) {
-                // Body Part Filter
-                bodyPartFilterScrollView
-
-                // Exercise List
-                if viewModel.isLoading {
-                    ProgressView()
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                } else if let error = viewModel.errorMessage {
-                    ContentUnavailableView(
-                        "Error",
-                        systemImage: "exclamationmark.triangle",
-                        description: Text(error)
-                    )
-                } else if viewModel.exercises.isEmpty {
-                    ContentUnavailableView.search
-                } else {
-                    exerciseListGroupedByBodyPart
-                }
-            }
-            .background(Color.vitalAdaptiveBackground)
-            .navigationTitle("Exercise Library")
-            .searchable(text: $viewModel.searchText, prompt: "Search exercises")
-            .onChange(of: viewModel.searchText) { _, newValue in
-                Task {
-                    await viewModel.updateSearch(newValue)
-                }
-            }
-            .task {
-                await viewModel.loadExercises()
+        VStack(spacing: 0) {
+            // Exercise List
+            if viewModel.isLoading {
+                ProgressView()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+            } else if let error = viewModel.errorMessage {
+                ContentUnavailableView(
+                    "Error",
+                    systemImage: "exclamationmark.triangle",
+                    description: Text(error)
+                )
+            } else if viewModel.exercises.isEmpty && viewModel.searchText.isEmpty {
+                emptyStateView
+            } else if viewModel.exercises.isEmpty {
+                ContentUnavailableView.search
+            } else {
+                exerciseListGroupedByBodyPart
             }
         }
+        .background(Color.vitalAdaptiveBackground)
+        .searchable(text: $viewModel.searchText, prompt: "Search exercises")
+        .onChange(of: viewModel.searchText) { _, newValue in
+            Task {
+                await viewModel.updateSearch(newValue)
+            }
+        }
+        .toolbar {
+            ToolbarItem(placement: .primaryAction) {
+                Menu {
+                    Button {
+                        showingAddExercise = true
+                    } label: {
+                        Label("Add Custom Exercise", systemImage: "plus.circle")
+                    }
+
+                    Button {
+                        showingAddCategory = true
+                    } label: {
+                        Label("Add Custom Category", systemImage: "folder.badge.plus")
+                    }
+                } label: {
+                    Image(systemName: "plus")
+                }
+            }
+        }
+        .sheet(isPresented: $showingAddExercise) {
+            AddCustomExerciseView { exercise in
+                // Handle adding custom exercise
+                Task {
+                    await viewModel.loadExercises()
+                }
+            }
+        }
+        .sheet(isPresented: $showingAddCategory) {
+            AddCustomCategoryView { categoryName in
+                customCategories.append(categoryName)
+            }
+        }
+        .task {
+            await viewModel.loadExercises()
+        }
+    }
+
+    // MARK: - Empty State
+
+    private var emptyStateView: some View {
+        VStack(spacing: Spacing.lg) {
+            Image(systemName: "dumbbell.fill")
+                .font(.system(size: 64))
+                .foregroundStyle(Color.vitalAdaptiveTextTertiary)
+
+            Text("No Exercises")
+                .font(.vitalH2)
+                .foregroundStyle(Color.vitalAdaptiveTextPrimary)
+
+            Text("Add custom exercises to get started")
+                .font(.vitalBody)
+                .foregroundStyle(Color.vitalAdaptiveTextSecondary)
+
+            Button {
+                showingAddExercise = true
+            } label: {
+                Label("Add Exercise", systemImage: "plus.circle.fill")
+                    .font(.vitalLabel)
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, Spacing.xl)
+                    .padding(.vertical, Spacing.md)
+                    .background(Color.vitalPrimary)
+                    .cornerRadius(Spacing.radiusMedium)
+            }
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
     // MARK: - Grouped Exercise List
 
     private var exerciseListGroupedByBodyPart: some View {
         ScrollView {
-            LazyVStack(spacing: Spacing.md, pinnedViews: [.sectionHeaders]) {
-                ForEach(ExerciseBodyPart.allCases) { bodyPart in
+            LazyVStack(spacing: 0, pinnedViews: [.sectionHeaders]) {
+                // Standard body part categories
+                ForEach(BodyPartCategory.allCases.filter { $0 != .custom }) { bodyPart in
                     let exercisesForBodyPart = exercisesGrouped(by: bodyPart)
 
                     if !exercisesForBodyPart.isEmpty {
@@ -151,11 +215,13 @@ struct ExerciseLibraryView: View {
                                     }
                                 }
                                 .padding(.horizontal, Spacing.screenPadding)
-                                .padding(.bottom, Spacing.md)
+                                .padding(.vertical, Spacing.sm)
                             }
                         } header: {
                             BodyPartSectionHeader(
-                                bodyPart: bodyPart,
+                                title: bodyPart.rawValue,
+                                icon: bodyPart.icon,
+                                color: bodyPart.color,
                                 exerciseCount: exercisesForBodyPart.count,
                                 isExpanded: expandedSections.contains(bodyPart)
                             ) {
@@ -170,83 +236,54 @@ struct ExerciseLibraryView: View {
                         }
                     }
                 }
+
+                // Custom categories
+                ForEach(customCategories, id: \.self) { categoryName in
+                    Section {
+                        Text("No exercises in this category")
+                            .font(.vitalCaption)
+                            .foregroundStyle(Color.vitalAdaptiveTextSecondary)
+                            .padding(Spacing.md)
+                    } header: {
+                        HStack(spacing: Spacing.md) {
+                            ZStack {
+                                RoundedRectangle(cornerRadius: Spacing.radiusSmall)
+                                    .fill(Color.gray.opacity(0.15))
+                                    .frame(width: 40, height: 40)
+
+                                Image(systemName: "star.fill")
+                                    .font(.system(size: 16, weight: .semibold))
+                                    .foregroundStyle(Color.gray)
+                            }
+
+                            VStack(alignment: .leading, spacing: Spacing.xxs) {
+                                Text(categoryName)
+                                    .font(.vitalH3)
+                                    .foregroundStyle(Color.vitalAdaptiveTextPrimary)
+
+                                Text("Custom category")
+                                    .font(.vitalCaption)
+                                    .foregroundStyle(Color.vitalAdaptiveTextSecondary)
+                            }
+
+                            Spacer()
+                        }
+                        .padding(.horizontal, Spacing.screenPadding)
+                        .padding(.vertical, Spacing.sm)
+                        .background(Color.vitalAdaptiveSurface)
+                    }
+                }
             }
-            .padding(.top, Spacing.sm)
         }
     }
 
-    /// Groups exercises by their primary muscle group mapped to ExerciseBodyPart
-    private func exercisesGrouped(by bodyPart: ExerciseBodyPart) -> [Exercise] {
+    /// Groups exercises by their primary muscle group mapped to BodyPartCategory
+    private func exercisesGrouped(by bodyPart: BodyPartCategory) -> [Exercise] {
         viewModel.exercises.filter { exercise in
             guard let primaryMuscle = exercise.primaryMuscles.first else {
-                return bodyPart == .fullBody
+                return bodyPart == .custom
             }
-            return ExerciseBodyPart.from(muscleGroup: primaryMuscle) == bodyPart
-        }
-    }
-
-    // MARK: - Body Part Filter
-
-    private var bodyPartFilterScrollView: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: Spacing.itemSpacing) {
-                BodyPartFilterChip(
-                    title: "All",
-                    icon: "square.grid.2x2",
-                    color: .vitalPrimary,
-                    isSelected: viewModel.selectedCategory == nil
-                ) {
-                    Task {
-                        await viewModel.selectCategory(nil)
-                    }
-                }
-
-                ForEach(ExerciseCategory.allCases, id: \.self) { category in
-                    BodyPartFilterChip(
-                        title: category.rawValue,
-                        icon: iconForCategory(category),
-                        color: colorForCategory(category),
-                        isSelected: viewModel.selectedCategory == category
-                    ) {
-                        Task {
-                            await viewModel.selectCategory(category)
-                        }
-                    }
-                }
-            }
-            .padding(.horizontal, Spacing.screenPadding)
-        }
-        .padding(.vertical, Spacing.sm)
-        .background(Color.vitalAdaptiveSurface)
-    }
-
-    private func iconForCategory(_ category: ExerciseCategory) -> String {
-        switch category {
-        case .push: return "arrow.up.circle.fill"
-        case .pull: return "arrow.down.circle.fill"
-        case .legs: return "figure.walk"
-        case .core: return "circle.grid.cross.fill"
-        case .cardio: return "heart.fill"
-        case .olympic: return "figure.strengthtraining.traditional"
-        case .strongman: return "figure.strengthtraining.functional"
-        case .calisthenics: return "figure.gymnastics"
-        case .plyometrics: return "figure.jumprope"
-        case .mobility: return "figure.flexibility"
-        }
-    }
-
-    private func colorForCategory(_ category: ExerciseCategory) -> Color {
-        switch category {
-        case .push: return .vitalDanger
-        case .pull: return .vitalInfo
-        case .legs: return .vitalSuccess
-        case .core: return .vitalWarning
-        case .cardio: return .vitalSecondary
-        case .olympic: return .vitalAccent
-        case .strongman: return .vitalPrimary
-        case .calisthenics: return .vitalInfo
-        case .plyometrics: return .vitalWarning
-        case .mobility: return .vitalSuccess
+            return BodyPartCategory.from(muscleGroup: primaryMuscle) == bodyPart
         }
     }
 }
@@ -254,7 +291,9 @@ struct ExerciseLibraryView: View {
 // MARK: - Body Part Section Header
 
 struct BodyPartSectionHeader: View {
-    let bodyPart: ExerciseBodyPart
+    let title: String
+    let icon: String
+    let color: Color
     let exerciseCount: Int
     let isExpanded: Bool
     let onTap: () -> Void
@@ -265,17 +304,17 @@ struct BodyPartSectionHeader: View {
                 // Icon with background
                 ZStack {
                     RoundedRectangle(cornerRadius: Spacing.radiusSmall)
-                        .fill(bodyPart.color.opacity(0.15))
+                        .fill(color.opacity(0.15))
                         .frame(width: 40, height: 40)
 
-                    Image(systemName: bodyPart.icon)
-                        .font(.system(size: Spacing.iconMedium, weight: .semibold))
-                        .foregroundStyle(bodyPart.color)
+                    Image(systemName: icon)
+                        .font(.system(size: 16, weight: .semibold))
+                        .foregroundStyle(color)
                 }
 
                 // Title and count
                 VStack(alignment: .leading, spacing: Spacing.xxs) {
-                    Text(bodyPart.rawValue)
+                    Text(title)
                         .font(.vitalH3)
                         .foregroundStyle(Color.vitalAdaptiveTextPrimary)
 
@@ -300,30 +339,154 @@ struct BodyPartSectionHeader: View {
     }
 }
 
-// MARK: - Body Part Filter Chip
+// MARK: - Add Custom Exercise View
 
-struct BodyPartFilterChip: View {
-    let title: String
-    let icon: String
-    let color: Color
-    let isSelected: Bool
-    let action: () -> Void
+struct AddCustomExerciseView: View {
+    @Environment(\.dismiss) private var dismiss
+    @Environment(\.dependencyContainer) private var container
+
+    @State private var name = ""
+    @State private var selectedBodyPart: BodyPartCategory = .chest
+    @State private var notes = ""
+    @State private var isSaving = false
+
+    let onSave: (Exercise) -> Void
 
     var body: some View {
-        Button(action: action) {
-            HStack(spacing: Spacing.xs) {
-                Image(systemName: icon)
-                    .font(.system(size: 12, weight: .medium))
-                Text(title)
-                    .font(.vitalLabelSmall)
-                    .fontWeight(.medium)
+        NavigationStack {
+            Form {
+                Section("Exercise Details") {
+                    TextField("Exercise Name", text: $name)
+
+                    Picker("Body Part", selection: $selectedBodyPart) {
+                        ForEach(BodyPartCategory.allCases.filter { $0 != .custom }) { bodyPart in
+                            HStack {
+                                Image(systemName: bodyPart.icon)
+                                    .foregroundStyle(bodyPart.color)
+                                Text(bodyPart.rawValue)
+                            }
+                            .tag(bodyPart)
+                        }
+                    }
+                }
+
+                Section("Notes (Optional)") {
+                    TextEditor(text: $notes)
+                        .frame(minHeight: 80)
+                }
             }
-            .padding(.horizontal, Spacing.md)
-            .padding(.vertical, Spacing.sm)
-            .background(isSelected ? color : Color.vitalAdaptiveBorder.opacity(0.5))
-            .foregroundStyle(isSelected ? .white : Color.vitalAdaptiveTextPrimary)
-            .clipShape(Capsule())
+            .navigationTitle("Add Exercise")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") {
+                        dismiss()
+                    }
+                }
+
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Save") {
+                        saveExercise()
+                    }
+                    .disabled(name.trimmingCharacters(in: .whitespaces).isEmpty || isSaving)
+                }
+            }
         }
-        .buttonStyle(.plain)
+    }
+
+    private func saveExercise() {
+        isSaving = true
+
+        let muscleGroup = muscleGroupFor(bodyPart: selectedBodyPart)
+
+        let exercise = Exercise(
+            name: name.trimmingCharacters(in: .whitespaces),
+            category: .custom,
+            primaryMuscles: [muscleGroup],
+            secondaryMuscles: [],
+            equipment: .bodyweight,
+            instructions: notes.isEmpty ? nil : notes,
+            isCustom: true
+        )
+
+        Task {
+            if let container = container {
+                try? await container.workoutRepository.saveExercise(exercise)
+            }
+            onSave(exercise)
+            dismiss()
+        }
+    }
+
+    private func muscleGroupFor(bodyPart: BodyPartCategory) -> MuscleGroup {
+        switch bodyPart {
+        case .chest: return .chest
+        case .back: return .back
+        case .shoulders: return .shoulders
+        case .biceps: return .biceps
+        case .triceps: return .triceps
+        case .quads: return .quadriceps
+        case .hamstrings: return .hamstrings
+        case .glutes: return .glutes
+        case .calves: return .calves
+        case .core: return .abs
+        case .forearms: return .forearms
+        case .custom: return .fullBody
+        }
+    }
+}
+
+// MARK: - Add Custom Category View
+
+struct AddCustomCategoryView: View {
+    @Environment(\.dismiss) private var dismiss
+
+    @State private var categoryName = ""
+
+    let onSave: (String) -> Void
+
+    var body: some View {
+        NavigationStack {
+            Form {
+                Section("Category Details") {
+                    TextField("Category Name", text: $categoryName)
+                }
+
+                Section {
+                    Text("Custom categories help you organize exercises your way. You can add exercises to this category after creating it.")
+                        .font(.vitalCaption)
+                        .foregroundStyle(Color.vitalAdaptiveTextSecondary)
+                }
+            }
+            .navigationTitle("Add Category")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") {
+                        dismiss()
+                    }
+                }
+
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Save") {
+                        onSave(categoryName.trimmingCharacters(in: .whitespaces))
+                        dismiss()
+                    }
+                    .disabled(categoryName.trimmingCharacters(in: .whitespaces).isEmpty)
+                }
+            }
+        }
+    }
+}
+
+#Preview {
+    NavigationStack {
+        ExerciseLibraryView(
+            getExercisesUseCase: GetExercisesUseCase(
+                repository: PreviewWorkoutRepository()
+            )
+        ) { exercise in
+            print("Selected: \(exercise.name)")
+        }
     }
 }

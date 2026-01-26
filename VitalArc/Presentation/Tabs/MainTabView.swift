@@ -50,13 +50,12 @@ struct MainTabView: View {
 struct WorkoutTabView: View {
     @Environment(\.dependencyContainer) private var container
     @State private var showingWorkoutLogger = false
-    @State private var selectedView: WorkoutView = .history
+    @State private var selectedView: WorkoutView = .exercises
 
     enum WorkoutView: String, CaseIterable {
-        case history = "History"
         case exercises = "Exercises"
         case templates = "Templates"
-        case programs = "Programs"
+        case mesocycles = "Mesocycles"
     }
 
     var body: some View {
@@ -74,8 +73,6 @@ struct WorkoutTabView: View {
 
                     // Content
                     switch selectedView {
-                    case .history:
-                        WorkoutHistoryView(repository: container.workoutRepository)
                     case .exercises:
                         ExerciseLibraryView(
                             getExercisesUseCase: GetExercisesUseCase(
@@ -86,7 +83,7 @@ struct WorkoutTabView: View {
                         }
                     case .templates:
                         WorkoutTemplatesContentView(container: container)
-                    case .programs:
+                    case .mesocycles:
                         MesocycleContentView(container: container)
                     }
                 }

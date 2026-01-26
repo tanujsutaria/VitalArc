@@ -86,6 +86,7 @@ struct ExerciseRowView: View {
         case .calisthenics: return "figure.gymnastics"
         case .plyometrics: return "figure.jumprope"
         case .mobility: return "figure.flexibility"
+        case .custom: return "star.fill"
         }
     }
 
@@ -101,6 +102,7 @@ struct ExerciseRowView: View {
         case .calisthenics: return .vitalInfo
         case .plyometrics: return .vitalWarning
         case .mobility: return .vitalSuccess
+        case .custom: return .gray
         }
     }
 

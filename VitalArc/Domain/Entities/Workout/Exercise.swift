@@ -16,6 +16,7 @@ struct Exercise: Identifiable, Equatable {
     let secondaryMuscles: [MuscleGroup]
     let equipment: Equipment
     let instructions: String?
+    let isCustom: Bool
 
     // Enhanced metadata
     let videoURL: String?
@@ -37,6 +38,7 @@ struct Exercise: Identifiable, Equatable {
         secondaryMuscles: [MuscleGroup] = [],
         equipment: Equipment,
         instructions: String? = nil,
+        isCustom: Bool = false,
         videoURL: String? = nil,
         imageURL: String? = nil,
         difficulty: ExerciseDifficulty? = nil,
@@ -55,6 +57,7 @@ struct Exercise: Identifiable, Equatable {
         self.secondaryMuscles = secondaryMuscles
         self.equipment = equipment
         self.instructions = instructions
+        self.isCustom = isCustom
         self.videoURL = videoURL
         self.imageURL = imageURL
         self.difficulty = difficulty
@@ -79,6 +82,7 @@ enum ExerciseCategory: String, Codable, CaseIterable {
     case calisthenics = "Calisthenics"
     case plyometrics = "Plyometrics"
     case mobility = "Mobility"
+    case custom = "Custom"
 }
 
 enum MuscleGroup: String, Codable, CaseIterable {

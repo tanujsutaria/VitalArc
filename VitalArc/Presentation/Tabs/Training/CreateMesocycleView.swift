@@ -2,52 +2,50 @@
 //  CreateMesocycleView.swift
 //  VitalArc
 //
-//  Simplified mesocycle creation - Pick template → Set weeks → Done
+//  Mesocycle creation - Pick YOUR template → Set weeks → Auto-progression
 //
 
 import SwiftUI
 
 struct CreateMesocycleView: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.dependencyContainer) private var container
     let viewModel: MesocycleViewModel
 
-    // Step-based creation (simplified)
-    @State private var currentStep = 0
+    // User's saved templates
+    @State private var userTemplates: [WorkoutTemplate] = []
+    @State private var isLoadingTemplates = true
 
-    // Step 1: Pick template
-    @State private var selectedTemplate: QuickTemplate = .pushPullLegs
+    // Selected template
+    @State private var selectedTemplateId: UUID?
 
-    // Step 2: Configure
+    // Configuration
     @State private var programName = ""
     @State private var durationWeeks = 4
     @State private var startDate = Date()
     @State private var autoProgressionEnabled = true
-    @State private var progressionType: ProgressionType = .reps
+    @State private var weightIncrementLbs: Double = 5.0
+    @State private var repIncrement: Int = 1
 
     @State private var isCreating = false
 
+    var selectedTemplate: WorkoutTemplate? {
+        userTemplates.first { $0.id == selectedTemplateId }
+    }
+
     var body: some View {
         NavigationStack {
-            VStack(spacing: 0) {
-                // Progress indicator
-                progressIndicator
-
-                // Content based on step
-                TabView(selection: $currentStep) {
-                    templateSelectionStep
-                        .tag(0)
-
-                    configurationStep
-                        .tag(1)
-
-                    summaryStep
-                        .tag(2)
+            Group {
+                if isLoadingTemplates {
+                    ProgressView("Loading templates...")
+                } else if userTemplates.isEmpty {
+                    noTemplatesView
+                } else {
+                    createMesocycleForm
                 }
-                .tabViewStyle(.page(indexDisplayMode: .never))
-                .animation(.spring(response: 0.4), value: currentStep)
             }
             .background(Color.vitalAdaptiveBackground)
-            .navigationTitle(stepTitle)
+            .navigationTitle("Create Mesocycle")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -57,159 +55,102 @@ struct CreateMesocycleView: View {
                 }
 
                 ToolbarItem(placement: .confirmationAction) {
-                    if currentStep < 2 {
-                        Button("Next") {
-                            withAnimation { currentStep += 1 }
-                        }
-                        .disabled(currentStep == 1 && programName.isEmpty)
-                    } else {
-                        Button("Create") {
-                            createMesocycle()
-                        }
-                        .disabled(isCreating)
+                    Button("Create") {
+                        createMesocycle()
                     }
+                    .disabled(!canCreate || isCreating)
                 }
             }
-        }
-    }
-
-    // MARK: - Progress Indicator
-
-    private var progressIndicator: some View {
-        HStack(spacing: Spacing.sm) {
-            ForEach(0..<3) { step in
-                Capsule()
-                    .fill(step <= currentStep ? Color.vitalPrimary : Color.vitalAdaptiveBorder)
-                    .frame(height: 4)
+            .task {
+                await loadUserTemplates()
             }
         }
-        .padding(.horizontal, Spacing.screenPadding)
-        .padding(.vertical, Spacing.md)
     }
 
-    private var stepTitle: String {
-        switch currentStep {
-        case 0: return "Choose Template"
-        case 1: return "Configure"
-        default: return "Review"
+    // MARK: - No Templates View
+
+    private var noTemplatesView: some View {
+        VStack(spacing: Spacing.lg) {
+            Image(systemName: "doc.badge.plus")
+                .font(.system(size: 64))
+                .foregroundStyle(Color.vitalAdaptiveTextTertiary)
+
+            Text("No Templates Yet")
+                .font(.vitalH2)
+                .foregroundStyle(Color.vitalAdaptiveTextPrimary)
+
+            Text("Create a workout template first, then come back to build a mesocycle from it.")
+                .font(.vitalBody)
+                .foregroundStyle(Color.vitalAdaptiveTextSecondary)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, Spacing.xl)
+
+            Button {
+                dismiss()
+            } label: {
+                Text("Go to Templates")
+                    .font(.vitalLabel)
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, Spacing.xl)
+                    .padding(.vertical, Spacing.md)
+                    .background(Color.vitalPrimary)
+                    .cornerRadius(Spacing.radiusMedium)
+            }
+            .padding(.top, Spacing.md)
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
-    // MARK: - Step 1: Template Selection
+    // MARK: - Create Mesocycle Form
 
-    private var templateSelectionStep: some View {
+    private var createMesocycleForm: some View {
         ScrollView {
             VStack(spacing: Spacing.lg) {
-                // Header
-                VStack(spacing: Spacing.sm) {
-                    Image(systemName: "calendar.badge.plus")
-                        .font(.system(size: 48))
-                        .foregroundStyle(Color.vitalPrimary)
-
-                    Text("Start with a template")
-                        .font(.vitalH2)
-                        .foregroundStyle(Color.vitalAdaptiveTextPrimary)
-
-                    Text("Choose a training split to get started quickly")
-                        .font(.vitalBody)
-                        .foregroundStyle(Color.vitalAdaptiveTextSecondary)
-                        .multilineTextAlignment(.center)
-                }
-                .padding(.top, Spacing.xl)
-                .padding(.bottom, Spacing.md)
-
-                // Template options
-                VStack(spacing: Spacing.md) {
-                    ForEach(QuickTemplate.allCases, id: \.self) { template in
-                        templateCard(template)
-                    }
-                }
-                .padding(.horizontal, Spacing.screenPadding)
-            }
-            .padding(.bottom, Spacing.xxxl)
-        }
-    }
-
-    private func templateCard(_ template: QuickTemplate) -> some View {
-        Button {
-            HapticFeedback.selection()
-            selectedTemplate = template
-        } label: {
-            HStack(spacing: Spacing.md) {
-                // Icon
-                ZStack {
-                    Circle()
-                        .fill(selectedTemplate == template ? Color.vitalPrimary : Color.vitalPrimary.opacity(0.1))
-                        .frame(width: 56, height: 56)
-
-                    Image(systemName: template.icon)
-                        .font(.system(size: 24))
-                        .foregroundStyle(selectedTemplate == template ? .white : Color.vitalPrimary)
-                }
-
-                // Text
-                VStack(alignment: .leading, spacing: Spacing.xxs) {
-                    Text(template.name)
-                        .font(.vitalH3)
-                        .foregroundStyle(Color.vitalAdaptiveTextPrimary)
-
-                    Text(template.description)
-                        .font(.vitalCaption)
-                        .foregroundStyle(Color.vitalAdaptiveTextSecondary)
-                        .lineLimit(2)
-
-                    Text("\(template.daysPerWeek) days/week")
-                        .font(.vitalCaptionSmall)
-                        .foregroundStyle(Color.vitalPrimary)
-                }
-
-                Spacer()
-
-                // Selection indicator
-                if selectedTemplate == template {
-                    Image(systemName: "checkmark.circle.fill")
-                        .font(.title2)
-                        .foregroundStyle(Color.vitalPrimary)
-                }
-            }
-            .padding(Spacing.md)
-            .background(Color.vitalAdaptiveSurface)
-            .cornerRadius(Spacing.radiusLarge)
-            .overlay(
-                RoundedRectangle(cornerRadius: Spacing.radiusLarge)
-                    .stroke(selectedTemplate == template ? Color.vitalPrimary : Color.clear, lineWidth: 2)
-            )
-        }
-    }
-
-    // MARK: - Step 2: Configuration
-
-    private var configurationStep: some View {
-        ScrollView {
-            VStack(spacing: Spacing.lg) {
-                // Program name
+                // Template Selection
                 VStack(alignment: .leading, spacing: Spacing.sm) {
-                    Text("Program Name")
-                        .font(.vitalLabel)
-                        .foregroundStyle(Color.vitalAdaptiveTextSecondary)
+                    Text("SELECT TEMPLATE")
+                        .font(.vitalCaptionSmall)
+                        .foregroundStyle(Color.vitalAdaptiveTextTertiary)
+                        .padding(.horizontal, Spacing.screenPadding)
 
-                    TextField("e.g., Summer Bulk 2026", text: $programName)
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: Spacing.md) {
+                            ForEach(userTemplates) { template in
+                                templateCard(template)
+                            }
+                        }
+                        .padding(.horizontal, Spacing.screenPadding)
+                    }
+                }
+
+                // Program Name
+                VStack(alignment: .leading, spacing: Spacing.sm) {
+                    Text("PROGRAM NAME")
+                        .font(.vitalCaptionSmall)
+                        .foregroundStyle(Color.vitalAdaptiveTextTertiary)
+
+                    TextField("e.g., Summer Bulk", text: $programName)
                         .font(.vitalBody)
                         .padding(Spacing.md)
                         .background(Color.vitalAdaptiveSurface)
                         .cornerRadius(Spacing.radiusMedium)
                 }
+                .padding(.horizontal, Spacing.screenPadding)
 
                 // Duration
                 VStack(alignment: .leading, spacing: Spacing.sm) {
-                    Text("Duration")
-                        .font(.vitalLabel)
-                        .foregroundStyle(Color.vitalAdaptiveTextSecondary)
+                    Text("DURATION")
+                        .font(.vitalCaptionSmall)
+                        .foregroundStyle(Color.vitalAdaptiveTextTertiary)
 
                     HStack {
-                        Text("\(durationWeeks) weeks")
-                            .font(.vitalH2)
-                            .foregroundStyle(Color.vitalAdaptiveTextPrimary)
+                        Text("\(durationWeeks)")
+                            .font(.vitalDisplayLarge)
+                            .foregroundStyle(Color.vitalPrimary)
+
+                        Text("weeks")
+                            .font(.vitalH3)
+                            .foregroundStyle(Color.vitalAdaptiveTextSecondary)
 
                         Spacer()
 
@@ -220,11 +161,10 @@ struct CreateMesocycleView: View {
                     .background(Color.vitalAdaptiveSurface)
                     .cornerRadius(Spacing.radiusMedium)
 
-                    // Quick duration buttons
+                    // Quick select
                     HStack(spacing: Spacing.sm) {
                         ForEach([4, 6, 8, 12], id: \.self) { weeks in
                             Button {
-                                HapticFeedback.light()
                                 durationWeeks = weeks
                             } label: {
                                 Text("\(weeks)w")
@@ -238,12 +178,13 @@ struct CreateMesocycleView: View {
                         }
                     }
                 }
+                .padding(.horizontal, Spacing.screenPadding)
 
-                // Start date
+                // Start Date
                 VStack(alignment: .leading, spacing: Spacing.sm) {
-                    Text("Start Date")
-                        .font(.vitalLabel)
-                        .foregroundStyle(Color.vitalAdaptiveTextSecondary)
+                    Text("START DATE")
+                        .font(.vitalCaptionSmall)
+                        .foregroundStyle(Color.vitalAdaptiveTextTertiary)
 
                     DatePicker("", selection: $startDate, displayedComponents: .date)
                         .datePickerStyle(.compact)
@@ -252,16 +193,21 @@ struct CreateMesocycleView: View {
                         .background(Color.vitalAdaptiveSurface)
                         .cornerRadius(Spacing.radiusMedium)
                 }
+                .padding(.horizontal, Spacing.screenPadding)
 
-                // Auto-progression
+                // Auto-Progression
                 VStack(alignment: .leading, spacing: Spacing.sm) {
+                    Text("AUTO-PROGRESSION")
+                        .font(.vitalCaptionSmall)
+                        .foregroundStyle(Color.vitalAdaptiveTextTertiary)
+
                     Toggle(isOn: $autoProgressionEnabled) {
                         VStack(alignment: .leading, spacing: Spacing.xxs) {
-                            Text("Auto-Progression")
+                            Text("Enable Auto-Progression")
                                 .font(.vitalLabel)
                                 .foregroundStyle(Color.vitalAdaptiveTextPrimary)
 
-                            Text("Automatically increase reps or weight week-to-week")
+                            Text("Automatically increase weight/reps each week")
                                 .font(.vitalCaption)
                                 .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                         }
@@ -272,102 +218,159 @@ struct CreateMesocycleView: View {
                     .cornerRadius(Spacing.radiusMedium)
 
                     if autoProgressionEnabled {
-                        Picker("Progression Type", selection: $progressionType) {
-                            ForEach(ProgressionType.allCases, id: \.self) { type in
-                                Text(type.rawValue).tag(type)
+                        VStack(spacing: Spacing.md) {
+                            // Weight increment (lbs)
+                            HStack {
+                                Text("Weight increase per week")
+                                    .font(.vitalBody)
+                                    .foregroundStyle(Color.vitalAdaptiveTextPrimary)
+
+                                Spacer()
+
+                                HStack(spacing: Spacing.xs) {
+                                    Button {
+                                        if weightIncrementLbs > 2.5 {
+                                            weightIncrementLbs -= 2.5
+                                        }
+                                    } label: {
+                                        Image(systemName: "minus.circle.fill")
+                                            .foregroundStyle(Color.vitalPrimary)
+                                    }
+
+                                    Text("\(String(format: "%.1f", weightIncrementLbs)) lbs")
+                                        .font(.vitalLabel)
+                                        .foregroundStyle(Color.vitalPrimary)
+                                        .frame(width: 70)
+
+                                    Button {
+                                        if weightIncrementLbs < 20 {
+                                            weightIncrementLbs += 2.5
+                                        }
+                                    } label: {
+                                        Image(systemName: "plus.circle.fill")
+                                            .foregroundStyle(Color.vitalPrimary)
+                                    }
+                                }
+                            }
+
+                            Divider()
+
+                            // Rep increment
+                            HStack {
+                                Text("Rep increase per week")
+                                    .font(.vitalBody)
+                                    .foregroundStyle(Color.vitalAdaptiveTextPrimary)
+
+                                Spacer()
+
+                                HStack(spacing: Spacing.xs) {
+                                    Button {
+                                        if repIncrement > 1 {
+                                            repIncrement -= 1
+                                        }
+                                    } label: {
+                                        Image(systemName: "minus.circle.fill")
+                                            .foregroundStyle(Color.vitalPrimary)
+                                    }
+
+                                    Text("+\(repIncrement) reps")
+                                        .font(.vitalLabel)
+                                        .foregroundStyle(Color.vitalPrimary)
+                                        .frame(width: 70)
+
+                                    Button {
+                                        if repIncrement < 5 {
+                                            repIncrement += 1
+                                        }
+                                    } label: {
+                                        Image(systemName: "plus.circle.fill")
+                                            .foregroundStyle(Color.vitalPrimary)
+                                    }
+                                }
                             }
                         }
-                        .pickerStyle(.segmented)
-                        .padding(.top, Spacing.xs)
-                    }
-                }
-            }
-            .padding(Spacing.screenPadding)
-        }
-    }
-
-    // MARK: - Step 3: Summary
-
-    private var summaryStep: some View {
-        ScrollView {
-            VStack(spacing: Spacing.lg) {
-                // Success icon
-                ZStack {
-                    Circle()
-                        .fill(Color.vitalSuccess.opacity(0.1))
-                        .frame(width: 100, height: 100)
-
-                    Image(systemName: "checkmark.circle.fill")
-                        .font(.system(size: 56))
-                        .foregroundStyle(Color.vitalSuccess)
-                }
-                .padding(.top, Spacing.xl)
-
-                Text("Ready to Start!")
-                    .font(.vitalH1)
-                    .foregroundStyle(Color.vitalAdaptiveTextPrimary)
-
-                // Summary card
-                VitalCard(padding: Spacing.lg) {
-                    VStack(spacing: Spacing.md) {
-                        summaryRow(icon: "calendar", title: "Program", value: programName.isEmpty ? "My Program" : programName)
-                        Divider()
-                        summaryRow(icon: "figure.strengthtraining.traditional", title: "Template", value: selectedTemplate.name)
-                        Divider()
-                        summaryRow(icon: "clock", title: "Duration", value: "\(durationWeeks) weeks")
-                        Divider()
-                        summaryRow(icon: "play.circle", title: "Starts", value: startDate.formatted(date: .abbreviated, time: .omitted))
-                        Divider()
-                        summaryRow(icon: "flag.checkered", title: "Ends", value: endDate.formatted(date: .abbreviated, time: .omitted))
-                        Divider()
-                        summaryRow(icon: "arrow.up.right", title: "Progression", value: autoProgressionEnabled ? progressionType.rawValue : "Manual")
+                        .padding(Spacing.md)
+                        .background(Color.vitalAdaptiveSurface)
+                        .cornerRadius(Spacing.radiusMedium)
                     }
                 }
                 .padding(.horizontal, Spacing.screenPadding)
 
-                // Weekly schedule preview
-                VStack(alignment: .leading, spacing: Spacing.sm) {
-                    Text("Weekly Schedule")
-                        .font(.vitalH3)
-                        .foregroundStyle(Color.vitalAdaptiveTextPrimary)
-                        .padding(.horizontal, Spacing.screenPadding)
+                // Summary
+                if let template = selectedTemplate {
+                    VStack(alignment: .leading, spacing: Spacing.sm) {
+                        Text("SUMMARY")
+                            .font(.vitalCaptionSmall)
+                            .foregroundStyle(Color.vitalAdaptiveTextTertiary)
 
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: Spacing.sm) {
-                            ForEach(selectedTemplate.days, id: \.self) { day in
-                                VStack(spacing: Spacing.xs) {
-                                    Text(day)
-                                        .font(.vitalLabelSmall)
-                                        .foregroundStyle(.white)
-                                }
-                                .frame(width: 80)
-                                .padding(.vertical, Spacing.md)
-                                .background(Color.vitalPrimary)
-                                .cornerRadius(Spacing.radiusMedium)
+                        VStack(spacing: Spacing.md) {
+                            summaryRow("Template", template.name)
+                            Divider()
+                            summaryRow("Duration", "\(durationWeeks) weeks")
+                            Divider()
+                            summaryRow("Start", startDate.formatted(date: .abbreviated, time: .omitted))
+                            Divider()
+                            summaryRow("End", endDate.formatted(date: .abbreviated, time: .omitted))
+                            if autoProgressionEnabled {
+                                Divider()
+                                summaryRow("Weekly Progress", "+\(String(format: "%.1f", weightIncrementLbs)) lbs / +\(repIncrement) reps")
                             }
                         }
-                        .padding(.horizontal, Spacing.screenPadding)
+                        .padding(Spacing.md)
+                        .background(Color.vitalAdaptiveSurface)
+                        .cornerRadius(Spacing.radiusMedium)
                     }
+                    .padding(.horizontal, Spacing.screenPadding)
                 }
-                .padding(.top, Spacing.md)
             }
-            .padding(.bottom, Spacing.xxxl)
+            .padding(.vertical, Spacing.md)
         }
     }
 
-    private func summaryRow(icon: String, title: String, value: String) -> some View {
-        HStack {
-            Image(systemName: icon)
-                .font(.vitalBody)
-                .foregroundStyle(Color.vitalPrimary)
-                .frame(width: 24)
+    private func templateCard(_ template: WorkoutTemplate) -> some View {
+        Button {
+            selectedTemplateId = template.id
+        } label: {
+            VStack(alignment: .leading, spacing: Spacing.sm) {
+                HStack {
+                    Image(systemName: template.category.icon)
+                        .font(.vitalH3)
+                        .foregroundStyle(selectedTemplateId == template.id ? .white : Color.vitalPrimary)
 
+                    Spacer()
+
+                    if selectedTemplateId == template.id {
+                        Image(systemName: "checkmark.circle.fill")
+                            .foregroundStyle(.white)
+                    }
+                }
+
+                Text(template.name)
+                    .font(.vitalLabel)
+                    .foregroundStyle(selectedTemplateId == template.id ? .white : Color.vitalAdaptiveTextPrimary)
+                    .lineLimit(1)
+
+                Text("\(template.exerciseCount) exercises")
+                    .font(.vitalCaption)
+                    .foregroundStyle(selectedTemplateId == template.id ? .white.opacity(0.8) : Color.vitalAdaptiveTextSecondary)
+            }
+            .frame(width: 140)
+            .padding(Spacing.md)
+            .background(selectedTemplateId == template.id ? Color.vitalPrimary : Color.vitalAdaptiveSurface)
+            .cornerRadius(Spacing.radiusMedium)
+            .overlay(
+                RoundedRectangle(cornerRadius: Spacing.radiusMedium)
+                    .stroke(selectedTemplateId == template.id ? Color.clear : Color.vitalAdaptiveBorder, lineWidth: 1)
+            )
+        }
+    }
+
+    private func summaryRow(_ title: String, _ value: String) -> some View {
+        HStack {
             Text(title)
                 .font(.vitalBody)
                 .foregroundStyle(Color.vitalAdaptiveTextSecondary)
-
             Spacer()
-
             Text(value)
                 .font(.vitalLabel)
                 .foregroundStyle(Color.vitalAdaptiveTextPrimary)
@@ -378,21 +381,51 @@ struct CreateMesocycleView: View {
         Calendar.current.date(byAdding: .weekOfYear, value: durationWeeks, to: startDate) ?? startDate
     }
 
+    private var canCreate: Bool {
+        selectedTemplateId != nil && !programName.trimmingCharacters(in: .whitespaces).isEmpty
+    }
+
     // MARK: - Actions
 
+    private func loadUserTemplates() async {
+        guard let container = container else {
+            isLoadingTemplates = false
+            return
+        }
+
+        do {
+            userTemplates = try await container.templateRepository.getTemplates()
+        } catch {
+            print("Failed to load templates: \(error)")
+        }
+
+        isLoadingTemplates = false
+    }
+
     private func createMesocycle() {
+        guard let template = selectedTemplate else { return }
+
         isCreating = true
         HapticFeedback.success()
 
         Task {
-            // Convert quick template to training blocks
-            let trainingBlocks = selectedTemplate.toTrainingBlocks()
+            // Create training blocks from the template
+            var trainingBlocks: [TrainingBlock] = []
+            let tempMesocycleId = UUID()
+
+            // Create a single training block representing the template
+            let block = TrainingBlock(
+                name: template.name,
+                dayOfWeek: 1,
+                mesocycleId: tempMesocycleId
+            )
+            trainingBlocks.append(block)
 
             await viewModel.createMesocycle(
-                name: programName.isEmpty ? "My Program" : programName,
+                name: programName,
                 startDate: startDate,
                 durationWeeks: durationWeeks,
-                goal: .hypertrophy, // Default
+                goal: .hypertrophy,
                 phaseTemplate: .standard,
                 trainingBlocks: trainingBlocks
             )
@@ -401,84 +434,6 @@ struct CreateMesocycleView: View {
             dismiss()
         }
     }
-}
-
-// MARK: - Quick Templates
-
-enum QuickTemplate: CaseIterable {
-    case pushPullLegs
-    case upperLower
-    case fullBody
-    case broSplit
-
-    var name: String {
-        switch self {
-        case .pushPullLegs: return "Push/Pull/Legs"
-        case .upperLower: return "Upper/Lower"
-        case .fullBody: return "Full Body"
-        case .broSplit: return "Bro Split"
-        }
-    }
-
-    var description: String {
-        switch self {
-        case .pushPullLegs: return "Classic 6-day split focusing on movement patterns"
-        case .upperLower: return "4-day split for balanced upper and lower development"
-        case .fullBody: return "3 sessions hitting all muscle groups each time"
-        case .broSplit: return "5-day split with dedicated muscle group days"
-        }
-    }
-
-    var icon: String {
-        switch self {
-        case .pushPullLegs: return "arrow.left.arrow.right"
-        case .upperLower: return "arrow.up.arrow.down"
-        case .fullBody: return "figure.stand"
-        case .broSplit: return "dumbbell.fill"
-        }
-    }
-
-    var daysPerWeek: Int {
-        switch self {
-        case .pushPullLegs: return 6
-        case .upperLower: return 4
-        case .fullBody: return 3
-        case .broSplit: return 5
-        }
-    }
-
-    var days: [String] {
-        switch self {
-        case .pushPullLegs:
-            return ["Push", "Pull", "Legs", "Push", "Pull", "Legs"]
-        case .upperLower:
-            return ["Upper", "Lower", "Upper", "Lower"]
-        case .fullBody:
-            return ["Full A", "Full B", "Full C"]
-        case .broSplit:
-            return ["Chest", "Back", "Shoulders", "Arms", "Legs"]
-        }
-    }
-
-    func toTrainingBlocks() -> [TrainingBlock] {
-        let tempMesocycleId = UUID()
-        var dayOfWeek = 2 // Start Monday
-
-        return days.enumerated().map { index, name in
-            let block = TrainingBlock(name: name, dayOfWeek: dayOfWeek, mesocycleId: tempMesocycleId)
-            dayOfWeek += 1
-            if dayOfWeek > 7 { dayOfWeek = 2 } // Wrap around
-            return block
-        }
-    }
-}
-
-// MARK: - Progression Types
-
-enum ProgressionType: String, CaseIterable {
-    case reps = "Add Reps"
-    case weight = "Add Weight"
-    case both = "Both"
 }
 
 #Preview {
