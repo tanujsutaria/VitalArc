@@ -158,11 +158,11 @@ struct HealthDashboardView: View {
                 if let weight = metrics.weight {
                     MetricCard(
                         title: "Weight",
-                        value: String(format: "%.1f", weight),
-                        unit: "kg",
+                        value: String(format: "%.1f", UnitConversion.kgToLbs(weight)),
+                        unit: "lbs",
                         icon: "scalemass.fill",
                         color: .vitalSuccess,
-                        sparklineData: getSparklineData(for: \.weight)
+                        sparklineData: getWeightSparklineData()
                     )
                 }
             }
@@ -466,6 +466,11 @@ struct HealthDashboardView: View {
 
     private func getSparklineData(for keyPath: KeyPath<HealthMetrics, Double?>) -> [Double]? {
         let data = viewModel.weekMetrics.compactMap { $0[keyPath: keyPath] }
+        return data.isEmpty ? nil : data
+    }
+
+    private func getWeightSparklineData() -> [Double]? {
+        let data = viewModel.weekMetrics.compactMap { $0.weight }.map { UnitConversion.kgToLbs($0) }
         return data.isEmpty ? nil : data
     }
 }

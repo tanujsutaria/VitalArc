@@ -30,8 +30,9 @@ final class OnboardingViewModel {
     var userName: String = ""
     var birthDate: Date = Calendar.current.date(byAdding: .year, value: -25, to: Date()) ?? Date()
     var selectedSex: BiologicalSex = .male
-    var height: Double = 170.0 // cm
-    var weight: Double = 70.0 // kg
+    var heightFeet: Int = 5       // American units for display
+    var heightInches: Int = 10    // American units for display
+    var weightLbs: Double = 154.0 // American units for display (lbs)
     var selectedActivityLevel: ActivityLevel = .moderate
     var selectedWeightGoal: WeightGoal = .maintain
 
@@ -64,8 +65,8 @@ final class OnboardingViewModel {
 
     var canProceedFromProfileSetup: Bool {
         !userName.trimmingCharacters(in: .whitespaces).isEmpty &&
-        height > 0 &&
-        weight > 0
+        heightFeet > 0 &&
+        weightLbs > 0
     }
 
     // MARK: - Completion
@@ -80,13 +81,17 @@ final class OnboardingViewModel {
         errorMessage = nil
 
         do {
+            // Convert American units to metric for internal storage (HealthKit compatibility)
+            let heightCm = UnitConversion.feetInchesToCm(feet: heightFeet, inches: heightInches)
+            let weightKg = UnitConversion.lbsToKg(weightLbs)
+
             // Create user profile
             let profile = UserProfile(
                 name: userName.trimmingCharacters(in: .whitespaces),
                 birthDate: birthDate,
                 biologicalSex: selectedSex,
-                height: height,
-                weight: weight,
+                height: heightCm,
+                weight: weightKg,
                 activityLevel: selectedActivityLevel,
                 weightGoal: selectedWeightGoal
             )

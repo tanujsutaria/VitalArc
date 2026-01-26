@@ -65,12 +65,22 @@ struct ProfileSetupView: View {
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Height")
                         .font(.headline)
-                    HStack {
-                        TextField("Height", value: $viewModel.height, format: .number)
-                            .keyboardType(.decimalPad)
-                            .textFieldStyle(.roundedBorder)
-                        Text("cm")
-                            .foregroundStyle(.secondary)
+                    HStack(spacing: 12) {
+                        Picker("Feet", selection: $viewModel.heightFeet) {
+                            ForEach(4...7, id: \.self) { feet in
+                                Text("\(feet) ft").tag(feet)
+                            }
+                        }
+                        .pickerStyle(.menu)
+
+                        Picker("Inches", selection: $viewModel.heightInches) {
+                            ForEach(0...11, id: \.self) { inches in
+                                Text("\(inches) in").tag(inches)
+                            }
+                        }
+                        .pickerStyle(.menu)
+
+                        Spacer()
                     }
                 }
 
@@ -79,10 +89,10 @@ struct ProfileSetupView: View {
                     Text("Weight")
                         .font(.headline)
                     HStack {
-                        TextField("Weight", value: $viewModel.weight, format: .number)
+                        TextField("Weight", value: $viewModel.weightLbs, format: .number)
                             .keyboardType(.decimalPad)
                             .textFieldStyle(.roundedBorder)
-                        Text("kg")
+                        Text("lbs")
                             .foregroundStyle(.secondary)
                     }
                 }

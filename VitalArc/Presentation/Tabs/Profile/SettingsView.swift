@@ -11,7 +11,7 @@ struct SettingsView: View {
     @Environment(\.dismiss) private var dismiss
     let userRepository: UserRepository
 
-    @AppStorage("useMetricUnits") private var useMetricUnits = true
+    @AppStorage("useMetricUnits") private var useMetricUnits = false
     @AppStorage("enableNotifications") private var enableNotifications = true
     @AppStorage("enableWorkoutReminders") private var enableWorkoutReminders = false
     @AppStorage("enableMealReminders") private var enableMealReminders = false
