@@ -36,12 +36,21 @@ struct MainTabView: View {
                 }
                 .tag(2)
 
+            // Analytics Tab
+            if let container = container {
+                AnalyticsTabView(container: container)
+                    .tabItem {
+                        Label("Analytics", systemImage: "chart.xyaxis.line")
+                    }
+                    .tag(3)
+            }
+
             // Profile Tab
             ProfileView()
                 .tabItem {
                     Label("Profile", systemImage: "person.fill")
                 }
-                .tag(3)
+                .tag(4)
         }
         .tint(.accentColor)
     }
@@ -433,6 +442,48 @@ struct NutritionTabView: View {
 }
 
 // ProfileView is now implemented in Profile/ProfileView.swift
+
+// MARK: - Analytics Tab View
+
+struct AnalyticsTabView: View {
+    let container: DependencyContainer
+    @State private var viewModel: AnalyticsDashboardViewModel?
+
+    var body: some View {
+        Group {
+            if let viewModel = viewModel {
+                AnalyticsDashboardView(viewModel: viewModel)
+            } else {
+                ProgressView("Loading Analytics...")
+            }
+        }
+        .task {
+            let calculateVolumeUseCase = CalculateVolumeUseCase(
+                workoutRepository: container.workoutRepository
+            )
+
+            viewModel = AnalyticsDashboardViewModel(
+                calculateVolumeUseCase: calculateVolumeUseCase,
+                trackProgressiveOverloadUseCase: TrackProgressiveOverloadUseCase(
+                    workoutRepository: container.workoutRepository
+                ),
+                generateProgressReportUseCase: GenerateProgressReportUseCase(
+                    workoutRepository: container.workoutRepository,
+                    healthRepository: container.healthRepository,
+                    nutritionRepository: container.nutritionRepository,
+                    analyticsRepository: container.analyticsRepository,
+                    calculateVolumeUseCase: calculateVolumeUseCase
+                ),
+                calculateRecoveryScoreUseCase: CalculateRecoveryScoreUseCase(
+                    healthRepository: container.healthRepository
+                ),
+                analyticsRepository: container.analyticsRepository,
+                healthRepository: container.healthRepository,
+                nutritionRepository: container.nutritionRepository
+            )
+        }
+    }
+}
 
 #Preview {
     MainTabView()
