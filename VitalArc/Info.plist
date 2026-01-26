@@ -20,6 +20,8 @@
 	<string>1</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<key>NSCameraUsageDescription</key>
+	<string>VitalArc needs camera access to scan food barcodes</string>
 	<key>NSHealthShareUsageDescription</key>
 	<string>VitalArc needs access to your health data to provide personalized fitness and nutrition insights.</string>
 	<key>NSHealthUpdateUsageDescription</key>

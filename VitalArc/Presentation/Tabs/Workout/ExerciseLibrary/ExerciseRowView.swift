@@ -11,28 +11,47 @@ struct ExerciseRowView: View {
     let exercise: Exercise
 
     var body: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: Spacing.md) {
             // Category Icon
-            categoryIcon
-                .frame(width: 44, height: 44)
-                .background(categoryColor.opacity(0.1))
-                .clipShape(RoundedRectangle(cornerRadius: 8))
+            ZStack {
+                Circle()
+                    .fill(categoryColor.opacity(0.15))
+                    .frame(width: 48, height: 48)
 
-            VStack(alignment: .leading, spacing: 4) {
+                categoryIcon
+                    .font(.system(size: 20, weight: .semibold))
+                    .foregroundStyle(categoryColor)
+            }
+
+            VStack(alignment: .leading, spacing: Spacing.xs) {
                 Text(exercise.name)
-                    .font(.headline)
+                    .font(.vitalLabel)
+                    .foregroundStyle(Color.vitalAdaptiveTextPrimary)
+                    .lineLimit(1)
 
-                HStack(spacing: 8) {
-                    // Equipment
-                    Label(exercise.equipment.rawValue, systemImage: equipmentIcon)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                HStack(spacing: Spacing.xs) {
+                    // Equipment badge
+                    HStack(spacing: 4) {
+                        Image(systemName: equipmentIcon)
+                            .font(.system(size: 10))
+                        Text(exercise.equipment.rawValue)
+                            .font(.vitalCaptionSmall)
+                    }
+                    .foregroundStyle(Color.vitalAdaptiveTextSecondary)
+                    .padding(.horizontal, 6)
+                    .padding(.vertical, 2)
+                    .background(Color.vitalAdaptiveBorder.opacity(0.5))
+                    .cornerRadius(4)
 
                     // Primary Muscles
                     if let firstMuscle = exercise.primaryMuscles.first {
                         Text(firstMuscle.rawValue)
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .font(.vitalCaptionSmall)
+                            .foregroundStyle(categoryColor)
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 2)
+                            .background(categoryColor.opacity(0.15))
+                            .cornerRadius(4)
                     }
                 }
             }
@@ -40,18 +59,19 @@ struct ExerciseRowView: View {
             Spacer()
 
             Image(systemName: "chevron.right")
-                .font(.caption)
-                .foregroundStyle(.tertiary)
+                .font(.system(size: 12, weight: .semibold))
+                .foregroundStyle(Color.vitalAdaptiveTextSecondary)
         }
-        .padding(.vertical, 4)
+        .padding(Spacing.md)
+        .background(Color.vitalAdaptiveSurface)
+        .cornerRadius(Spacing.radiusMedium)
+        .vitalCardShadow()
     }
 
     // MARK: - Computed Properties
 
-    private var categoryIcon: some View {
+    private var categoryIcon: Image {
         Image(systemName: categoryIconName)
-            .font(.title3)
-            .foregroundStyle(categoryColor)
     }
 
     private var categoryIconName: String {
@@ -61,16 +81,26 @@ struct ExerciseRowView: View {
         case .legs: return "figure.walk"
         case .core: return "circle.grid.cross.fill"
         case .cardio: return "heart.fill"
+        case .olympic: return "figure.strengthtraining.traditional"
+        case .strongman: return "figure.strengthtraining.functional"
+        case .calisthenics: return "figure.gymnastics"
+        case .plyometrics: return "figure.jumprope"
+        case .mobility: return "figure.flexibility"
         }
     }
 
     private var categoryColor: Color {
         switch exercise.category {
-        case .push: return .red
-        case .pull: return .blue
-        case .legs: return .green
-        case .core: return .orange
-        case .cardio: return .purple
+        case .push: return .vitalDanger
+        case .pull: return .vitalInfo
+        case .legs: return .vitalSuccess
+        case .core: return .vitalWarning
+        case .cardio: return .vitalSecondary
+        case .olympic: return .vitalAccent
+        case .strongman: return .vitalPrimary
+        case .calisthenics: return .vitalInfo
+        case .plyometrics: return .vitalWarning
+        case .mobility: return .vitalSuccess
         }
     }
 
@@ -83,6 +113,16 @@ struct ExerciseRowView: View {
         case .bodyweight: return "figure.arms.open"
         case .resistance: return "bandage"
         case .kettlebell: return "figure.strengthtraining.functional"
+        case .ezBar: return "figure.strengthtraining.traditional"
+        case .trapBar: return "figure.strengthtraining.traditional"
+        case .medicineBall: return "circle.fill"
+        case .suspensionTrainer: return "figure.climbing"
+        case .sled: return "figure.cooldown"
+        case .tireFlip: return "car.circle"
+        case .yoke: return "figure.walk"
+        case .logPress: return "tree.fill"
+        case .smithMachine: return "gearshape.2.fill"
+        case .safetyBar: return "figure.strengthtraining.traditional"
         }
     }
 }

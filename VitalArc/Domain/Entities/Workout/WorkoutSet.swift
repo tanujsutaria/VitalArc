@@ -13,7 +13,9 @@ struct WorkoutSet: Identifiable, Equatable {
     let exerciseId: UUID
     let weight: Double // in kg
     let reps: Int
-    let rir: Int? // Reps in Reserve (optional)
+    let rir: Int? // Reps in Reserve (0-5)
+    let rpe: Double? // Rate of Perceived Exertion (1-10)
+    let mesocycleId: UUID? // Link to active mesocycle
     let setNumber: Int
     let completed: Bool
 
@@ -23,6 +25,8 @@ struct WorkoutSet: Identifiable, Equatable {
         weight: Double,
         reps: Int,
         rir: Int? = nil,
+        rpe: Double? = nil,
+        mesocycleId: UUID? = nil,
         setNumber: Int,
         completed: Bool = true
     ) {
@@ -31,6 +35,8 @@ struct WorkoutSet: Identifiable, Equatable {
         self.weight = weight
         self.reps = reps
         self.rir = rir
+        self.rpe = rpe
+        self.mesocycleId = mesocycleId
         self.setNumber = setNumber
         self.completed = completed
     }

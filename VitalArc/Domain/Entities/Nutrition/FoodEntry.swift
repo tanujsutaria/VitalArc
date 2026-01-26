@@ -47,4 +47,8 @@ enum MealType: String, Codable, CaseIterable {
     case lunch = "Lunch"
     case dinner = "Dinner"
     case snack = "Snack"
+
+    var displayName: String {
+        rawValue
+    }
 }

@@ -2,7 +2,7 @@
 //  ChartView.swift
 //  VitalArc
 //
-//  Simple line chart for health metrics trends
+//  Simple line chart for health metrics trends (Legacy - use VitalLineChart)
 //
 
 import SwiftUI
@@ -20,21 +20,19 @@ struct ChartView: View {
     // MARK: - Body
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text(title)
-                .font(.headline)
-                .foregroundStyle(.primary)
+        VitalCard {
+            VStack(alignment: .leading, spacing: Spacing.md) {
+                Text(title)
+                    .font(.vitalH3)
+                    .foregroundStyle(Color.vitalAdaptiveTextPrimary)
 
-            if data.isEmpty {
-                emptyStateView
-            } else {
-                chart
+                if data.isEmpty {
+                    emptyStateView
+                } else {
+                    chart
+                }
             }
         }
-        .padding()
-        .background(Color(.systemBackground))
-        .cornerRadius(12)
-        .shadow(color: .black.opacity(0.05), radius: 5, x: 0, y: 2)
     }
 
     // MARK: - Chart
@@ -81,26 +79,18 @@ struct ChartView: View {
     // MARK: - Empty State
 
     private var emptyStateView: some View {
-        VStack(spacing: 8) {
+        VStack(spacing: Spacing.sm) {
             Image(systemName: "chart.line.uptrend.xyaxis")
                 .font(.system(size: 40))
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Color.vitalAdaptiveTextSecondary)
 
             Text("No data available")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
+                .font(.vitalBody)
+                .foregroundStyle(Color.vitalAdaptiveTextSecondary)
         }
         .frame(height: 200)
         .frame(maxWidth: .infinity)
     }
-}
-
-// MARK: - Chart Data Point
-
-struct ChartDataPoint: Identifiable {
-    let id = UUID()
-    let date: Date
-    let value: Double
 }
 
 // MARK: - Preview

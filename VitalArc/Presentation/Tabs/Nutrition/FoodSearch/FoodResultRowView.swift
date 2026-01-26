@@ -13,54 +13,88 @@ struct FoodResultRowView: View {
 
     var body: some View {
         Button {
+            HapticFeedback.light()
             onSelect?(food)
         } label: {
-            HStack(alignment: .top, spacing: 12) {
-                // Food icon
-                Image(systemName: "leaf.fill")
-                    .font(.title2)
-                    .foregroundStyle(.green)
-                    .frame(width: 40, height: 40)
-                    .background(Color.green.opacity(0.1))
-                    .clipShape(RoundedRectangle(cornerRadius: 8))
+            HStack(spacing: Spacing.md) {
+                // Food image or icon
+                if let imageURL = food.imageURL, let url = URL(string: imageURL) {
+                    AsyncImage(url: url) { phase in
+                        switch phase {
+                        case .empty:
+                            ProgressView()
+                                .frame(width: 56, height: 56)
+                        case .success(let image):
+                            image
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: 56, height: 56)
+                                .clipShape(RoundedRectangle(cornerRadius: Spacing.radiusSmall))
+                        case .failure:
+                            FoodIcon(source: food.source)
+                        @unknown default:
+                            FoodIcon(source: food.source)
+                        }
+                    }
+                } else {
+                    FoodIcon(source: food.source)
+                }
 
                 // Food info
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(food.name)
-                        .font(.headline)
-                        .foregroundStyle(.primary)
+                VStack(alignment: .leading, spacing: Spacing.xs) {
+                    // Name and source badge
+                    HStack(spacing: Spacing.xs) {
+                        Text(food.name)
+                            .font(.vitalLabel)
+                            .foregroundStyle(Color.vitalAdaptiveTextPrimary)
+                            .lineLimit(2)
+
+                        Spacer()
+
+                        SourceBadge(source: food.source)
+                    }
 
                     if let brand = food.brand {
                         Text(brand)
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
+                            .font(.vitalBodySmall)
+                            .foregroundStyle(Color.vitalAdaptiveTextSecondary)
+                            .lineLimit(1)
                     }
 
                     // Macros per serving
-                    HStack(spacing: 12) {
-                        MacroLabel(value: Int(food.calories), unit: "cal", color: .orange)
-                        MacroLabel(value: Int(food.protein), unit: "P", color: .blue)
-                        MacroLabel(value: Int(food.carbs), unit: "C", color: .green)
-                        MacroLabel(value: Int(food.fat), unit: "F", color: .red)
+                    HStack(spacing: Spacing.sm) {
+                        MacroLabel(value: Int(food.calories), unit: "cal", color: .vitalWarning)
+                        MacroLabel(value: Int(food.protein), unit: "P", color: .vitalDanger)
+                        MacroLabel(value: Int(food.carbs), unit: "C", color: .vitalInfo)
+                        MacroLabel(value: Int(food.fat), unit: "F", color: .vitalWarning)
                     }
-                    .font(.caption)
+                    .font(.vitalBodySmall)
 
                     // Serving size
-                    Text("\(Int(food.servingSize))\(food.servingUnit) serving")
-                        .font(.caption)
-                        .foregroundStyle(.tertiary)
+                    Text("\(formatServingSize(food.servingSize))\(food.servingUnit) serving")
+                        .font(.vitalCaptionSmall)
+                        .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                 }
-
-                Spacer()
 
                 // Chevron
                 Image(systemName: "chevron.right")
-                    .font(.caption)
-                    .foregroundStyle(.tertiary)
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundStyle(Color.vitalAdaptiveTextSecondary)
             }
-            .padding(.vertical, 8)
+            .padding(Spacing.md)
+            .background(Color.vitalAdaptiveSurface)
+            .cornerRadius(Spacing.radiusMedium)
+            .vitalCardShadow()
         }
         .buttonStyle(.plain)
+    }
+
+    private func formatServingSize(_ size: Double) -> String {
+        if size.truncatingRemainder(dividingBy: 1) == 0 {
+            return String(Int(size))
+        } else {
+            return String(format: "%.1f", size)
+        }
     }
 }
 
@@ -72,11 +106,64 @@ private struct MacroLabel: View {
     var body: some View {
         HStack(spacing: 2) {
             Text("\(value)")
-                .fontWeight(.semibold)
+                .font(.vitalLabelSmall)
             Text(unit)
-                .foregroundStyle(.secondary)
+                .font(.vitalCaptionSmall)
+                .foregroundStyle(Color.vitalAdaptiveTextSecondary)
         }
         .foregroundStyle(color)
+    }
+}
+
+private struct FoodIcon: View {
+    let source: FoodSource
+
+    var body: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: Spacing.radiusSmall)
+                .fill(sourceColor.opacity(0.15))
+                .frame(width: 56, height: 56)
+
+            Image(systemName: source.iconName)
+                .font(.system(size: 24, weight: .semibold))
+                .foregroundStyle(sourceColor)
+        }
+    }
+
+    private var sourceColor: Color {
+        switch source {
+        case .usda: return .vitalSuccess
+        case .nutritionix: return .vitalWarning
+        case .openFoodFacts: return .vitalInfo
+        case .manual, .custom: return .vitalTextSecondary
+        }
+    }
+}
+
+private struct SourceBadge: View {
+    let source: FoodSource
+
+    var body: some View {
+        HStack(spacing: 3) {
+            Image(systemName: source.iconName)
+                .font(.system(size: 8))
+            Text(source.displayName)
+                .font(.system(size: 9, weight: .medium))
+        }
+        .foregroundStyle(badgeColor)
+        .padding(.horizontal, 6)
+        .padding(.vertical, 3)
+        .background(badgeColor.opacity(0.15))
+        .cornerRadius(4)
+    }
+
+    private var badgeColor: Color {
+        switch source {
+        case .usda: return .vitalSuccess
+        case .nutritionix: return .vitalWarning
+        case .openFoodFacts: return .vitalInfo
+        case .manual, .custom: return .vitalTextSecondary
+        }
     }
 }
 

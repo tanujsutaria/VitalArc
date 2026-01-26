@@ -29,19 +29,32 @@ struct MainTabView: View {
                 }
                 .tag(1)
 
+            // Training Tab
+            if let mesocycleRepository = container?.mesocycleRepository,
+               let workoutRepository = container?.workoutRepository {
+                MesocycleListView(
+                    mesocycleRepository: mesocycleRepository,
+                    workoutRepository: workoutRepository
+                )
+                .tabItem {
+                    Label("Training", systemImage: "calendar")
+                }
+                .tag(2)
+            }
+
             // Nutrition Tab
             NutritionTabView()
                 .tabItem {
                     Label("Nutrition", systemImage: "fork.knife")
                 }
-                .tag(2)
+                .tag(3)
 
             // Profile Tab
             ProfileView()
                 .tabItem {
                     Label("Profile", systemImage: "person.fill")
                 }
-                .tag(3)
+                .tag(4)
         }
         .tint(.accentColor)
     }

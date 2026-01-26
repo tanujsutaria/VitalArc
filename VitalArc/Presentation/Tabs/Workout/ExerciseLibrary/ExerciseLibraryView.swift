@@ -102,6 +102,11 @@ struct ExerciseLibraryView: View {
         case .legs: return "figure.walk"
         case .core: return "circle.grid.cross.fill"
         case .cardio: return "heart.fill"
+        case .olympic: return "figure.strengthtraining.traditional"
+        case .strongman: return "figure.strengthtraining.functional"
+        case .calisthenics: return "figure.gymnastics"
+        case .plyometrics: return "figure.jumprope"
+        case .mobility: return "figure.flexibility"
         }
     }
 }

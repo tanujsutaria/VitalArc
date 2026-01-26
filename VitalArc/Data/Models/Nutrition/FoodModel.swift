@@ -22,6 +22,12 @@ final class FoodModel {
     var fiber: Double?
     var sugar: Double?
     var source: String
+    var barcode: String?
+    var imageURL: String?
+    var isFavorite: Bool
+    var isCustom: Bool
+    var recentlyUsed: Date?
+    var usageCount: Int
 
     init(
         id: UUID = UUID(),
@@ -35,7 +41,13 @@ final class FoodModel {
         fat: Double,
         fiber: Double? = nil,
         sugar: Double? = nil,
-        source: String = "Manual"
+        source: String = "Manual",
+        barcode: String? = nil,
+        imageURL: String? = nil,
+        isFavorite: Bool = false,
+        isCustom: Bool = false,
+        recentlyUsed: Date? = nil,
+        usageCount: Int = 0
     ) {
         self.id = id
         self.name = name
@@ -49,6 +61,12 @@ final class FoodModel {
         self.fiber = fiber
         self.sugar = sugar
         self.source = source
+        self.barcode = barcode
+        self.imageURL = imageURL
+        self.isFavorite = isFavorite
+        self.isCustom = isCustom
+        self.recentlyUsed = recentlyUsed
+        self.usageCount = usageCount
     }
 
     /// Convert to domain entity
@@ -65,7 +83,13 @@ final class FoodModel {
             fat: fat,
             fiber: fiber,
             sugar: sugar,
-            source: FoodSource(rawValue: source) ?? .manual
+            source: FoodSource(rawValue: source) ?? .manual,
+            barcode: barcode,
+            imageURL: imageURL,
+            isFavorite: isFavorite,
+            isCustom: isCustom,
+            recentlyUsed: recentlyUsed,
+            usageCount: usageCount
         )
     }
 
@@ -83,7 +107,13 @@ final class FoodModel {
             fat: food.fat,
             fiber: food.fiber,
             sugar: food.sugar,
-            source: food.source.rawValue
+            source: food.source.rawValue,
+            barcode: food.barcode,
+            imageURL: food.imageURL,
+            isFavorite: food.isFavorite,
+            isCustom: food.isCustom,
+            recentlyUsed: food.recentlyUsed,
+            usageCount: food.usageCount
         )
     }
 }

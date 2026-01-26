@@ -19,6 +19,9 @@ final class DependencyContainer {
     let nutritionRepository: NutritionRepository
     let healthRepository: HealthRepository
     let userRepository: UserRepository
+    let mesocycleRepository: MesocycleRepository
+    let analyticsRepository: AnalyticsRepository
+    let templateRepository: TemplateRepository
 
     init(modelContext: ModelContext) {
         self.modelContext = modelContext
@@ -28,6 +31,9 @@ final class DependencyContainer {
         self.nutritionRepository = SwiftDataNutritionRepository(modelContext: modelContext)
         self.healthRepository = SwiftDataHealthRepository(modelContext: modelContext)
         self.userRepository = SwiftDataUserRepository(modelContext: modelContext)
+        self.mesocycleRepository = SwiftDataMesocycleRepository(modelContext: modelContext)
+        self.analyticsRepository = SwiftDataAnalyticsRepository(modelContext: modelContext)
+        self.templateRepository = SwiftDataTemplateRepository(modelContext: modelContext)
     }
 }
 
@@ -437,6 +443,155 @@ final class SwiftDataHealthRepository: HealthRepository {
     }
 }
 
+/// SwiftData implementation of MesocycleRepository
+@MainActor
+final class SwiftDataMesocycleRepository: MesocycleRepository {
+    private let modelContext: ModelContext
+
+    init(modelContext: ModelContext) {
+        self.modelContext = modelContext
+    }
+
+    func getMesocycles() async throws -> [Mesocycle] {
+        let descriptor = FetchDescriptor<MesocycleModel>(
+            sortBy: [SortDescriptor(\.startDate, order: .reverse)]
+        )
+        let models = try modelContext.fetch(descriptor)
+        return models.map { $0.toDomain() }
+    }
+
+    func getMesocycle(id: UUID) async throws -> Mesocycle? {
+        var descriptor = FetchDescriptor<MesocycleModel>(
+            predicate: #Predicate { $0.id == id }
+        )
+        descriptor.fetchLimit = 1
+        let models = try modelContext.fetch(descriptor)
+        return models.first?.toDomain()
+    }
+
+    func getActiveMesocycle() async throws -> Mesocycle? {
+        let activeStatus = MesocycleStatus.active.rawValue
+        let descriptor = FetchDescriptor<MesocycleModel>(
+            predicate: #Predicate { $0.status == activeStatus }
+        )
+        let models = try modelContext.fetch(descriptor)
+        return models.first?.toDomain()
+    }
+
+    func saveMesocycle(_ mesocycle: Mesocycle) async throws {
+        let model = MesocycleModel.fromDomain(mesocycle)
+        modelContext.insert(model)
+        try modelContext.save()
+    }
+
+    func updateMesocycle(_ mesocycle: Mesocycle) async throws {
+        let mesocycleId = mesocycle.id
+        let descriptor = FetchDescriptor<MesocycleModel>(
+            predicate: #Predicate { $0.id == mesocycleId }
+        )
+
+        guard let existingModel = try modelContext.fetch(descriptor).first else {
+            try await saveMesocycle(mesocycle)
+            return
+        }
+
+        // Update all fields
+        existingModel.name = mesocycle.name
+        existingModel.startDate = mesocycle.startDate
+        existingModel.endDate = mesocycle.endDate
+        existingModel.goal = mesocycle.goal.rawValue
+        existingModel.status = mesocycle.status.rawValue
+        existingModel.updatedAt = mesocycle.updatedAt
+
+        // Re-encode phases and blocks
+        let encoder = JSONEncoder()
+        existingModel.phasesData = try? encoder.encode(mesocycle.phases)
+        existingModel.trainingBlocksData = try? encoder.encode(mesocycle.trainingBlocks)
+
+        try modelContext.save()
+    }
+
+    func deleteMesocycle(id: UUID) async throws {
+        var descriptor = FetchDescriptor<MesocycleModel>(
+            predicate: #Predicate { $0.id == id }
+        )
+        descriptor.fetchLimit = 1
+        let models = try modelContext.fetch(descriptor)
+
+        if let model = models.first {
+            modelContext.delete(model)
+            try modelContext.save()
+        }
+    }
+
+    func activateMesocycle(id: UUID) async throws {
+        // First, deactivate any currently active mesocycles
+        let activeStatus = MesocycleStatus.active.rawValue
+        let activeDescriptor = FetchDescriptor<MesocycleModel>(
+            predicate: #Predicate { $0.status == activeStatus }
+        )
+        let activeModels = try modelContext.fetch(activeDescriptor)
+
+        for activeModel in activeModels {
+            activeModel.status = MesocycleStatus.planned.rawValue
+            activeModel.updatedAt = Date()
+        }
+
+        // Activate the specified mesocycle
+        var descriptor = FetchDescriptor<MesocycleModel>(
+            predicate: #Predicate { $0.id == id }
+        )
+        descriptor.fetchLimit = 1
+        let models = try modelContext.fetch(descriptor)
+
+        guard let model = models.first else {
+            throw MesocycleError.mesocycleNotFound
+        }
+
+        model.status = MesocycleStatus.active.rawValue
+        model.updatedAt = Date()
+
+        try modelContext.save()
+    }
+
+    func completeMesocycle(id: UUID) async throws {
+        var descriptor = FetchDescriptor<MesocycleModel>(
+            predicate: #Predicate { $0.id == id }
+        )
+        descriptor.fetchLimit = 1
+        let models = try modelContext.fetch(descriptor)
+
+        guard let model = models.first else {
+            throw MesocycleError.mesocycleNotFound
+        }
+
+        model.status = MesocycleStatus.completed.rawValue
+        model.updatedAt = Date()
+
+        try modelContext.save()
+    }
+
+    func getMesocyclesByStatus(_ status: MesocycleStatus) async throws -> [Mesocycle] {
+        let statusValue = status.rawValue
+        let descriptor = FetchDescriptor<MesocycleModel>(
+            predicate: #Predicate { $0.status == statusValue },
+            sortBy: [SortDescriptor(\.startDate, order: .reverse)]
+        )
+        let models = try modelContext.fetch(descriptor)
+        return models.map { $0.toDomain() }
+    }
+
+    func getMesocycleForDate(_ date: Date) async throws -> Mesocycle? {
+        let descriptor = FetchDescriptor<MesocycleModel>(
+            predicate: #Predicate { model in
+                model.startDate <= date && model.endDate >= date
+            }
+        )
+        let models = try modelContext.fetch(descriptor)
+        return models.first?.toDomain()
+    }
+}
+
 /// SwiftData implementation of UserRepository
 @MainActor
 final class SwiftDataUserRepository: UserRepository {
@@ -518,3 +673,214 @@ final class SwiftDataUserRepository: UserRepository {
         UserDefaults.standard.set(completed, forKey: onboardingKey)
     }
 }
+
+/// SwiftData implementation of AnalyticsRepository
+@MainActor
+final class SwiftDataAnalyticsRepository: AnalyticsRepository {
+    private let modelContext: ModelContext
+
+    init(modelContext: ModelContext) {
+        self.modelContext = modelContext
+    }
+
+    // MARK: - Progress Snapshots
+
+    func getProgressSnapshots(from startDate: Date, to endDate: Date) async throws -> [ProgressSnapshot] {
+        let descriptor = FetchDescriptor<ProgressSnapshotModel>(
+            predicate: #Predicate { snapshot in
+                snapshot.date >= startDate && snapshot.date <= endDate
+            },
+            sortBy: [SortDescriptor(\.date)]
+        )
+        let models = try modelContext.fetch(descriptor)
+        return models.map { $0.toDomain() }
+    }
+
+    func getProgressSnapshot(id: UUID) async throws -> ProgressSnapshot? {
+        let descriptor = FetchDescriptor<ProgressSnapshotModel>(
+            predicate: #Predicate { $0.id == id }
+        )
+        return try modelContext.fetch(descriptor).first?.toDomain()
+    }
+
+    func getLatestProgressSnapshot() async throws -> ProgressSnapshot? {
+        let descriptor = FetchDescriptor<ProgressSnapshotModel>(
+            sortBy: [SortDescriptor(\.date, order: .reverse)]
+        )
+        return try modelContext.fetch(descriptor).first?.toDomain()
+    }
+
+    func saveProgressSnapshot(_ snapshot: ProgressSnapshot) async throws {
+        let model = ProgressSnapshotModel.fromDomain(snapshot)
+        modelContext.insert(model)
+        try modelContext.save()
+    }
+
+    func deleteProgressSnapshot(id: UUID) async throws {
+        let descriptor = FetchDescriptor<ProgressSnapshotModel>(
+            predicate: #Predicate { $0.id == id }
+        )
+        if let model = try modelContext.fetch(descriptor).first {
+            modelContext.delete(model)
+            try modelContext.save()
+        }
+    }
+
+    // MARK: - Volume Metrics
+
+    func getVolumeMetrics(from startDate: Date, to endDate: Date) async throws -> [VolumeMetrics] {
+        let descriptor = FetchDescriptor<VolumeMetricsModel>(
+            predicate: #Predicate { metrics in
+                metrics.weekStartDate >= startDate && metrics.weekEndDate <= endDate
+            },
+            sortBy: [SortDescriptor(\.weekStartDate)]
+        )
+        let models = try modelContext.fetch(descriptor)
+        return models.map { $0.toDomain() }
+    }
+
+    func getVolumeMetrics(for weekStartDate: Date) async throws -> VolumeMetrics? {
+        let calendar = Calendar.current
+        let weekEnd = calendar.date(byAdding: .day, value: 7, to: weekStartDate) ?? weekStartDate
+
+        let descriptor = FetchDescriptor<VolumeMetricsModel>(
+            predicate: #Predicate { metrics in
+                metrics.weekStartDate >= weekStartDate && metrics.weekStartDate < weekEnd
+            }
+        )
+        return try modelContext.fetch(descriptor).first?.toDomain()
+    }
+
+    func saveVolumeMetrics(_ metrics: VolumeMetrics) async throws {
+        let model = VolumeMetricsModel.fromDomain(metrics)
+        modelContext.insert(model)
+        try modelContext.save()
+    }
+
+    // MARK: - Personal Records
+
+    func getPersonalRecords() async throws -> [PersonalRecord] {
+        let descriptor = FetchDescriptor<PersonalRecordModel>(
+            sortBy: [SortDescriptor(\.date, order: .reverse)]
+        )
+        let models = try modelContext.fetch(descriptor)
+        return models.map { $0.toDomain() }
+    }
+
+    func getPersonalRecords(for exerciseId: UUID) async throws -> [PersonalRecord] {
+        let descriptor = FetchDescriptor<PersonalRecordModel>(
+            predicate: #Predicate { $0.exerciseId == exerciseId },
+            sortBy: [SortDescriptor(\.date, order: .reverse)]
+        )
+        let models = try modelContext.fetch(descriptor)
+        return models.map { $0.toDomain() }
+    }
+
+    func getPersonalRecord(id: UUID) async throws -> PersonalRecord? {
+        let descriptor = FetchDescriptor<PersonalRecordModel>(
+            predicate: #Predicate { $0.id == id }
+        )
+        return try modelContext.fetch(descriptor).first?.toDomain()
+    }
+
+    func savePersonalRecord(_ record: PersonalRecord) async throws {
+        let model = PersonalRecordModel.fromDomain(record)
+        modelContext.insert(model)
+        try modelContext.save()
+    }
+
+    func deletePersonalRecord(id: UUID) async throws {
+        let descriptor = FetchDescriptor<PersonalRecordModel>(
+            predicate: #Predicate { $0.id == id }
+        )
+        if let model = try modelContext.fetch(descriptor).first {
+            modelContext.delete(model)
+            try modelContext.save()
+        }
+    }
+}
+
+/// SwiftData implementation of TemplateRepository
+@MainActor
+final class SwiftDataTemplateRepository: TemplateRepository {
+    private let modelContext: ModelContext
+
+    init(modelContext: ModelContext) {
+        self.modelContext = modelContext
+    }
+
+    func getTemplates() async throws -> [WorkoutTemplate] {
+        let descriptor = FetchDescriptor<WorkoutTemplateModel>(
+            sortBy: [SortDescriptor(\.name)]
+        )
+        let models = try modelContext.fetch(descriptor)
+        return models.map { $0.toDomain() }
+    }
+
+    func getTemplate(id: UUID) async throws -> WorkoutTemplate? {
+        let descriptor = FetchDescriptor<WorkoutTemplateModel>(
+            predicate: #Predicate { $0.id == id }
+        )
+        return try modelContext.fetch(descriptor).first?.toDomain()
+    }
+
+    func getTemplates(category: TemplateCategory) async throws -> [WorkoutTemplate] {
+        let categoryString = category.rawValue
+        let descriptor = FetchDescriptor<WorkoutTemplateModel>(
+            predicate: #Predicate { $0.category == categoryString },
+            sortBy: [SortDescriptor(\.name)]
+        )
+        let models = try modelContext.fetch(descriptor)
+        return models.map { $0.toDomain() }
+    }
+
+    func saveTemplate(_ template: WorkoutTemplate) async throws {
+        let model = WorkoutTemplateModel.fromDomain(template)
+        modelContext.insert(model)
+        try modelContext.save()
+    }
+
+    func updateTemplate(_ template: WorkoutTemplate) async throws {
+        let templateId = template.id
+        let descriptor = FetchDescriptor<WorkoutTemplateModel>(
+            predicate: #Predicate { $0.id == templateId }
+        )
+
+        if let existing = try modelContext.fetch(descriptor).first {
+            existing.name = template.name
+            existing.templateDescription = template.description
+            existing.exercisesData = WorkoutTemplateModel.encodeExercises(template.exercises)
+            existing.category = template.category.rawValue
+            existing.estimatedDuration = template.estimatedDuration
+            existing.lastUsed = template.lastUsed
+            existing.useCount = template.useCount
+
+            try modelContext.save()
+        } else {
+            try await saveTemplate(template)
+        }
+    }
+
+    func deleteTemplate(id: UUID) async throws {
+        let descriptor = FetchDescriptor<WorkoutTemplateModel>(
+            predicate: #Predicate { $0.id == id }
+        )
+        if let model = try modelContext.fetch(descriptor).first {
+            modelContext.delete(model)
+            try modelContext.save()
+        }
+    }
+
+    func incrementTemplateUsage(id: UUID) async throws {
+        let descriptor = FetchDescriptor<WorkoutTemplateModel>(
+            predicate: #Predicate { $0.id == id }
+        )
+
+        if let model = try modelContext.fetch(descriptor).first {
+            model.useCount += 1
+            model.lastUsed = Date()
+            try modelContext.save()
+        }
+    }
+}
+

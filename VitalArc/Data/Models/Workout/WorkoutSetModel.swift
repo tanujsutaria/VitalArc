@@ -15,6 +15,8 @@ final class WorkoutSetModel {
     var weight: Double
     var reps: Int
     var rir: Int?
+    var rpe: Double?
+    var mesocycleId: UUID?
     var setNumber: Int
     var completed: Bool
 
@@ -24,6 +26,8 @@ final class WorkoutSetModel {
         weight: Double,
         reps: Int,
         rir: Int? = nil,
+        rpe: Double? = nil,
+        mesocycleId: UUID? = nil,
         setNumber: Int,
         completed: Bool = true
     ) {
@@ -32,6 +36,8 @@ final class WorkoutSetModel {
         self.weight = weight
         self.reps = reps
         self.rir = rir
+        self.rpe = rpe
+        self.mesocycleId = mesocycleId
         self.setNumber = setNumber
         self.completed = completed
     }
@@ -44,6 +50,8 @@ final class WorkoutSetModel {
             weight: weight,
             reps: reps,
             rir: rir,
+            rpe: rpe,
+            mesocycleId: mesocycleId,
             setNumber: setNumber,
             completed: completed
         )
@@ -57,6 +65,8 @@ final class WorkoutSetModel {
             weight: set.weight,
             reps: set.reps,
             rir: set.rir,
+            rpe: set.rpe,
+            mesocycleId: set.mesocycleId,
             setNumber: set.setNumber,
             completed: set.completed
         )

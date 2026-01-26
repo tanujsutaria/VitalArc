@@ -11,64 +11,92 @@ struct WelcomeView: View {
     let onContinue: () -> Void
 
     var body: some View {
-        VStack(spacing: 30) {
-            Spacer()
+        ZStack {
+            // Gradient background
+            LinearGradient(
+                colors: [Color.vitalPrimary.opacity(0.1), Color.vitalAccent.opacity(0.1)],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+            .ignoresSafeArea()
 
-            // App Icon
-            Image(systemName: "heart.circle.fill")
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: 120, height: 120)
-                .foregroundStyle(.pink.gradient)
+            VStack(spacing: Spacing.xl) {
+                Spacer()
 
-            // Title
-            Text("Welcome to VitalArc")
-                .font(.system(size: 36, weight: .bold, design: .rounded))
+                // App Icon with animated gradient
+                ZStack {
+                    Circle()
+                        .fill(Color.vitalPrimaryGradient)
+                        .frame(width: 140, height: 140)
+                        .blur(radius: 20)
+
+                    Image(systemName: "heart.circle.fill")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 120, height: 120)
+                        .foregroundStyle(Color.vitalPrimaryGradient)
+                }
+
+                // Title
+                VStack(spacing: Spacing.sm) {
+                    Text("Welcome to")
+                        .font(.vitalH2)
+                        .foregroundStyle(Color.vitalAdaptiveTextSecondary)
+
+                    Text("VitalArc")
+                        .font(.vitalDisplayLarge)
+                        .foregroundStyle(Color.vitalAdaptiveTextPrimary)
+                }
                 .multilineTextAlignment(.center)
 
-            // Description
-            VStack(alignment: .leading, spacing: 16) {
-                FeatureRow(
-                    icon: "dumbbell.fill",
-                    title: "Track Workouts",
-                    description: "Log your exercises and monitor progress"
-                )
+                // Description
+                VStack(spacing: Spacing.md) {
+                    FeatureRow(
+                        icon: "dumbbell.fill",
+                        title: "Track Workouts",
+                        description: "Log your exercises and monitor progress",
+                        color: .vitalDanger
+                    )
 
-                FeatureRow(
-                    icon: "fork.knife",
-                    title: "Nutrition Logging",
-                    description: "Track your meals and meet your goals"
-                )
+                    FeatureRow(
+                        icon: "fork.knife",
+                        title: "Nutrition Logging",
+                        description: "Track your meals and meet your goals",
+                        color: .vitalWarning
+                    )
 
-                FeatureRow(
-                    icon: "chart.line.uptrend.xyaxis",
-                    title: "Health Insights",
-                    description: "Sync with HealthKit for comprehensive tracking"
-                )
+                    FeatureRow(
+                        icon: "chart.line.uptrend.xyaxis",
+                        title: "Health Insights",
+                        description: "Sync with HealthKit for comprehensive tracking",
+                        color: .vitalInfo
+                    )
 
-                FeatureRow(
-                    icon: "target",
-                    title: "Goal Setting",
-                    description: "Set and achieve your fitness goals"
-                )
+                    FeatureRow(
+                        icon: "target",
+                        title: "Goal Setting",
+                        description: "Set and achieve your fitness goals",
+                        color: .vitalSuccess
+                    )
+                }
+                .padding(.horizontal, Spacing.screenPadding)
+
+                Spacer()
+
+                // Continue Button
+                VitalButton(
+                    title: "Get Started",
+                    style: .primary,
+                    size: .large,
+                    fullWidth: true
+                ) {
+                    onContinue()
+                }
+                .padding(.horizontal, Spacing.screenPadding)
+                .padding(.bottom, Spacing.md)
             }
-            .padding(.horizontal)
-
-            Spacer()
-
-            // Continue Button
-            Button(action: onContinue) {
-                Text("Get Started")
-                    .font(.headline)
-                    .foregroundColor(.white)
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(Color.accentColor)
-                    .cornerRadius(12)
-            }
-            .padding(.horizontal)
+            .padding(.vertical, Spacing.xl)
         }
-        .padding()
     }
 }
 
@@ -76,22 +104,36 @@ struct FeatureRow: View {
     let icon: String
     let title: String
     let description: String
+    let color: Color
 
     var body: some View {
-        HStack(spacing: 12) {
-            Image(systemName: icon)
-                .font(.title2)
-                .foregroundStyle(.pink)
-                .frame(width: 32)
+        HStack(spacing: Spacing.md) {
+            ZStack {
+                Circle()
+                    .fill(color.opacity(0.15))
+                    .frame(width: 48, height: 48)
 
-            VStack(alignment: .leading, spacing: 2) {
-                Text(title)
-                    .font(.headline)
-                Text(description)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                Image(systemName: icon)
+                    .font(.system(size: 20, weight: .semibold))
+                    .foregroundStyle(color)
             }
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text(title)
+                    .font(.vitalLabel)
+                    .foregroundStyle(Color.vitalAdaptiveTextPrimary)
+
+                Text(description)
+                    .font(.vitalBodySmall)
+                    .foregroundStyle(Color.vitalAdaptiveTextSecondary)
+            }
+
+            Spacer()
         }
+        .padding(Spacing.md)
+        .background(Color.vitalAdaptiveSurface)
+        .cornerRadius(Spacing.radiusMedium)
+        .vitalCardShadow()
     }
 }
 

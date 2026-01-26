@@ -8,21 +8,39 @@
 import Foundation
 import Observation
 
+@MainActor
 @Observable
 final class FoodSearchViewModel {
     var searchQuery = ""
     var searchResults: [Food] = []
     var isLoading = false
     var errorMessage: String?
+    var isBarcodeScannerPresented = false
+    var scannedBarcode: String?
 
     private let searchFoodUseCase: SearchFoodUseCaseProtocol
+    private var _multiSourceUseCase: SearchMultiSourceFoodUseCaseProtocol?
     private var searchTask: Task<Void, Never>?
 
-    init(searchFoodUseCase: SearchFoodUseCaseProtocol) {
-        self.searchFoodUseCase = searchFoodUseCase
+    private var multiSourceUseCase: SearchMultiSourceFoodUseCaseProtocol {
+        if let useCase = _multiSourceUseCase {
+            return useCase
+        }
+        let coordinator = FoodAPICoordinator()
+        let useCase = SearchMultiSourceFoodUseCase(coordinator: coordinator)
+        _multiSourceUseCase = useCase
+        return useCase
     }
 
-    /// Perform debounced search
+    init(
+        searchFoodUseCase: SearchFoodUseCaseProtocol,
+        multiSourceUseCase: SearchMultiSourceFoodUseCaseProtocol? = nil
+    ) {
+        self.searchFoodUseCase = searchFoodUseCase
+        self._multiSourceUseCase = multiSourceUseCase
+    }
+
+    /// Perform debounced search using multi-source
     func search() {
         // Cancel existing search task
         searchTask?.cancel()
@@ -45,7 +63,8 @@ final class FoodSearchViewModel {
                 isLoading = true
                 errorMessage = nil
 
-                let results = try await searchFoodUseCase.execute(query: searchQuery)
+                // Use multi-source search for better results
+                let results = try await multiSourceUseCase.execute(query: searchQuery)
 
                 // Check if task was cancelled
                 guard !Task.isCancelled else { return }
@@ -60,6 +79,31 @@ final class FoodSearchViewModel {
                 isLoading = false
             }
         }
+    }
+
+    /// Search by barcode
+    func searchByBarcode(_ barcode: String) {
+        Task { @MainActor in
+            do {
+                isLoading = true
+                errorMessage = nil
+
+                let food = try await multiSourceUseCase.searchByBarcode(barcode: barcode)
+
+                searchResults = [food]
+                searchQuery = food.name
+                isLoading = false
+            } catch {
+                errorMessage = "Barcode not found: \(error.localizedDescription)"
+                searchResults = []
+                isLoading = false
+            }
+        }
+    }
+
+    /// Present barcode scanner
+    func presentBarcodeScanner() {
+        isBarcodeScannerPresented = true
     }
 
     /// Clear search results

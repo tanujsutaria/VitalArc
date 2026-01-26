@@ -25,6 +25,9 @@ struct VitalArcApp: App {
                 ExerciseModel.self,
                 WorkoutSetModel.self,
 
+                // Training Domain Models
+                MesocycleModel.self,
+
                 // Nutrition Domain Models
                 FoodModel.self,
                 FoodEntryModel.self,

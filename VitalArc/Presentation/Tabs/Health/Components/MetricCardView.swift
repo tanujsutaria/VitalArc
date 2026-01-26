@@ -2,7 +2,7 @@
 //  MetricCardView.swift
 //  VitalArc
 //
-//  Card view for displaying individual health metrics
+//  Card view for displaying individual health metrics (Legacy - use MetricCard)
 //
 
 import SwiftUI
@@ -39,37 +39,41 @@ struct MetricCardView: View {
     // MARK: - Body
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                Image(systemName: icon)
-                    .foregroundStyle(color)
-                    .font(.title3)
+        VitalCard(shadow: true) {
+            VStack(alignment: .leading, spacing: Spacing.sm) {
+                HStack {
+                    ZStack {
+                        Circle()
+                            .fill(color.opacity(0.15))
+                            .frame(width: 36, height: 36)
 
-                Spacer()
+                        Image(systemName: icon)
+                            .font(.system(size: 16, weight: .semibold))
+                            .foregroundStyle(color)
+                    }
 
-                if let trend = trend {
-                    trendIndicator(trend)
+                    Spacer()
+
+                    if let trend = trend {
+                        trendIndicator(trend)
+                    }
+                }
+
+                Text(title)
+                    .font(.vitalLabelSmall)
+                    .foregroundStyle(Color.vitalAdaptiveTextSecondary)
+
+                HStack(alignment: .firstTextBaseline, spacing: 4) {
+                    Text(value)
+                        .font(.vitalNumberMedium)
+                        .foregroundStyle(Color.vitalAdaptiveTextPrimary)
+
+                    Text(unit)
+                        .font(.vitalBodySmall)
+                        .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                 }
             }
-
-            Text(title)
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-
-            HStack(alignment: .firstTextBaseline, spacing: 4) {
-                Text(value)
-                    .font(.system(.title, design: .rounded, weight: .semibold))
-                    .foregroundStyle(.primary)
-
-                Text(unit)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-            }
         }
-        .padding()
-        .background(Color(.systemBackground))
-        .cornerRadius(12)
-        .shadow(color: .black.opacity(0.05), radius: 5, x: 0, y: 2)
     }
 
     // MARK: - Helpers
@@ -77,43 +81,15 @@ struct MetricCardView: View {
     private func trendIndicator(_ trend: TrendDirection) -> some View {
         HStack(spacing: 2) {
             Image(systemName: trend.icon)
-                .font(.caption)
+                .font(.system(size: 10, weight: .semibold))
             Text(trend.description)
-                .font(.caption2)
+                .font(.system(size: 10, weight: .semibold))
         }
         .foregroundStyle(trend.color)
-    }
-}
-
-// MARK: - Trend Direction
-
-enum TrendDirection {
-    case up
-    case down
-    case stable
-
-    var icon: String {
-        switch self {
-        case .up: return "arrow.up.right"
-        case .down: return "arrow.down.right"
-        case .stable: return "arrow.right"
-        }
-    }
-
-    var description: String {
-        switch self {
-        case .up: return "Up"
-        case .down: return "Down"
-        case .stable: return "Stable"
-        }
-    }
-
-    var color: Color {
-        switch self {
-        case .up: return .green
-        case .down: return .red
-        case .stable: return .gray
-        }
+        .padding(.horizontal, 6)
+        .padding(.vertical, 3)
+        .background(trend.color.opacity(0.15))
+        .cornerRadius(6)
     }
 }
 

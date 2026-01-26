@@ -53,127 +53,169 @@ struct ProfileView: View {
     @ViewBuilder
     private func profileContentView(viewModel: ProfileViewModel) -> some View {
         ScrollView {
-            VStack(spacing: 24) {
+            VStack(spacing: Spacing.sectionSpacing) {
                 if let profile = viewModel.profile {
                     // Profile Header
-                    VStack(spacing: 12) {
-                        // Avatar
-                        Circle()
-                            .fill(LinearGradient(
-                                colors: [.pink, .purple],
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            ))
-                            .frame(width: 100, height: 100)
-                            .overlay {
-                                Text(profile.name.prefix(1).uppercased())
-                                    .font(.system(size: 40, weight: .bold))
-                                    .foregroundColor(.white)
-                            }
+                    VStack(spacing: Spacing.md) {
+                        // Avatar with gradient border
+                        ZStack {
+                            Circle()
+                                .fill(Color.vitalPrimaryGradient)
+                                .frame(width: 116, height: 116)
+
+                            Circle()
+                                .fill(Color.vitalAdaptiveSurface)
+                                .frame(width: 108, height: 108)
+
+                            Circle()
+                                .fill(Color.vitalPrimaryGradient)
+                                .frame(width: 100, height: 100)
+                                .overlay {
+                                    Text(profile.name.prefix(1).uppercased())
+                                        .font(.system(size: 40, weight: .bold))
+                                        .foregroundColor(.white)
+                                }
+                        }
+                        .vitalElevatedShadow()
 
                         Text(profile.name)
-                            .font(.title)
-                            .fontWeight(.bold)
+                            .font(.vitalDisplayMedium)
+                            .foregroundStyle(Color.vitalAdaptiveTextPrimary)
 
                         Text("\(profile.age) years old")
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
+                            .font(.vitalBody)
+                            .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                     }
-                    .padding(.top)
+                    .padding(.top, Spacing.lg)
 
                     // Stats Section
-                    VStack(alignment: .leading, spacing: 16) {
+                    VStack(alignment: .leading, spacing: Spacing.md) {
                         Text("Health Stats")
-                            .font(.headline)
-                            .padding(.horizontal)
+                            .font(.vitalH2)
+                            .foregroundStyle(Color.vitalAdaptiveTextPrimary)
+                            .padding(.horizontal, Spacing.screenPadding)
 
                         LazyVGrid(columns: [
                             GridItem(.flexible()),
                             GridItem(.flexible())
-                        ], spacing: 16) {
+                        ], spacing: Spacing.md) {
                             StatCard(
                                 title: "Height",
                                 value: String(format: "%.0f cm", profile.height),
                                 icon: "ruler",
-                                color: .blue
+                                color: .vitalInfo
                             )
 
                             StatCard(
                                 title: "Weight",
                                 value: String(format: "%.1f kg", profile.weight),
                                 icon: "scalemass",
-                                color: .green
+                                color: .vitalSuccess
                             )
 
                             StatCard(
                                 title: "BMI",
                                 value: String(format: "%.1f", profile.bmi),
                                 icon: "chart.bar",
-                                color: .orange
+                                color: .vitalWarning
                             )
 
                             StatCard(
                                 title: "Calorie Goal",
                                 value: String(format: "%.0f", profile.estimatedCalorieGoal),
                                 icon: "flame",
-                                color: .red
+                                color: .vitalDanger
                             )
                         }
-                        .padding(.horizontal)
+                        .padding(.horizontal, Spacing.screenPadding)
                     }
 
                     // Goals Section
-                    VStack(alignment: .leading, spacing: 12) {
+                    VStack(alignment: .leading, spacing: Spacing.md) {
                         Text("Goals")
-                            .font(.headline)
-                            .padding(.horizontal)
+                            .font(.vitalH2)
+                            .foregroundStyle(Color.vitalAdaptiveTextPrimary)
+                            .padding(.horizontal, Spacing.screenPadding)
 
-                        VStack(spacing: 12) {
-                            InfoRow(label: "Activity Level", value: profile.activityLevel.rawValue)
-                            Divider()
-                            InfoRow(label: "Weight Goal", value: profile.weightGoal.rawValue)
-                            Divider()
-                            InfoRow(label: "Biological Sex", value: profile.biologicalSex.rawValue)
+                        VitalCard {
+                            VStack(spacing: Spacing.sm) {
+                                InfoRow(label: "Activity Level", value: profile.activityLevel.rawValue)
+                                Divider()
+                                InfoRow(label: "Weight Goal", value: profile.weightGoal.rawValue)
+                                Divider()
+                                InfoRow(label: "Biological Sex", value: profile.biologicalSex.rawValue)
+                            }
                         }
-                        .padding()
-                        .background(Color(.systemGray6))
-                        .cornerRadius(12)
-                        .padding(.horizontal)
+                        .padding(.horizontal, Spacing.screenPadding)
                     }
 
                     // Settings Section
-                    VStack(spacing: 12) {
-                        Button(action: { showSettings = true }) {
-                            HStack {
-                                Image(systemName: "gear")
-                                Text("Settings")
-                                Spacer()
-                                Image(systemName: "chevron.right")
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
-                            }
-                            .padding()
-                            .background(Color(.systemGray6))
-                            .cornerRadius(12)
-                        }
-                        .foregroundColor(.primary)
+                    VStack(spacing: Spacing.md) {
+                        Button(action: {
+                            HapticFeedback.light()
+                            showSettings = true
+                        }) {
+                            HStack(spacing: Spacing.md) {
+                                ZStack {
+                                    Circle()
+                                        .fill(Color.vitalPrimary.opacity(0.15))
+                                        .frame(width: 40, height: 40)
 
-                        Button(action: { showAbout = true }) {
-                            HStack {
-                                Image(systemName: "info.circle")
-                                Text("About")
+                                    Image(systemName: "gear")
+                                        .font(.system(size: 18, weight: .semibold))
+                                        .foregroundStyle(Color.vitalPrimary)
+                                }
+
+                                Text("Settings")
+                                    .font(.vitalLabel)
+                                    .foregroundStyle(Color.vitalAdaptiveTextPrimary)
+
                                 Spacer()
+
                                 Image(systemName: "chevron.right")
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
+                                    .font(.system(size: 12, weight: .semibold))
+                                    .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                             }
-                            .padding()
-                            .background(Color(.systemGray6))
-                            .cornerRadius(12)
+                            .padding(Spacing.md)
+                            .background(Color.vitalAdaptiveSurface)
+                            .cornerRadius(Spacing.radiusMedium)
+                            .vitalCardShadow()
                         }
-                        .foregroundColor(.primary)
+                        .vitalScaleButton()
+
+                        Button(action: {
+                            HapticFeedback.light()
+                            showAbout = true
+                        }) {
+                            HStack(spacing: Spacing.md) {
+                                ZStack {
+                                    Circle()
+                                        .fill(Color.vitalInfo.opacity(0.15))
+                                        .frame(width: 40, height: 40)
+
+                                    Image(systemName: "info.circle")
+                                        .font(.system(size: 18, weight: .semibold))
+                                        .foregroundStyle(Color.vitalInfo)
+                                }
+
+                                Text("About")
+                                    .font(.vitalLabel)
+                                    .foregroundStyle(Color.vitalAdaptiveTextPrimary)
+
+                                Spacer()
+
+                                Image(systemName: "chevron.right")
+                                    .font(.system(size: 12, weight: .semibold))
+                                    .foregroundStyle(Color.vitalAdaptiveTextSecondary)
+                            }
+                            .padding(Spacing.md)
+                            .background(Color.vitalAdaptiveSurface)
+                            .cornerRadius(Spacing.radiusMedium)
+                            .vitalCardShadow()
+                        }
+                        .vitalScaleButton()
                     }
-                    .padding(.horizontal)
+                    .padding(.horizontal, Spacing.screenPadding)
                 } else {
                     ContentUnavailableView(
                         "No Profile Found",
@@ -355,23 +397,28 @@ struct StatCard: View {
     let color: Color
 
     var body: some View {
-        VStack(spacing: 8) {
-            Image(systemName: icon)
-                .font(.title2)
-                .foregroundStyle(color)
+        VitalCard {
+            VStack(spacing: Spacing.sm) {
+                ZStack {
+                    Circle()
+                        .fill(color.opacity(0.15))
+                        .frame(width: 48, height: 48)
 
-            Text(value)
-                .font(.title3)
-                .fontWeight(.semibold)
+                    Image(systemName: icon)
+                        .font(.system(size: 20, weight: .semibold))
+                        .foregroundStyle(color)
+                }
 
-            Text(title)
-                .font(.caption)
-                .foregroundStyle(.secondary)
+                Text(value)
+                    .font(.vitalNumberMedium)
+                    .foregroundStyle(Color.vitalAdaptiveTextPrimary)
+
+                Text(title)
+                    .font(.vitalBodySmall)
+                    .foregroundStyle(Color.vitalAdaptiveTextSecondary)
+            }
+            .frame(maxWidth: .infinity)
         }
-        .frame(maxWidth: .infinity)
-        .padding()
-        .background(Color(.systemGray6))
-        .cornerRadius(12)
     }
 }
 
@@ -382,10 +429,12 @@ struct InfoRow: View {
     var body: some View {
         HStack {
             Text(label)
-                .foregroundStyle(.secondary)
+                .font(.vitalBody)
+                .foregroundStyle(Color.vitalAdaptiveTextSecondary)
             Spacer()
             Text(value)
-                .fontWeight(.medium)
+                .font(.vitalLabel)
+                .foregroundStyle(Color.vitalAdaptiveTextPrimary)
         }
     }
 }

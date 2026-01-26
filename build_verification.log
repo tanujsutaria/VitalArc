@@ -1,0 +1,808 @@
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild -project VitalArc.xcodeproj -scheme VitalArc -destination "platform=iOS Simulator,id=987FB931-73D9-44CF-8B71-04BD26BF0168" clean build
+
+CreateBuildRequest
+
+SendProjectDescription
+
+CreateBuildOperation
+
+** CLEAN SUCCEEDED **
+
+ComputePackagePrebuildTargetDependencyGraph
+
+Prepare packages
+
+CreateBuildRequest
+
+SendProjectDescription
+
+CreateBuildOperation
+
+ComputeTargetDependencyGraph
+note: Building targets in dependency order
+note: Target dependency graph (1 target)
+    Target 'VitalArc' in project 'VitalArc' (no dependencies)
+
+GatherProvisioningInputs
+
+CreateBuildDescription
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.2.sdk -x c -c /dev/null
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/usr/bin/actool --print-asset-tag-combinations --output-format xml1 /Users/tanujsutaria/Development/VitalArc/VitalArc/Assets.xcassets /Users/tanujsutaria/Development/VitalArc/VitalArc/Preview Content/Preview Assets.xcassets
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/usr/bin/actool --version --output-format xml1
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc --version
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld -version_details
+
+Build description signature: 683765c05ee1ddf34aff8af374ce2593
+Build description path: /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/XCBuildData/683765c05ee1ddf34aff8af374ce2593.xcbuilddata
+ClangStatCache /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.2.sdk /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/iphonesimulator26.2-23C53-7d00a8b37fbd7999ea79df8ebc024bf0.sdkstatcache
+    cd /Users/tanujsutaria/Development/VitalArc/VitalArc.xcodeproj
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.2.sdk -o /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/iphonesimulator26.2-23C53-7d00a8b37fbd7999ea79df8ebc024bf0.sdkstatcache
+
+CreateBuildDirectory /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Products
+    cd /Users/tanujsutaria/Development/VitalArc/VitalArc.xcodeproj
+    builtin-create-build-directory /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Products
+
+CreateBuildDirectory /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex
+    cd /Users/tanujsutaria/Development/VitalArc/VitalArc.xcodeproj
+    builtin-create-build-directory /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex
+
+CreateBuildDirectory /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules
+    cd /Users/tanujsutaria/Development/VitalArc/VitalArc.xcodeproj
+    builtin-create-build-directory /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules
+
+CreateBuildDirectory /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/ExplicitPrecompiledModules
+    cd /Users/tanujsutaria/Development/VitalArc/VitalArc.xcodeproj
+    builtin-create-build-directory /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/ExplicitPrecompiledModules
+
+WriteAuxiliaryFile /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc-73b9e8f761a187360b61bd732dd0934a-VFS-iphonesimulator/all-product-headers.yaml
+    cd /Users/tanujsutaria/Development/VitalArc/VitalArc.xcodeproj
+    write-file /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc-73b9e8f761a187360b61bd732dd0934a-VFS-iphonesimulator/all-product-headers.yaml
+
+CreateBuildDirectory /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-iphonesimulator
+    cd /Users/tanujsutaria/Development/VitalArc/VitalArc.xcodeproj
+    builtin-create-build-directory /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-iphonesimulator
+
+CreateBuildDirectory /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Products/Debug-iphonesimulator
+    cd /Users/tanujsutaria/Development/VitalArc/VitalArc.xcodeproj
+    builtin-create-build-directory /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Products/Debug-iphonesimulator
+
+WriteAuxiliaryFile /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/VitalArc.DependencyStaticMetadataFileList (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    write-file /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/VitalArc.DependencyStaticMetadataFileList
+
+WriteAuxiliaryFile /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/VitalArc-own-target-headers.hmap (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    write-file /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/VitalArc-own-target-headers.hmap
+
+WriteAuxiliaryFile /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/VitalArc.DependencyMetadataFileList (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    write-file /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/VitalArc.DependencyMetadataFileList
+
+WriteAuxiliaryFile /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/VitalArc-project-headers.hmap (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    write-file /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/VitalArc-project-headers.hmap
+
+WriteAuxiliaryFile /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/VitalArc-generated-files.hmap (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    write-file /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/VitalArc-generated-files.hmap
+
+WriteAuxiliaryFile /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/VitalArc.hmap (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    write-file /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/VitalArc.hmap
+
+WriteAuxiliaryFile /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/VitalArc-all-target-headers.hmap (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    write-file /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/VitalArc-all-target-headers.hmap
+
+WriteAuxiliaryFile /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/VitalArc-all-non-framework-target-headers.hmap (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    write-file /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/VitalArc-all-non-framework-target-headers.hmap
+
+WriteAuxiliaryFile /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/VitalArc-DebugDylibPath-normal-arm64.txt (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    write-file /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/VitalArc-DebugDylibPath-normal-arm64.txt
+
+WriteAuxiliaryFile /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/VitalArc-DebugDylibInstallName-normal-arm64.txt (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    write-file /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/VitalArc-DebugDylibInstallName-normal-arm64.txt
+
+WriteAuxiliaryFile /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/Objects-normal/arm64/VitalArc.SwiftFileList (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    write-file /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/Objects-normal/arm64/VitalArc.SwiftFileList
+
+WriteAuxiliaryFile /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/Objects-normal/arm64/VitalArc_const_extract_protocols.json (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    write-file /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/Objects-normal/arm64/VitalArc_const_extract_protocols.json
+
+WriteAuxiliaryFile /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/Objects-normal/arm64/VitalArc.SwiftConstValuesFileList (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    write-file /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/Objects-normal/arm64/VitalArc.SwiftConstValuesFileList
+
+WriteAuxiliaryFile /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/Objects-normal/arm64/VitalArc.LinkFileList (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    write-file /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/Objects-normal/arm64/VitalArc.LinkFileList
+
+WriteAuxiliaryFile /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/Objects-normal/arm64/VitalArc-OutputFileMap.json (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    write-file /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/Objects-normal/arm64/VitalArc-OutputFileMap.json
+
+WriteAuxiliaryFile /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/DerivedSources/Entitlements-Simulated.plist (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    write-file /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/DerivedSources/Entitlements-Simulated.plist
+
+MkDir /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Products/Debug-iphonesimulator/VitalArc.app (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    /bin/mkdir -p /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Products/Debug-iphonesimulator/VitalArc.app
+
+ValidateDevelopmentAssets /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    builtin-validate-development-assets --validate YES_ERROR /Users/tanujsutaria/Development/VitalArc/VitalArc/Preview\ Content
+
+ProcessProductPackaging /Users/tanujsutaria/Development/VitalArc/VitalArc/VitalArc.entitlements /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/VitalArc.app.xcent (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+    Entitlements:
+    
+    {
+}
+    
+    builtin-productPackagingUtility /Users/tanujsutaria/Development/VitalArc/VitalArc/VitalArc.entitlements -entitlements -format xml -o /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/VitalArc.app.xcent
+
+ProcessProductPackaging /Users/tanujsutaria/Development/VitalArc/VitalArc/VitalArc.entitlements /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/VitalArc.app-Simulated.xcent (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+    Entitlements:
+    
+    {
+    "application-identifier" = "FAKETEAMID.com.vitalarc.VitalArc";
+    "com.apple.developer.healthkit" = 1;
+    "com.apple.developer.healthkit.access" =     (
+    );
+}
+    
+    builtin-productPackagingUtility /Users/tanujsutaria/Development/VitalArc/VitalArc/VitalArc.entitlements -entitlements -format xml -o /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/VitalArc.app-Simulated.xcent
+
+ProcessProductPackagingDER /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/VitalArc.app.xcent /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/VitalArc.app.xcent.der (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    /usr/bin/derq query -f xml -i /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/VitalArc.app.xcent -o /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/VitalArc.app.xcent.der --raw
+
+ProcessProductPackagingDER /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/VitalArc.app-Simulated.xcent /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/VitalArc.app-Simulated.xcent.der (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    /usr/bin/derq query -f xml -i /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/VitalArc.app-Simulated.xcent -o /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/VitalArc.app-Simulated.xcent.der --raw
+
+Ld /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Products/Debug-iphonesimulator/VitalArc.app/__preview.dylib normal (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-ios17.0-simulator -dynamiclib -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.2.sdk -O0 -L/Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Products/Debug-iphonesimulator -F/Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Products/Debug-iphonesimulator -install_name @rpath/VitalArc.debug.dylib -dead_strip -rdynamic -Xlinker -no_deduplicate -Xlinker -objc_abi_version -Xlinker 2 -Xlinker -dependency_info -Xlinker /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/Objects-normal/arm64/VitalArc_dependency_info.dat -Xlinker -sectcreate -Xlinker __TEXT -Xlinker __entitlements -Xlinker /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/VitalArc.app-Simulated.xcent -Xlinker -sectcreate -Xlinker __TEXT -Xlinker __ents_der -Xlinker /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/VitalArc.app-Simulated.xcent.der -Xlinker -no_adhoc_codesign -o /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Products/Debug-iphonesimulator/VitalArc.app/__preview.dylib
+
+MkDir /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/assetcatalog_output/thinned (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    /bin/mkdir -p /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/assetcatalog_output/thinned
+
+MkDir /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/assetcatalog_output/unthinned (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    /bin/mkdir -p /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/assetcatalog_output/unthinned
+
+GenerateAssetSymbols /Users/tanujsutaria/Development/VitalArc/VitalArc/Assets.xcassets /Users/tanujsutaria/Development/VitalArc/VitalArc/Preview\ Content/Preview\ Assets.xcassets (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    /Applications/Xcode.app/Contents/Developer/usr/bin/actool /Users/tanujsutaria/Development/VitalArc/VitalArc/Assets.xcassets /Users/tanujsutaria/Development/VitalArc/VitalArc/Preview\ Content/Preview\ Assets.xcassets --compile /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Products/Debug-iphonesimulator/VitalArc.app --output-format human-readable-text --notices --warnings --export-dependency-info /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/assetcatalog_dependencies --output-partial-info-plist /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/assetcatalog_generated_info.plist --app-icon AppIcon --accent-color AccentColor --compress-pngs --enable-on-demand-resources YES --development-region en --target-device iphone --target-device ipad --minimum-deployment-target 17.0 --platform iphonesimulator --bundle-identifier com.vitalarc.VitalArc --generate-swift-asset-symbol-extensions NO --generate-swift-asset-symbols /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/DerivedSources/GeneratedAssetSymbols.swift --generate-objc-asset-symbols /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/DerivedSources/GeneratedAssetSymbols.h --generate-asset-symbol-index /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/DerivedSources/GeneratedAssetSymbols-Index.plist
+/* com.apple.actool.compilation-results */
+/Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/DerivedSources/GeneratedAssetSymbols-Index.plist
+/Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/DerivedSources/GeneratedAssetSymbols.h
+/Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/DerivedSources/GeneratedAssetSymbols.swift
+
+
+CompileAssetCatalogVariant thinned /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Products/Debug-iphonesimulator/VitalArc.app /Users/tanujsutaria/Development/VitalArc/VitalArc/Assets.xcassets /Users/tanujsutaria/Development/VitalArc/VitalArc/Preview\ Content/Preview\ Assets.xcassets (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    /Applications/Xcode.app/Contents/Developer/usr/bin/actool /Users/tanujsutaria/Development/VitalArc/VitalArc/Assets.xcassets /Users/tanujsutaria/Development/VitalArc/VitalArc/Preview\ Content/Preview\ Assets.xcassets --compile /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/assetcatalog_output/thinned --output-format human-readable-text --notices --warnings --export-dependency-info /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/assetcatalog_dependencies_thinned --output-partial-info-plist /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/assetcatalog_generated_info.plist_thinned --app-icon AppIcon --accent-color AccentColor --compress-pngs --enable-on-demand-resources YES --filter-for-thinning-device-configuration iPhone18,3 --filter-for-device-os-version 26.2 --development-region en --target-device iphone --target-device ipad --minimum-deployment-target 17.0 --platform iphonesimulator
+/* com.apple.actool.compilation-results */
+/Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/assetcatalog_generated_info.plist_thinned
+
+
+SwiftDriver VitalArc normal arm64 com.apple.xcode.tools.swift.compiler (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    builtin-SwiftDriver -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name VitalArc -Onone -enforce-exclusivity\=checked @/Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/Objects-normal/arm64/VitalArc.SwiftFileList -DDEBUG -enable-bare-slash-regex -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.2.sdk -target arm64-apple-ios17.0-simulator -g -module-cache-path /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 5 -I /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Products/Debug-iphonesimulator -F /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Products/Debug-iphonesimulator -emit-localized-strings -emit-localized-strings-path /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/Objects-normal/arm64 -c -j10 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/iphonesimulator26.2-23C53-7d00a8b37fbd7999ea79df8ebc024bf0.sdkstatcache -output-file-map /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/Objects-normal/arm64/VitalArc-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -sdk-module-cache-path /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/Objects-normal/arm64/VitalArc.swiftmodule -validate-clang-modules-once -clang-build-session-file /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -I/Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/Objects-normal/arm64/VitalArc_const_extract_protocols.json -Xcc -iquote -Xcc /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/VitalArc-generated-files.hmap -Xcc -I/Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/VitalArc-own-target-headers.hmap -Xcc -I/Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/VitalArc-all-target-headers.hmap -Xcc -iquote -Xcc /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/VitalArc-project-headers.hmap -Xcc -I/Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Products/Debug-iphonesimulator/include -Xcc -I/Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/DerivedSources-normal/arm64 -Xcc -I/Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/DerivedSources/arm64 -Xcc -I/Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/Objects-normal/arm64/VitalArc-Swift.h -working-directory /Users/tanujsutaria/Development/VitalArc -experimental-emit-module-separately -disable-cmo
+
+SwiftCompile normal arm64 Compiling\ UserProfileModel.swift,\ UserRepository.swift,\ VitalArcApp.swift,\ WelcomeView.swift,\ Workout.swift,\ WorkoutHistoryView.swift,\ WorkoutHistoryViewModel.swift,\ WorkoutLoggingView.swift,\ WorkoutLoggingViewModel.swift,\ WorkoutModel.swift,\ WorkoutRepository.swift,\ WorkoutSet.swift,\ WorkoutSetModel.swift,\ Mesocycle.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Data/Models/User/UserProfileModel.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/Repositories/UserRepository.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/VitalArcApp.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Onboarding/WelcomeView.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/Entities/Workout/Workout.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Workout/WorkoutHistory/WorkoutHistoryView.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Workout/WorkoutHistory/WorkoutHistoryViewModel.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Workout/WorkoutLogging/WorkoutLoggingView.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Workout/WorkoutLogging/WorkoutLoggingViewModel.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Data/Models/Workout/WorkoutModel.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/Repositories/WorkoutRepository.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/Entities/Workout/WorkoutSet.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Data/Models/Workout/WorkoutSetModel.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/Entities/Training/Mesocycle.swift (in target 'VitalArc' from project 'VitalArc')
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Data/Models/User/UserProfileModel.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/Repositories/UserRepository.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/VitalArcApp.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Onboarding/WelcomeView.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/Entities/Workout/Workout.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Workout/WorkoutHistory/WorkoutHistoryView.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Workout/WorkoutHistory/WorkoutHistoryViewModel.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Workout/WorkoutLogging/WorkoutLoggingView.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Workout/WorkoutLogging/WorkoutLoggingViewModel.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Data/Models/Workout/WorkoutModel.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/Repositories/WorkoutRepository.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/Entities/Workout/WorkoutSet.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Data/Models/Workout/WorkoutSetModel.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/Entities/Training/Mesocycle.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 Compiling\ ExerciseSeeds.swift,\ ExerciseSetView.swift,\ Food.swift,\ FoodAPIModels.swift,\ FoodEntry.swift,\ FoodEntryModel.swift,\ FoodLoggingView.swift,\ FoodLoggingViewModel.swift,\ FoodModel.swift,\ FoodResultRowView.swift,\ FoodSearchView.swift,\ FoodSearchViewModel.swift,\ GetExercisesUseCase.swift,\ HealthDashboardView.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Data/Seeds/ExerciseSeeds.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Workout/WorkoutLogging/ExerciseSetView.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/Entities/Nutrition/Food.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Infrastructure/Networking/FoodAPIModels.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/Entities/Nutrition/FoodEntry.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Data/Models/Nutrition/FoodEntryModel.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Nutrition/FoodLogging/FoodLoggingView.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Nutrition/FoodLogging/FoodLoggingViewModel.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Data/Models/Nutrition/FoodModel.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Nutrition/FoodSearch/FoodResultRowView.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Nutrition/FoodSearch/FoodSearchView.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Nutrition/FoodSearch/FoodSearchViewModel.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/UseCases/Workout/GetExercisesUseCase.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Health/HealthDashboardView.swift (in target 'VitalArc' from project 'VitalArc')
+Failed frontend command:
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swift-frontend -frontend -c -filelist /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/Objects-normal/arm64/sources-1 -primary-file /Users/tanujsutaria/Development/VitalArc/VitalArc/Data/Seeds/ExerciseSeeds.swift -primary-file /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Workout/WorkoutLogging/ExerciseSetView.swift -primary-file /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/Entities/Nutrition/Food.swift -primary-file /Users/tanujsutaria/Development/VitalArc/VitalArc/Infrastructure/Networking/FoodAPIModels.swift -primary-file /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/Entities/Nutrition/FoodEntry.swift -primary-file /Users/tanujsutaria/Development/VitalArc/VitalArc/Data/Models/Nutrition/FoodEntryModel.swift -primary-file /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Nutrition/FoodLogging/FoodLoggingView.swift -primary-file /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Nutrition/FoodLogging/FoodLoggingViewModel.swift -primary-file /Users/tanujsutaria/Development/VitalArc/VitalArc/Data/Models/Nutrition/FoodModel.swift -primary-file /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Nutrition/FoodSearch/FoodResultRowView.swift -primary-file /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Nutrition/FoodSearch/FoodSearchView.swift -primary-file /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Nutrition/FoodSearch/FoodSearchViewModel.swift -primary-file /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/UseCases/Workout/GetExercisesUseCase.swift -primary-file /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Health/HealthDashboardView.swift -supplementary-output-file-map /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/Objects-normal/arm64/supplementaryOutputs-2 -emit-localized-strings -emit-localized-strings-path /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/Objects-normal/arm64 -target arm64-apple-ios17.0-simulator -module-can-import-version DeveloperToolsSupport 23.0.4 23.0.4 -disable-cross-import-overlay-search -swift-module-cross-import SwiftData /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.2.sdk/System/Library/Frameworks/SwiftData.framework/Modules/SwiftData.swiftcrossimport/CoreData.swiftoverlay -swift-module-cross-import SwiftData /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.2.sdk/System/Library/Frameworks/SwiftData.framework/Modules/SwiftData.swiftcrossimport/SwiftUI.swiftoverlay -load-resolved-plugin /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib/swift/host/plugins/libFoundationMacros.dylib\#/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/swift-plugin-server\#FoundationMacros -load-resolved-plugin /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib/swift/host/plugins/libObservationMacros.dylib\#/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/swift-plugin-server\#ObservationMacros -load-resolved-plugin /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib/swift/host/plugins/libPreviewsMacros.dylib\#/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/swift-plugin-server\#PreviewsMacros -load-resolved-plugin /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib/swift/host/plugins/libSwiftDataMacros.dylib\#/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/swift-plugin-server\#SwiftDataMacros -load-resolved-plugin /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib/swift/host/plugins/libSwiftMacros.dylib\#/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/swift-plugin-server\#SwiftMacros -load-resolved-plugin /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib/swift/host/plugins/libSwiftUIMacros.dylib\#/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/swift-plugin-server\#SwiftUIMacros -disable-implicit-swift-modules -Xcc -fno-implicit-modules -Xcc -fno-implicit-module-maps -explicit-swift-module-map-file /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/Objects-normal/arm64/VitalArc-dependencies-1.json -Xllvm -aarch64-use-tbi -enable-objc-interop -sdk /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.2.sdk -I /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Products/Debug-iphonesimulator -F /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Products/Debug-iphonesimulator -no-color-diagnostics -Xcc -fno-color-diagnostics -enable-testing -g -debug-info-format\=dwarf -dwarf-version\=4 -module-cache-path /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -swift-version 5 -enforce-exclusivity\=checked -Onone -D DEBUG -serialize-debugging-options -const-gather-protocols-file /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/Objects-normal/arm64/VitalArc_const_extract_protocols.json -enable-experimental-feature DebugDescriptionMacro -enable-bare-slash-regex -empty-abi-descriptor -validate-clang-modules-once -clang-build-session-file /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -working-directory -Xcc /Users/tanujsutaria/Development/VitalArc -enable-anonymous-context-mangled-names -file-compilation-dir /Users/tanujsutaria/Development/VitalArc -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -Xcc -ivfsstatcache -Xcc /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/iphonesimulator26.2-23C53-7d00a8b37fbd7999ea79df8ebc024bf0.sdkstatcache -Xcc -I/Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/swift-overrides.hmap -Xcc -iquote -Xcc /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/VitalArc-generated-files.hmap -Xcc -I/Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/VitalArc-own-target-headers.hmap -Xcc -I/Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/VitalArc-all-target-headers.hmap -Xcc -iquote -Xcc /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/VitalArc-project-headers.hmap -Xcc -I/Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Products/Debug-iphonesimulator/include -Xcc -I/Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/DerivedSources-normal/arm64 -Xcc -I/Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/DerivedSources/arm64 -Xcc -I/Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/DerivedSources -Xcc -DDEBUG\=1 -no-auto-bridging-header-chaining -module-name VitalArc -frontend-parseable-output -disable-clang-spi -target-sdk-version 26.2 -target-sdk-name iphonesimulator26.2 -clang-target arm64-apple-ios26.2-simulator -in-process-plugin-server-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/libSwiftInProcPluginServer.dylib -o /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/Objects-normal/arm64/ExerciseSeeds.o -o /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/Objects-normal/arm64/ExerciseSetView.o -o /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/Objects-normal/arm64/Food.o -o /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/Objects-normal/arm64/FoodAPIModels.o -o /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/Objects-normal/arm64/FoodEntry.o -o /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/Objects-normal/arm64/FoodEntryModel.o -o /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/Objects-normal/arm64/FoodLoggingView.o -o /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/Objects-normal/arm64/FoodLoggingViewModel.o -o /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/Objects-normal/arm64/FoodModel.o -o /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/Objects-normal/arm64/FoodResultRowView.o -o /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/Objects-normal/arm64/FoodSearchView.o -o /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/Objects-normal/arm64/FoodSearchViewModel.o -o /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/Objects-normal/arm64/GetExercisesUseCase.o -o /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/Objects-normal/arm64/HealthDashboardView.o -index-unit-output-path /VitalArc.build/Debug-iphonesimulator/VitalArc.build/Objects-normal/arm64/ExerciseSeeds.o -index-unit-output-path /VitalArc.build/Debug-iphonesimulator/VitalArc.build/Objects-normal/arm64/ExerciseSetView.o -index-unit-output-path /VitalArc.build/Debug-iphonesimulator/VitalArc.build/Objects-normal/arm64/Food.o -index-unit-output-path /VitalArc.build/Debug-iphonesimulator/VitalArc.build/Objects-normal/arm64/FoodAPIModels.o -index-unit-output-path /VitalArc.build/Debug-iphonesimulator/VitalArc.build/Objects-normal/arm64/FoodEntry.o -index-unit-output-path /VitalArc.build/Debug-iphonesimulator/VitalArc.build/Objects-normal/arm64/FoodEntryModel.o -index-unit-output-path /VitalArc.build/Debug-iphonesimulator/VitalArc.build/Objects-normal/arm64/FoodLoggingView.o -index-unit-output-path /VitalArc.build/Debug-iphonesimulator/VitalArc.build/Objects-normal/arm64/FoodLoggingViewModel.o -index-unit-output-path /VitalArc.build/Debug-iphonesimulator/VitalArc.build/Objects-normal/arm64/FoodModel.o -index-unit-output-path /VitalArc.build/Debug-iphonesimulator/VitalArc.build/Objects-normal/arm64/FoodResultRowView.o -index-unit-output-path /VitalArc.build/Debug-iphonesimulator/VitalArc.build/Objects-normal/arm64/FoodSearchView.o -index-unit-output-path /VitalArc.build/Debug-iphonesimulator/VitalArc.build/Objects-normal/arm64/FoodSearchViewModel.o -index-unit-output-path /VitalArc.build/Debug-iphonesimulator/VitalArc.build/Objects-normal/arm64/GetExercisesUseCase.o -index-unit-output-path /VitalArc.build/Debug-iphonesimulator/VitalArc.build/Objects-normal/arm64/HealthDashboardView.o -index-store-path /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Index.noindex/DataStore -index-system-modules
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Data/Seeds/ExerciseSeeds.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Workout/WorkoutLogging/ExerciseSetView.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/Entities/Nutrition/Food.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Infrastructure/Networking/FoodAPIModels.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/Entities/Nutrition/FoodEntry.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Data/Models/Nutrition/FoodEntryModel.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Nutrition/FoodLogging/FoodLoggingView.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Nutrition/FoodLogging/FoodLoggingViewModel.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Data/Models/Nutrition/FoodModel.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Nutrition/FoodSearch/FoodResultRowView.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Nutrition/FoodSearch/FoodSearchView.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Nutrition/FoodSearch/FoodSearchViewModel.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+/Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Nutrition/FoodSearch/FoodSearchViewModel.swift:27:97: error: missing argument for parameter 'coordinator' in call
+        multiSourceUseCase: SearchMultiSourceFoodUseCaseProtocol = SearchMultiSourceFoodUseCase()
+                                                                                                ^
+                                                                                                coordinator: <#any FoodAPICoordinatorProtocol#>
+/Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/UseCases/Nutrition/SearchMultiSourceFoodUseCase.swift:19:5: note: 'init(coordinator:)' declared here
+    init(coordinator: FoodAPICoordinatorProtocol) {
+    ^
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/UseCases/Workout/GetExercisesUseCase.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Health/HealthDashboardView.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 Compiling\ UpdateMesocycleProgressUseCase.swift,\ CalculateVolumeUseCase.swift,\ GenerateProgressReportUseCase.swift,\ TrackProgressiveOverloadUseCase.swift,\ LoadWorkoutTemplateUseCase.swift,\ SaveWorkoutTemplateUseCase.swift,\ CreateMesocycleView.swift,\ MesocycleDetailView.swift,\ MesocycleListView.swift,\ MesocycleViewModel.swift,\ AnalyticsDashboardView.swift,\ AnalyticsDashboardViewModel.swift,\ PersonalRecordsView.swift,\ ProgressChartView.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/UseCases/Training/UpdateMesocycleProgressUseCase.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/UseCases/Analytics/CalculateVolumeUseCase.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/UseCases/Analytics/GenerateProgressReportUseCase.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/UseCases/Analytics/TrackProgressiveOverloadUseCase.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/UseCases/Templates/LoadWorkoutTemplateUseCase.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/UseCases/Templates/SaveWorkoutTemplateUseCase.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Training/CreateMesocycleView.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Training/MesocycleDetailView.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Training/MesocycleListView.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Training/MesocycleViewModel.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Analytics/AnalyticsDashboardView.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Analytics/AnalyticsDashboardViewModel.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Analytics/PersonalRecordsView.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Analytics/ProgressChartView.swift (in target 'VitalArc' from project 'VitalArc')
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/UseCases/Training/UpdateMesocycleProgressUseCase.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/UseCases/Analytics/CalculateVolumeUseCase.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/UseCases/Analytics/GenerateProgressReportUseCase.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/UseCases/Analytics/TrackProgressiveOverloadUseCase.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/UseCases/Templates/LoadWorkoutTemplateUseCase.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/UseCases/Templates/SaveWorkoutTemplateUseCase.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Training/CreateMesocycleView.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Training/MesocycleDetailView.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Training/MesocycleListView.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Training/MesocycleViewModel.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Analytics/AnalyticsDashboardView.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Analytics/AnalyticsDashboardViewModel.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Analytics/PersonalRecordsView.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Analytics/ProgressChartView.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 Compiling\ NetworkService.swift,\ NutritionRepository.swift,\ NutritionSummaryView.swift,\ OnboardingCoordinator.swift,\ OnboardingViewModel.swift,\ ProfileSetupView.swift,\ ProfileView.swift,\ ProfileViewModel.swift,\ SearchFoodUseCase.swift,\ SetRowView.swift,\ SettingsView.swift,\ USDAFoodAPI.swift,\ UpdateUserPreferencesUseCase.swift,\ UserProfile.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Infrastructure/Networking/NetworkService.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/Repositories/NutritionRepository.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Nutrition/NutritionSummary/NutritionSummaryView.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Onboarding/OnboardingCoordinator.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Onboarding/OnboardingViewModel.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Onboarding/ProfileSetupView.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Profile/ProfileView.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Profile/ProfileViewModel.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/UseCases/Nutrition/SearchFoodUseCase.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Workout/WorkoutLogging/SetRowView.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Profile/SettingsView.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Infrastructure/Networking/USDAFoodAPI.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/UseCases/User/UpdateUserPreferencesUseCase.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/Entities/User/UserProfile.swift (in target 'VitalArc' from project 'VitalArc')
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Infrastructure/Networking/NetworkService.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/Repositories/NutritionRepository.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Nutrition/NutritionSummary/NutritionSummaryView.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Onboarding/OnboardingCoordinator.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Onboarding/OnboardingViewModel.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Onboarding/ProfileSetupView.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Profile/ProfileView.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Profile/ProfileViewModel.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/UseCases/Nutrition/SearchFoodUseCase.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Workout/WorkoutLogging/SetRowView.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Profile/SettingsView.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Infrastructure/Networking/USDAFoodAPI.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/UseCases/User/UpdateUserPreferencesUseCase.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/Entities/User/UserProfile.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftEmitModule normal arm64 Emitting\ module\ for\ VitalArc (in target 'VitalArc' from project 'VitalArc')
+EmitSwiftModule normal arm64 (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 Compiling\ VolumeChartView.swift,\ CreateTemplateView.swift,\ TemplateDetailView.swift,\ WorkoutTemplatesView.swift,\ ExerciseSeedsBands.swift,\ ExerciseSeedsBarbell.swift,\ ExerciseSeedsCable.swift,\ ExerciseSeedsCalisthenics.swift,\ ExerciseSeedsDumbbell.swift,\ ExerciseSeedsKettlebell.swift,\ ExerciseSeedsMachine.swift,\ ExerciseSeedsOlympic.swift,\ ExerciseSeedsStrongman.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Analytics/VolumeChartView.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Workout/Templates/CreateTemplateView.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Workout/Templates/TemplateDetailView.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Workout/Templates/WorkoutTemplatesView.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Data/Seeds/ExerciseSeedsBands.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Data/Seeds/ExerciseSeedsBarbell.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Data/Seeds/ExerciseSeedsCable.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Data/Seeds/ExerciseSeedsCalisthenics.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Data/Seeds/ExerciseSeedsDumbbell.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Data/Seeds/ExerciseSeedsKettlebell.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Data/Seeds/ExerciseSeedsMachine.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Data/Seeds/ExerciseSeedsOlympic.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Data/Seeds/ExerciseSeedsStrongman.swift (in target 'VitalArc' from project 'VitalArc')
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Analytics/VolumeChartView.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Workout/Templates/CreateTemplateView.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Workout/Templates/TemplateDetailView.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Workout/Templates/WorkoutTemplatesView.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Data/Seeds/ExerciseSeedsBands.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Data/Seeds/ExerciseSeedsBarbell.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Data/Seeds/ExerciseSeedsCable.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Data/Seeds/ExerciseSeedsCalisthenics.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Data/Seeds/ExerciseSeedsDumbbell.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Data/Seeds/ExerciseSeedsKettlebell.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Data/Seeds/ExerciseSeedsMachine.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Data/Seeds/ExerciseSeedsOlympic.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Data/Seeds/ExerciseSeedsStrongman.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 Compiling\ Spacing.swift,\ ViewExtensions.swift,\ SpringAnimations.swift,\ VitalCard.swift,\ VitalButton.swift,\ VitalTextField.swift,\ MetricCard.swift,\ ProgressChart.swift,\ ExerciseCard.swift,\ FoodCard.swift,\ VitalEmptyState.swift,\ VitalBottomSheet.swift,\ GeneratedAssetSymbols.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Common/DesignSystem/Spacing.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Common/DesignSystem/ViewExtensions.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Common/DesignSystem/Animations/SpringAnimations.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Common/DesignSystem/Components/VitalCard.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Common/DesignSystem/Components/VitalButton.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Common/DesignSystem/Components/VitalTextField.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Common/DesignSystem/Components/MetricCard.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Common/DesignSystem/Components/ProgressChart.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Common/DesignSystem/Components/ExerciseCard.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Common/DesignSystem/Components/FoodCard.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Common/DesignSystem/Components/VitalEmptyState.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Common/DesignSystem/Components/VitalBottomSheet.swift /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/DerivedSources/GeneratedAssetSymbols.swift (in target 'VitalArc' from project 'VitalArc')
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Common/DesignSystem/Spacing.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Common/DesignSystem/ViewExtensions.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Common/DesignSystem/Animations/SpringAnimations.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Common/DesignSystem/Components/VitalCard.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Common/DesignSystem/Components/VitalButton.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Common/DesignSystem/Components/VitalTextField.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Common/DesignSystem/Components/MetricCard.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Common/DesignSystem/Components/ProgressChart.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Common/DesignSystem/Components/ExerciseCard.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Common/DesignSystem/Components/FoodCard.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Common/DesignSystem/Components/VitalEmptyState.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Common/DesignSystem/Components/VitalBottomSheet.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/DerivedSources/GeneratedAssetSymbols.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 Compiling\ NutritionixModels.swift,\ OpenFoodFactsModels.swift,\ NutritionixAPI.swift,\ OpenFoodFactsAPI.swift,\ FoodAPICoordinator.swift,\ SearchMultiSourceFoodUseCase.swift,\ BarcodeScannerView.swift,\ FoodCache.swift,\ MesocycleRepository.swift,\ AnalyticsRepository.swift,\ TemplateRepository.swift,\ Colors.swift,\ Typography.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Infrastructure/Networking/NutritionixModels.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Infrastructure/Networking/OpenFoodFactsModels.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Infrastructure/Networking/NutritionixAPI.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Infrastructure/Networking/OpenFoodFactsAPI.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Infrastructure/Networking/FoodAPICoordinator.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/UseCases/Nutrition/SearchMultiSourceFoodUseCase.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Nutrition/FoodSearch/BarcodeScannerView.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Infrastructure/Cache/FoodCache.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/Repositories/MesocycleRepository.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/Repositories/AnalyticsRepository.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/Repositories/TemplateRepository.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Common/DesignSystem/Colors.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Common/DesignSystem/Typography.swift (in target 'VitalArc' from project 'VitalArc')
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Infrastructure/Networking/NutritionixModels.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Infrastructure/Networking/OpenFoodFactsModels.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Infrastructure/Networking/NutritionixAPI.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Infrastructure/Networking/OpenFoodFactsAPI.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Infrastructure/Networking/FoodAPICoordinator.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/UseCases/Nutrition/SearchMultiSourceFoodUseCase.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Nutrition/FoodSearch/BarcodeScannerView.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Infrastructure/Cache/FoodCache.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/Repositories/MesocycleRepository.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/Repositories/AnalyticsRepository.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/Repositories/TemplateRepository.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Common/DesignSystem/Colors.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Common/DesignSystem/Typography.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 Compiling\ MesocyclePhase.swift,\ TrainingBlock.swift,\ PersonalRecord.swift,\ ProgressSnapshot.swift,\ VolumeMetrics.swift,\ WorkoutTemplate.swift,\ MesocycleModel.swift,\ MesocyclePhaseModel.swift,\ TrainingBlockModel.swift,\ PersonalRecordModel.swift,\ ProgressSnapshotModel.swift,\ VolumeMetricsModel.swift,\ WorkoutTemplateModel.swift,\ CreateMesocycleUseCase.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/Entities/Training/MesocyclePhase.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/Entities/Training/TrainingBlock.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/Entities/Analytics/PersonalRecord.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/Entities/Analytics/ProgressSnapshot.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/Entities/Analytics/VolumeMetrics.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/Entities/Templates/WorkoutTemplate.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Data/Models/Training/MesocycleModel.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Data/Models/Training/MesocyclePhaseModel.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Data/Models/Training/TrainingBlockModel.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Data/Models/Analytics/PersonalRecordModel.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Data/Models/Analytics/ProgressSnapshotModel.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Data/Models/Analytics/VolumeMetricsModel.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Data/Models/Templates/WorkoutTemplateModel.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/UseCases/Training/CreateMesocycleUseCase.swift (in target 'VitalArc' from project 'VitalArc')
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/Entities/Training/MesocyclePhase.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/Entities/Training/TrainingBlock.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/Entities/Analytics/PersonalRecord.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/Entities/Analytics/ProgressSnapshot.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/Entities/Analytics/VolumeMetrics.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/Entities/Templates/WorkoutTemplate.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Data/Models/Training/MesocycleModel.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Data/Models/Training/MesocyclePhaseModel.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Data/Models/Training/TrainingBlockModel.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Data/Models/Analytics/PersonalRecordModel.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Data/Models/Analytics/ProgressSnapshotModel.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Data/Models/Analytics/VolumeMetricsModel.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Data/Models/Templates/WorkoutTemplateModel.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/UseCases/Training/CreateMesocycleUseCase.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 Compiling\ HealthDashboardViewModel.swift,\ HealthKitManager.swift,\ HealthKitMapper.swift,\ HealthKitPermissionView.swift,\ HealthKitPermissions.swift,\ HealthKitQuery.swift,\ HealthMetrics.swift,\ HealthMetricsModel.swift,\ HealthRepository.swift,\ LogFoodUseCase.swift,\ MacroRingView.swift,\ MainTabView.swift,\ MealSectionView.swift,\ MetricCardView.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Health/HealthDashboardViewModel.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Infrastructure/HealthKit/HealthKitManager.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Infrastructure/Mappers/HealthKitMapper.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Onboarding/HealthKitPermissionView.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Infrastructure/HealthKit/HealthKitPermissions.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Infrastructure/HealthKit/HealthKitQuery.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/Entities/Health/HealthMetrics.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Data/Models/Health/HealthMetricsModel.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/Repositories/HealthRepository.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/UseCases/Nutrition/LogFoodUseCase.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Nutrition/NutritionSummary/MacroRingView.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/MainTabView.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Nutrition/FoodLogging/MealSectionView.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Health/Components/MetricCardView.swift (in target 'VitalArc' from project 'VitalArc')
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Health/HealthDashboardViewModel.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Infrastructure/HealthKit/HealthKitManager.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Infrastructure/Mappers/HealthKitMapper.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Onboarding/HealthKitPermissionView.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Infrastructure/HealthKit/HealthKitPermissions.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Infrastructure/HealthKit/HealthKitQuery.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/Entities/Health/HealthMetrics.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Data/Models/Health/HealthMetricsModel.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/Repositories/HealthRepository.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/UseCases/Nutrition/LogFoodUseCase.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Nutrition/NutritionSummary/MacroRingView.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/MainTabView.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Nutrition/FoodLogging/MealSectionView.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Health/Components/MetricCardView.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+LinkAssetCatalog /Users/tanujsutaria/Development/VitalArc/VitalArc/Assets.xcassets /Users/tanujsutaria/Development/VitalArc/VitalArc/Preview\ Content/Preview\ Assets.xcassets (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    builtin-linkAssetCatalog --thinned /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/assetcatalog_output/thinned --thinned-dependencies /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/assetcatalog_dependencies_thinned --thinned-info-plist-content /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/assetcatalog_generated_info.plist_thinned --unthinned /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/assetcatalog_output/unthinned --unthinned-dependencies /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/assetcatalog_dependencies_unthinned --unthinned-info-plist-content /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/assetcatalog_generated_info.plist_unthinned --output /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Products/Debug-iphonesimulator/VitalArc.app --plist-output /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/assetcatalog_generated_info.plist
+
+SwiftDriverJobDiscovery normal arm64 Compiling MesocyclePhase.swift, TrainingBlock.swift, PersonalRecord.swift, ProgressSnapshot.swift, VolumeMetrics.swift, WorkoutTemplate.swift, MesocycleModel.swift, MesocyclePhaseModel.swift, TrainingBlockModel.swift, PersonalRecordModel.swift, ProgressSnapshotModel.swift, VolumeMetricsModel.swift, WorkoutTemplateModel.swift, CreateMesocycleUseCase.swift (in target 'VitalArc' from project 'VitalArc')
+
+SwiftCompile normal arm64 Compiling\ AboutView.swift,\ CalculateNutritionUseCase.swift,\ CalculateProgressionUseCase.swift,\ ChartView.swift,\ CreateUserProfileUseCase.swift,\ CreateWorkoutUseCase.swift,\ DailyNutrition.swift,\ DailyNutritionModel.swift,\ DependencyContainer.swift,\ Exercise.swift,\ ExerciseLibraryView.swift,\ ExerciseLibraryViewModel.swift,\ ExerciseModel.swift,\ ExerciseRowView.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Profile/AboutView.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/UseCases/Nutrition/CalculateNutritionUseCase.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/UseCases/Workout/CalculateProgressionUseCase.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Health/Components/ChartView.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/UseCases/User/CreateUserProfileUseCase.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/UseCases/Workout/CreateWorkoutUseCase.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/Entities/Nutrition/DailyNutrition.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Data/Models/Nutrition/DailyNutritionModel.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Infrastructure/DependencyContainer.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/Entities/Workout/Exercise.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Workout/ExerciseLibrary/ExerciseLibraryView.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Workout/ExerciseLibrary/ExerciseLibraryViewModel.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Data/Models/Workout/ExerciseModel.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Workout/ExerciseLibrary/ExerciseRowView.swift (in target 'VitalArc' from project 'VitalArc')
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Profile/AboutView.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/UseCases/Nutrition/CalculateNutritionUseCase.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/UseCases/Workout/CalculateProgressionUseCase.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Health/Components/ChartView.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/UseCases/User/CreateUserProfileUseCase.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/UseCases/Workout/CreateWorkoutUseCase.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/Entities/Nutrition/DailyNutrition.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Data/Models/Nutrition/DailyNutritionModel.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Infrastructure/DependencyContainer.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/Entities/Workout/Exercise.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Workout/ExerciseLibrary/ExerciseLibraryView.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Workout/ExerciseLibrary/ExerciseLibraryViewModel.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Data/Models/Workout/ExerciseModel.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Workout/ExerciseLibrary/ExerciseRowView.swift (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    
+
+ProcessInfoPlistFile /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Products/Debug-iphonesimulator/VitalArc.app/Info.plist /Users/tanujsutaria/Development/VitalArc/VitalArc/Info.plist (in target 'VitalArc' from project 'VitalArc')
+    cd /Users/tanujsutaria/Development/VitalArc
+    builtin-infoPlistUtility /Users/tanujsutaria/Development/VitalArc/VitalArc/Info.plist -producttype com.apple.product-type.application -genpkginfo /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Products/Debug-iphonesimulator/VitalArc.app/PkgInfo -expandbuildsettings -format binary -platform iphonesimulator -additionalcontentfile /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Intermediates.noindex/VitalArc.build/Debug-iphonesimulator/VitalArc.build/assetcatalog_generated_info.plist -o /Users/tanujsutaria/Library/Developer/Xcode/DerivedData/VitalArc-avtzrztwhtjvmfecaxystanwxewy/Build/Products/Debug-iphonesimulator/VitalArc.app/Info.plist
+
+** BUILD FAILED **
+
+
+The following build commands failed:
+	SwiftCompile normal arm64 Compiling\ ExerciseSeeds.swift,\ ExerciseSetView.swift,\ Food.swift,\ FoodAPIModels.swift,\ FoodEntry.swift,\ FoodEntryModel.swift,\ FoodLoggingView.swift,\ FoodLoggingViewModel.swift,\ FoodModel.swift,\ FoodResultRowView.swift,\ FoodSearchView.swift,\ FoodSearchViewModel.swift,\ GetExercisesUseCase.swift,\ HealthDashboardView.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Data/Seeds/ExerciseSeeds.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Workout/WorkoutLogging/ExerciseSetView.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/Entities/Nutrition/Food.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Infrastructure/Networking/FoodAPIModels.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/Entities/Nutrition/FoodEntry.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Data/Models/Nutrition/FoodEntryModel.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Nutrition/FoodLogging/FoodLoggingView.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Nutrition/FoodLogging/FoodLoggingViewModel.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Data/Models/Nutrition/FoodModel.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Nutrition/FoodSearch/FoodResultRowView.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Nutrition/FoodSearch/FoodSearchView.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Nutrition/FoodSearch/FoodSearchViewModel.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Domain/UseCases/Workout/GetExercisesUseCase.swift /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Health/HealthDashboardView.swift (in target 'VitalArc' from project 'VitalArc')
+	SwiftCompile normal arm64 /Users/tanujsutaria/Development/VitalArc/VitalArc/Presentation/Tabs/Nutrition/FoodSearch/FoodSearchViewModel.swift (in target 'VitalArc' from project 'VitalArc')
+	Building project VitalArc with scheme VitalArc
+(3 failures)

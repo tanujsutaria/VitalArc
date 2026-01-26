@@ -11,59 +11,57 @@ struct NutritionSummaryView: View {
     let dailyNutrition: DailyNutrition?
 
     var body: some View {
-        VStack(spacing: 24) {
-            if let nutrition = dailyNutrition {
-                // Macro rings
-                HStack(spacing: 16) {
-                    MacroRingView(
-                        name: "Calories",
-                        consumed: nutrition.caloriesConsumed,
-                        goal: nutrition.calorieGoal,
-                        color: .orange,
-                        unit: "kcal"
-                    )
+        VitalCard {
+            VStack(spacing: Spacing.lg) {
+                if let nutrition = dailyNutrition {
+                    // Macro rings
+                    HStack(spacing: Spacing.md) {
+                        MacroRingView(
+                            name: "Calories",
+                            consumed: nutrition.caloriesConsumed,
+                            goal: nutrition.calorieGoal,
+                            color: .vitalWarning,
+                            unit: "kcal"
+                        )
 
-                    MacroRingView(
-                        name: "Protein",
-                        consumed: nutrition.proteinConsumed,
-                        goal: nutrition.proteinGoal,
-                        color: .blue,
-                        unit: "g"
-                    )
+                        MacroRingView(
+                            name: "Protein",
+                            consumed: nutrition.proteinConsumed,
+                            goal: nutrition.proteinGoal,
+                            color: .vitalDanger,
+                            unit: "g"
+                        )
 
-                    MacroRingView(
-                        name: "Carbs",
-                        consumed: nutrition.carbsConsumed,
-                        goal: nutrition.carbsGoal,
-                        color: .green,
-                        unit: "g"
-                    )
+                        MacroRingView(
+                            name: "Carbs",
+                            consumed: nutrition.carbsConsumed,
+                            goal: nutrition.carbsGoal,
+                            color: .vitalInfo,
+                            unit: "g"
+                        )
 
-                    MacroRingView(
-                        name: "Fat",
-                        consumed: nutrition.fatConsumed,
-                        goal: nutrition.fatGoal,
-                        color: .red,
-                        unit: "g"
-                    )
+                        MacroRingView(
+                            name: "Fat",
+                            consumed: nutrition.fatConsumed,
+                            goal: nutrition.fatGoal,
+                            color: .vitalWarning,
+                            unit: "g"
+                        )
+                    }
+
+                    // Calorie progress bar
+                    if let calorieGoal = nutrition.calorieGoal {
+                        CalorieProgressView(
+                            consumed: nutrition.caloriesConsumed,
+                            goal: calorieGoal,
+                            remaining: nutrition.caloriesRemaining ?? 0
+                        )
+                    }
+                } else {
+                    EmptyNutritionView()
                 }
-
-                // Calorie progress bar
-                if let calorieGoal = nutrition.calorieGoal {
-                    CalorieProgressView(
-                        consumed: nutrition.caloriesConsumed,
-                        goal: calorieGoal,
-                        remaining: nutrition.caloriesRemaining ?? 0
-                    )
-                }
-            } else {
-                EmptyNutritionView()
             }
         }
-        .padding()
-        .background(Color(.systemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 12))
-        .shadow(color: .black.opacity(0.05), radius: 5, x: 0, y: 2)
     }
 }
 
@@ -79,22 +77,22 @@ private struct CalorieProgressView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: Spacing.sm) {
             HStack {
                 Text("Daily Goal")
-                    .font(.subheadline)
-                    .fontWeight(.semibold)
+                    .font(.vitalLabel)
+                    .foregroundStyle(Color.vitalAdaptiveTextPrimary)
 
                 Spacer()
 
                 if remaining > 0 {
                     Text("\(Int(remaining)) left")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .font(.vitalBodySmall)
+                        .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                 } else {
                     Text("\(Int(abs(remaining))) over")
-                        .font(.caption)
-                        .foregroundStyle(.orange)
+                        .font(.vitalBodySmall)
+                        .foregroundStyle(Color.vitalWarning)
                 }
             }
 
@@ -102,43 +100,61 @@ private struct CalorieProgressView: View {
             GeometryReader { geometry in
                 ZStack(alignment: .leading) {
                     // Background
-                    RoundedRectangle(cornerRadius: 4)
-                        .fill(Color.orange.opacity(0.2))
-                        .frame(height: 8)
+                    RoundedRectangle(cornerRadius: Spacing.radiusSmall)
+                        .fill(Color.vitalWarning.opacity(0.2))
+                        .frame(height: 10)
 
                     // Progress
-                    RoundedRectangle(cornerRadius: 4)
-                        .fill(remaining > 0 ? Color.orange : Color.orange.opacity(0.7))
-                        .frame(width: geometry.size.width * progress, height: 8)
+                    RoundedRectangle(cornerRadius: Spacing.radiusSmall)
+                        .fill(
+                            LinearGradient(
+                                colors: remaining > 0
+                                    ? [Color.vitalWarning, Color.vitalWarning.opacity(0.8)]
+                                    : [Color.vitalDanger, Color.vitalDanger.opacity(0.8)],
+                                startPoint: .leading,
+                                endPoint: .trailing
+                            )
+                        )
+                        .frame(width: geometry.size.width * progress, height: 10)
+                        .animation(.vitalSpring, value: progress)
                 }
             }
-            .frame(height: 8)
+            .frame(height: 10)
 
             // Percentage
             Text("\(Int(progress * 100))% of goal")
-                .font(.caption)
-                .foregroundStyle(.secondary)
+                .font(.vitalBodySmall)
+                .foregroundStyle(Color.vitalAdaptiveTextSecondary)
         }
-        .padding(.top, 8)
+        .padding(.top, Spacing.sm)
     }
 }
 
 private struct EmptyNutritionView: View {
     var body: some View {
-        VStack(spacing: 12) {
-            Image(systemName: "chart.pie")
-                .font(.system(size: 48))
-                .foregroundStyle(.secondary)
+        VStack(spacing: Spacing.md) {
+            ZStack {
+                Circle()
+                    .fill(Color.vitalWarning.opacity(0.15))
+                    .frame(width: 80, height: 80)
 
-            Text("No nutrition data")
-                .font(.headline)
+                Image(systemName: "chart.pie")
+                    .font(.system(size: 40))
+                    .foregroundStyle(Color.vitalWarning)
+            }
 
-            Text("Start logging foods to see your nutrition summary")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-                .multilineTextAlignment(.center)
+            VStack(spacing: Spacing.xs) {
+                Text("No nutrition data")
+                    .font(.vitalH3)
+                    .foregroundStyle(Color.vitalAdaptiveTextPrimary)
+
+                Text("Start logging foods to see your nutrition summary")
+                    .font(.vitalBody)
+                    .foregroundStyle(Color.vitalAdaptiveTextSecondary)
+                    .multilineTextAlignment(.center)
+            }
         }
-        .padding(.vertical, 32)
+        .padding(.vertical, Spacing.xl)
     }
 }
 

@@ -28,11 +28,11 @@ struct MacroRingView: View {
     }
 
     var body: some View {
-        VStack(spacing: 8) {
+        VStack(spacing: Spacing.sm) {
             ZStack {
                 // Background circle
                 Circle()
-                    .stroke(color.opacity(0.2), lineWidth: 8)
+                    .stroke(color.opacity(0.2), lineWidth: 10)
                     .frame(width: 100, height: 100)
 
                 // Progress circle
@@ -40,35 +40,34 @@ struct MacroRingView: View {
                     .trim(from: 0, to: progress)
                     .stroke(
                         color,
-                        style: StrokeStyle(lineWidth: 8, lineCap: .round)
+                        style: StrokeStyle(lineWidth: 10, lineCap: .round)
                     )
                     .frame(width: 100, height: 100)
                     .rotationEffect(.degrees(-90))
-                    .animation(.easeInOut, value: progress)
+                    .animation(.vitalSpring, value: progress)
 
                 // Center text
                 VStack(spacing: 2) {
                     Text("\(Int(consumed))")
-                        .font(.title3)
-                        .fontWeight(.bold)
+                        .font(.vitalNumberSmall)
                         .foregroundStyle(color)
 
                     if let goal = goal {
                         Text("/ \(Int(goal))")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .font(.vitalCaptionSmall)
+                            .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                     }
                 }
             }
 
             // Label
             Text(name)
-                .font(.subheadline)
-                .fontWeight(.medium)
+                .font(.vitalLabel)
+                .foregroundStyle(Color.vitalAdaptiveTextPrimary)
 
             Text(unit)
-                .font(.caption)
-                .foregroundStyle(.secondary)
+                .font(.vitalCaptionSmall)
+                .foregroundStyle(Color.vitalAdaptiveTextSecondary)
         }
     }
 }
@@ -79,7 +78,7 @@ struct MacroRingView: View {
             name: "Calories",
             consumed: 1500,
             goal: 2000,
-            color: .orange,
+            color: .vitalWarning,
             unit: "kcal"
         )
 
@@ -87,7 +86,7 @@ struct MacroRingView: View {
             name: "Protein",
             consumed: 120,
             goal: 150,
-            color: .blue,
+            color: .vitalDanger,
             unit: "g"
         )
 
@@ -95,7 +94,7 @@ struct MacroRingView: View {
             name: "Carbs",
             consumed: 180,
             goal: 200,
-            color: .green,
+            color: .vitalInfo,
             unit: "g"
         )
 
@@ -103,7 +102,7 @@ struct MacroRingView: View {
             name: "Fat",
             consumed: 50,
             goal: 60,
-            color: .red,
+            color: .vitalWarning,
             unit: "g"
         )
     }
