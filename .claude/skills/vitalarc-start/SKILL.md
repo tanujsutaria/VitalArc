@@ -17,17 +17,34 @@ You are starting a new development session for the VitalArc iOS fitness app.
 - **Uncommitted Changes**:
 !`cd /Users/tanujsutaria/Development/VitalArc && git status --short`
 
-## Phase 1: Sync with Remote
+## Phase 1: Sync with Remote and Create Feature Branch
 
-Pull the latest changes:
+Pull the latest changes from main:
 
 ```bash
 cd /Users/tanujsutaria/Development/VitalArc
 git fetch origin
+git checkout main
 git pull origin main --ff-only || echo "Pull failed - check for conflicts"
 ```
 
 Report any merge conflicts or diverged branches.
+
+Then create a feature branch for this session's work:
+
+```bash
+# Create branch name based on date and optional focus area
+# Format: dev/session-YYYY-MM-DD or dev/[focus-area]-YYYY-MM-DD
+git checkout -b dev/session-$(date +%Y-%m-%d) || git checkout dev/session-$(date +%Y-%m-%d)
+```
+
+If $ARGUMENTS was provided, use it for a more descriptive branch name:
+```bash
+# Example: dev/nutrition-2026-01-26
+git checkout -b dev/$ARGUMENTS-$(date +%Y-%m-%d) 2>/dev/null || git checkout dev/$ARGUMENTS-$(date +%Y-%m-%d)
+```
+
+**Note**: All development work should happen on feature branches, not main. The branch will be merged to main via PR when work is complete.
 
 ## Phase 2: Explore Codebase State
 
@@ -69,8 +86,8 @@ Add a new session entry to SESSION_LOG.md with this format:
 ### Session Start
 - **Time**: [Current time]
 - **Focus**: [From $ARGUMENTS if provided, otherwise "General development"]
-- **Branch**: [Current git branch]
-- **Last Commit**: [Most recent commit hash and message]
+- **Branch**: [Feature branch created for this session]
+- **Base**: main @ [Most recent commit hash and message]
 
 ### Pre-Session Status
 - **Build**: [Run quick build check]
@@ -107,8 +124,8 @@ Output a structured summary for the coding session:
 ===========================================================
 
 PROJECT STATE
-  Branch: [branch]
-  Last Commit: [hash] [message]
+  Feature Branch: [branch created for this session]
+  Base (main): [hash] [message]
   Uncommitted: [count] files
 
 CODEBASE METRICS
@@ -135,9 +152,10 @@ WARNINGS
 ## Final Output
 
 After completing all phases, confirm:
-1. Codebase is synced and builds
-2. Session log entry created
-3. Context summary displayed
-4. Ready for coding work
+1. Codebase is synced with main and builds
+2. Feature branch created for this session
+3. Session log entry created
+4. Context summary displayed
+5. Ready for coding work on feature branch
 
 If $ARGUMENTS was provided (e.g., "Nutrition" or "Design System"), focus the context summary on that area.
