@@ -18,40 +18,61 @@ struct VitalArcApp: App {
 
     init() {
         // Initialize SwiftData model container with all models
+        let schema = Schema([
+            // Workout Domain Models
+            WorkoutModel.self,
+            ExerciseModel.self,
+            WorkoutSetModel.self,
+
+            // Training Domain Models
+            MesocycleModel.self,
+
+            // Nutrition Domain Models
+            FoodModel.self,
+            FoodEntryModel.self,
+            DailyNutritionModel.self,
+
+            // Health Domain Models
+            HealthMetricsModel.self,
+
+            // User Domain Models
+            UserProfileModel.self
+        ])
+
+        let modelConfiguration = ModelConfiguration(
+            schema: schema,
+            isStoredInMemoryOnly: false,
+            cloudKitDatabase: .none // Disable CloudKit during development to avoid migration issues
+        )
+
         do {
-            let schema = Schema([
-                // Workout Domain Models
-                WorkoutModel.self,
-                ExerciseModel.self,
-                WorkoutSetModel.self,
-
-                // Training Domain Models
-                MesocycleModel.self,
-
-                // Nutrition Domain Models
-                FoodModel.self,
-                FoodEntryModel.self,
-                DailyNutritionModel.self,
-
-                // Health Domain Models
-                HealthMetricsModel.self,
-
-                // User Domain Models
-                UserProfileModel.self
-            ])
-
-            let modelConfiguration = ModelConfiguration(
-                schema: schema,
-                isStoredInMemoryOnly: false,
-                cloudKitDatabase: .automatic // Enable iCloud sync
-            )
-
             modelContainer = try ModelContainer(
                 for: schema,
                 configurations: [modelConfiguration]
             )
         } catch {
-            fatalError("Could not initialize ModelContainer: \(error)")
+            // During development, if migration fails, try deleting the store and recreating
+            print("SwiftData migration failed: \(error). Attempting to recreate database...")
+
+            // Delete existing store
+            let storeURL = URL.applicationSupportDirectory.appending(path: "default.store")
+            try? FileManager.default.removeItem(at: storeURL)
+
+            // Also try removing with different extensions SwiftData might use
+            let walURL = storeURL.deletingPathExtension().appendingPathExtension("store-wal")
+            let shmURL = storeURL.deletingPathExtension().appendingPathExtension("store-shm")
+            try? FileManager.default.removeItem(at: walURL)
+            try? FileManager.default.removeItem(at: shmURL)
+
+            do {
+                modelContainer = try ModelContainer(
+                    for: schema,
+                    configurations: [modelConfiguration]
+                )
+                print("Database recreated successfully")
+            } catch {
+                fatalError("Could not initialize ModelContainer even after reset: \(error)")
+            }
         }
 
         // Initialize dependency injection container

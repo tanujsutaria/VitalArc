@@ -29,32 +29,19 @@ struct MainTabView: View {
                 }
                 .tag(1)
 
-            // Training Tab
-            if let mesocycleRepository = container?.mesocycleRepository,
-               let workoutRepository = container?.workoutRepository {
-                MesocycleListView(
-                    mesocycleRepository: mesocycleRepository,
-                    workoutRepository: workoutRepository
-                )
-                .tabItem {
-                    Label("Training", systemImage: "calendar")
-                }
-                .tag(2)
-            }
-
             // Nutrition Tab
             NutritionTabView()
                 .tabItem {
                     Label("Nutrition", systemImage: "fork.knife")
                 }
-                .tag(3)
+                .tag(2)
 
             // Profile Tab
             ProfileView()
                 .tabItem {
                     Label("Profile", systemImage: "person.fill")
                 }
-                .tag(4)
+                .tag(3)
         }
         .tint(.accentColor)
     }
@@ -65,9 +52,11 @@ struct WorkoutTabView: View {
     @State private var showingWorkoutLogger = false
     @State private var selectedView: WorkoutView = .history
 
-    enum WorkoutView {
-        case history
-        case exercises
+    enum WorkoutView: String, CaseIterable {
+        case history = "History"
+        case exercises = "Exercises"
+        case templates = "Templates"
+        case programs = "Programs"
     }
 
     var body: some View {
@@ -76,16 +65,18 @@ struct WorkoutTabView: View {
                 VStack(spacing: 0) {
                     // View Selector
                     Picker("View", selection: $selectedView) {
-                        Text("History").tag(WorkoutView.history)
-                        Text("Exercises").tag(WorkoutView.exercises)
+                        ForEach(WorkoutView.allCases, id: \.self) { view in
+                            Text(view.rawValue).tag(view)
+                        }
                     }
                     .pickerStyle(.segmented)
                     .padding()
 
                     // Content
-                    if selectedView == .history {
+                    switch selectedView {
+                    case .history:
                         WorkoutHistoryView(repository: container.workoutRepository)
-                    } else {
+                    case .exercises:
                         ExerciseLibraryView(
                             getExercisesUseCase: GetExercisesUseCase(
                                 repository: container.workoutRepository
@@ -93,6 +84,10 @@ struct WorkoutTabView: View {
                         ) { exercise in
                             // Exercise selected from library
                         }
+                    case .templates:
+                        WorkoutTemplatesContentView(container: container)
+                    case .programs:
+                        MesocycleContentView(container: container)
                     }
                 }
                 .navigationTitle("Workout")
@@ -126,6 +121,240 @@ struct WorkoutTabView: View {
             }
         } else {
             ProgressView()
+        }
+    }
+}
+
+// MARK: - Templates Content View (embedded without NavigationStack)
+
+struct WorkoutTemplatesContentView: View {
+    let container: DependencyContainer
+    @State private var viewModel: WorkoutTemplatesViewModel?
+    @State private var showingCreateTemplate = false
+    @State private var selectedTemplate: WorkoutTemplate?
+    @State private var searchText = ""
+
+    var filteredTemplates: [WorkoutTemplate] {
+        guard let viewModel = viewModel else { return [] }
+        if searchText.isEmpty {
+            return viewModel.templates
+        } else {
+            return viewModel.templates.filter {
+                $0.name.localizedCaseInsensitiveContains(searchText) ||
+                ($0.description?.localizedCaseInsensitiveContains(searchText) ?? false)
+            }
+        }
+    }
+
+    var templatesByCategory: [TemplateCategory: [WorkoutTemplate]] {
+        Dictionary(grouping: filteredTemplates) { $0.category }
+    }
+
+    var body: some View {
+        Group {
+            if let viewModel = viewModel {
+                if viewModel.templates.isEmpty {
+                    ContentUnavailableView(
+                        "No Templates",
+                        systemImage: "list.clipboard",
+                        description: Text("Create your first workout template")
+                    )
+                } else {
+                    List {
+                        // Recently Used
+                        if !viewModel.recentTemplates.isEmpty {
+                            Section("Recently Used") {
+                                ForEach(viewModel.recentTemplates) { template in
+                                    NavigationLink {
+                                        TemplateDetailView(
+                                            template: template,
+                                            onUseTemplate: { selectedTemplate = $0 },
+                                            onDeleteTemplate: { templateToDelete in
+                                                Task {
+                                                    await viewModel.deleteTemplate(templateToDelete)
+                                                }
+                                            }
+                                        )
+                                    } label: {
+                                        TemplateRow(template: template) {
+                                            selectedTemplate = template
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        // All by category
+                        ForEach(TemplateCategory.allCases, id: \.self) { category in
+                            if let templates = templatesByCategory[category], !templates.isEmpty {
+                                Section(category.displayName) {
+                                    ForEach(templates) { template in
+                                        NavigationLink {
+                                            TemplateDetailView(
+                                                template: template,
+                                                onUseTemplate: { selectedTemplate = $0 },
+                                                onDeleteTemplate: { templateToDelete in
+                                                    Task {
+                                                        await viewModel.deleteTemplate(templateToDelete)
+                                                    }
+                                                }
+                                            )
+                                        } label: {
+                                            TemplateRow(template: template) {
+                                                selectedTemplate = template
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    .searchable(text: $searchText, prompt: "Search templates")
+                }
+            } else {
+                ProgressView()
+            }
+        }
+        .task {
+            let loadUseCase = LoadWorkoutTemplateUseCase(
+                templateRepository: container.templateRepository,
+                workoutRepository: container.workoutRepository
+            )
+            let saveUseCase = SaveWorkoutTemplateUseCase(templateRepository: container.templateRepository)
+            viewModel = WorkoutTemplatesViewModel(
+                loadTemplateUseCase: loadUseCase,
+                saveTemplateUseCase: saveUseCase,
+                templateRepository: container.templateRepository
+            )
+            await viewModel?.loadTemplates()
+        }
+        .sheet(isPresented: $showingCreateTemplate) {
+            if let viewModel = viewModel {
+                CreateTemplateView(viewModel: viewModel)
+            }
+        }
+        .sheet(item: $selectedTemplate) { template in
+            StartWorkoutFromTemplateSheet(
+                template: template,
+                onStart: { _ in
+                    Task {
+                        await viewModel?.startWorkout(from: template)
+                    }
+                }
+            )
+        }
+        .toolbar {
+            ToolbarItem(placement: .primaryAction) {
+                Button {
+                    showingCreateTemplate = true
+                } label: {
+                    Image(systemName: "plus")
+                }
+            }
+        }
+    }
+}
+
+// MARK: - Mesocycle/Programs Content View (embedded without NavigationStack)
+
+struct MesocycleContentView: View {
+    let container: DependencyContainer
+    @State private var viewModel: MesocycleViewModel?
+    @State private var showingCreateSheet = false
+    @State private var selectedStatus: MesocycleStatus = .active
+
+    var body: some View {
+        Group {
+            if let viewModel = viewModel {
+                VStack(spacing: 0) {
+                    // Status Filter
+                    Picker("Status", selection: $selectedStatus) {
+                        ForEach(MesocycleStatus.allCases, id: \.self) { status in
+                            Text(status.rawValue).tag(status)
+                        }
+                    }
+                    .pickerStyle(.segmented)
+                    .padding(.horizontal, Spacing.md)
+                    .padding(.bottom, Spacing.sm)
+
+                    // Mesocycle List
+                    if viewModel.isLoading {
+                        VitalLoadingState(message: "Loading programs...")
+                            .frame(maxHeight: .infinity)
+                    } else {
+                        ScrollView {
+                            LazyVStack(spacing: Spacing.itemSpacing) {
+                                let filteredMesocycles = viewModel.getMesocyclesByStatus(selectedStatus)
+
+                                if filteredMesocycles.isEmpty {
+                                    emptyStateView(viewModel: viewModel)
+                                } else {
+                                    ForEach(filteredMesocycles) { mesocycle in
+                                        NavigationLink(destination: MesocycleDetailView(
+                                            mesocycle: mesocycle,
+                                            viewModel: viewModel
+                                        )) {
+                                            MesocycleCardView(mesocycle: mesocycle, viewModel: viewModel)
+                                        }
+                                        .buttonStyle(.plain)
+                                    }
+                                }
+                            }
+                            .padding(Spacing.md)
+                        }
+                        .background(Color.vitalAdaptiveBackground)
+                    }
+                }
+            } else {
+                ProgressView()
+            }
+        }
+        .task {
+            viewModel = MesocycleViewModel(
+                mesocycleRepository: container.mesocycleRepository,
+                workoutRepository: container.workoutRepository
+            )
+            await viewModel?.loadMesocycles()
+        }
+        .sheet(isPresented: $showingCreateSheet) {
+            if let viewModel = viewModel {
+                CreateMesocycleView(viewModel: viewModel)
+            }
+        }
+        .toolbar {
+            ToolbarItem(placement: .primaryAction) {
+                Button {
+                    showingCreateSheet = true
+                } label: {
+                    Image(systemName: "plus.circle.fill")
+                        .font(.vitalH2)
+                        .foregroundStyle(Color.vitalPrimary)
+                }
+            }
+        }
+    }
+
+    private func emptyStateView(viewModel: MesocycleViewModel) -> some View {
+        VitalEmptyState(
+            icon: selectedStatus == .active ? "calendar.badge.exclamationmark" : "calendar",
+            title: "No \(selectedStatus.rawValue) Programs",
+            message: emptyStateMessage,
+            actionTitle: (selectedStatus == .planned || selectedStatus == .active) ? "Create Program" : nil,
+            action: (selectedStatus == .planned || selectedStatus == .active) ? {
+                showingCreateSheet = true
+            } : nil
+        )
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+
+    private var emptyStateMessage: String {
+        switch selectedStatus {
+        case .planned:
+            return "Create a new training program to get started"
+        case .active:
+            return "No active training program. Activate a planned program or create a new one."
+        case .completed:
+            return "No completed programs yet. Complete your first mesocycle to see it here."
         }
     }
 }

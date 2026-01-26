@@ -154,6 +154,14 @@
 		FC68713CB1A8EE76A45DC165 /* VolumeMetrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85AD2A1D24A042F236CB606D /* VolumeMetrics.swift */; };
 		FD4AE6FC632257910F12BB15 /* TrainingBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3FBA5288426C1146D80EADB /* TrainingBlock.swift */; };
 		FE5B77F8F3D6A0EE668CD919 /* Food.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2D37B25EDB480008B06EB2E /* Food.swift */; };
+		HEALTHTRDBLD01B2C3D4E5678 /* HealthTrendsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = HEALTHTRD01B2C3D4E5F6789 /* HealthTrendsView.swift */; };
+		HEATMAPBLD01B2C3D4E5F6789 /* TrainingHeatmapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = HEATMAP01B2C3D4E5F6789A0 /* TrainingHeatmapView.swift */; };
+		MVCHARTBLD01B2C3D4E5F6789 /* MuscleVolumeChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = MVCHART01B2C3D4E5F6789A0 /* MuscleVolumeChartView.swift */; };
+		NUTRANLYTCBLD01B2C3D4E567 /* NutritionAnalyticsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = NUTRANLYTC01B2C3D4E5F678 /* NutritionAnalyticsView.swift */; };
+		SCRRINGBLD01B2C3D4E5F6789 /* ScoreRingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = SCRRING01B2C3D4E5F6789A0 /* ScoreRingView.swift */; };
+		STRPROGBLD01B2C3D4E5F6789 /* StrengthProgressionChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = STRPROG01B2C3D4E5F6789A0 /* StrengthProgressionChartView.swift */; };
+		TEDIT01A1B2C3D4E5F6789A0 /* TemplateEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = TEDIT02A1B2C3D4E5F6789A0 /* TemplateEditorView.swift */; };
+		TEPICK01A1B2C3D4E5F6789A0 /* TemplateExercisePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = TEPICK02A1B2C3D4E5F6789A0 /* TemplateExercisePickerView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -182,7 +190,6 @@
 		168B4FFDBAB0E898338155BC /* ExerciseRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseRowView.swift; sourceTree = "<group>"; };
 		18547D5100E844205BA8F7DB /* HealthKitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitTests.swift; sourceTree = "<group>"; };
 		18A7B9DD6D81924C0258E6FA /* FoodLoggingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodLoggingView.swift; sourceTree = "<group>"; };
-		1A4F639C18A6123B9837A7E8 /* VitalEmptyState.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VitalEmptyState.swift; sourceTree = "<group>"; };
 		1ACCC0BC5A5FAE8B2A5E0DA0 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		1E12D60638913047C403CE2C /* PersonalRecord.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PersonalRecord.swift; path = Analytics/PersonalRecord.swift; sourceTree = "<group>"; };
 		203F9EDE04464F79AD921B44 /* OpenFoodFactsModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenFoodFactsModels.swift; sourceTree = "<group>"; };
@@ -216,17 +223,14 @@
 		5217F881706817D6B9FBE5F1 /* ProgressChartView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ProgressChartView.swift; path = Analytics/ProgressChartView.swift; sourceTree = "<group>"; };
 		54AE04B0B914B459BB6B3E97 /* WorkoutRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutRepository.swift; sourceTree = "<group>"; };
 		54BE18D10F70E33E0E20F52A /* UserRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserRepository.swift; sourceTree = "<group>"; };
-		54F617C0570F6BA570012596 /* VitalCard.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VitalCard.swift; sourceTree = "<group>"; };
 		5543E95CF2D3EA974E01F66F /* FoodModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodModel.swift; sourceTree = "<group>"; };
 		56955E4B4B5ADF5E3D9D6256 /* UpdateUserPreferencesUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateUserPreferencesUseCase.swift; sourceTree = "<group>"; };
 		56FC3AD68B901BFDB65525CE /* CalculateNutritionUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalculateNutritionUseCase.swift; sourceTree = "<group>"; };
 		5816AB8CBF8807131050581A /* WelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeView.swift; sourceTree = "<group>"; };
 		589C88CDD033579B54A2720E /* AnalyticsDashboardView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AnalyticsDashboardView.swift; path = Analytics/AnalyticsDashboardView.swift; sourceTree = "<group>"; };
-		59A1AF2709FD16F01B2C478A /* Colors.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		5AD4BCF0C96BF32093E72400 /* MesocycleDetailView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = MesocycleDetailView.swift; path = Training/MesocycleDetailView.swift; sourceTree = "<group>"; };
 		5AFD41E5C7372D8AED2D6F0C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		5D76C6EC00B4D36961E3E2AC /* ViewExtensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ViewExtensions.swift; sourceTree = "<group>"; };
-		5E1969C9CFF5C926B8174320 /* MetricCard.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MetricCard.swift; sourceTree = "<group>"; };
 		5EB0DE2A5AC60E63405C877D /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
 		5EF3FB3E969CF72E22FF105C /* WorkoutTemplate.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = WorkoutTemplate.swift; path = Templates/WorkoutTemplate.swift; sourceTree = "<group>"; };
 		5FB37AC62B482387392CA9DA /* HealthMetrics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthMetrics.swift; sourceTree = "<group>"; };
@@ -241,25 +245,21 @@
 		66B1095291E179B95FEBA497 /* FoodEntryModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodEntryModel.swift; sourceTree = "<group>"; };
 		68AA6D4F4B17FAED37A5FC9F /* VitalButton.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VitalButton.swift; sourceTree = "<group>"; };
 		69BDF4D1E5D56DA3098829C2 /* ChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartView.swift; sourceTree = "<group>"; };
-		6CC0CBC09E4303C1E0ADBFD7 /* ProgressChart.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ProgressChart.swift; sourceTree = "<group>"; };
 		6E27EDBF36C46FD360854511 /* VitalArc.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = VitalArc.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7013BA727EFF9E04A3D7A868 /* MesocyclePhase.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = MesocyclePhase.swift; path = Training/MesocyclePhase.swift; sourceTree = "<group>"; };
 		74CF46FFF446705E693CAC8E /* ExerciseSeedsBands.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ExerciseSeedsBands.swift; sourceTree = "<group>"; };
 		779AB66F6052CCF215E26E08 /* UpdateMesocycleProgressUseCase.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = UpdateMesocycleProgressUseCase.swift; path = Training/UpdateMesocycleProgressUseCase.swift; sourceTree = "<group>"; };
 		7EE36731A3C960140961D657 /* MesocycleViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = MesocycleViewModel.swift; path = Training/MesocycleViewModel.swift; sourceTree = "<group>"; };
 		7F30B681F02425D980529D7D /* ExerciseCard.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ExerciseCard.swift; sourceTree = "<group>"; };
-		7FDB846A3279178EC267C2D1 /* FoodCard.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FoodCard.swift; sourceTree = "<group>"; };
 		805933D33C3CA750DC627F25 /* CreateTemplateView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CreateTemplateView.swift; path = Templates/CreateTemplateView.swift; sourceTree = "<group>"; };
 		808BB13BFA51A9109B2AD859 /* LogFoodUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogFoodUseCase.swift; sourceTree = "<group>"; };
 		82D194CE7511A7EE9FF34A4A /* VitalEmptyState.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VitalEmptyState.swift; sourceTree = "<group>"; };
 		8434AB0E1D16EF78D00CD674 /* VitalCard.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VitalCard.swift; sourceTree = "<group>"; };
 		85AD2A1D24A042F236CB606D /* VolumeMetrics.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = VolumeMetrics.swift; path = Analytics/VolumeMetrics.swift; sourceTree = "<group>"; };
 		863F76B52D3BE699B0B40B86 /* MetricCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetricCardView.swift; sourceTree = "<group>"; };
-		86C52B6C5933FBD28C51A249 /* Typography.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Typography.swift; sourceTree = "<group>"; };
 		897F44E2DC3F04BBC9C04DF3 /* CreateUserProfileUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateUserProfileUseCase.swift; sourceTree = "<group>"; };
 		89C723EA0EDED212671A36F0 /* VolumeMetricsModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = VolumeMetricsModel.swift; path = Analytics/VolumeMetricsModel.swift; sourceTree = "<group>"; };
 		89EA5695ED0ADF6694C8D017 /* WorkoutLoggingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutLoggingViewModel.swift; sourceTree = "<group>"; };
-		8B0C2E5884826E8F662ABE82 /* VitalButton.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VitalButton.swift; sourceTree = "<group>"; };
 		8EF8D49D1A2E5FF345303A06 /* VitalArcTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = VitalArcTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		903AA0577C0C15548AA5162C /* WorkoutTemplateModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = WorkoutTemplateModel.swift; path = Templates/WorkoutTemplateModel.swift; sourceTree = "<group>"; };
 		9418FA491393FE34AAE7BE80 /* ProgressChart.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ProgressChart.swift; sourceTree = "<group>"; };
@@ -270,7 +270,6 @@
 		97BD595949D414A431738A6F /* WorkoutHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutHistoryView.swift; sourceTree = "<group>"; };
 		98842FA0E85990F1DB0BC461 /* Spacing.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Spacing.swift; sourceTree = "<group>"; };
 		9BC1E6E21D322A72D4ACED10 /* CalculateProgressionUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalculateProgressionUseCase.swift; sourceTree = "<group>"; };
-		9D6C0DF01591F4ABDD898077 /* Spacing.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Spacing.swift; sourceTree = "<group>"; };
 		9E8229ED597D3F00DBBF9B10 /* HealthKitQuery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitQuery.swift; sourceTree = "<group>"; };
 		A0928AA5F5FB4DCE6E9AC7EF /* TemplateDetailView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TemplateDetailView.swift; path = Templates/TemplateDetailView.swift; sourceTree = "<group>"; };
 		A1AEF211C26EA8B094E605BF /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -281,7 +280,6 @@
 		B00DD0C786E8C63620DDD02F /* Workout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Workout.swift; sourceTree = "<group>"; };
 		B3A52E85B046CA26C9EC49EE /* DependencyContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DependencyContainer.swift; sourceTree = "<group>"; };
 		B40FA67720B77DD07745901F /* DailyNutritionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyNutritionModel.swift; sourceTree = "<group>"; };
-		B41D8A1F01802BB481114561 /* ViewExtensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ViewExtensions.swift; sourceTree = "<group>"; };
 		B70BE16D3E9B4636A25079DC /* NutritionixModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NutritionixModels.swift; sourceTree = "<group>"; };
 		BA23797AD567763B372F0FA5 /* CreateWorkoutUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateWorkoutUseCase.swift; sourceTree = "<group>"; };
 		BF5B60B82CDB8E20DAE41F38 /* MesocycleRepository.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MesocycleRepository.swift; sourceTree = "<group>"; };
@@ -307,7 +305,6 @@
 		E3810FED6DFE3EF425E9F061 /* AnalyticsRepository.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AnalyticsRepository.swift; sourceTree = "<group>"; };
 		E3901168591C01E8766018CD /* NutritionSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NutritionSummaryView.swift; sourceTree = "<group>"; };
 		E3FBA5288426C1146D80EADB /* TrainingBlock.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TrainingBlock.swift; path = Training/TrainingBlock.swift; sourceTree = "<group>"; };
-		E56CD52D9CF8EC1C07D35680 /* SpringAnimations.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SpringAnimations.swift; sourceTree = "<group>"; };
 		E611EC47B8BB460399381FE3 /* OpenFoodFactsAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenFoodFactsAPI.swift; sourceTree = "<group>"; };
 		E617B61A780E2D73CA38EA96 /* SwiftData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftData.framework; path = System/Library/Frameworks/SwiftData.framework; sourceTree = SDKROOT; };
 		E7136C312A60E7F45BD0F51B /* OnboardingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewModel.swift; sourceTree = "<group>"; };
@@ -316,15 +313,12 @@
 		ED62B6AB234CF0E23406C77D /* HealthDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthDashboardView.swift; sourceTree = "<group>"; };
 		ED85BA1AEF7BA60C2B9C2348 /* HealthMetricsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthMetricsModel.swift; sourceTree = "<group>"; };
 		EDA5701AE6A75EDA61A3B4DC /* VitalTextField.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VitalTextField.swift; sourceTree = "<group>"; };
-		F1B9CBD24A43B6BD3AEA5699 /* VitalBottomSheet.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VitalBottomSheet.swift; sourceTree = "<group>"; };
 		F2A506CD9C6617924B59CB86 /* HealthKitPermissionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitPermissionView.swift; sourceTree = "<group>"; };
 		F2D37B25EDB480008B06EB2E /* Food.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Food.swift; sourceTree = "<group>"; };
-		F49ADA7D26946E2CAAF367E6 /* ExerciseCard.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ExerciseCard.swift; sourceTree = "<group>"; };
 		F5893C45FF48CB00D6ECE009 /* ExerciseSeedsOlympic.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ExerciseSeedsOlympic.swift; sourceTree = "<group>"; };
 		F58BAF8AECC544DE9BEE3BFF /* SearchMultiSourceFoodUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchMultiSourceFoodUseCase.swift; sourceTree = "<group>"; };
 		F5B15CB72047BACC53338408 /* SearchFoodUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchFoodUseCase.swift; sourceTree = "<group>"; };
 		F647355BA6D6DB6ABA236775 /* ExerciseSetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseSetView.swift; sourceTree = "<group>"; };
-		F7660EB94867ED237954E4FF /* VitalTextField.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VitalTextField.swift; sourceTree = "<group>"; };
 		F85A5164A615419CBFFD1611 /* BarcodeScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeScannerView.swift; sourceTree = "<group>"; };
 		F8884D90D84861BB481EF0F3 /* FoodLoggingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodLoggingViewModel.swift; sourceTree = "<group>"; };
 		FAC49DABAB42DA0A749D56EA /* GenerateProgressReportUseCase.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = GenerateProgressReportUseCase.swift; path = Analytics/GenerateProgressReportUseCase.swift; sourceTree = "<group>"; };
@@ -332,6 +326,14 @@
 		FB8FFB0FF21D3BA2A78C7186 /* Mesocycle.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Mesocycle.swift; path = Training/Mesocycle.swift; sourceTree = "<group>"; };
 		FD147BDBA0726382A62490D0 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		FFBD82C68E9845BEF0BE4B8D /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		HEALTHTRD01B2C3D4E5F6789 /* HealthTrendsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = HealthTrendsView.swift; sourceTree = "<group>"; };
+		HEATMAP01B2C3D4E5F6789A0 /* TrainingHeatmapView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TrainingHeatmapView.swift; sourceTree = "<group>"; };
+		MVCHART01B2C3D4E5F6789A0 /* MuscleVolumeChartView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MuscleVolumeChartView.swift; sourceTree = "<group>"; };
+		NUTRANLYTC01B2C3D4E5F678 /* NutritionAnalyticsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NutritionAnalyticsView.swift; sourceTree = "<group>"; };
+		SCRRING01B2C3D4E5F6789A0 /* ScoreRingView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ScoreRingView.swift; sourceTree = "<group>"; };
+		STRPROG01B2C3D4E5F6789A0 /* StrengthProgressionChartView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = StrengthProgressionChartView.swift; sourceTree = "<group>"; };
+		TEDIT02A1B2C3D4E5F6789A0 /* TemplateEditorView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TemplateEditorView.swift; path = Templates/TemplateEditorView.swift; sourceTree = "<group>"; };
+		TEPICK02A1B2C3D4E5F6789A0 /* TemplateExercisePickerView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TemplateExercisePickerView.swift; path = Templates/TemplateExercisePickerView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -467,6 +469,7 @@
 				D0523F13714345129B78EEA2 /* PersonalRecordsView.swift */,
 				5217F881706817D6B9FBE5F1 /* ProgressChartView.swift */,
 				C197EDAAD2EFD86EAA403DFA /* VolumeChartView.swift */,
+				ANACMPSGRP01B2C3D4E5F6789 /* Components */,
 			);
 			name = Analytics;
 			sourceTree = "<group>";
@@ -550,23 +553,6 @@
 			name = Training;
 			sourceTree = "<group>";
 		};
-		59C62F87569C60C228A6C5C6 /* Components */ = {
-			isa = PBXGroup;
-			children = (
-				54F617C0570F6BA570012596 /* VitalCard.swift */,
-				8B0C2E5884826E8F662ABE82 /* VitalButton.swift */,
-				F7660EB94867ED237954E4FF /* VitalTextField.swift */,
-				5E1969C9CFF5C926B8174320 /* MetricCard.swift */,
-				6CC0CBC09E4303C1E0ADBFD7 /* ProgressChart.swift */,
-				F49ADA7D26946E2CAAF367E6 /* ExerciseCard.swift */,
-				7FDB846A3279178EC267C2D1 /* FoodCard.swift */,
-				1A4F639C18A6123B9837A7E8 /* VitalEmptyState.swift */,
-				F1B9CBD24A43B6BD3AEA5699 /* VitalBottomSheet.swift */,
-			);
-			name = Components;
-			path = Components;
-			sourceTree = "<group>";
-		};
 		61ABE8CC6BCB9DE75352924C /* Templates */ = {
 			isa = PBXGroup;
 			children = (
@@ -581,15 +567,6 @@
 				AD10C85A5C132BC6B41AE20C /* UserProfileModel.swift */,
 			);
 			path = User;
-			sourceTree = "<group>";
-		};
-		69A7BA65E3DC4035B8DFEA99 /* Animations */ = {
-			isa = PBXGroup;
-			children = (
-				E56CD52D9CF8EC1C07D35680 /* SpringAnimations.swift */,
-			);
-			name = Animations;
-			path = Animations;
 			sourceTree = "<group>";
 		};
 		6BFA6731104F70FA8CF02C00 /* Tabs */ = {
@@ -711,6 +688,8 @@
 			children = (
 				805933D33C3CA750DC627F25 /* CreateTemplateView.swift */,
 				A0928AA5F5FB4DCE6E9AC7EF /* TemplateDetailView.swift */,
+				TEDIT02A1B2C3D4E5F6789A0 /* TemplateEditorView.swift */,
+				TEPICK02A1B2C3D4E5F6789A0 /* TemplateExercisePickerView.swift */,
 				22F9886DBB110224A98EA528 /* WorkoutTemplatesView.swift */,
 			);
 			name = Templates;
@@ -816,6 +795,20 @@
 				9424058DB3BFA461A3ED1456 /* WorkoutTests.swift */,
 			);
 			path = VitalArcTests;
+			sourceTree = "<group>";
+		};
+		ANACMPSGRP01B2C3D4E5F6789 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				MVCHART01B2C3D4E5F6789A0 /* MuscleVolumeChartView.swift */,
+				SCRRING01B2C3D4E5F6789A0 /* ScoreRingView.swift */,
+				STRPROG01B2C3D4E5F6789A0 /* StrengthProgressionChartView.swift */,
+				HEATMAP01B2C3D4E5F6789A0 /* TrainingHeatmapView.swift */,
+				NUTRANLYTC01B2C3D4E5F678 /* NutritionAnalyticsView.swift */,
+				HEALTHTRD01B2C3D4E5F6789 /* HealthTrendsView.swift */,
+			);
+			name = Components;
+			path = Analytics/Components;
 			sourceTree = "<group>";
 		};
 		B240E7C048B57566CB46ED10 /* Nutrition */ = {
@@ -1179,11 +1172,19 @@
 				DB50D53B34609C18E6DB7287 /* MesocycleViewModel.swift in Sources */,
 				BF181B5E4CF5CB2DEB1D9546 /* AnalyticsDashboardView.swift in Sources */,
 				5FF3040BCF712CF2B77D4FF9 /* AnalyticsDashboardViewModel.swift in Sources */,
+				MVCHARTBLD01B2C3D4E5F6789 /* MuscleVolumeChartView.swift in Sources */,
+				SCRRINGBLD01B2C3D4E5F6789 /* ScoreRingView.swift in Sources */,
+				STRPROGBLD01B2C3D4E5F6789 /* StrengthProgressionChartView.swift in Sources */,
+				HEATMAPBLD01B2C3D4E5F6789 /* TrainingHeatmapView.swift in Sources */,
+				NUTRANLYTCBLD01B2C3D4E567 /* NutritionAnalyticsView.swift in Sources */,
+				HEALTHTRDBLD01B2C3D4E5678 /* HealthTrendsView.swift in Sources */,
 				B4082760DDD6EA51CDD1D1B9 /* PersonalRecordsView.swift in Sources */,
 				DE43162777BA4767C8901BB1 /* ProgressChartView.swift in Sources */,
 				D13B8EB57DEBFC6D70DC623C /* VolumeChartView.swift in Sources */,
 				66C3F3B851E63A810C72C076 /* CreateTemplateView.swift in Sources */,
 				6E9A8FC3C4BFC444D0AE0F7F /* TemplateDetailView.swift in Sources */,
+				TEDIT01A1B2C3D4E5F6789A0 /* TemplateEditorView.swift in Sources */,
+				TEPICK01A1B2C3D4E5F6789A0 /* TemplateExercisePickerView.swift in Sources */,
 				47388EFEF624C27C001F7F02 /* WorkoutTemplatesView.swift in Sources */,
 				CFCDFB9A371B668096931D38 /* ExerciseSeedsBands.swift in Sources */,
 				D2BD8D2D69D60D9185E3EE98 /* ExerciseSeedsBarbell.swift in Sources */,
