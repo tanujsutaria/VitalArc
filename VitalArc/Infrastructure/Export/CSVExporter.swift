@@ -13,8 +13,16 @@ final class CSVExporter {
     // MARK: - Workout Export
 
     /// Export workouts to CSV
-    func exportWorkouts(startDate: Date, endDate: Date, workouts: [Workout]) async throws -> URL {
-        var csv = "Date,Workout Name,Exercise,Set,Reps,Weight (kg),RIR,Rest (s),Notes\n"
+    /// - Parameters:
+    ///   - workouts: The workouts to export
+    ///   - exerciseNames: Dictionary mapping exercise IDs to names (optional)
+    func exportWorkouts(
+        startDate: Date,
+        endDate: Date,
+        workouts: [Workout],
+        exerciseNames: [UUID: String] = [:]
+    ) async throws -> URL {
+        var csv = "Date,Workout Name,Exercise ID,Exercise Name,Set,Reps,Weight (kg),RIR,RPE\n"
 
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
@@ -24,22 +32,20 @@ final class CSVExporter {
             let workoutName = workout.name ?? "Workout"
 
             for set in workout.sets {
-                let reps = set.actualReps ?? set.targetReps
-                let weight = set.weight
+                let exerciseName = exerciseNames[set.exerciseId] ?? "Unknown"
                 let rir = set.rir.map { String($0) } ?? ""
-                let rest = set.restSeconds.map { String($0) } ?? ""
-                let notes = set.notes?.replacingOccurrences(of: "\"", with: "\"\"") ?? ""
+                let rpe = set.rpe.map { String(format: "%.1f", $0) } ?? ""
 
                 let row = [
                     dateString,
                     escapeCSV(workoutName),
-                    escapeCSV(set.exerciseName),
+                    set.exerciseId.uuidString,
+                    escapeCSV(exerciseName),
                     String(set.setNumber),
-                    String(reps),
-                    String(format: "%.1f", weight),
+                    String(set.reps),
+                    String(format: "%.1f", set.weight),
                     rir,
-                    rest,
-                    escapeCSV(notes)
+                    rpe
                 ].joined(separator: ",")
 
                 csv += row + "\n"

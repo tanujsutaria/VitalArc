@@ -415,14 +415,37 @@ final class AnalyticsDashboardViewModel {
 
     // MARK: - Export Functions
 
+    private let pdfExporter = PDFExporter()
+    private let csvExporter = CSVExporter()
+
     func exportProgressReportPDF() async -> URL? {
-        errorMessage = "PDF export not yet implemented"
-        return nil
+        guard let report = currentReport else {
+            errorMessage = "No progress report available to export"
+            return nil
+        }
+
+        do {
+            let url = try await pdfExporter.exportProgressReport(report)
+            return url
+        } catch {
+            errorMessage = "Failed to export PDF: \(error.localizedDescription)"
+            return nil
+        }
     }
 
     func exportVolumeMetricsCSV() async -> URL? {
-        errorMessage = "CSV export not yet implemented"
-        return nil
+        guard !volumeMetrics.isEmpty else {
+            errorMessage = "No volume metrics available to export"
+            return nil
+        }
+
+        do {
+            let url = try await csvExporter.exportVolumeMetrics(metrics: volumeMetrics)
+            return url
+        } catch {
+            errorMessage = "Failed to export CSV: \(error.localizedDescription)"
+            return nil
+        }
     }
 
     // MARK: - Time Range

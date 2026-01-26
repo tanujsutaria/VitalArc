@@ -194,11 +194,9 @@ final class PDFExporter {
                 // Group by exercise
                 let exerciseGroups = Dictionary(grouping: workout.sets) { $0.exerciseId }
 
-                for (_, sets) in exerciseGroups {
-                    guard let firstSet = sets.first else { continue }
-
+                for (exerciseId, sets) in exerciseGroups {
                     drawText(
-                        firstSet.exerciseName,
+                        "Exercise: \(exerciseId.uuidString.prefix(8))...",
                         at: CGPoint(x: 60, y: yPosition),
                         fontSize: 14,
                         isBold: true
@@ -206,12 +204,10 @@ final class PDFExporter {
                     yPosition += 18
 
                     for set in sets {
-                        let reps = set.actualReps ?? set.targetReps
-                        let weight = set.weight
                         let rirText = set.rir.map { " (RIR: \($0))" } ?? ""
 
                         drawText(
-                            "Set \(set.setNumber): \(reps) reps @ \(Int(weight)) kg\(rirText)",
+                            "Set \(set.setNumber): \(set.reps) reps @ \(Int(set.weight)) kg\(rirText)",
                             at: CGPoint(x: 80, y: yPosition),
                             fontSize: 11
                         )
