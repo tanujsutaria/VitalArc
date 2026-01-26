@@ -48,7 +48,11 @@ struct TemplateDayExercise: Identifiable, Equatable {
 // MARK: - Template Editor View
 
 struct TemplateEditorView: View {
+    let viewModel: WorkoutTemplatesViewModel
+
     @State private var templateName: String = "My Template"
+    @State private var templateDescription: String = ""
+    @State private var selectedCategory: TemplateCategory = .custom
     @State private var days: [TemplateDay] = [
         TemplateDay(name: "Day 1"),
         TemplateDay(name: "Day 2"),
@@ -63,6 +67,7 @@ struct TemplateEditorView: View {
     @State private var showingExercisePicker = false
     @State private var editingDayNameIndex: Int?
     @State private var editingTemplateName = false
+    @State private var isSaving = false
 
     @Environment(\.dismiss) private var dismiss
 
@@ -84,14 +89,19 @@ struct TemplateEditorView: View {
                     Button("Cancel") {
                         dismiss()
                     }
+                    .disabled(isSaving)
                 }
 
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Save") {
-                        saveTemplate()
+                    if isSaving {
+                        ProgressView()
+                    } else {
+                        Button("Save") {
+                            saveTemplate()
+                        }
+                        .fontWeight(.semibold)
+                        .disabled(!isValid)
                     }
-                    .fontWeight(.semibold)
-                    .disabled(!isValid)
                 }
             }
             .sheet(isPresented: $showingExercisePicker) {
@@ -109,9 +119,9 @@ struct TemplateEditorView: View {
     private var templateNameHeader: some View {
         VStack(spacing: Spacing.sm) {
             if editingTemplateName {
-                HStack {
+                VStack(spacing: Spacing.md) {
                     TextField("Template Name", text: $templateName)
-                        .font(.vitalH1)
+                        .font(.vitalH2)
                         .textFieldStyle(.plain)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, Spacing.md)
@@ -119,11 +129,30 @@ struct TemplateEditorView: View {
                         .background(Color.vitalAdaptiveSurface)
                         .cornerRadius(Spacing.radiusMedium)
 
+                    TextField("Description (optional)", text: $templateDescription)
+                        .font(.vitalBody)
+                        .textFieldStyle(.plain)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, Spacing.md)
+                        .padding(.vertical, Spacing.sm)
+                        .background(Color.vitalAdaptiveSurface)
+                        .cornerRadius(Spacing.radiusMedium)
+
+                    HStack {
+                        Picker("Category", selection: $selectedCategory) {
+                            ForEach(TemplateCategory.allCases, id: \.self) { category in
+                                Label(category.displayName, systemImage: category.icon)
+                                    .tag(category)
+                            }
+                        }
+                        .pickerStyle(.menu)
+                    }
+
                     Button {
                         editingTemplateName = false
                     } label: {
-                        Image(systemName: "checkmark.circle.fill")
-                            .font(.title2)
+                        Text("Done")
+                            .font(.vitalLabel)
                             .foregroundStyle(Color.vitalPrimary)
                     }
                 }
@@ -132,14 +161,24 @@ struct TemplateEditorView: View {
                 Button {
                     editingTemplateName = true
                 } label: {
-                    HStack(spacing: Spacing.sm) {
-                        Text(templateName)
-                            .font(.vitalH1)
-                            .foregroundStyle(Color.vitalAdaptiveTextPrimary)
+                    VStack(spacing: Spacing.xs) {
+                        HStack(spacing: Spacing.sm) {
+                            Image(systemName: selectedCategory.icon)
+                                .font(.vitalBody)
+                                .foregroundStyle(Color.vitalPrimary)
+                            Text(templateName)
+                                .font(.vitalH1)
+                                .foregroundStyle(Color.vitalAdaptiveTextPrimary)
+                            Image(systemName: "pencil")
+                                .font(.vitalCaption)
+                                .foregroundStyle(Color.vitalAdaptiveTextSecondary)
+                        }
 
-                        Image(systemName: "pencil")
-                            .font(.vitalBody)
-                            .foregroundStyle(Color.vitalAdaptiveTextSecondary)
+                        if !templateDescription.isEmpty {
+                            Text(templateDescription)
+                                .font(.vitalCaption)
+                                .foregroundStyle(Color.vitalAdaptiveTextSecondary)
+                        }
                     }
                 }
             }
@@ -331,10 +370,56 @@ struct TemplateEditorView: View {
     }
 
     private func saveTemplate() {
-        // Convert to domain model and save
-        // For now, just dismiss
-        HapticFeedback.success()
-        dismiss()
+        isSaving = true
+
+        // Convert day-based exercises to flat list with day info in notes
+        var allExercises: [TemplateExercise] = []
+        var orderIndex = 0
+
+        for (dayIndex, day) in days.enumerated() {
+            for exercise in day.exercises {
+                // Parse rep range (e.g., "8-12") into min/max
+                let repParts = exercise.repRange.split(separator: "-")
+                let repsMin = Int(repParts.first ?? "8") ?? 8
+                let repsMax = Int(repParts.last ?? "12") ?? 12
+
+                let templateExercise = TemplateExercise(
+                    exerciseId: exercise.exerciseId,
+                    orderIndex: orderIndex,
+                    sets: exercise.sets,
+                    repsMin: repsMin,
+                    repsMax: repsMax,
+                    restSeconds: 90,
+                    notes: "Day \(dayIndex + 1): \(day.name)"
+                )
+                allExercises.append(templateExercise)
+                orderIndex += 1
+            }
+        }
+
+        // Calculate estimated duration (roughly 3 min per set)
+        let totalSets = allExercises.reduce(0) { $0 + $1.sets }
+        let estimatedDuration = max(30, totalSets * 3)
+
+        let template = WorkoutTemplate(
+            name: templateName.trimmingCharacters(in: .whitespaces),
+            description: templateDescription.isEmpty ? nil : templateDescription,
+            exercises: allExercises,
+            category: selectedCategory,
+            estimatedDuration: estimatedDuration
+        )
+
+        Task {
+            do {
+                try await viewModel.saveTemplateUseCase.execute(template)
+                await viewModel.loadTemplates()
+                HapticFeedback.success()
+                dismiss()
+            } catch {
+                HapticFeedback.error()
+                isSaving = false
+            }
+        }
     }
 }
 
@@ -421,6 +506,4 @@ extension Color {
 
 // MARK: - Preview
 
-#Preview {
-    TemplateEditorView()
-}
+// Preview unavailable - requires WorkoutTemplatesViewModel

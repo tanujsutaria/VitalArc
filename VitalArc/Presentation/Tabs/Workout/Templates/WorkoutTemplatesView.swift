@@ -50,7 +50,7 @@ struct WorkoutTemplatesView: View {
                     await viewModel.loadTemplates()
                 }
                 .sheet(isPresented: $showingCreateTemplate) {
-                    CreateTemplateView(viewModel: viewModel)
+                    TemplateEditorView(viewModel: viewModel)
                 }
                 .sheet(item: $selectedTemplate) { template in
                     startWorkoutSheet(for: template)

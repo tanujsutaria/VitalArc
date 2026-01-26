@@ -227,7 +227,7 @@ struct WorkoutTemplatesContentView: View {
         }
         .sheet(isPresented: $showingCreateTemplate) {
             if let viewModel = viewModel {
-                CreateTemplateView(viewModel: viewModel)
+                TemplateEditorView(viewModel: viewModel)
             }
         }
         .sheet(item: $selectedTemplate) { template in
