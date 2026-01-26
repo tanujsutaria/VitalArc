@@ -272,4 +272,16 @@ A: Use `VitalLoadingState` for full-screen loading, or `.skeleton(isLoading: tru
 ---
 
 **Last Updated**: 2026-01-25
-**Status**: ✅ Design System Complete - Ready for Integration
+**Status**: ⚠️ Design System Complete - Adoption ~58%
+
+**Adoption Statistics:**
+- Design system files: 14 (complete)
+- Presentation files using design system: 38/66 (58%)
+- Hardcoded color violations remaining: ~156 instances
+- Hardcoded spacing violations remaining: ~100+ instances
+
+**Priority files for migration:**
+- MesocycleDetailView.swift (using .blue/.red for charts)
+- MealSectionView.swift (using Color(.systemBackground))
+- FoodLoggingView.swift (hardcoded spacing)
+- AboutView.swift (using .pink.gradient)

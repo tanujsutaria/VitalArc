@@ -305,6 +305,18 @@ Design System implemented as part of VitalArc Stream 2 parallel development.
 
 ---
 
-**Status**: ✅ Complete and Production-Ready
+**Status**: ⚠️ Design System Complete - Adoption In Progress
 
-All existing views have been updated, and the design system is ready for use by other development streams. New views created by parallel agents should adopt these components for consistency.
+The design system components are complete and production-ready. However, full adoption across all views is still in progress:
+
+- **Design system adoption**: ~58% of presentation files (38/66)
+- **Hardcoded colors remaining**: ~156 instances across 28 files
+- **Hardcoded spacing remaining**: ~100+ instances
+
+**Files still needing migration:**
+- MesocycleDetailView.swift, MesocycleListView.swift
+- MealSectionView.swift, FoodLoggingView.swift
+- AboutView.swift, SettingsView.swift
+- ChartView.swift, ProgressChartView.swift
+
+New views should adopt these components for consistency. Existing views should be migrated as part of the MVP polish phase.

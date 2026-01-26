@@ -68,25 +68,29 @@ The app compiles and runs. Core features exist but are **not MVP-ready** due to:
    - Health Dashboard: kg (metric)
    - Settings has toggle but not enforced
 
-2. **Design System Violations** (47+ instances)
+2. **Design System Violations** (~156 instances across 28 files)
    ```
-   Hardcoded: .blue, .red, .green, .gray
+   Hardcoded: .blue, .red, .green, .gray, .black, .white
    Should be: .vitalPrimary, .vitalDanger, .vitalSuccess, .vitalAdaptiveTextSecondary
    ```
 
-   Affected files:
-   - `MesocycleDetailView.swift`
-   - `MealSectionView.swift`
-   - `FoodLoggingView.swift`
-   - `AboutView.swift`
-   - `MetricCardView.swift`
-   - `ChartView.swift`
-   - `ProgressChartView.swift`
+   **Design System Adoption**: 58% (38/66 presentation files)
 
-3. **System Colors** (18+ instances)
+   Priority files needing migration:
+   - `MesocycleDetailView.swift` - using .blue/.red for charts
+   - `MesocycleListView.swift` - hardcoded colors
+   - `MealSectionView.swift` - Color(.systemBackground)
+   - `FoodLoggingView.swift` - hardcoded spacing/colors
+   - `AboutView.swift` - .pink.gradient
+   - `ChartView.swift` - hardcoded chart colors
+   - `ProgressChartView.swift` - hardcoded colors
+   - `ProfileView.swift` (edit mode) - Color(.systemGray6)
+   - And 20+ others
+
+3. **System Colors** (~40 instances)
    ```
-   Hardcoded: Color(.systemGray6)
-   Should be: Color.vitalAdaptiveSurface
+   Hardcoded: Color(.systemGray6), Color(.systemBackground)
+   Should be: Color.vitalAdaptiveSurface, Color.vitalAdaptiveBackground
    ```
 
 ### High Priority
@@ -120,9 +124,21 @@ The app compiles and runs. Core features exist but are **not MVP-ready** due to:
    - Some views: inline error messages
    - Some views: silent `try?` failures
 
-8. **Preview Coverage**: 57% (27/47 files)
+8. **Preview Coverage**: ~57% of presentation files have #Preview blocks
 
 ---
+
+## Codebase Statistics
+
+| Metric | Value |
+|--------|-------|
+| Total Swift files | 146 |
+| Lines of code | ~34,800 |
+| Presentation views | 66 |
+| ViewModels | 10 |
+| Use cases | 16 |
+| Data models | 15 |
+| Test files | 6 |
 
 ## Architecture Quality
 
@@ -133,8 +149,9 @@ The app compiles and runs. Core features exist but are **not MVP-ready** due to:
 | Dependency Injection | ✅ | DependencyContainer pattern |
 | Data Persistence | ✅ | SwiftData with repositories |
 | Thread Safety | ✅ | @MainActor isolation throughout |
+| Design System Adoption | ⚠️ | 58% (38/66 files) |
 | Error Handling | ⚠️ | Needs standardization |
-| Testing | ✅ | 15+ unit tests, MockRepositories |
+| Testing | ⚠️ | 6 test files, ~57% preview coverage |
 
 ---
 

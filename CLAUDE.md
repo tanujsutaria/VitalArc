@@ -99,6 +99,8 @@ All repositories and ViewModels use `@MainActor` isolation for SwiftData thread 
 
 **Always use design tokens instead of hardcoded values.**
 
+> **Note**: Design system adoption is currently ~58%. Many older views still use hardcoded colors (`.blue`, `.red`, `Color(.systemGray6)`) and spacing values. When modifying these views, migrate to design tokens.
+
 ### Colors
 ```swift
 Color.vitalPrimary              // Primary actions (indigo)
@@ -153,6 +155,13 @@ UnitConversion.feetInchesToCm(feet:inches:)       // ft/in → cm
 - `DependencyContainer.swift` - All repository implementations
 - `MainTabView.swift` - Main app navigation (Health, Workout, Nutrition, Profile tabs)
 - `Presentation/Common/DesignSystem/` - Colors, Typography, Spacing, Components
+
+## Codebase Statistics
+
+- **146 Swift files**, ~34,800 lines of code
+- **66 presentation views**, 10 ViewModels, 16 use cases
+- **14 design system files** (complete), 58% view adoption
+- **6 test files**, ~57% preview coverage
 
 ## Current Status
 
