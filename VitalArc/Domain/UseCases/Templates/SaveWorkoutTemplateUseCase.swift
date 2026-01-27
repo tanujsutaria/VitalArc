@@ -69,13 +69,13 @@ final class SaveWorkoutTemplateUseCase {
                         exerciseNames[exerciseId] = exercise.name
                     } else {
                         // Exercise not found in database - use fallback
-                        exerciseNames[exerciseId] = "Unknown Exercise"
+                        exerciseNames[exerciseId] = Strings.Fallback.unknownExercise
                     }
                 } catch {
                     // Log error but continue with fallback name
                     // In production, consider proper logging framework
                     print("Warning: Failed to fetch exercise \(exerciseId): \(error.localizedDescription)")
-                    exerciseNames[exerciseId] = "Unknown Exercise"
+                    exerciseNames[exerciseId] = Strings.Fallback.unknownExercise
                 }
             }
         }
@@ -87,7 +87,7 @@ final class SaveWorkoutTemplateUseCase {
 
             let totalSets = sets.count
             let avgReps = sets.map { $0.reps }.reduce(0, +) / max(sets.count, 1)
-            let exerciseName = exerciseNames[exerciseId] ?? "Unknown Exercise"
+            let exerciseName = exerciseNames[exerciseId] ?? Strings.Fallback.unknownExercise
 
             let templateExercise = TemplateExercise(
                 exerciseId: exerciseId,

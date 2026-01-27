@@ -137,7 +137,7 @@ struct ProfileView: View {
                         if viewModel.isHealthKitAvailable {
                             HStack(spacing: Spacing.sm) {
                                 Image(systemName: "heart.fill")
-                                    .foregroundStyle(.red)
+                                    .foregroundStyle(Color.vitalDanger)
                                     .font(.caption)
                                 Text("Synced with Apple Health")
                                     .font(.vitalCaption)
@@ -536,7 +536,7 @@ struct StatCardWithSource: View {
                     if source.contains("Apple Health") {
                         Image(systemName: "heart.fill")
                             .font(.system(size: 8))
-                            .foregroundStyle(.red)
+                            .foregroundStyle(Color.vitalDanger)
                     }
                     Text(source)
                         .font(.system(size: 9))
