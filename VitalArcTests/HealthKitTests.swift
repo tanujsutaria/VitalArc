@@ -242,6 +242,7 @@ final class HealthKitTests: XCTestCase {
 
     // MARK: - HealthDashboardViewModel Tests
 
+    @MainActor
     func testViewModelInitialState() throws {
         let viewModel = HealthDashboardViewModel(healthRepository: MockHealthRepository())
 
@@ -251,6 +252,7 @@ final class HealthKitTests: XCTestCase {
         XCTAssertTrue(viewModel.weekMetrics.isEmpty)
     }
 
+    @MainActor
     func testViewModelLoadTodayMetrics() async throws {
         let mockRepo = MockHealthRepository()
         let mockMetrics = HealthMetrics(
@@ -274,6 +276,7 @@ final class HealthKitTests: XCTestCase {
         XCTAssertFalse(viewModel.isLoading)
     }
 
+    @MainActor
     func testViewModelLoadWeekMetrics() async throws {
         let mockRepo = MockHealthRepository()
         let mockMetrics = (0..<7).map { day in
@@ -294,6 +297,7 @@ final class HealthKitTests: XCTestCase {
         XCTAssertFalse(viewModel.isLoading)
     }
 
+    @MainActor
     func testViewModelRequestPermissions() async throws {
         let mockRepo = MockHealthRepository()
         mockRepo.mockAuthorizationSuccess = true
@@ -305,6 +309,7 @@ final class HealthKitTests: XCTestCase {
         XCTAssertTrue(mockRepo.authorizationRequested)
     }
 
+    @MainActor
     func testViewModelSyncFromHealthKit() async throws {
         let mockRepo = MockHealthRepository()
 
