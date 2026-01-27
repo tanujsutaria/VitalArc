@@ -84,8 +84,44 @@ Added `@MainActor` class-level annotation to prevent race conditions:
 7. **Alternative Template View** (`CreateTemplateView.swift`):
    - Updated to include `exerciseName` in saved templates
 
+### PR Review Feedback Addressed
+After initial bug fixes, PR review identified additional improvements:
+
+1. **Template Name Validation**: Added 100-character length limit with `TemplateError.nameTooLong` case
+2. **Error Handling**: Changed `try?` to proper `do/catch` with logging in exercise name lookup
+3. **Fallback Text**: Changed from "Exercise N" to "Unknown Exercise" for clarity
+
+### Test Fixes for @MainActor Isolation
+CI tests failed due to `@MainActor` class-level annotations on ViewModels. Fixed by adding `@MainActor` to test methods:
+
+- **HealthKitTests.swift** (5 methods): testViewModelInitialState, testViewModelLoadTodayMetrics, testViewModelLoadWeekMetrics, testViewModelRequestPermissions, testViewModelSyncFromHealthKit
+- **ProfileTests.swift** (3 methods): testOnboardingCompletionFlow, testOnboardingNavigationSteps, testOnboardingValidation
+
 ### Session End
-[To be filled by /vitalarc-end]
+- **Status**: Session 9 complete - comprehensive bug fixes and PR review feedback addressed
+- **Build Status**: ✅ Passing (CI checks green)
+- **Branch**: claude/vitalarc-start-HtacU
+- **Commits**: 8 commits
+  - 7f282c7: test(core): add @MainActor to ViewModel test methods
+  - 342ae07: fix(templates): address PR review feedback on template validation
+  - e67c696: refactor(ui): remove redundant @MainActor annotations from ViewModels
+  - eb61268: docs(session): update Session 9 with bug fix details
+  - 4c63261: fix(core): resolve critical bugs across multiple layers
+  - 908bf6a: fix(workout): display actual exercise names in template views
+  - da53920: docs(session): add Session 9 log entry
+  - b8de1bd: perf(infra): optimize CI workflows for faster execution
+- **Files Changed**: 15+ files across Domain, Data, Presentation, and Tests layers
+- **Bugs Fixed**: 52+ bugs identified, critical issues resolved
+- **Key Improvements**:
+  - Exercise names now display correctly in templates (was showing "Exercise 1", "Exercise 2")
+  - Thread safety improved with `@MainActor` on 7 ViewModels
+  - Data persistence fixed for ExerciseModel.isCustom and Food update
+  - Crash prevention via division-by-zero guards and safe calendar unwraps
+  - Logic fix in TrackProgressiveOverloadUseCase for accurate averages
+- **Remaining Suggestions** (optional, not blocking):
+  - Consider proper logging framework instead of print()
+  - Consider localized strings for fallback exercise names
+  - Consider adding unit tests for exerciseName functionality
 
 ---
 
