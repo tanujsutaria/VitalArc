@@ -45,13 +45,23 @@ jobs:
           sudo xcode-select -s "$XCODE_PATH/Contents/Developer"
           xcodebuild -version
 
-      - name: Find simulator
+      - name: Boot simulator
         id: simulator
         run: |
-          # Find first available iPhone simulator
-          SIMULATOR=$(xcrun simctl list devices available | grep -E "iPhone" | head -1 | sed 's/.*(\([^)]*\)).*/\1/')
-          echo "Using simulator: $SIMULATOR"
-          echo "udid=$SIMULATOR" >> $GITHUB_OUTPUT
+          # Find and boot first available iPhone simulator
+          DEVICE_ID=$(xcrun simctl list devices available -j | python3 -c "
+          import sys, json
+          data = json.load(sys.stdin)
+          for runtime, devices in data['devices'].items():
+              if 'iOS' in runtime:
+                  for d in devices:
+                      if 'iPhone' in d['name'] and d['isAvailable']:
+                          print(d['udid'])
+                          sys.exit(0)
+          ")
+          echo "Booting simulator: $DEVICE_ID"
+          xcrun simctl boot "$DEVICE_ID" || true
+          echo "udid=$DEVICE_ID" >> $GITHUB_OUTPUT
 
       - name: Cache DerivedData
         uses: actions/cache@v4
