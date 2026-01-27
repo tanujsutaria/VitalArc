@@ -50,12 +50,14 @@ final class SaveWorkoutTemplateUseCase {
         name: String,
         category: TemplateCategory
     ) async throws -> WorkoutTemplate {
-        // Group sets by exercise
+        // Group sets by exercise and track first appearance order
         var exerciseGroups: [UUID: [WorkoutSet]] = [:]
+        var exerciseOrder: [UUID] = []  // Preserves workout exercise order
 
         for set in workout.sets {
             if exerciseGroups[set.exerciseId] == nil {
                 exerciseGroups[set.exerciseId] = []
+                exerciseOrder.append(set.exerciseId)  // Track order of first appearance
             }
             exerciseGroups[set.exerciseId]?.append(set)
         }
@@ -80,17 +82,14 @@ final class SaveWorkoutTemplateUseCase {
             }
         }
 
-        // Create template exercises - sort by exerciseId for consistent ordering
-        // Dictionary enumeration order is not guaranteed, so we sort explicitly
-        let sortedExerciseGroups = exerciseGroups.sorted { $0.key.uuidString < $1.key.uuidString }
-
+        // Create template exercises in workout order (order of first appearance)
         var templateExercises: [TemplateExercise] = []
-        for (index, element) in sortedExerciseGroups.enumerated() {
-            let (exerciseId, sets) = element
+        for (index, exerciseId) in exerciseOrder.enumerated() {
+            guard let sets = exerciseGroups[exerciseId] else { continue }
 
             let totalSets = sets.count
-            // Explicit empty check for safety, even though reduce on empty array returns 0
-            let avgReps = sets.isEmpty ? 8 : sets.map { $0.reps }.reduce(0, +) / sets.count
+            // Explicit empty check with defense-in-depth max() for safety
+            let avgReps = sets.isEmpty ? 8 : sets.map { $0.reps }.reduce(0, +) / max(sets.count, 1)
             let exerciseName = exerciseNames[exerciseId] ?? Strings.Fallback.unknownExercise
 
             let templateExercise = TemplateExercise(
