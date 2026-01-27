@@ -385,6 +385,7 @@ struct TemplateEditorView: View {
 
                 let templateExercise = TemplateExercise(
                     exerciseId: exercise.exerciseId,
+                    exerciseName: exercise.exerciseName,
                     orderIndex: orderIndex,
                     sets: exercise.sets,
                     repsMin: repsMin,

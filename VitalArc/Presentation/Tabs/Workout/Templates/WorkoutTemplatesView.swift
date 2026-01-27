@@ -253,9 +253,9 @@ struct StartWorkoutFromTemplateSheet: View {
                 List {
                     ForEach(template.exercises.sorted(by: { $0.orderIndex < $1.orderIndex })) { exercise in
                         VStack(alignment: .leading, spacing: Spacing.xs) {
-                            Text("Exercise \(exercise.orderIndex + 1)")
-                                .font(.vitalCaption)
-                                .foregroundStyle(Color.vitalAdaptiveTextSecondary)
+                            Text(exercise.exerciseName)
+                                .font(.vitalH4)
+                                .foregroundStyle(Color.vitalAdaptiveTextPrimary)
 
                             HStack {
                                 Text("\(exercise.sets) × \(exercise.repsDisplay) reps")

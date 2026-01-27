@@ -95,6 +95,7 @@ final class WorkoutTemplateModel {
 private struct CodableTemplateExercise: Codable {
     let id: UUID
     let exerciseId: UUID
+    let exerciseName: String?  // Optional for backward compatibility with existing data
     let orderIndex: Int
     let sets: Int
     let repsMin: Int
@@ -106,6 +107,7 @@ private struct CodableTemplateExercise: Codable {
         TemplateExercise(
             id: id,
             exerciseId: exerciseId,
+            exerciseName: exerciseName ?? "Exercise \(orderIndex + 1)",
             orderIndex: orderIndex,
             sets: sets,
             repsMin: repsMin,
@@ -119,6 +121,7 @@ private struct CodableTemplateExercise: Codable {
         CodableTemplateExercise(
             id: exercise.id,
             exerciseId: exercise.exerciseId,
+            exerciseName: exercise.exerciseName,
             orderIndex: exercise.orderIndex,
             sets: exercise.sets,
             repsMin: exercise.repsMin,

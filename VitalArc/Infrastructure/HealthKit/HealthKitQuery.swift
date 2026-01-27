@@ -18,7 +18,7 @@ struct HealthKitQuery {
         let calendar = Calendar.current
         let now = Date()
         let startOfDay = calendar.startOfDay(for: now)
-        let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay)!
+        let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) ?? startOfDay.addingTimeInterval(86400)
         return (startOfDay, endOfDay)
     }
 
@@ -27,8 +27,8 @@ struct HealthKitQuery {
         let calendar = Calendar.current
         let now = Date()
         let startOfToday = calendar.startOfDay(for: now)
-        let endOfToday = calendar.date(byAdding: .day, value: 1, to: startOfToday)!
-        let startDate = calendar.date(byAdding: .day, value: -(days - 1), to: startOfToday)!
+        let endOfToday = calendar.date(byAdding: .day, value: 1, to: startOfToday) ?? startOfToday.addingTimeInterval(86400)
+        let startDate = calendar.date(byAdding: .day, value: -(days - 1), to: startOfToday) ?? startOfToday.addingTimeInterval(Double(-days + 1) * 86400)
         return (startDate, endOfToday)
     }
 
@@ -36,7 +36,7 @@ struct HealthKitQuery {
     static func dateRangeForDate(_ date: Date) -> (start: Date, end: Date) {
         let calendar = Calendar.current
         let startOfDay = calendar.startOfDay(for: date)
-        let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay)!
+        let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) ?? startOfDay.addingTimeInterval(86400)
         return (startOfDay, endOfDay)
     }
 

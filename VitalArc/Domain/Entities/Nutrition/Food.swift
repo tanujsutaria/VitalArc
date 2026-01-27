@@ -70,6 +70,8 @@ struct Food: Identifiable, Equatable {
 
     /// Calculate macros for a different serving size
     func scaled(to grams: Double) -> Food {
+        // Guard against division by zero
+        guard servingSize > 0 else { return self }
         let scale = grams / servingSize
         return Food(
             id: id,

@@ -227,7 +227,7 @@ struct WorkoutTemplatesContentView: View {
                 templateRepository: container.templateRepository,
                 workoutRepository: container.workoutRepository
             )
-            let saveUseCase = SaveWorkoutTemplateUseCase(templateRepository: container.templateRepository)
+            let saveUseCase = SaveWorkoutTemplateUseCase(templateRepository: container.templateRepository, workoutRepository: container.workoutRepository)
             viewModel = WorkoutTemplatesViewModel(
                 loadTemplateUseCase: loadUseCase,
                 saveTemplateUseCase: saveUseCase,

@@ -99,8 +99,10 @@ final class TrackProgressiveOverloadUseCase {
         guard volumes.count >= 2 else { return 0 }
 
         // Compare last 2 weeks average to first 2 weeks average
-        let recentAvg = volumes.suffix(2).map { $0.1 }.reduce(0, +) / 2
-        let initialAvg = volumes.prefix(2).map { $0.1 }.reduce(0, +) / 2
+        let recentValues = volumes.suffix(2).map { $0.1 }
+        let initialValues = volumes.prefix(2).map { $0.1 }
+        let recentAvg = recentValues.reduce(0, +) / Double(max(recentValues.count, 1))
+        let initialAvg = initialValues.reduce(0, +) / Double(max(initialValues.count, 1))
 
         guard initialAvg > 0 else { return 0 }
 
@@ -152,8 +154,10 @@ final class TrackProgressiveOverloadUseCase {
 
         // Volume-based recommendations
         if weeklyVolumes.count >= 4 {
-            let recentVolume = weeklyVolumes.suffix(2).map { $0.1 }.reduce(0, +) / 2
-            let previousVolume = weeklyVolumes.suffix(4).prefix(2).map { $0.1 }.reduce(0, +) / 2
+            let recentValues = weeklyVolumes.suffix(2).map { $0.1 }
+            let previousValues = weeklyVolumes.suffix(4).prefix(2).map { $0.1 }
+            let recentVolume = recentValues.reduce(0, +) / Double(max(recentValues.count, 1))
+            let previousVolume = previousValues.reduce(0, +) / Double(max(previousValues.count, 1))
 
             if recentVolume < previousVolume * 0.8 {
                 recommendations.append("Volume has dropped significantly - check recovery")

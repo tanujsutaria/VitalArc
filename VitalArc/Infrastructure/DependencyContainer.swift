@@ -202,7 +202,7 @@ final class SwiftDataNutritionRepository: NutritionRepository {
         )
 
         if let existing = try modelContext.fetch(descriptor).first {
-            // Update existing
+            // Update existing - all fields
             existing.name = food.name
             existing.brand = food.brand
             existing.servingSize = food.servingSize
@@ -214,6 +214,12 @@ final class SwiftDataNutritionRepository: NutritionRepository {
             existing.fiber = food.fiber
             existing.sugar = food.sugar
             existing.source = food.source.rawValue
+            existing.barcode = food.barcode
+            existing.imageURL = food.imageURL
+            existing.isFavorite = food.isFavorite
+            existing.isCustom = food.isCustom
+            existing.recentlyUsed = food.recentlyUsed
+            existing.usageCount = food.usageCount
         } else {
             // Insert new
             let model = FoodModel.fromDomain(food)
@@ -226,7 +232,7 @@ final class SwiftDataNutritionRepository: NutritionRepository {
     func getFoodEntries(for date: Date) async throws -> [FoodEntry] {
         let calendar = Calendar.current
         let startOfDay = calendar.startOfDay(for: date)
-        let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay)!
+        let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) ?? startOfDay.addingTimeInterval(86400)
 
         let descriptor = FetchDescriptor<FoodEntryModel>(
             predicate: #Predicate { entry in
@@ -297,7 +303,7 @@ final class SwiftDataNutritionRepository: NutritionRepository {
     func getDailyNutrition(for date: Date) async throws -> DailyNutrition? {
         let calendar = Calendar.current
         let startOfDay = calendar.startOfDay(for: date)
-        let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay)!
+        let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) ?? startOfDay.addingTimeInterval(86400)
 
         let descriptor = FetchDescriptor<DailyNutritionModel>(
             predicate: #Predicate { nutrition in
@@ -315,7 +321,7 @@ final class SwiftDataNutritionRepository: NutritionRepository {
     func saveDailyNutrition(_ nutrition: DailyNutrition) async throws {
         let calendar = Calendar.current
         let startOfDay = calendar.startOfDay(for: nutrition.date)
-        let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay)!
+        let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) ?? startOfDay.addingTimeInterval(86400)
 
         let descriptor = FetchDescriptor<DailyNutritionModel>(
             predicate: #Predicate { nutritionModel in
@@ -357,7 +363,7 @@ final class SwiftDataHealthRepository: HealthRepository {
     func getHealthMetrics(for date: Date) async throws -> HealthMetrics? {
         let calendar = Calendar.current
         let startOfDay = calendar.startOfDay(for: date)
-        let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay)!
+        let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) ?? startOfDay.addingTimeInterval(86400)
 
         let descriptor = FetchDescriptor<HealthMetricsModel>(
             predicate: #Predicate { metrics in
@@ -389,7 +395,7 @@ final class SwiftDataHealthRepository: HealthRepository {
         // Check if metrics for this date already exist
         let calendar = Calendar.current
         let startOfDay = calendar.startOfDay(for: metrics.date)
-        let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay)!
+        let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) ?? startOfDay.addingTimeInterval(86400)
 
         let descriptor = FetchDescriptor<HealthMetricsModel>(
             predicate: #Predicate { model in

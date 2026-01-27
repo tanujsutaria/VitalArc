@@ -16,6 +16,7 @@ enum OnboardingStep: Int, CaseIterable {
 }
 
 /// View model for managing onboarding state and user input
+@MainActor
 @Observable
 final class OnboardingViewModel {
     private let userRepository: UserRepository
@@ -71,7 +72,6 @@ final class OnboardingViewModel {
 
     // MARK: - Completion
 
-    @MainActor
     func completeOnboarding() async throws {
         guard canProceedFromProfileSetup else {
             throw OnboardingError.invalidProfileData
@@ -109,7 +109,6 @@ final class OnboardingViewModel {
         }
     }
 
-    @MainActor
     func skipHealthKitSetup() async {
         // Just complete onboarding without HealthKit
         do {

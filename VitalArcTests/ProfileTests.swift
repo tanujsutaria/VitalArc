@@ -165,6 +165,7 @@ final class ProfileTests: XCTestCase {
 
     // MARK: - OnboardingViewModel Tests
 
+    @MainActor
     func testOnboardingCompletionFlow() async throws {
         // Given
         let repository = MockUserRepository()
@@ -190,6 +191,7 @@ final class ProfileTests: XCTestCase {
         XCTAssertEqual(repository.savedProfile?.name, "Test User")
     }
 
+    @MainActor
     func testOnboardingNavigationSteps() {
         // Given
         let repository = MockUserRepository()
@@ -209,6 +211,7 @@ final class ProfileTests: XCTestCase {
         XCTAssertEqual(viewModel.currentStep, .profileSetup)
     }
 
+    @MainActor
     func testOnboardingValidation() {
         // Given
         let repository = MockUserRepository()

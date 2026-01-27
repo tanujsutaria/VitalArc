@@ -8,6 +8,7 @@
 import Foundation
 import Observation
 
+@MainActor
 @Observable
 final class ExerciseLibraryViewModel {
     private let getExercisesUseCase: GetExercisesUseCase
@@ -22,7 +23,6 @@ final class ExerciseLibraryViewModel {
         self.getExercisesUseCase = getExercisesUseCase
     }
 
-    @MainActor
     func loadExercises() async {
         isLoading = true
         errorMessage = nil
@@ -39,13 +39,11 @@ final class ExerciseLibraryViewModel {
         isLoading = false
     }
 
-    @MainActor
     func selectCategory(_ category: ExerciseCategory?) async {
         selectedCategory = category
         await loadExercises()
     }
 
-    @MainActor
     func updateSearch(_ text: String) async {
         searchText = text
         await loadExercises()
