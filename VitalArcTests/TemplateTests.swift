@@ -97,6 +97,10 @@ final class TemplateTests: XCTestCase {
         let benchPress = exercises.first { $0.name.lowercased().contains("bench press") }!
         let shoulderPress = exercises.first { $0.name.lowercased().contains("shoulder") }!
 
+        // Store exact names for reliable assertions
+        let benchPressName = benchPress.name
+        let shoulderPressName = shoulderPress.name
+
         // Create a workout with these exercises
         let sets = [
             WorkoutSet(exerciseId: benchPress.id, weight: 100, reps: 10, setNumber: 1),
@@ -117,16 +121,16 @@ final class TemplateTests: XCTestCase {
             category: .custom
         )
 
-        // Then: Template exercises should have correct names
+        // Then: Template exercises should have correct names (match by exerciseId for reliability)
         XCTAssertEqual(template.exercises.count, 2)
-        XCTAssertTrue(
-            template.exercises.contains { $0.exerciseName.lowercased().contains("bench press") },
-            "Template should include bench press exercise name"
-        )
-        XCTAssertTrue(
-            template.exercises.contains { $0.exerciseName.lowercased().contains("shoulder") },
-            "Template should include shoulder press exercise name"
-        )
+
+        let templateBenchPress = template.exercises.first { $0.exerciseId == benchPress.id }
+        let templateShoulderPress = template.exercises.first { $0.exerciseId == shoulderPress.id }
+
+        XCTAssertNotNil(templateBenchPress, "Template should contain bench press exercise")
+        XCTAssertNotNil(templateShoulderPress, "Template should contain shoulder press exercise")
+        XCTAssertEqual(templateBenchPress?.exerciseName, benchPressName, "Exercise name should match exactly")
+        XCTAssertEqual(templateShoulderPress?.exerciseName, shoulderPressName, "Exercise name should match exactly")
     }
 
     func testSaveWorkoutTemplateUseCaseFallsBackForUnknownExercise() async throws {

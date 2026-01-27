@@ -80,13 +80,17 @@ final class SaveWorkoutTemplateUseCase {
             }
         }
 
-        // Create template exercises
+        // Create template exercises - sort by exerciseId for consistent ordering
+        // Dictionary enumeration order is not guaranteed, so we sort explicitly
+        let sortedExerciseGroups = exerciseGroups.sorted { $0.key.uuidString < $1.key.uuidString }
+
         var templateExercises: [TemplateExercise] = []
-        for (index, element) in exerciseGroups.enumerated() {
+        for (index, element) in sortedExerciseGroups.enumerated() {
             let (exerciseId, sets) = element
 
             let totalSets = sets.count
-            let avgReps = sets.map { $0.reps }.reduce(0, +) / max(sets.count, 1)
+            // Explicit empty check for safety, even though reduce on empty array returns 0
+            let avgReps = sets.isEmpty ? 8 : sets.map { $0.reps }.reduce(0, +) / sets.count
             let exerciseName = exerciseNames[exerciseId] ?? Strings.Fallback.unknownExercise
 
             let templateExercise = TemplateExercise(
