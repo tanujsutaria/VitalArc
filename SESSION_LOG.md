@@ -23,7 +23,33 @@
 - **TODOs/FIXMEs**: 0
 
 ### Planned Work
-- Awaiting user direction
+Based on Session 9 pending items and codebase analysis:
+
+1. **Fix hardcoded `.red` in ProfileView.swift** (2 locations)
+   - Line 140: Edit mode indicator
+   - Line 539: Another edit-related element
+   - Should use `Color.vitalDanger` for design system consistency
+
+2. **Remove debug print() statements** (3 locations)
+   - `SetRowView.swift:93` - "Delete" debug log
+   - `TemplateExercisePickerView.swift:377` - "Selected: ..." debug log
+   - `ExerciseLibraryView.swift:506` - "Selected: ..." debug log
+
+3. **Improve error logging pattern** (6 locations)
+   - Replace standalone `print("[Feature] Error: ...")` with consistent pattern
+   - Locations: SaveWorkoutTemplateUseCase, CreateMesocycleView, MainTabView, SettingsView, ProfileViewModel, ExerciseLibraryView
+
+4. **Fix silent `try?` failures** (3 locations)
+   - `MainTabView.swift:126` - Exercise seeding
+   - `WorkoutLoggingViewModel.swift:45` - Calculate progression
+   - `BarcodeScannerView.swift:189` - Camera input
+
+5. **Localize fallback strings** (5 locations)
+   - "Unknown Exercise" in SaveWorkoutTemplateUseCase, UpdateMesocycleProgressUseCase, CalculateVolumeUseCase
+
+6. **Add unit tests for exerciseName functionality**
+   - Test TemplateExercise name persistence
+   - Test SaveWorkoutTemplateUseCase exercise name lookup
 
 ### Work Completed
 [To be filled during session]
