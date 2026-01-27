@@ -112,7 +112,7 @@ final class TemplateTests: XCTestCase {
 
         // When: Creating template from workout
         let useCase = SaveWorkoutTemplateUseCase(
-            repository: templateRepository,
+            templateRepository: templateRepository,
             workoutRepository: workoutRepository
         )
         let template = try await useCase.executeFromWorkout(
