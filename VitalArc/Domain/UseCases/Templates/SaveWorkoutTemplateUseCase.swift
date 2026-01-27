@@ -19,9 +19,15 @@ final class SaveWorkoutTemplateUseCase {
 
     /// Save a new or updated template
     func execute(_ template: WorkoutTemplate) async throws {
-        // Validate template
-        guard !template.name.trimmingCharacters(in: .whitespaces).isEmpty else {
+        // Validate template name
+        let trimmedName = template.name.trimmingCharacters(in: .whitespaces)
+        guard !trimmedName.isEmpty else {
             throw TemplateError.emptyName
+        }
+
+        // Validate name length (prevent excessively long names)
+        guard trimmedName.count <= 100 else {
+            throw TemplateError.nameTooLong
         }
 
         guard !template.exercises.isEmpty else {
@@ -54,12 +60,22 @@ final class SaveWorkoutTemplateUseCase {
             exerciseGroups[set.exerciseId]?.append(set)
         }
 
-        // Look up exercise names
+        // Look up exercise names with proper error handling
         var exerciseNames: [UUID: String] = [:]
         if let workoutRepo = workoutRepository {
             for exerciseId in exerciseGroups.keys {
-                if let exercise = try? await workoutRepo.getExercise(id: exerciseId) {
-                    exerciseNames[exerciseId] = exercise.name
+                do {
+                    if let exercise = try await workoutRepo.getExercise(id: exerciseId) {
+                        exerciseNames[exerciseId] = exercise.name
+                    } else {
+                        // Exercise not found in database - use fallback
+                        exerciseNames[exerciseId] = "Unknown Exercise"
+                    }
+                } catch {
+                    // Log error but continue with fallback name
+                    // In production, consider proper logging framework
+                    print("Warning: Failed to fetch exercise \(exerciseId): \(error.localizedDescription)")
+                    exerciseNames[exerciseId] = "Unknown Exercise"
                 }
             }
         }
@@ -71,7 +87,7 @@ final class SaveWorkoutTemplateUseCase {
 
             let totalSets = sets.count
             let avgReps = sets.map { $0.reps }.reduce(0, +) / max(sets.count, 1)
-            let exerciseName = exerciseNames[exerciseId] ?? "Exercise \(index + 1)"
+            let exerciseName = exerciseNames[exerciseId] ?? "Unknown Exercise"
 
             let templateExercise = TemplateExercise(
                 exerciseId: exerciseId,
@@ -103,6 +119,7 @@ final class SaveWorkoutTemplateUseCase {
 
 enum TemplateError: Error, LocalizedError {
     case emptyName
+    case nameTooLong
     case noExercises
     case invalidExercise
 
@@ -110,6 +127,8 @@ enum TemplateError: Error, LocalizedError {
         switch self {
         case .emptyName:
             return "Template name cannot be empty"
+        case .nameTooLong:
+            return "Template name cannot exceed 100 characters"
         case .noExercises:
             return "Template must have at least one exercise"
         case .invalidExercise:
