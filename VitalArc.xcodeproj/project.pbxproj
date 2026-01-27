@@ -168,6 +168,9 @@
 		STRPROGBLD01B2C3D4E5F6789 /* StrengthProgressionChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = STRPROG01B2C3D4E5F6789A0 /* StrengthProgressionChartView.swift */; };
 		TEDIT01A1B2C3D4E5F6789A0 /* TemplateEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = TEDIT02A1B2C3D4E5F6789A0 /* TemplateEditorView.swift */; };
 		TEPICK01A1B2C3D4E5F6789A0 /* TemplateExercisePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = TEPICK02A1B2C3D4E5F6789A0 /* TemplateExercisePickerView.swift */; };
+		STRINGS01A1B2C3D4E5F6789 /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = STRINGS02A1B2C3D4E5F6789 /* Strings.swift */; };
+		TMPLTST01A1B2C3D4E5F6789 /* TemplateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = TMPLTST02A1B2C3D4E5F6789 /* TemplateTests.swift */; };
+		MSCTST01A1B2C3D4E5F67890 /* MesocycleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = MSCTST02A1B2C3D4E5F67890 /* MesocycleTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -346,6 +349,9 @@
 		STRPROG01B2C3D4E5F6789A0 /* StrengthProgressionChartView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = StrengthProgressionChartView.swift; sourceTree = "<group>"; };
 		TEDIT02A1B2C3D4E5F6789A0 /* TemplateEditorView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TemplateEditorView.swift; path = Templates/TemplateEditorView.swift; sourceTree = "<group>"; };
 		TEPICK02A1B2C3D4E5F6789A0 /* TemplateExercisePickerView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TemplateExercisePickerView.swift; path = Templates/TemplateExercisePickerView.swift; sourceTree = "<group>"; };
+		STRINGS02A1B2C3D4E5F6789 /* Strings.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Strings.swift; sourceTree = "<group>"; };
+		TMPLTST02A1B2C3D4E5F6789 /* TemplateTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TemplateTests.swift; sourceTree = "<group>"; };
+		MSCTST02A1B2C3D4E5F67890 /* MesocycleTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MesocycleTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -807,6 +813,7 @@
 				09FDCE77DAF6751A77F53732 /* Entities */,
 				C6770ECE56FBAC93C60AED79 /* Repositories */,
 				92C4F9D444542E70F6886453 /* UseCases */,
+				STRINGS02A1B2C3D4E5F6789 /* Strings.swift */,
 			);
 			path = Domain;
 			sourceTree = "<group>";
@@ -815,8 +822,10 @@
 			isa = PBXGroup;
 			children = (
 				18547D5100E844205BA8F7DB /* HealthKitTests.swift */,
+				MSCTST02A1B2C3D4E5F67890 /* MesocycleTests.swift */,
 				40DBB4D6BEF314C57F47B3B1 /* NutritionTests.swift */,
 				00D74DB92F2EF06B8D62FF9B /* ProfileTests.swift */,
+				TMPLTST02A1B2C3D4E5F6789 /* TemplateTests.swift */,
 				A48F612DE6687B8B054BA9E3 /* VitalArcTests.swift */,
 				9424058DB3BFA461A3ED1456 /* WorkoutTests.swift */,
 			);
@@ -1252,6 +1261,7 @@
 				F1CFEDE5F4AC69454AEF24C3 /* FoodCard.swift in Sources */,
 				D8D19B029E2A22082ACA1A34 /* VitalEmptyState.swift in Sources */,
 				8F9C7F4FADF9D3455BF768D3 /* VitalBottomSheet.swift in Sources */,
+				STRINGS01A1B2C3D4E5F6789 /* Strings.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1260,8 +1270,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				3EC7F8F3D2E7735357137756 /* HealthKitTests.swift in Sources */,
+				MSCTST01A1B2C3D4E5F67890 /* MesocycleTests.swift in Sources */,
 				A65F84DA8F15FA4929E4A800 /* NutritionTests.swift in Sources */,
 				7EBEE1CA40FAD57CE6BAFDD6 /* ProfileTests.swift in Sources */,
+				TMPLTST01A1B2C3D4E5F6789 /* TemplateTests.swift in Sources */,
 				509EA0E480F447DA34EE0CEB /* VitalArcTests.swift in Sources */,
 				AFA02DDC99925265E63228A3 /* WorkoutTests.swift in Sources */,
 			);
@@ -1383,6 +1395,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1464,6 +1477,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

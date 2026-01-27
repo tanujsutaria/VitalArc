@@ -311,7 +311,7 @@ final class UpdateMesocycleProgressUseCase {
                 let exerciseId = set.exerciseId
 
                 // Get exercise name from lookup
-                let exerciseName = exerciseNames[exerciseId] ?? "Unknown Exercise"
+                let exerciseName = exerciseNames[exerciseId] ?? Strings.Fallback.unknownExercise
 
                 var data = exerciseData[exerciseId] ?? (name: exerciseName, weekData: [:])
                 var weekEntry = data.weekData[weekNumber] ?? (maxWeight: 0, totalReps: 0, sets: 0, bestSet: (weight: 0, reps: 0))

@@ -50,12 +50,14 @@ final class SaveWorkoutTemplateUseCase {
         name: String,
         category: TemplateCategory
     ) async throws -> WorkoutTemplate {
-        // Group sets by exercise
+        // Group sets by exercise and track first appearance order
         var exerciseGroups: [UUID: [WorkoutSet]] = [:]
+        var exerciseOrder: [UUID] = []  // Preserves workout exercise order
 
         for set in workout.sets {
             if exerciseGroups[set.exerciseId] == nil {
                 exerciseGroups[set.exerciseId] = []
+                exerciseOrder.append(set.exerciseId)  // Track order of first appearance
             }
             exerciseGroups[set.exerciseId]?.append(set)
         }
@@ -69,25 +71,26 @@ final class SaveWorkoutTemplateUseCase {
                         exerciseNames[exerciseId] = exercise.name
                     } else {
                         // Exercise not found in database - use fallback
-                        exerciseNames[exerciseId] = "Unknown Exercise"
+                        exerciseNames[exerciseId] = Strings.Fallback.unknownExercise
                     }
                 } catch {
                     // Log error but continue with fallback name
                     // In production, consider proper logging framework
                     print("Warning: Failed to fetch exercise \(exerciseId): \(error.localizedDescription)")
-                    exerciseNames[exerciseId] = "Unknown Exercise"
+                    exerciseNames[exerciseId] = Strings.Fallback.unknownExercise
                 }
             }
         }
 
-        // Create template exercises
+        // Create template exercises in workout order (order of first appearance)
         var templateExercises: [TemplateExercise] = []
-        for (index, element) in exerciseGroups.enumerated() {
-            let (exerciseId, sets) = element
+        for (index, exerciseId) in exerciseOrder.enumerated() {
+            guard let sets = exerciseGroups[exerciseId] else { continue }
 
             let totalSets = sets.count
-            let avgReps = sets.map { $0.reps }.reduce(0, +) / max(sets.count, 1)
-            let exerciseName = exerciseNames[exerciseId] ?? "Unknown Exercise"
+            // Explicit empty check with defense-in-depth max() for safety
+            let avgReps = sets.isEmpty ? 8 : sets.map { $0.reps }.reduce(0, +) / max(sets.count, 1)
+            let exerciseName = exerciseNames[exerciseId] ?? Strings.Fallback.unknownExercise
 
             let templateExercise = TemplateExercise(
                 exerciseId: exerciseId,

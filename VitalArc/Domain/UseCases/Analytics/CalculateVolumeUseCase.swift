@@ -113,7 +113,7 @@ final class CalculateVolumeUseCase {
         for (exerciseId, data) in exerciseData {
             // Fetch exercise name
             let exercise = try await workoutRepository.getExercise(id: exerciseId)
-            let exerciseName = exercise?.name ?? "Unknown Exercise"
+            let exerciseName = exercise?.name ?? Strings.Fallback.unknownExercise
 
             let avgWeight = data.weights.isEmpty ? 0 : data.weights.reduce(0, +) / Double(data.weights.count)
             let avgRIR = data.rirs.isEmpty ? nil : data.rirs.reduce(0, +) / Double(data.rirs.count)
