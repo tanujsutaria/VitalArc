@@ -24,7 +24,6 @@ concurrency:
 
 env:
   SCHEME: VitalArc
-  DESTINATION: platform=iOS Simulator,name=iPhone 15 Pro
 
 jobs:
   build-and-test:
@@ -46,6 +45,14 @@ jobs:
           sudo xcode-select -s "$XCODE_PATH/Contents/Developer"
           xcodebuild -version
 
+      - name: Find simulator
+        id: simulator
+        run: |
+          # Find first available iPhone simulator
+          SIMULATOR=$(xcrun simctl list devices available | grep -E "iPhone" | head -1 | sed 's/.*(\([^)]*\)).*/\1/')
+          echo "Using simulator: $SIMULATOR"
+          echo "udid=$SIMULATOR" >> $GITHUB_OUTPUT
+
       - name: Cache DerivedData
         uses: actions/cache@v4
         with:
@@ -58,7 +65,7 @@ jobs:
         run: |
           xcodebuild build \
             -scheme "$SCHEME" \
-            -destination "$DESTINATION" \
+            -destination "platform=iOS Simulator,id=${{ steps.simulator.outputs.udid }}" \
             -configuration Debug \
             CODE_SIGNING_ALLOWED=NO \
             | xcpretty --color && exit ${PIPESTATUS[0]}
@@ -67,7 +74,7 @@ jobs:
         run: |
           xcodebuild test \
             -scheme "$SCHEME" \
-            -destination "$DESTINATION" \
+            -destination "platform=iOS Simulator,id=${{ steps.simulator.outputs.udid }}" \
             -configuration Debug \
             -resultBundlePath TestResults.xcresult \
             CODE_SIGNING_ALLOWED=NO \
@@ -91,7 +98,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Run SwiftLint
-        uses: norio-nomura/action-swiftlint@3.2.1
+        uses: realm/SwiftLint@v0.57.0
         with:
           args: --reporter github-actions-logging
         continue-on-error: true
