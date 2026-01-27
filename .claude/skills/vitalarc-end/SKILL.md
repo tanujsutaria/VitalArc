@@ -10,25 +10,57 @@ disable-model-invocation: true
 
 You are ending a development session for the VitalArc iOS fitness app.
 
+## Platform Detection
+
+Detect the current platform and working directory:
+
+```bash
+# Detect platform
+PLATFORM=$(uname -s)
+if [ "$PLATFORM" = "Darwin" ]; then
+    PLATFORM_SHORT="mac"
+    PLATFORM_NAME="macOS (local)"
+else
+    PLATFORM_SHORT="cloud"
+    PLATFORM_NAME="Linux (cloud)"
+fi
+echo "Platform: $PLATFORM_NAME"
+echo "Working Directory: $(pwd)"
+```
+
+**Important**: All commands in this skill should be run from the repository root. The skill works on:
+- **macOS (local)**: Developer's local machine
+- **Linux/Cloud**: Claude Code cloud environment or CI/CD
+
 ## Session Summary (Auto-Fetched)
 
+- **Platform**: !`uname -s | sed 's/Darwin/macOS (local)/;s/Linux/Linux (cloud)/'`
+- **Working Directory**: !`pwd`
+- **Current Branch**: !`git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "Not in git repo"`
 - **Recent Commits**:
-!`cd /Users/tanujsutaria/Development/VitalArc && git log --oneline --since="6 hours ago" 2>/dev/null || git log --oneline -5`
+!`git log --oneline --since="6 hours ago" 2>/dev/null || git log --oneline -5`
 - **Current Status**:
-!`cd /Users/tanujsutaria/Development/VitalArc && git status --short`
+!`git status --short 2>/dev/null || echo "Not in git repo"`
 - **Files Changed**:
-!`cd /Users/tanujsutaria/Development/VitalArc && git diff --stat HEAD~5 2>/dev/null | tail -5`
+!`git diff --stat HEAD~5 2>/dev/null | tail -5`
 
 ## Phase 1: Verify Build Status
 
-Run a full build to ensure codebase compiles:
+**Note**: Build verification is only available on macOS with Xcode installed.
 
 ```bash
-cd /Users/tanujsutaria/Development/VitalArc
-xcodebuild -scheme VitalArc -destination 'platform=iOS Simulator,name=iPhone 17 Pro' build 2>&1 | grep -E "(error:|warning:|BUILD SUCCEEDED|BUILD FAILED)" | head -30
+PLATFORM=$(uname -s)
+if [ "$PLATFORM" = "Darwin" ]; then
+    echo "Running build verification on macOS..."
+    xcodebuild -scheme VitalArc -destination 'platform=iOS Simulator,name=iPhone 17 Pro' build 2>&1 | grep -E "(error:|warning:|BUILD SUCCEEDED|BUILD FAILED)" | head -30
+else
+    echo "Skipping build verification - not running on macOS"
+    echo "Build verification requires macOS with Xcode"
+    echo "Note: CI/CD will verify build when PR is created"
+fi
 ```
 
-If build fails, report errors but continue with documentation.
+If build fails (on macOS), report errors but continue with documentation.
 
 ## Phase 2: Gather Session Statistics
 
@@ -60,8 +92,9 @@ Read the current SESSION_LOG.md and update the most recent session entry:
 2. Fill in the "Session End" section:
    ```markdown
    ### Session End
+   - **Platform**: [macOS (local) / Linux (cloud)]
    - **Status**: [Summary of what was accomplished]
-   - **Build Status**: [Passing / Failing with reason]
+   - **Build Status**: [Passing / Failing with reason / Skipped (cloud environment)]
    - **Commits**: [Number] commits pushed
    - **Next Steps**: [What should be done next session]
    ```
@@ -100,6 +133,7 @@ If there are staged changes, commit using **Conventional Commits** format:
 git commit -m "docs(session): update session [N] documentation
 
 - [Summary of session work or $ARGUMENTS]
+- Platform: [macOS/cloud]
 
 Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
 ```
@@ -146,7 +180,7 @@ BRANCH=$(git rev-parse --abbrev-ref HEAD)
 git push -u origin "$BRANCH"
 ```
 
-Report push status.
+Report push status. If push fails due to network errors, retry up to 4 times with exponential backoff (2s, 4s, 8s, 16s).
 
 ## Phase 7.5: Create Pull Request (Optional)
 
@@ -154,14 +188,29 @@ If the session's work is ready for review, create a PR to merge to main:
 
 ```bash
 BRANCH=$(git rev-parse --abbrev-ref HEAD)
+
+# Detect platform for PR body
+PLATFORM=$(uname -s)
+if [ "$PLATFORM" = "Darwin" ]; then
+    PLATFORM_NAME="macOS (local)"
+    BUILD_STATUS="Build verified locally"
+else
+    PLATFORM_NAME="Linux (cloud)"
+    BUILD_STATUS="Build verification pending (CI/CD)"
+fi
+
 gh pr create --base main --head "$BRANCH" --title "<type>(<scope>): <description from $ARGUMENTS>" --body "## Summary
 [Auto-generated from session work]
 
 ## Changes
 - [List key changes from commits]
 
+## Environment
+- **Platform**: $PLATFORM_NAME
+- **Build Status**: $BUILD_STATUS
+
 ## Testing
-- [ ] Build passes
+- [ ] Build passes (verified by CI)
 - [ ] Manual testing completed
 
 ---
@@ -181,6 +230,10 @@ Output a final session summary:
               VITALARC SESSION COMPLETE
 ===========================================================
 
+ENVIRONMENT
+  Platform: [macOS (local) / Linux (cloud)]
+  Working Directory: [pwd]
+
 SESSION SUMMARY
   Duration: [estimate based on commits]
   Commits: [count]
@@ -196,7 +249,7 @@ COMMITS MADE
   [hash2] [message2]
 
 BUILD STATUS
-  [Passing / Failing]
+  [Passing / Failing / Skipped (cloud - will verify via CI)]
 
 PROJECT METRICS (updated)
   Design System Adoption: [X]%
@@ -213,6 +266,9 @@ NEXT SESSION PRIORITIES
   2. [priority 2]
   3. [priority 3]
 
+PLATFORM NOTES
+  [Any platform-specific notes, e.g., "Build skipped - verify on macOS or via CI"]
+
 ===========================================================
 ```
 
@@ -220,7 +276,7 @@ NEXT SESSION PRIORITIES
 
 Check for any cleanup needed:
 - Unstaged files that might need attention
-- Build warnings to address
+- Build warnings to address (if on macOS)
 - TODO comments added this session
 - Any temporary files to remove
 
@@ -229,8 +285,8 @@ Report any items needing attention next session.
 ## Final Checklist
 
 Before confirming session end:
-- [ ] Build passes (or failures documented)
-- [ ] SESSION_LOG.md updated
+- [ ] Build passes or verified via CI (or noted as pending for cloud sessions)
+- [ ] SESSION_LOG.md updated (includes platform info)
 - [ ] PROJECT_STATUS.md updated (if needed)
 - [ ] All documentation committed
 - [ ] Feature branch pushed to remote
@@ -238,3 +294,16 @@ Before confirming session end:
 - [ ] Next session priorities identified
 
 Confirm session has been properly finalized.
+
+## Platform-Specific Notes
+
+| Platform | Build Verification | PR CI Check | Local Testing |
+|----------|-------------------|-------------|---------------|
+| macOS (local) | ✅ Available | ✅ Redundant | ✅ Available |
+| Linux (cloud) | ❌ Skip | ✅ Required | ❌ Not available |
+
+When on Linux/cloud:
+- Build verification is skipped (no Xcode)
+- CI/CD workflows will verify build on PR
+- Mark build status as "Pending CI verification" in session log
+- Consider running `/vitalarc-end` on macOS for full verification before merging

@@ -9,13 +9,37 @@ argument-hint: [optional-focus-area]
 
 You are starting a new development session for the VitalArc iOS fitness app.
 
+## Platform Detection
+
+First, detect the current platform and working directory:
+
+```bash
+# Detect platform
+PLATFORM=$(uname -s)
+if [ "$PLATFORM" = "Darwin" ]; then
+    PLATFORM_SHORT="mac"
+    PLATFORM_NAME="macOS"
+else
+    PLATFORM_SHORT="cloud"
+    PLATFORM_NAME="Linux/Cloud"
+fi
+echo "Platform: $PLATFORM_NAME ($PLATFORM_SHORT)"
+echo "Working Directory: $(pwd)"
+```
+
+**Important**: All commands in this skill should be run from the repository root. The skill works on:
+- **macOS (local)**: Developer's local machine
+- **Linux/Cloud**: Claude Code cloud environment or CI/CD
+
 ## Current State (Auto-Fetched)
 
-- **Branch**: !`cd /Users/tanujsutaria/Development/VitalArc && git rev-parse --abbrev-ref HEAD`
+- **Platform**: !`uname -s | sed 's/Darwin/macOS (local)/;s/Linux/Linux (cloud)/'`
+- **Working Directory**: !`pwd`
+- **Branch**: !`git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "Not in git repo"`
 - **Last 5 Commits**:
-!`cd /Users/tanujsutaria/Development/VitalArc && git log --oneline -5`
+!`git log --oneline -5 2>/dev/null || echo "No commits found"`
 - **Uncommitted Changes**:
-!`cd /Users/tanujsutaria/Development/VitalArc && git status --short`
+!`git status --short 2>/dev/null || echo "Not in git repo"`
 
 ## Phase 1: Sync with Remote and Create Feature Branch
 
@@ -24,7 +48,6 @@ You are starting a new development session for the VitalArc iOS fitness app.
 Before switching branches, stash any uncommitted work to prevent loss:
 
 ```bash
-cd /Users/tanujsutaria/Development/VitalArc
 if [ -n "$(git status --porcelain)" ]; then
     echo "Stashing uncommitted changes..."
     git stash push -m "Auto-stash before session start $(date +%Y-%m-%d-%H%M)"
@@ -41,29 +64,46 @@ git pull origin main --ff-only || echo "Pull failed - check for conflicts"
 
 Report any merge conflicts or diverged branches.
 
-### Step 1c: Create feature branch with session versioning
+### Step 1c: Create feature branch with session versioning and platform
 
-Determine the session number from SESSION_LOG.md (major version), then find the next available minor version for today:
+Determine the session number from SESSION_LOG.md (major version), then find the next available minor version for today. Include platform in branch name:
 
 ```bash
+# Detect platform
+PLATFORM=$(uname -s)
+if [ "$PLATFORM" = "Darwin" ]; then
+    PLATFORM_SHORT="mac"
+else
+    PLATFORM_SHORT="cloud"
+fi
+
 # Get current session number from SESSION_LOG.md (e.g., "Session 8" -> 8)
 SESSION_NUM=$(grep -m1 "^## Session" SESSION_LOG.md | sed 's/## Session \([0-9]*\).*/\1/')
 
 # Find existing branches for this session today and get next minor version
 TODAY=$(date +%Y-%m-%d)
-EXISTING=$(git branch -a | grep -E "dev/session-${SESSION_NUM}\.[0-9]+-${TODAY}" | wc -l | tr -d ' ')
+EXISTING=$(git branch -a | grep -E "dev/${PLATFORM_SHORT}-session-${SESSION_NUM}\.[0-9]+-${TODAY}" | wc -l | tr -d ' ')
 MINOR=$EXISTING
 
-# Create branch: dev/session-8.0-2026-01-26 or dev/session-8.1-2026-01-26
-BRANCH_NAME="dev/session-${SESSION_NUM}.${MINOR}-${TODAY}"
+# Create branch: dev/mac-session-8.0-2026-01-26 or dev/cloud-session-8.0-2026-01-26
+BRANCH_NAME="dev/${PLATFORM_SHORT}-session-${SESSION_NUM}.${MINOR}-${TODAY}"
 git checkout -b "$BRANCH_NAME"
 echo "Created branch: $BRANCH_NAME"
+echo "Platform: $PLATFORM_SHORT"
 ```
 
 If $ARGUMENTS was provided, include it in the branch name:
 ```bash
-# Example: dev/nutrition-8.0-2026-01-26
-BRANCH_NAME="dev/$ARGUMENTS-${SESSION_NUM}.${MINOR}-${TODAY}"
+# Detect platform
+PLATFORM=$(uname -s)
+if [ "$PLATFORM" = "Darwin" ]; then
+    PLATFORM_SHORT="mac"
+else
+    PLATFORM_SHORT="cloud"
+fi
+
+# Example: dev/mac-nutrition-8.0-2026-01-26 or dev/cloud-nutrition-8.0-2026-01-26
+BRANCH_NAME="dev/${PLATFORM_SHORT}-$ARGUMENTS-${SESSION_NUM}.${MINOR}-${TODAY}"
 git checkout -b "$BRANCH_NAME"
 ```
 
@@ -118,12 +158,13 @@ Add a new session entry to SESSION_LOG.md with this format:
 
 ### Session Start
 - **Time**: [Current time]
+- **Platform**: [macOS (local) / Linux (cloud)]
 - **Focus**: [From $ARGUMENTS if provided, otherwise "General development"]
 - **Branch**: [Feature branch created for this session]
 - **Base**: main @ [Most recent commit hash and message]
 
 ### Pre-Session Status
-- **Build**: [Run quick build check]
+- **Build**: [Run quick build check - NOTE: Build only available on macOS]
 - **Uncommitted Changes**: [List any]
 - **Recent Activity**: [Summary of last session's work]
 
@@ -139,13 +180,20 @@ Add a new session entry to SESSION_LOG.md with this format:
 
 ## Phase 6: Build Verification
 
-Run a quick build to ensure codebase compiles:
+**Note**: Build verification is only available on macOS with Xcode installed.
 
 ```bash
-xcodebuild -scheme VitalArc -destination 'platform=iOS Simulator,name=iPhone 17 Pro' build 2>&1 | grep -E "(error:|warning:|BUILD SUCCEEDED|BUILD FAILED)" | head -20
+PLATFORM=$(uname -s)
+if [ "$PLATFORM" = "Darwin" ]; then
+    echo "Running build verification on macOS..."
+    xcodebuild -scheme VitalArc -destination 'platform=iOS Simulator,name=iPhone 17 Pro' build 2>&1 | grep -E "(error:|warning:|BUILD SUCCEEDED|BUILD FAILED)" | head -20
+else
+    echo "Skipping build verification - not running on macOS"
+    echo "Build verification requires macOS with Xcode"
+fi
 ```
 
-Report build status.
+Report build status (or skip notification if on Linux/cloud).
 
 ## Phase 7: Prepare Execution Context
 
@@ -155,6 +203,11 @@ Output a structured summary for the coding session:
 ===========================================================
               VITALARC SESSION INITIALIZED
 ===========================================================
+
+ENVIRONMENT
+  Platform: [macOS (local) / Linux (cloud)]
+  Working Directory: [pwd]
+  Build Available: [Yes / No - requires macOS]
 
 PROJECT STATE
   Feature Branch: [branch created for this session]
@@ -178,6 +231,7 @@ SESSION FOCUS
 
 WARNINGS
   [Any issues found: API keys, conflicts, errors]
+  [Platform-specific notes: e.g., "Build skipped - run on macOS"]
 
 ===========================================================
 ```
@@ -185,10 +239,23 @@ WARNINGS
 ## Final Output
 
 After completing all phases, confirm:
-1. Codebase is synced with main and builds
-2. Feature branch created for this session
-3. Session log entry created
-4. Context summary displayed
-5. Ready for coding work on feature branch
+1. Platform detected and recorded
+2. Codebase is synced with main (and builds on macOS)
+3. Feature branch created for this session (includes platform prefix)
+4. Session log entry created
+5. Context summary displayed
+6. Ready for coding work on feature branch
 
 If $ARGUMENTS was provided (e.g., "Nutrition" or "Design System"), focus the context summary on that area.
+
+## Platform-Specific Notes
+
+| Platform | Build | HealthKit Testing | Simulator |
+|----------|-------|-------------------|-----------|
+| macOS (local) | ✅ Full build | ✅ Physical device | ✅ Available |
+| Linux (cloud) | ❌ No Xcode | ❌ Not available | ❌ Not available |
+
+When on Linux/cloud:
+- Focus on code changes, documentation, and planning
+- Build verification must be done on macOS before merging
+- Use CI/CD workflows to validate builds on PRs
