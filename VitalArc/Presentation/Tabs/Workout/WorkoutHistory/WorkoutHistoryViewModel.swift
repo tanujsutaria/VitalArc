@@ -8,6 +8,7 @@
 import Foundation
 import Observation
 
+@MainActor
 @Observable
 final class WorkoutHistoryViewModel {
     private let repository: WorkoutRepository
@@ -88,19 +89,19 @@ enum DateRange: String, CaseIterable {
 
         switch self {
         case .week:
-            let start = calendar.date(byAdding: .day, value: -7, to: now)!
+            let start = calendar.date(byAdding: .day, value: -7, to: now) ?? now.addingTimeInterval(-7 * 86400)
             return (start, now)
         case .month:
-            let start = calendar.date(byAdding: .month, value: -1, to: now)!
+            let start = calendar.date(byAdding: .month, value: -1, to: now) ?? now.addingTimeInterval(-30 * 86400)
             return (start, now)
         case .threeMonths:
-            let start = calendar.date(byAdding: .month, value: -3, to: now)!
+            let start = calendar.date(byAdding: .month, value: -3, to: now) ?? now.addingTimeInterval(-90 * 86400)
             return (start, now)
         case .year:
-            let start = calendar.date(byAdding: .year, value: -1, to: now)!
+            let start = calendar.date(byAdding: .year, value: -1, to: now) ?? now.addingTimeInterval(-365 * 86400)
             return (start, now)
         case .all:
-            let start = calendar.date(byAdding: .year, value: -10, to: now)!
+            let start = calendar.date(byAdding: .year, value: -10, to: now) ?? now.addingTimeInterval(-3650 * 86400)
             return (start, now)
         }
     }

@@ -17,6 +17,7 @@ final class ExerciseModel {
     var secondaryMuscles: [String]
     var equipment: String
     var instructions: String?
+    var isCustom: Bool
 
     // Enhanced metadata
     var videoURL: String?
@@ -38,6 +39,7 @@ final class ExerciseModel {
         secondaryMuscles: [String] = [],
         equipment: String,
         instructions: String? = nil,
+        isCustom: Bool = false,
         videoURL: String? = nil,
         imageURL: String? = nil,
         difficulty: String? = nil,
@@ -56,6 +58,7 @@ final class ExerciseModel {
         self.secondaryMuscles = secondaryMuscles
         self.equipment = equipment
         self.instructions = instructions
+        self.isCustom = isCustom
         self.videoURL = videoURL
         self.imageURL = imageURL
         self.difficulty = difficulty
@@ -89,6 +92,7 @@ final class ExerciseModel {
             secondaryMuscles: secondaryMuscles.compactMap { MuscleGroup(rawValue: $0) },
             equipment: Equipment(rawValue: equipment) ?? .bodyweight,
             instructions: instructions,
+            isCustom: isCustom,
             videoURL: videoURL,
             imageURL: imageURL,
             difficulty: difficulty.flatMap { ExerciseDifficulty(rawValue: $0) },
@@ -121,6 +125,7 @@ final class ExerciseModel {
             secondaryMuscles: exercise.secondaryMuscles.map { $0.rawValue },
             equipment: exercise.equipment.rawValue,
             instructions: exercise.instructions,
+            isCustom: exercise.isCustom,
             videoURL: exercise.videoURL,
             imageURL: exercise.imageURL,
             difficulty: exercise.difficulty?.rawValue,

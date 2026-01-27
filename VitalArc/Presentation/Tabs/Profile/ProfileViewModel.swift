@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 
+@MainActor
 @Observable
 final class ProfileViewModel {
     private let userRepository: UserRepository

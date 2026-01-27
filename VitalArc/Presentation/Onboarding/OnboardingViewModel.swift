@@ -16,6 +16,7 @@ enum OnboardingStep: Int, CaseIterable {
 }
 
 /// View model for managing onboarding state and user input
+@MainActor
 @Observable
 final class OnboardingViewModel {
     private let userRepository: UserRepository
