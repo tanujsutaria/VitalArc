@@ -45,7 +45,6 @@ final class ProfileViewModel {
 
     // MARK: - Profile Operations
 
-    @MainActor
     func loadProfile() async {
         isLoading = true
         errorMessage = nil
@@ -66,7 +65,6 @@ final class ProfileViewModel {
         }
     }
 
-    @MainActor
     func syncFromHealthKit() async {
         guard let healthRepository = healthRepository else { return }
 
@@ -120,7 +118,6 @@ final class ProfileViewModel {
         errorMessage = nil
     }
 
-    @MainActor
     func saveProfile() async {
         guard let currentProfile = profile else { return }
 

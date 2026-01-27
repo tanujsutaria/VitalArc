@@ -31,7 +31,6 @@ final class HealthDashboardViewModel {
     // MARK: - Data Loading
 
     /// Load today's health metrics
-    @MainActor
     func loadTodayMetrics() async {
         isLoading = true
         error = nil
@@ -47,7 +46,6 @@ final class HealthDashboardViewModel {
     }
 
     /// Load health metrics for the past week
-    @MainActor
     func loadWeekMetrics() async {
         isLoading = true
         error = nil
@@ -68,14 +66,12 @@ final class HealthDashboardViewModel {
     }
 
     /// Load all metrics (today + week)
-    @MainActor
     func loadAllMetrics() async {
         await loadTodayMetrics()
         await loadWeekMetrics()
     }
 
     /// Refresh all metrics
-    @MainActor
     func refresh() async {
         await syncFromHealthKit()
         await loadAllMetrics()
@@ -84,7 +80,6 @@ final class HealthDashboardViewModel {
     // MARK: - HealthKit Integration
 
     /// Request HealthKit permissions
-    @MainActor
     func requestHealthKitPermissions() async {
         do {
             let authorized = try await healthRepository.requestHealthKitAuthorization()
@@ -99,7 +94,6 @@ final class HealthDashboardViewModel {
     }
 
     /// Sync data from HealthKit
-    @MainActor
     func syncFromHealthKit() async {
         isLoading = true
         error = nil

@@ -72,7 +72,6 @@ final class OnboardingViewModel {
 
     // MARK: - Completion
 
-    @MainActor
     func completeOnboarding() async throws {
         guard canProceedFromProfileSetup else {
             throw OnboardingError.invalidProfileData
@@ -110,7 +109,6 @@ final class OnboardingViewModel {
         }
     }
 
-    @MainActor
     func skipHealthKitSetup() async {
         // Just complete onboarding without HealthKit
         do {

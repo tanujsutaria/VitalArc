@@ -33,7 +33,6 @@ final class WorkoutLoggingViewModel {
 
     // MARK: - Exercise Management
 
-    @MainActor
     func addExercise(_ exercise: Exercise) async {
         guard !selectedExercises.contains(where: { $0.id == exercise.id }) else {
             return
@@ -107,7 +106,6 @@ final class WorkoutLoggingViewModel {
 
     // MARK: - Workout Completion
 
-    @MainActor
     func saveWorkout() async {
         isLoading = true
         errorMessage = nil

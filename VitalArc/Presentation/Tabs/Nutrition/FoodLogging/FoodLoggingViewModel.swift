@@ -27,7 +27,6 @@ final class FoodLoggingViewModel {
     }
 
     /// Load food entries for selected date
-    @MainActor
     func loadEntries() async {
         isLoading = true
         errorMessage = nil
@@ -42,7 +41,6 @@ final class FoodLoggingViewModel {
     }
 
     /// Log a food entry
-    @MainActor
     func logFood(_ food: Food, quantity: Double, meal: MealType) async {
         do {
             _ = try await logFoodUseCase.execute(
@@ -58,7 +56,6 @@ final class FoodLoggingViewModel {
     }
 
     /// Delete a food entry
-    @MainActor
     func deleteEntry(_ entry: FoodEntry) async {
         do {
             try await repository.deleteFoodEntry(id: entry.id)

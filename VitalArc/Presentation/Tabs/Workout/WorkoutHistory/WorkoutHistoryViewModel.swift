@@ -22,7 +22,6 @@ final class WorkoutHistoryViewModel {
         self.repository = repository
     }
 
-    @MainActor
     func loadWorkouts() async {
         isLoading = true
         errorMessage = nil
@@ -37,7 +36,6 @@ final class WorkoutHistoryViewModel {
         isLoading = false
     }
 
-    @MainActor
     func deleteWorkout(_ workout: Workout) async {
         do {
             try await repository.deleteWorkout(id: workout.id)
@@ -47,7 +45,6 @@ final class WorkoutHistoryViewModel {
         }
     }
 
-    @MainActor
     func selectDateRange(_ range: DateRange) async {
         selectedDateRange = range
         await loadWorkouts()
