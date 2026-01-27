@@ -10,9 +10,11 @@ import Foundation
 /// Saves a workout template to the repository
 final class SaveWorkoutTemplateUseCase {
     private let templateRepository: TemplateRepository
+    private let workoutRepository: WorkoutRepository?
 
-    init(templateRepository: TemplateRepository) {
+    init(templateRepository: TemplateRepository, workoutRepository: WorkoutRepository? = nil) {
         self.templateRepository = templateRepository
+        self.workoutRepository = workoutRepository
     }
 
     /// Save a new or updated template
@@ -27,7 +29,7 @@ final class SaveWorkoutTemplateUseCase {
         }
 
         // Check if template already exists
-        if let existing = try? await templateRepository.getTemplate(id: template.id) {
+        if let _ = try? await templateRepository.getTemplate(id: template.id) {
             // Update existing template
             try await templateRepository.updateTemplate(template)
         } else {
@@ -52,22 +54,36 @@ final class SaveWorkoutTemplateUseCase {
             exerciseGroups[set.exerciseId]?.append(set)
         }
 
+        // Look up exercise names
+        var exerciseNames: [UUID: String] = [:]
+        if let workoutRepo = workoutRepository {
+            for exerciseId in exerciseGroups.keys {
+                if let exercise = try? await workoutRepo.getExercise(id: exerciseId) {
+                    exerciseNames[exerciseId] = exercise.name
+                }
+            }
+        }
+
         // Create template exercises
-        let templateExercises = exerciseGroups.enumerated().map { (index, element) -> TemplateExercise in
+        var templateExercises: [TemplateExercise] = []
+        for (index, element) in exerciseGroups.enumerated() {
             let (exerciseId, sets) = element
 
             let totalSets = sets.count
-            let avgReps = sets.map { $0.reps }.reduce(0, +) / sets.count
+            let avgReps = sets.map { $0.reps }.reduce(0, +) / max(sets.count, 1)
+            let exerciseName = exerciseNames[exerciseId] ?? "Exercise \(index + 1)"
 
-            return TemplateExercise(
+            let templateExercise = TemplateExercise(
                 exerciseId: exerciseId,
+                exerciseName: exerciseName,
                 orderIndex: index,
                 sets: totalSets,
                 repsMin: max(avgReps - 2, 1),
                 repsMax: avgReps + 2,
-                restSeconds: 90, // Default rest time
+                restSeconds: 90,
                 notes: nil
             )
+            templateExercises.append(templateExercise)
         }
 
         let durationMinutes = workout.duration.map { Int($0 / 60) } ?? 60

@@ -62,6 +62,7 @@ struct WorkoutTemplate: Identifiable, Equatable {
 struct TemplateExercise: Identifiable, Equatable {
     let id: UUID
     let exerciseId: UUID
+    let exerciseName: String
     let orderIndex: Int
     var sets: Int
     var repsMin: Int
@@ -72,6 +73,7 @@ struct TemplateExercise: Identifiable, Equatable {
     init(
         id: UUID = UUID(),
         exerciseId: UUID,
+        exerciseName: String,
         orderIndex: Int,
         sets: Int = 3,
         repsMin: Int = 8,
@@ -81,6 +83,7 @@ struct TemplateExercise: Identifiable, Equatable {
     ) {
         self.id = id
         self.exerciseId = exerciseId
+        self.exerciseName = exerciseName
         self.orderIndex = orderIndex
         self.sets = sets
         self.repsMin = repsMin

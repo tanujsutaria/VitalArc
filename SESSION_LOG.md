@@ -22,10 +22,38 @@
 - **TODOs/FIXMEs**: 0
 
 ### Planned Work
-[To be determined based on user requests]
+- Fix exercise name display in workout templates
 
 ### Work Completed
-[To be filled during session]
+#### Fix: Exercise Names Not Displaying in Templates
+**Issue**: When viewing template details or starting a workout from a template, exercise names showed as "Exercise 1", "Exercise 2" instead of actual names like "Barbell Bench Press".
+
+**Root Cause**: `TemplateExercise` only stored `exerciseId` (UUID) but not the exercise name. The name was available during editing but discarded when saving.
+
+**Changes Made**:
+1. **Domain Entity** (`WorkoutTemplate.swift`):
+   - Added `exerciseName: String` property to `TemplateExercise`
+
+2. **Data Model** (`WorkoutTemplateModel.swift`):
+   - Added `exerciseName` to `CodableTemplateExercise` for persistence
+   - Made optional for backward compatibility with existing data
+
+3. **Template Editor** (`TemplateEditorView.swift`):
+   - Updated `saveTemplate()` to include exercise name when creating `TemplateExercise`
+
+4. **Template Display** (`TemplateDetailView.swift`, `WorkoutTemplatesView.swift`):
+   - `ExerciseDetailRow` now displays `exercise.exerciseName`
+   - `StartWorkoutFromTemplateSheet` now shows actual exercise names
+
+5. **Use Case** (`SaveWorkoutTemplateUseCase.swift`):
+   - Added `workoutRepository` dependency to look up exercise names
+   - Updated `executeFromWorkout()` to fetch exercise names from repository
+
+6. **Dependency Wiring** (`MainTabView.swift`):
+   - Passed `workoutRepository` to `SaveWorkoutTemplateUseCase`
+
+7. **Alternative Template View** (`CreateTemplateView.swift`):
+   - Updated to include `exerciseName` in saved templates
 
 ### Session End
 [To be filled by /vitalarc-end]

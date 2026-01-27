@@ -202,9 +202,9 @@ struct ExerciseDetailRow: View {
 
             // Exercise details
             VStack(alignment: .leading, spacing: Spacing.sm) {
-                Text("Exercise \(index + 1)")
-                    .font(.vitalCaption)
-                    .foregroundStyle(Color.vitalAdaptiveTextSecondary)
+                Text(exercise.exerciseName)
+                    .font(.vitalH4)
+                    .foregroundStyle(Color.vitalAdaptiveTextPrimary)
 
                 VStack(alignment: .leading, spacing: Spacing.xs) {
                     HStack {
@@ -248,9 +248,9 @@ struct ExerciseDetailRow: View {
                 name: "Push Day",
                 description: "Chest, shoulders, and triceps focus",
                 exercises: [
-                    TemplateExercise(exerciseId: UUID(), orderIndex: 0, sets: 4, repsMin: 8, repsMax: 12, restSeconds: 90),
-                    TemplateExercise(exerciseId: UUID(), orderIndex: 1, sets: 3, repsMin: 10, repsMax: 15, restSeconds: 60),
-                    TemplateExercise(exerciseId: UUID(), orderIndex: 2, sets: 3, repsMin: 12, repsMax: 15, restSeconds: 60)
+                    TemplateExercise(exerciseId: UUID(), exerciseName: "Barbell Bench Press", orderIndex: 0, sets: 4, repsMin: 8, repsMax: 12, restSeconds: 90),
+                    TemplateExercise(exerciseId: UUID(), exerciseName: "Incline Dumbbell Press", orderIndex: 1, sets: 3, repsMin: 10, repsMax: 15, restSeconds: 60),
+                    TemplateExercise(exerciseId: UUID(), exerciseName: "Cable Fly", orderIndex: 2, sets: 3, repsMin: 12, repsMax: 15, restSeconds: 60)
                 ],
                 category: .pushPullLegs,
                 estimatedDuration: 60

@@ -120,6 +120,7 @@ struct CreateTemplateView: View {
         let exercises = templateExercises.map { builder in
             TemplateExercise(
                 exerciseId: builder.exerciseId,
+                exerciseName: builder.exerciseName,
                 orderIndex: builder.orderIndex,
                 sets: builder.sets,
                 repsMin: builder.repsMin,
