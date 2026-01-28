@@ -34,18 +34,16 @@ TODAY=$(date +%Y-%m-%d)
 CURRENT_SESSION=$(grep -E "^## Session [0-9]+" SESSION_LOG.md | head -1 | sed 's/## Session \([0-9]*\).*/\1/')
 LAST_DATE=$(grep -E "^## Session ${CURRENT_SESSION:-0}" SESSION_LOG.md | head -1 | grep -oE "[A-Z][a-z]+ [0-9]+, [0-9]+" | xargs -I{} date -j -f "%B %d, %Y" "{}" +%Y-%m-%d 2>/dev/null)
 [ "$LAST_DATE" = "$TODAY" ] && SESSION=$CURRENT_SESSION || SESSION=$((${CURRENT_SESSION:-0} + 1))
-MINOR=$(git branch -a | grep -cE "claude/mac-[a-z]+-${SESSION}\\.[0-9]+-${TODAY}" || echo 0)
+MINOR=$(git branch -a | grep -cE "dev/mac-[a-z]+-${SESSION}\\.[0-9]+-${TODAY}" || echo 0)
 ```
 
 ### 3. Create branch
 
-Format: `claude/mac-<focus>-<session>.<minor>-YYYY-MM-DD`
-
-> **Note**: The `claude/` prefix is required by the Claude Code platform for push permissions.
+Format: `dev/mac-<focus>-<session>.<minor>-YYYY-MM-DD`
 
 ```bash
 FOCUS="mac-${ARGUMENTS:-session}"
-BRANCH="claude/${FOCUS}-${SESSION}.${MINOR}-${TODAY}"
+BRANCH="dev/${FOCUS}-${SESSION}.${MINOR}-${TODAY}"
 git checkout -b "$BRANCH"
 ```
 
