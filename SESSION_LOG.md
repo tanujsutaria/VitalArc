@@ -1,5 +1,60 @@
 # VitalArc Development Session Log
 
+## Session 12.1 - January 28, 2026 (Cloud)
+
+### Session Start
+- **Time**: After Session 12
+- **Platform**: cloud ☁️
+- **Focus**: Skills review and best practices alignment
+- **Branch**: claude/review-skills-tasks-T3zpl
+- **Base**: main @ 4881616 docs(session): initialize Session 12 cloud session (#18)
+
+### Environment
+- **Build Capable**: No
+- **Test Capable**: No
+
+### Pre-Session Status
+- **Build**: ⏭️ Skipped (cloud)
+- **Uncommitted Changes**: None
+- **Recent Activity**: Session 12 completed design system gap fixes
+
+### Session Goals
+1. Review skills against Anthropic task best practices
+2. Implement recommended improvements without losing functionality
+
+### Work Log
+| Time | Action | Files | Notes |
+|------|--------|-------|-------|
+| - | Analyzed existing skills | 6 SKILL.md files | Found gaps vs best practices |
+| - | Created shared resources | _shared/ folder | Templates + scripts |
+| - | Updated all skills | 6 SKILL.md files | Added safety flags, Task tool guidance |
+| - | Fixed legacy skills | vitalarc-start/end | Now truly delegate |
+| - | Session ended | - | Pushed to remote |
+
+### Work Completed
+- **Analysis**: Reviewed all 6 skills against Anthropic's task best practices documentation
+- **Safety**: Added `disable-model-invocation: true` to all skills (prevents unintended auto-invocation)
+- **Shared Resources**: Created `.claude/skills/_shared/` with:
+  - `templates/session-log-workstation.md` - Workstation session template
+  - `templates/session-log-cloud.md` - Cloud session template
+  - `templates/session-end.md` - Session end template
+  - `scripts/verify-session.sh` - Session verification script
+  - `scripts/determine-session.sh` - Session number calculation
+- **Task Tool Guidance**: Added explicit instructions to use Task tool with `subagent_type: Explore` for focus suggestions
+- **Legacy Skills Fixed**: `vitalarc-start` and `vitalarc-end` now truly delegate to platform-specific skills instead of duplicating steps
+- **Template References**: All skills now reference shared templates
+
+### Session End
+- **Time**: Session complete
+- **Duration**: ~30 min
+- **Status**: Complete
+- **Build**: ⏭️ Not verified (cloud)
+- **Tests**: N/A (cloud)
+- **Commits**: 2 commits
+- **Next**: Merge to main, continue with roadmap features
+
+---
+
 ## Session 12 - January 28, 2026 (Morning)
 
 ### Session Start
