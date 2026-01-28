@@ -1,17 +1,18 @@
 ---
 name: vitalarc-end
 description: Finalize a VitalArc development session with auto-detected platform. Prefer /vitalarc-end-workstation (Mac) or /vitalarc-end-cloud (phone/browser) for platform-specific workflows.
-allowed-tools: Read, Grep, Glob, Bash, Write, Edit
+disable-model-invocation: true
+allowed-tools: Read, Bash
 argument-hint: [summary]
 ---
 
 # VitalArc Session End (Auto-detect)
 
-> **Prefer platform-specific skills:**
+> **Prefer platform-specific skills for explicit control:**
 > - `/vitalarc-end-workstation` — Mac, with build verification
 > - `/vitalarc-end-cloud` — Phone/browser, no build check
 
-Auto-detects platform and finalizes accordingly.
+This skill auto-detects platform and **delegates** to the appropriate platform-specific skill.
 
 ## Current State
 
@@ -22,56 +23,64 @@ Auto-detects platform and finalizes accordingly.
 
 ## Steps
 
-### 1. Detect platform and delegate
+### 1. Detect platform
 
 ```bash
 PLATFORM=$([ "$(uname -s)" = "Darwin" ] && echo "mac" || echo "cloud")
+echo "Detected platform: $PLATFORM"
 ```
 
-If `mac`: Follow `/vitalarc-end-workstation` workflow (with build check).
-If `cloud`: Follow `/vitalarc-end-cloud` workflow (skip builds).
+### 2. Delegate to platform-specific skill
 
-### 2. Build check (macOS only)
+Based on detected platform, **invoke the appropriate skill**:
 
-```bash
-[ "$(uname -s)" = "Darwin" ] && xcodebuild -scheme VitalArc -destination 'platform=iOS Simulator,name=iPhone 17 Pro' build 2>&1 | grep -E "(error:|BUILD)"
+#### If macOS (Darwin):
+
+Tell the user:
+```
+Platform detected: macOS
+
+Please run: /vitalarc-end-workstation $ARGUMENTS
+
+This will verify the build before completing the session.
 ```
 
-### 3. Gather stats
+Then follow ALL steps from `/vitalarc-end-workstation` with `$ARGUMENTS`.
 
-```bash
-git log --oneline --since="6 hours ago"
-git diff --stat HEAD~10 2>/dev/null | tail -3
+#### If Linux/Cloud:
+
+Tell the user:
+```
+Platform detected: cloud
+
+Please run: /vitalarc-end-cloud $ARGUMENTS
+
+This will complete without build verification (CI will validate).
 ```
 
-### 4. Update SESSION_LOG.md
+Then follow ALL steps from `/vitalarc-end-cloud` with `$ARGUMENTS`.
 
-Complete Work Log table, fill in "Work Completed" and "Session End" sections.
+### 3. Output delegation notice
 
-### 5. Update PROJECT_STATUS.md and README.md
-
-If features changed, update status files accordingly.
-
-### 6. Update state file
-
-```bash
-BRANCH=$(git rev-parse --abbrev-ref HEAD)
-SESSION=$(echo "$BRANCH" | grep -oE '[0-9]+\.[0-9]+' | head -1 | cut -d. -f1)
-cat > .claude/session-state.json << EOF
-{"current_session":${SESSION:-0},"branch":"$BRANCH","platform":"$PLATFORM","status":"completed","ended_at":"$(date -u +%Y-%m-%dT%H:%M:%SZ)"}
-EOF
+```
+═══════════════════════════════════════════════════════
+              PLATFORM AUTO-DETECTION
+═══════════════════════════════════════════════════════
+Detected:  [mac/cloud]
+Skill:     /vitalarc-end-[workstation/cloud]
+Arguments: [$ARGUMENTS or "none"]
+───────────────────────────────────────────────────────
+Tip: Use platform-specific skills directly for
+     explicit control over your session type.
+═══════════════════════════════════════════════════════
 ```
 
-### 7. Commit and push
+## Why Delegate?
 
-```bash
-git add SESSION_LOG.md PROJECT_STATUS.md README.md .claude/session-state.json
-git commit -m "docs(session): update session [N] documentation
+The platform-specific skills (`/vitalarc-end-workstation` and `/vitalarc-end-cloud`) contain the complete, authoritative workflows. This skill exists for convenience but delegates to avoid:
 
-Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
-git push -u origin "$(git rev-parse --abbrev-ref HEAD)"
-```
+1. **Code duplication** — Changes only need to be made in one place
+2. **Inconsistency** — Platform skills are always the source of truth
+3. **Maintenance burden** — Fewer places to update when workflows change
 
-### 8. Create PR (optional)
-
-If ready for review, use `gh pr create` with conventional commit title.
+For full functionality, use the platform-specific skills directly.

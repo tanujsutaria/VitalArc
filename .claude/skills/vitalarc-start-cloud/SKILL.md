@@ -1,6 +1,7 @@
 ---
 name: vitalarc-start-cloud
 description: Initialize a VitalArc cloud development session. Use when starting work from phone or browser, or for bug fixes, documentation, and small targeted changes that don't require Xcode builds.
+disable-model-invocation: true
 allowed-tools: Read, Grep, Glob, Bash, Write, Edit, Task
 argument-hint: [focus-area]
 ---
@@ -29,7 +30,12 @@ git fetch origin && git checkout main && git pull origin main --ff-only
 
 Session numbers increment on date change. Same-day sessions use minor versions (11.0, 11.1).
 
+Use the shared script or inline logic:
 ```bash
+# Option 1: Use shared script
+source .claude/skills/_shared/scripts/determine-session.sh cloud
+
+# Option 2: Inline (if script unavailable)
 TODAY=$(date +%Y-%m-%d)
 CURRENT_SESSION=$(grep -E "^## Session [0-9]+" SESSION_LOG.md | head -1 | sed 's/## Session \([0-9]*\).*/\1/')
 LAST_DATE=$(grep -E "^## Session ${CURRENT_SESSION:-0}" SESSION_LOG.md | head -1 | grep -oE "[A-Z][a-z]+ [0-9]+, [0-9]+" | xargs -I{} date -j -f "%B %d, %Y" "{}" +%Y-%m-%d 2>/dev/null)
@@ -61,18 +67,25 @@ Read: CLAUDE.md, PROJECT_STATUS.md (focus on Known Issues), SESSION_LOG.md (last
 
 ### 6. Suggest focus (if none provided)
 
-If no `$ARGUMENTS`, suggest from **Known Issues** in PROJECT_STATUS.md or documentation tasks. Cloud is best for logic bugs, docs, and small refactors—not UI changes.
+If no `$ARGUMENTS`, analyze the project to suggest focus areas appropriate for cloud sessions.
+
+**Use the Task tool** with `subagent_type: Explore` to:
+- Review PROJECT_STATUS.md Known Issues
+- Check documentation tasks in README.md
+- Review recent SESSION_LOG.md entries
+
+Cloud is best for logic bugs, docs, and small refactors—not UI changes.
 
 ### 7. Create session log entry
 
-Add to SESSION_LOG.md:
+Add to SESSION_LOG.md using the template from [session-log-cloud.md](../_shared/templates/session-log-cloud.md):
 
 ```markdown
 ## Session [N] - [Month Day, Year] ([Time of Day])
 
 ### Session Start
 - **Time**: [specific time, e.g., "3:45 PM PST" or "Evening"]
-- **Platform**: cloud ☁️
+- **Platform**: cloud
 - **Focus**: [focus or "General"]
 - **Branch**: [branch]
 - **Base**: main @ [commit hash] [commit message]
@@ -82,7 +95,7 @@ Add to SESSION_LOG.md:
 - **Test Capable**: No
 
 ### Pre-Session Status
-- **Build**: ⏭️ Skipped (cloud)
+- **Build**: Skipped (cloud)
 - **Uncommitted Changes**: [list or None]
 - **Recent Activity**: [summary of previous session's outcome]
 
@@ -106,7 +119,7 @@ Add to SESSION_LOG.md:
 
 ```
 ═══════════════════════════════════════════════════════
-         VITALARC CLOUD SESSION INITIALIZED ☁️
+         VITALARC CLOUD SESSION INITIALIZED
 ═══════════════════════════════════════════════════════
 Branch:   [branch]
 Session:  [N]
