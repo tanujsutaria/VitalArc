@@ -21,11 +21,13 @@ HealthKit features require a physical device with Apple Developer account and He
 
 ## Git Workflow
 
-**Branch naming**: `dev/<platform>-<focus>-<session>.<minor>-YYYY-MM-DD`
+**Branch naming**: `claude/<platform>-<focus>-<session>.<minor>-YYYY-MM-DD`
+
+> **Note**: The `claude/` prefix is required by the Claude Code platform for push permissions.
 
 | Component | Description | Required |
 |-----------|-------------|----------|
-| `dev/` | Branch prefix | Yes |
+| `claude/` | Branch prefix (platform requirement) | Yes |
 | `<platform>` | `mac` or `cloud` | Yes |
 | `<focus>` | Feature area (e.g., `nutrition`, `workout`) or `session` for general work | Yes |
 | `<session>` | Session number from SESSION_LOG.md | Yes |
@@ -33,13 +35,13 @@ HealthKit features require a physical device with Apple Developer account and He
 | `<date>` | ISO date (YYYY-MM-DD) | Yes |
 
 **Valid examples**:
-- `dev/mac-nutrition-12.0-2026-01-27` - Working on nutrition feature on macOS
-- `dev/mac-session-12.0-2026-01-27` - General work on macOS
-- `dev/cloud-workout-12.0-2026-01-27` - Working on workout on cloud
+- `claude/mac-nutrition-12.0-2026-01-27` - Working on nutrition feature on macOS
+- `claude/mac-session-12.0-2026-01-27` - General work on macOS
+- `claude/cloud-workout-12.0-2026-01-27` - Working on workout on cloud
 
 **Invalid examples**:
-- `claude/vitalarc-start-UA45Z` - Wrong prefix, missing required parts
-- `dev/nutrition-12.0-2026-01-27` - Missing platform
+- `claude/vitalarc-start-UA45Z` - Missing required parts (platform, session, date)
+- `dev/nutrition-12.0-2026-01-27` - Wrong prefix (must be claude/)
 - `feature/nutrition` - Wrong prefix, missing session info
 
 **Conventional Commits**: All commits must follow this format:
