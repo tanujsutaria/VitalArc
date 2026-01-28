@@ -19,20 +19,18 @@
 - **Recent Activity**: Session 12.1 completed skills review and best practices alignment
 
 ### Session Goals
-1. [To be determined based on user request]
-
-### Suggested Focus Areas (Cloud-Appropriate)
-1. **TRIMP Algorithm for Strain Tracking** - Strain UI is complete; only calculation missing. Pure algorithm implementation, no UI changes needed.
-2. **Icon Sizing Design System Gap** - Fix ~28 instances of `.font(.system(size:weight:))` with standardized tokens. Quick win.
-3. **Adaptive TDEE Estimation** - Pure nutrition algorithm to enhance personalization.
+1. Fix session numbering logic in skills
 
 ### Work Log
 | Time | Action | Files | Notes |
 |------|--------|-------|-------|
 | 4:10 PM | Session started | - | General cloud session |
+| 4:15 PM | Fixed session numbering | determine-session.sh, SKILL.md files | Minor version logic now counts SESSION_LOG entries |
 
 ### Work Completed
-[To be filled]
+- **Fixed determine-session.sh**: Now properly counts SESSION_LOG.md entries to determine minor versions (12 → 12.1 → 12.2)
+- **Updated vitalarc-start-cloud SKILL.md**: Clearer session numbering rules, uses FULL_SESSION variable
+- **Updated vitalarc-start-workstation SKILL.md**: Same improvements for consistency
 
 ### Session End
 [To be filled by /vitalarc-end-cloud]
