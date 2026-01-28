@@ -72,7 +72,7 @@ struct CreateMesocycleView: View {
     private var noTemplatesView: some View {
         VStack(spacing: Spacing.lg) {
             Image(systemName: "doc.badge.plus")
-                .font(.system(size: 64))
+                .font(.system(size: Spacing.iconHero))
                 .foregroundStyle(Color.vitalAdaptiveTextTertiary)
 
             Text("No Templates Yet")

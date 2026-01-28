@@ -197,7 +197,7 @@ struct HRVTrendChartView: View {
     private var emptyState: some View {
         VStack(spacing: Spacing.sm) {
             Image(systemName: "heart.text.square")
-                .font(.system(size: 36))
+                .font(.system(size: Spacing.icon2XLarge))
                 .foregroundStyle(Color.vitalAdaptiveTextSecondary)
             Text("No HRV data available")
                 .font(.vitalBody)
@@ -519,7 +519,7 @@ struct SleepTrendChartView: View {
     private var emptyState: some View {
         VStack(spacing: Spacing.sm) {
             Image(systemName: "moon.zzz")
-                .font(.system(size: 36))
+                .font(.system(size: Spacing.icon2XLarge))
                 .foregroundStyle(Color.vitalAdaptiveTextSecondary)
             Text("No sleep data available")
                 .font(.vitalBody)

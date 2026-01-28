@@ -21,7 +21,7 @@ struct TemplateDetailView: View {
                 // Header
                 VStack(spacing: Spacing.md) {
                     Image(systemName: template.category.icon)
-                        .font(.system(size: 60))
+                        .font(.system(size: Spacing.iconGiant))
                         .foregroundStyle(Color.vitalPrimary)
 
                     Text(template.name)

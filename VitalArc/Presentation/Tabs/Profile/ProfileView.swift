@@ -535,7 +535,7 @@ struct StatCardWithSource: View {
                 HStack(spacing: 2) {
                     if source.contains("Apple Health") {
                         Image(systemName: "heart.fill")
-                            .font(.system(size: 8))
+                            .font(.system(size: Spacing.iconTiny))
                             .foregroundStyle(Color.vitalDanger)
                     }
                     Text(source)

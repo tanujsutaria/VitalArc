@@ -180,7 +180,7 @@ struct ExerciseRowCompact: View {
         }) {
             HStack(spacing: Spacing.md) {
                 Image(systemName: "plus.circle.fill")
-                    .font(.system(size: 24))
+                    .font(.system(size: Spacing.iconLarge))
                     .foregroundStyle(Color.vitalPrimary)
 
                 VStack(alignment: .leading, spacing: 2) {

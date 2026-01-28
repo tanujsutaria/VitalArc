@@ -228,7 +228,7 @@ struct TemplateExercisePickerView: View {
         } label: {
             VStack(spacing: Spacing.md) {
                 Image(systemName: bodyPart.icon)
-                    .font(.system(size: 32))
+                    .font(.system(size: Spacing.iconXLarge))
                     .foregroundStyle(Color.vitalPrimary)
 
                 Text(bodyPart.rawValue)
@@ -329,7 +329,7 @@ struct TemplateExercisePickerView: View {
             if filtered.isEmpty {
                 VStack(spacing: Spacing.md) {
                     Image(systemName: "magnifyingglass")
-                        .font(.system(size: 48))
+                        .font(.system(size: Spacing.iconHuge))
                         .foregroundStyle(Color.vitalAdaptiveTextTertiary)
 
                     Text("No exercises found")

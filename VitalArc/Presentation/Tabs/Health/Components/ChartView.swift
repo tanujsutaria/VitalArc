@@ -81,7 +81,7 @@ struct ChartView: View {
     private var emptyStateView: some View {
         VStack(spacing: Spacing.sm) {
             Image(systemName: "chart.line.uptrend.xyaxis")
-                .font(.system(size: 40))
+                .font(.system(size: Spacing.icon2XLarge))
                 .foregroundStyle(Color.vitalAdaptiveTextSecondary)
 
             Text("No data available")
