@@ -9,6 +9,7 @@ on:
 permissions:
   pull-requests: write
   contents: read
+  issues: write
 
 jobs:
   label-pr:
@@ -74,6 +75,36 @@ jobs:
             if (labels.length > 0) {
               // Deduplicate labels
               const uniqueLabels = [...new Set(labels)];
+
+              // Create labels if they don't exist, then add them
+              for (const label of uniqueLabels) {
+                try {
+                  await github.rest.issues.getLabel({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    name: label
+                  });
+                } catch (e) {
+                  // Label doesn't exist, create it
+                  const colors = {
+                    'development': '1D76DB',
+                    'bug': 'D73A4A',
+                    'enhancement': 'A2EEEF',
+                    'documentation': '0075CA',
+                    'refactor': 'FEF2C0',
+                    'testing': 'BFD4F2',
+                    'chore': 'FEF2C0',
+                    'performance': 'D4C5F9'
+                  };
+                  await github.rest.issues.createLabel({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    name: label,
+                    color: colors[label] || 'EDEDED'
+                  });
+                }
+              }
+
               await github.rest.issues.addLabels({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
@@ -125,6 +156,29 @@ jobs:
                   // Label might not exist
                 }
               }
+            }
+
+            // Create size label if it doesn't exist
+            try {
+              await github.rest.issues.getLabel({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                name: sizeLabel
+              });
+            } catch (e) {
+              const sizeColors = {
+                'size/XS': '3CBF00',
+                'size/S': '5D9801',
+                'size/M': 'FBCA04',
+                'size/L': 'D93F0B',
+                'size/XL': 'B60205'
+              };
+              await github.rest.issues.createLabel({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                name: sizeLabel,
+                color: sizeColors[sizeLabel] || 'EDEDED'
+              });
             }
 
             // Add new size label
