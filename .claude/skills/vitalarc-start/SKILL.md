@@ -28,25 +28,37 @@ Initialize a development session for VitalArc iOS app.
 git fetch origin && git checkout main && git pull origin main --ff-only
 ```
 
-### 2. Determine session number
+### 2. Determine session number and minor version
+
+Session numbers increment only when the **date changes**. Multiple sessions on the same day use minor versions (11.0, 11.1, 11.2).
 
 ```bash
-# Get current session from SESSION_LOG.md
-CURRENT=$(grep -E "^## Session [0-9]+" SESSION_LOG.md | head -1 | sed 's/## Session \([0-9]*\).*/\1/')
+TODAY=$(date +%Y-%m-%d)
 
-# Check state file as backup
-[ -f ".claude/session-state.json" ] && STATE=$(grep -o '"current_session": *[0-9]*' .claude/session-state.json | grep -o '[0-9]*')
+# Get current session number and date from SESSION_LOG.md
+CURRENT_SESSION=$(grep -E "^## Session [0-9]+" SESSION_LOG.md | head -1 | sed 's/## Session \([0-9]*\).*/\1/')
+CURRENT_SESSION=${CURRENT_SESSION:-0}
 
-# Use higher of the two
-SESSION=${CURRENT:-0}
-[ -n "$STATE" ] && [ "$STATE" -gt "$SESSION" ] && SESSION=$STATE
+# Extract date from last session header (format: "## Session N - January 27, 2026")
+LAST_SESSION_DATE=$(grep -E "^## Session ${CURRENT_SESSION}" SESSION_LOG.md | head -1 | grep -oE "[A-Z][a-z]+ [0-9]+, [0-9]+" | head -1)
 
-# Increment if last session is complete (has "Session End")
-if awk '/^## Session '"$SESSION"'/,/^## Session [0-9]/{if(/### Session End/) exit 0}' SESSION_LOG.md; then
-    SESSION=$((SESSION + 1))
+# Convert last session date to YYYY-MM-DD for comparison
+if [ -n "$LAST_SESSION_DATE" ]; then
+    LAST_DATE=$(date -j -f "%B %d, %Y" "$LAST_SESSION_DATE" +%Y-%m-%d 2>/dev/null || echo "")
+else
+    LAST_DATE=""
 fi
 
-echo "Session: $SESSION"
+# Determine session number based on date
+if [ "$LAST_DATE" = "$TODAY" ]; then
+    # Same day - keep session number
+    SESSION=$CURRENT_SESSION
+else
+    # New day - increment session number
+    SESSION=$((CURRENT_SESSION + 1))
+fi
+
+echo "Session: $SESSION (Last session date: $LAST_DATE, Today: $TODAY)"
 ```
 
 ### 3. Create feature branch
@@ -55,7 +67,6 @@ echo "Session: $SESSION"
 
 ```bash
 PLATFORM=$([ "$(uname -s)" = "Darwin" ] && echo "mac" || echo "cloud")
-TODAY=$(date +%Y-%m-%d)
 
 # Always include platform prefix
 if [ -n "$ARGUMENTS" ]; then
@@ -64,8 +75,8 @@ else
     FOCUS="${PLATFORM}-session"
 fi
 
-# Find minor version
-MINOR=$(git branch -a | grep -cE "dev/${FOCUS}-${SESSION}\\.[0-9]+-${TODAY}" || echo 0)
+# Find minor version by counting existing branches for this session+date (any focus)
+MINOR=$(git branch -a | grep -cE "dev/${PLATFORM}-[a-z]+-${SESSION}\\.[0-9]+-${TODAY}" || echo 0)
 
 BRANCH="dev/${FOCUS}-${SESSION}.${MINOR}-${TODAY}"
 git checkout -b "$BRANCH"
