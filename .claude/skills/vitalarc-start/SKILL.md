@@ -7,255 +7,144 @@ argument-hint: [optional-focus-area]
 
 # VitalArc Session Initialization
 
-You are starting a new development session for the VitalArc iOS fitness app.
+Initialize a development session for VitalArc iOS app.
 
-## Platform Detection
+## Current State
 
-First, detect the current platform and working directory:
+- **Platform**: !`uname -s | sed 's/Darwin/macOS/;s/Linux/cloud/'`
+- **Branch**: !`git rev-parse --abbrev-ref HEAD 2>/dev/null`
+- **Recent Commits**: !`git log --oneline -3 2>/dev/null`
+- **Uncommitted**: !`git status --short 2>/dev/null`
+
+## Steps
+
+### 1. Sync with main
 
 ```bash
-# Detect platform
-PLATFORM=$(uname -s)
-if [ "$PLATFORM" = "Darwin" ]; then
-    PLATFORM_SHORT="mac"
-    PLATFORM_NAME="macOS"
-else
-    PLATFORM_SHORT="cloud"
-    PLATFORM_NAME="Linux/Cloud"
-fi
-echo "Platform: $PLATFORM_NAME ($PLATFORM_SHORT)"
-echo "Working Directory: $(pwd)"
+# Stash uncommitted changes
+[ -n "$(git status --porcelain)" ] && git stash push -m "Auto-stash $(date +%Y-%m-%d-%H%M)"
+
+# Pull latest
+git fetch origin && git checkout main && git pull origin main --ff-only
 ```
 
-**Important**: All commands in this skill should be run from the repository root. The skill works on:
-- **macOS (local)**: Developer's local machine
-- **Linux/Cloud**: Claude Code cloud environment or CI/CD
-
-## Current State (Auto-Fetched)
-
-- **Platform**: !`uname -s | sed 's/Darwin/macOS (local)/;s/Linux/Linux (cloud)/'`
-- **Working Directory**: !`pwd`
-- **Branch**: !`git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "Not in git repo"`
-- **Last 5 Commits**:
-!`git log --oneline -5 2>/dev/null || echo "No commits found"`
-- **Uncommitted Changes**:
-!`git status --short 2>/dev/null || echo "Not in git repo"`
-
-## Phase 1: Sync with Remote and Create Feature Branch
-
-### Step 1a: Stash any uncommitted changes
-
-Before switching branches, stash any uncommitted work to prevent loss:
+### 2. Determine session number
 
 ```bash
-if [ -n "$(git status --porcelain)" ]; then
-    echo "Stashing uncommitted changes..."
-    git stash push -m "Auto-stash before session start $(date +%Y-%m-%d-%H%M)"
-fi
-```
+# Get current session from SESSION_LOG.md
+CURRENT=$(grep -E "^## Session [0-9]+" SESSION_LOG.md | head -1 | sed 's/## Session \([0-9]*\).*/\1/')
 
-### Step 1b: Sync with main
+# Check state file as backup
+[ -f ".claude/session-state.json" ] && STATE=$(grep -o '"current_session": *[0-9]*' .claude/session-state.json | grep -o '[0-9]*')
 
-```bash
-git fetch origin
-git checkout main
-git pull origin main --ff-only || echo "Pull failed - check for conflicts"
-```
+# Use higher of the two
+SESSION=${CURRENT:-0}
+[ -n "$STATE" ] && [ "$STATE" -gt "$SESSION" ] && SESSION=$STATE
 
-Report any merge conflicts or diverged branches.
-
-### Step 1c: Create feature branch with session versioning and platform
-
-Determine the session number from SESSION_LOG.md (major version), then find the next available minor version for today. Include platform in branch name:
-
-```bash
-# Detect platform
-PLATFORM=$(uname -s)
-if [ "$PLATFORM" = "Darwin" ]; then
-    PLATFORM_SHORT="mac"
-else
-    PLATFORM_SHORT="cloud"
+# Increment if last session is complete (has "Session End")
+if awk '/^## Session '"$SESSION"'/,/^## Session [0-9]/{if(/### Session End/) exit 0}' SESSION_LOG.md; then
+    SESSION=$((SESSION + 1))
 fi
 
-# Get current session number from SESSION_LOG.md (e.g., "Session 8" -> 8)
-SESSION_NUM=$(grep -m1 "^## Session" SESSION_LOG.md | sed 's/## Session \([0-9]*\).*/\1/')
+echo "Session: $SESSION"
+```
 
-# Find existing branches for this session today and get next minor version
+### 3. Create feature branch
+
+**Branch format**: `dev/<platform>-<focus>-<session>.<minor>-YYYY-MM-DD`
+
+```bash
+PLATFORM=$([ "$(uname -s)" = "Darwin" ] && echo "mac" || echo "cloud")
 TODAY=$(date +%Y-%m-%d)
-EXISTING=$(git branch -a | grep -E "dev/${PLATFORM_SHORT}-session-${SESSION_NUM}\.[0-9]+-${TODAY}" | wc -l | tr -d ' ')
-MINOR=$EXISTING
 
-# Create branch: dev/mac-session-8.0-2026-01-26 or dev/cloud-session-8.0-2026-01-26
-BRANCH_NAME="dev/${PLATFORM_SHORT}-session-${SESSION_NUM}.${MINOR}-${TODAY}"
-git checkout -b "$BRANCH_NAME"
-echo "Created branch: $BRANCH_NAME"
-echo "Platform: $PLATFORM_SHORT"
-```
-
-If $ARGUMENTS was provided, include it in the branch name:
-```bash
-# Detect platform
-PLATFORM=$(uname -s)
-if [ "$PLATFORM" = "Darwin" ]; then
-    PLATFORM_SHORT="mac"
+# Always include platform prefix
+if [ -n "$ARGUMENTS" ]; then
+    FOCUS="${PLATFORM}-$(echo "$ARGUMENTS" | tr '[:upper:]' '[:lower:]' | tr ' ' '-')"
 else
-    PLATFORM_SHORT="cloud"
+    FOCUS="${PLATFORM}-session"
 fi
 
-# Example: dev/mac-nutrition-8.0-2026-01-26 or dev/cloud-nutrition-8.0-2026-01-26
-BRANCH_NAME="dev/${PLATFORM_SHORT}-$ARGUMENTS-${SESSION_NUM}.${MINOR}-${TODAY}"
-git checkout -b "$BRANCH_NAME"
+# Find minor version
+MINOR=$(git branch -a | grep -cE "dev/${FOCUS}-${SESSION}\\.[0-9]+-${TODAY}" || echo 0)
+
+BRANCH="dev/${FOCUS}-${SESSION}.${MINOR}-${TODAY}"
+git checkout -b "$BRANCH"
 ```
 
-### Step 1d: Restore stashed changes (if any)
+### 4. Update state file
 
 ```bash
-TODAY=$(date +%Y-%m-%d)
-if git stash list | grep -q "Auto-stash before session start $TODAY"; then
-    echo "Restoring stashed changes..."
-    git stash pop
-fi
+mkdir -p .claude
+cat > .claude/session-state.json << EOF
+{
+  "current_session": $SESSION,
+  "branch": "$BRANCH",
+  "started_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+}
+EOF
 ```
 
-**Note**: All development work should happen on feature branches, not main. The branch will be merged to main via PR when work is complete.
+### 5. Restore stashed changes
 
-## Phase 2: Explore Codebase State
+```bash
+git stash list | grep -q "Auto-stash $(date +%Y-%m-%d)" && git stash pop
+```
 
-1. **Count Swift files** to verify codebase integrity:
-   ```bash
-   find VitalArc -name "*.swift" | wc -l
-   ```
+### 6. Read documentation
 
-2. **Find recently modified files** (last 24 hours):
-   ```bash
-   find VitalArc -name "*.swift" -mtime -1 -type f 2>/dev/null | head -15
-   ```
+Read these files:
+1. **CLAUDE.md** - Architecture and conventions
+2. **PROJECT_STATUS.md** - Current feature status
+3. **SESSION_LOG.md** (last 100 lines) - Recent history
 
-## Phase 3: Read Core Documentation
+### 7. Build check (macOS only)
 
-Read these files to understand current project state:
+```bash
+[ "$(uname -s)" = "Darwin" ] && xcodebuild -scheme VitalArc -destination 'platform=iOS Simulator,name=iPhone 17 Pro' build 2>&1 | grep -E "(error:|BUILD)"
+```
 
-1. **CLAUDE.md** - Project memory and architecture overview
-2. **PROJECT_STATUS.md** - Current feature status and MVP blockers
-3. **SESSION_LOG.md** - Recent development history (read last 100 lines)
-4. **EXECUTION_PLAN_SESSION5.md** - Planned work (if exists)
+### 8. Create session log entry
 
-Summarize key points from each.
-
-## Phase 4: Analyze Codebase Statistics
-
-Use the Explore agent to gather:
-- Design system adoption percentage
-- Any new TODOs or FIXMEs
-- Test coverage status
-
-## Phase 5: Create Session Log Entry
-
-Add a new session entry to SESSION_LOG.md with this format:
+Add to SESSION_LOG.md:
 
 ```markdown
-## Session [N] - [Today's Date] ([Time of Day])
+## Session [N] - [Date] ([Time])
 
 ### Session Start
-- **Time**: [Current time]
-- **Platform**: [macOS (local) / Linux (cloud)]
-- **Focus**: [From $ARGUMENTS if provided, otherwise "General development"]
-- **Branch**: [Feature branch created for this session]
-- **Base**: main @ [Most recent commit hash and message]
+- **Platform**: [macOS / cloud]
+- **Focus**: [From $ARGUMENTS or "General development"]
+- **Branch**: [branch name]
+- **Base**: main @ [commit]
 
 ### Pre-Session Status
-- **Build**: [Run quick build check - NOTE: Build only available on macOS]
-- **Uncommitted Changes**: [List any]
-- **Recent Activity**: [Summary of last session's work]
-
-### Planned Work
-[Based on EXECUTION_PLAN or user focus area]
+- **Build**: [status]
+- **Uncommitted**: [list]
 
 ### Work Completed
-[To be filled during session]
+[To be filled]
 
 ### Session End
 [To be filled by /vitalarc-end]
 ```
 
-## Phase 6: Build Verification
-
-**Note**: Build verification is only available on macOS with Xcode installed.
-
-```bash
-PLATFORM=$(uname -s)
-if [ "$PLATFORM" = "Darwin" ]; then
-    echo "Running build verification on macOS..."
-    xcodebuild -scheme VitalArc -destination 'platform=iOS Simulator,name=iPhone 17 Pro' build 2>&1 | grep -E "(error:|warning:|BUILD SUCCEEDED|BUILD FAILED)" | head -20
-else
-    echo "Skipping build verification - not running on macOS"
-    echo "Build verification requires macOS with Xcode"
-fi
-```
-
-Report build status (or skip notification if on Linux/cloud).
-
-## Phase 7: Prepare Execution Context
-
-Output a structured summary for the coding session:
+### 9. Output summary
 
 ```
 ===========================================================
               VITALARC SESSION INITIALIZED
 ===========================================================
-
-ENVIRONMENT
-  Platform: [macOS (local) / Linux (cloud)]
-  Working Directory: [pwd]
-  Build Available: [Yes / No - requires macOS]
-
-PROJECT STATE
-  Feature Branch: [branch created for this session]
-  Base (main): [hash] [message]
-  Uncommitted: [count] files
-
-CODEBASE METRICS
-  Swift Files: [count]
-  Design System Adoption: [X]%
-
-MVP BLOCKERS (from PROJECT_STATUS.md)
-  1. [blocker 1]
-  2. [blocker 2]
-
-PENDING TASKS
-  - [task 1]
-  - [task 2]
-
-SESSION FOCUS
-  [From $ARGUMENTS or suggested based on blockers]
-
-WARNINGS
-  [Any issues found: API keys, conflicts, errors]
-  [Platform-specific notes: e.g., "Build skipped - run on macOS"]
-
+Platform:       [macOS / cloud]
+Branch:         [branch name]
+Session:        [N]
+Build:          [status]
+Focus:          [focus area]
 ===========================================================
 ```
 
-## Final Output
+## Branch Naming
 
-After completing all phases, confirm:
-1. Platform detected and recorded
-2. Codebase is synced with main (and builds on macOS)
-3. Feature branch created for this session (includes platform prefix)
-4. Session log entry created
-5. Context summary displayed
-6. Ready for coding work on feature branch
-
-If $ARGUMENTS was provided (e.g., "Nutrition" or "Design System"), focus the context summary on that area.
-
-## Platform-Specific Notes
-
-| Platform | Build | HealthKit Testing | Simulator |
-|----------|-------|-------------------|-----------|
-| macOS (local) | ✅ Full build | ✅ Physical device | ✅ Available |
-| Linux (cloud) | ❌ No Xcode | ❌ Not available | ❌ Not available |
-
-When on Linux/cloud:
-- Focus on code changes, documentation, and planning
-- Build verification must be done on macOS before merging
-- Use CI/CD workflows to validate builds on PRs
+| Pattern | Example |
+|---------|---------|
+| `dev/<platform>-<focus>-<session>.<minor>-YYYY-MM-DD` | `dev/mac-nutrition-12.0-2026-01-27` |
+| Default focus (no args) | `dev/mac-session-12.0-2026-01-27` |
+| Cloud example | `dev/cloud-workout-12.0-2026-01-27` |
