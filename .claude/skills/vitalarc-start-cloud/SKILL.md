@@ -34,22 +34,18 @@ TODAY=$(date +%Y-%m-%d)
 CURRENT_SESSION=$(grep -E "^## Session [0-9]+" SESSION_LOG.md | head -1 | sed 's/## Session \([0-9]*\).*/\1/')
 LAST_DATE=$(grep -E "^## Session ${CURRENT_SESSION:-0}" SESSION_LOG.md | head -1 | grep -oE "[A-Z][a-z]+ [0-9]+, [0-9]+" | xargs -I{} date -j -f "%B %d, %Y" "{}" +%Y-%m-%d 2>/dev/null)
 [ "$LAST_DATE" = "$TODAY" ] && SESSION=$CURRENT_SESSION || SESSION=$((${CURRENT_SESSION:-0} + 1))
-MINOR=$(git branch -a | grep -cE "dev/cloud-[a-z]+-${SESSION}\\.[0-9]+-${TODAY}" || echo 0)
 ```
 
-### 3. Create branch
+### 3. Use platform-provided branch
 
-Format: `dev/cloud-<focus>-<session>.<minor>-YYYY-MM-DD`
+> **Note**: Claude Code platform controls the branch name (format: `claude/vitalarc-start-cloud-<sessionID>`). Use the branch provided in the system instructions—custom naming is not supported for cloud sessions.
 
-```bash
-FOCUS="cloud-${ARGUMENTS:-session}"
-BRANCH="dev/${FOCUS}-${SESSION}.${MINOR}-${TODAY}"
-git checkout -b "$BRANCH"
-```
+Use the branch specified in the Git Development Branch Requirements from the system context.
 
 ### 4. Update state file
 
 ```bash
+BRANCH=$(git rev-parse --abbrev-ref HEAD)
 cat > .claude/session-state.json << EOF
 {"current_session":$SESSION,"branch":"$BRANCH","platform":"cloud","started_at":"$(date -u +%Y-%m-%dT%H:%M:%SZ)","build_capable":false}
 EOF

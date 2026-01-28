@@ -65,7 +65,6 @@ The app compiles and runs with core MVP requirements addressed:
 
 2. **Design System Gaps** (Session 11 audit):
    - ~28 instances of `.font(.system(...))` for icon sizing
-   - 1 hardcoded color in `TemplateEditorView.swift`
 
 3. **Testing**: ~68% preview coverage
 

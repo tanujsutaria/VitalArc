@@ -493,18 +493,6 @@ struct SwipeToDeleteView<Content: View>: View {
     }
 }
 
-// MARK: - Color Extension for Tertiary Text
-
-extension Color {
-    static var vitalAdaptiveTextTertiary: Color {
-        Color(UIColor { traitCollection in
-            traitCollection.userInterfaceStyle == .dark
-                ? UIColor(Color(hex: "#9CA3AF"))
-                : UIColor(Color.vitalTextTertiary)
-        })
-    }
-}
-
 // MARK: - Preview
 
 // Preview unavailable - requires WorkoutTemplatesViewModel
