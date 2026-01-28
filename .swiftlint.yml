@@ -1,0 +1,55 @@
+# SwiftLint Configuration for VitalArc
+
+included:
+  - VitalArc
+
+excluded:
+  - VitalArc/Data/Seeds  # Generated exercise data
+  - VitalArcTests
+  - VitalArcUITests
+  - .build
+
+# Rules Configuration
+disabled_rules:
+  - trailing_whitespace
+  - line_length
+  - type_body_length
+  - file_length
+  - function_body_length
+  - cyclomatic_complexity
+  - nesting
+  - identifier_name  # Allow short names like 'id', 'hr', etc.
+
+opt_in_rules:
+  - empty_count
+  - empty_string
+  - force_unwrapping
+  - implicit_return
+  - modifier_order
+  - multiline_arguments
+  - multiline_parameters
+  - vertical_whitespace_closing_braces
+
+# Custom Rule Configurations
+force_cast:
+  severity: warning
+
+force_try:
+  severity: warning
+
+force_unwrapping:
+  severity: warning
+
+large_tuple:
+  warning: 4
+
+type_name:
+  min_length: 2
+  max_length: 50
+
+function_parameter_count:
+  warning: 8
+  error: 10
+
+# Reporter
+reporter: "xcode"

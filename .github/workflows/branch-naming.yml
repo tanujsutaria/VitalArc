@@ -1,0 +1,69 @@
+name: Branch Naming Convention
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+
+jobs:
+  validate-branch-name:
+    name: Validate Branch Name
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check branch naming convention
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const branchName = context.payload.pull_request.head.ref;
+
+            // Allow main branch
+            if (branchName === 'main') {
+              console.log('Branch is main - OK');
+              return;
+            }
+
+            // Branch naming pattern: dev/<platform>-<focus>-<session>.<minor>-YYYY-MM-DD
+            // platform: mac or cloud
+            // focus: feature area (e.g., nutrition, workout, session)
+            // session: session number
+            // minor: sub-version (0, 1, 2...)
+            // date: ISO date format
+
+            const pattern = /^dev\/(mac|cloud)-[a-z]+-\d+\.\d+-\d{4}-\d{2}-\d{2}$/;
+
+            if (pattern.test(branchName)) {
+              console.log(`Branch name "${branchName}" follows the naming convention.`);
+              return;
+            }
+
+            // Provide helpful error message
+            const errorMessage = `
+            ## Branch Naming Error
+
+            Branch name \`${branchName}\` does not follow the required naming convention.
+
+            ### Required Format
+            \`dev/<platform>-<focus>-<session>.<minor>-YYYY-MM-DD\`
+
+            ### Components
+            | Component | Description | Required |
+            |-----------|-------------|----------|
+            | \`dev/\` | Branch prefix | Yes |
+            | \`<platform>\` | \`mac\` or \`cloud\` | Yes |
+            | \`<focus>\` | Feature area (e.g., \`nutrition\`, \`workout\`, \`session\`) | Yes |
+            | \`<session>\` | Session number from SESSION_LOG.md | Yes |
+            | \`<minor>\` | Sub-version for same day (0, 1, 2...) | Yes |
+            | \`<date>\` | ISO date (YYYY-MM-DD) | Yes |
+
+            ### Valid Examples
+            - \`dev/mac-nutrition-12.0-2026-01-27\`
+            - \`dev/mac-session-12.0-2026-01-27\`
+            - \`dev/cloud-workout-12.0-2026-01-27\`
+
+            ### Invalid Examples
+            - \`claude/vitalarc-start-UA45Z\` - Wrong prefix
+            - \`dev/nutrition-12.0-2026-01-27\` - Missing platform
+            - \`feature/nutrition\` - Wrong prefix, missing required parts
+            `;
+
+            core.setFailed(errorMessage);

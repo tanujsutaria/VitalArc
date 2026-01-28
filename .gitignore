@@ -1,0 +1,46 @@
+# Build logs
+*.log
+
+# API Secrets (contains API keys - DO NOT COMMIT)
+VitalArc/Infrastructure/Security/Secrets.swift
+
+# Xcode
+build/
+DerivedData/
+*.xcodeproj/project.xcworkspace/xcuserdata/
+*.xcodeproj/xcuserdata/
+*.xcworkspace/xcuserdata/
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+!default.pbxuser
+!default.mode1v3
+!default.mode2v3
+!default.perspectivev3
+
+# Backup files
+*.backup
+*.orig
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Temporary files
+*.swp
+*~
+
+# CocoaPods (if used)
+Pods/
+
+# Swift Package Manager
+.build/
+Package.resolved
+
+# Fastlane (if used)
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/**/*.png
+fastlane/test_output

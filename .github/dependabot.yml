@@ -1,0 +1,34 @@
+version: 2
+
+updates:
+  # GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    commit-message:
+      prefix: "chore(deps)"
+    labels:
+      - "dependencies"
+      - "github-actions"
+    reviewers:
+      - "tanujsutaria"
+
+  # Swift Package Manager (if/when used)
+  - package-ecosystem: "swift"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    commit-message:
+      prefix: "chore(deps)"
+    labels:
+      - "dependencies"
+      - "swift"
+    reviewers:
+      - "tanujsutaria"
+    # Ignore major version updates by default
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]

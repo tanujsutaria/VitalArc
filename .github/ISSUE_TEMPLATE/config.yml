@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Documentation
+    url: https://github.com/tanujsutaria/VitalArc/blob/main/README.md
+    about: Check the documentation before opening an issue
+  - name: Discussions
+    url: https://github.com/tanujsutaria/VitalArc/discussions
+    about: Ask questions and share ideas in Discussions

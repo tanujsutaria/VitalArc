@@ -1,0 +1,288 @@
+{
+  "features": [
+    {
+      "id": "healthkit",
+      "name": "HealthKit Integration",
+      "agent": "healthkit-agent",
+      "status": "completed",
+      "files": [
+        {
+          "path": "VitalArc/Infrastructure/HealthKit/HealthKitManager.swift",
+          "locked": false,
+          "agent": null
+        },
+        {
+          "path": "VitalArc/Infrastructure/HealthKit/HealthKitQuery.swift",
+          "locked": false,
+          "agent": null
+        },
+        {
+          "path": "VitalArc/Infrastructure/HealthKit/HealthKitPermissions.swift",
+          "locked": false,
+          "agent": null
+        },
+        {
+          "path": "VitalArc/Infrastructure/Mappers/HealthKitMapper.swift",
+          "locked": false,
+          "agent": null
+        },
+        {
+          "path": "VitalArc/Presentation/Tabs/Health/HealthDashboardView.swift",
+          "locked": false,
+          "agent": null
+        },
+        {
+          "path": "VitalArc/Presentation/Tabs/Health/HealthDashboardViewModel.swift",
+          "locked": false,
+          "agent": null
+        },
+        {
+          "path": "VitalArc/Presentation/Tabs/Health/Components/MetricCardView.swift",
+          "locked": false,
+          "agent": null
+        },
+        {
+          "path": "VitalArc/Presentation/Tabs/Health/Components/ChartView.swift",
+          "locked": false,
+          "agent": null
+        }
+      ],
+      "tdd": {
+        "required": true,
+        "test_first": true
+      }
+    },
+    {
+      "id": "workout",
+      "name": "Workout Module",
+      "agent": null,
+      "status": "completed",
+      "files": [
+        {
+          "path": "VitalArc/Data/Seeds/ExerciseSeeds.swift",
+          "locked": false,
+          "agent": null
+        },
+        {
+          "path": "VitalArc/Domain/UseCases/Workout/CreateWorkoutUseCase.swift",
+          "locked": false,
+          "agent": null
+        },
+        {
+          "path": "VitalArc/Domain/UseCases/Workout/GetExercisesUseCase.swift",
+          "locked": false,
+          "agent": null
+        },
+        {
+          "path": "VitalArc/Domain/UseCases/Workout/CalculateProgressionUseCase.swift",
+          "locked": false,
+          "agent": null
+        },
+        {
+          "path": "VitalArc/Presentation/Tabs/Workout/ExerciseLibrary/ExerciseLibraryView.swift",
+          "locked": false,
+          "agent": null
+        },
+        {
+          "path": "VitalArc/Presentation/Tabs/Workout/ExerciseLibrary/ExerciseLibraryViewModel.swift",
+          "locked": false,
+          "agent": null
+        },
+        {
+          "path": "VitalArc/Presentation/Tabs/Workout/ExerciseLibrary/ExerciseRowView.swift",
+          "locked": false,
+          "agent": null
+        },
+        {
+          "path": "VitalArc/Presentation/Tabs/Workout/WorkoutLogging/WorkoutLoggingView.swift",
+          "locked": false,
+          "agent": null
+        },
+        {
+          "path": "VitalArc/Presentation/Tabs/Workout/WorkoutLogging/WorkoutLoggingViewModel.swift",
+          "locked": false,
+          "agent": null
+        },
+        {
+          "path": "VitalArc/Presentation/Tabs/Workout/WorkoutLogging/ExerciseSetView.swift",
+          "locked": false,
+          "agent": null
+        },
+        {
+          "path": "VitalArc/Presentation/Tabs/Workout/WorkoutLogging/SetRowView.swift",
+          "locked": false,
+          "agent": null
+        },
+        {
+          "path": "VitalArc/Presentation/Tabs/Workout/WorkoutHistory/WorkoutHistoryView.swift",
+          "locked": false,
+          "agent": null
+        },
+        {
+          "path": "VitalArc/Presentation/Tabs/Workout/WorkoutHistory/WorkoutHistoryViewModel.swift",
+          "locked": false,
+          "agent": null
+        }
+      ],
+      "tdd": {
+        "required": true,
+        "test_first": true
+      }
+    },
+    {
+      "id": "nutrition",
+      "name": "Nutrition Module",
+      "agent": null,
+      "status": "completed",
+      "files": [
+        {
+          "path": "VitalArc/Infrastructure/Networking/NetworkService.swift",
+          "locked": false,
+          "agent": null
+        },
+        {
+          "path": "VitalArc/Infrastructure/Networking/USDAFoodAPI.swift",
+          "locked": false,
+          "agent": null
+        },
+        {
+          "path": "VitalArc/Infrastructure/Networking/FoodAPIModels.swift",
+          "locked": false,
+          "agent": null
+        },
+        {
+          "path": "VitalArc/Domain/UseCases/Nutrition/SearchFoodUseCase.swift",
+          "locked": false,
+          "agent": null
+        },
+        {
+          "path": "VitalArc/Domain/UseCases/Nutrition/LogFoodUseCase.swift",
+          "locked": false,
+          "agent": null
+        },
+        {
+          "path": "VitalArc/Domain/UseCases/Nutrition/CalculateNutritionUseCase.swift",
+          "locked": false,
+          "agent": null
+        },
+        {
+          "path": "VitalArc/Presentation/Tabs/Nutrition/FoodSearch/FoodSearchView.swift",
+          "locked": false,
+          "agent": null
+        },
+        {
+          "path": "VitalArc/Presentation/Tabs/Nutrition/FoodSearch/FoodSearchViewModel.swift",
+          "locked": false,
+          "agent": null
+        },
+        {
+          "path": "VitalArc/Presentation/Tabs/Nutrition/FoodSearch/FoodResultRowView.swift",
+          "locked": false,
+          "agent": null
+        },
+        {
+          "path": "VitalArc/Presentation/Tabs/Nutrition/FoodLogging/FoodLoggingView.swift",
+          "locked": false,
+          "agent": null
+        },
+        {
+          "path": "VitalArc/Presentation/Tabs/Nutrition/FoodLogging/FoodLoggingViewModel.swift",
+          "locked": false,
+          "agent": null
+        },
+        {
+          "path": "VitalArc/Presentation/Tabs/Nutrition/FoodLogging/MealSectionView.swift",
+          "locked": false,
+          "agent": null
+        },
+        {
+          "path": "VitalArc/Presentation/Tabs/Nutrition/NutritionSummary/NutritionSummaryView.swift",
+          "locked": false,
+          "agent": null
+        },
+        {
+          "path": "VitalArc/Presentation/Tabs/Nutrition/NutritionSummary/MacroRingView.swift",
+          "locked": false,
+          "agent": null
+        }
+      ],
+      "tdd": {
+        "required": true,
+        "test_first": true
+      }
+    },
+    {
+      "id": "profile",
+      "name": "User Profile & Settings",
+      "agent": "profile-agent",
+      "status": "completed",
+      "dependencies": [
+        "healthkit"
+      ],
+      "files": [
+        {
+          "path": "VitalArc/Domain/UseCases/User/CreateUserProfileUseCase.swift",
+          "locked": false,
+          "agent": null
+        },
+        {
+          "path": "VitalArc/Domain/UseCases/User/UpdateUserPreferencesUseCase.swift",
+          "locked": false,
+          "agent": null
+        },
+        {
+          "path": "VitalArc/Presentation/Onboarding/OnboardingCoordinator.swift",
+          "locked": false,
+          "agent": null
+        },
+        {
+          "path": "VitalArc/Presentation/Onboarding/WelcomeView.swift",
+          "locked": false,
+          "agent": null
+        },
+        {
+          "path": "VitalArc/Presentation/Onboarding/ProfileSetupView.swift",
+          "locked": false,
+          "agent": null
+        },
+        {
+          "path": "VitalArc/Presentation/Onboarding/HealthKitPermissionView.swift",
+          "locked": false,
+          "agent": null
+        },
+        {
+          "path": "VitalArc/Presentation/Onboarding/OnboardingViewModel.swift",
+          "locked": false,
+          "agent": null
+        },
+        {
+          "path": "VitalArc/Presentation/Tabs/Profile/ProfileView.swift",
+          "locked": false,
+          "agent": null
+        },
+        {
+          "path": "VitalArc/Presentation/Tabs/Profile/ProfileViewModel.swift",
+          "locked": false,
+          "agent": null
+        },
+        {
+          "path": "VitalArc/Presentation/Tabs/Profile/SettingsView.swift",
+          "locked": false,
+          "agent": null
+        },
+        {
+          "path": "VitalArc/Presentation/Tabs/Profile/AboutView.swift",
+          "locked": false,
+          "agent": null
+        }
+      ],
+      "tdd": {
+        "required": true,
+        "test_first": true
+      }
+    }
+  ],
+  "created": "2026-01-25T15:15:00Z",
+  "max_agents": 4,
+  "completed": true
+}
