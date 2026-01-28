@@ -1,6 +1,7 @@
 ---
 name: vitalarc-end-cloud
 description: Finalize a VitalArc cloud development session. Use when ending a session started from phone or browser. Commits documentation, pushes changes, no build verification.
+disable-model-invocation: true
 allowed-tools: Read, Grep, Glob, Bash, Write, Edit
 argument-hint: [summary]
 ---
@@ -17,16 +18,23 @@ Finalize a cloud session. No build verification—CI will validate.
 
 ## Steps
 
-### 1. Gather stats
+### 1. Verify session state
+
+```bash
+# Optional: Run verification without build check
+.claude/skills/_shared/scripts/verify-session.sh
+```
+
+### 2. Gather stats
 
 ```bash
 git log --oneline --since="6 hours ago"
 git diff --stat HEAD~10 2>/dev/null | tail -3
 ```
 
-### 2. Update SESSION_LOG.md
+### 3. Update SESSION_LOG.md
 
-Complete the current session's Work Log table and fill in sections:
+Complete the current session's Work Log table and fill in sections using the template from [session-end.md](../_shared/templates/session-end.md):
 
 ```markdown
 ### Work Log
@@ -44,7 +52,7 @@ Complete the current session's Work Log table and fill in sections:
 - **Time**: [end time]
 - **Duration**: ~[N] min (calculate from start time in session-state.json)
 - **Status**: Complete / In Progress / Needs Workstation
-- **Build**: ⏭️ Not verified (cloud)
+- **Build**: Not verified (cloud)
 - **Tests**: N/A (cloud)
 - **Commits**: [N] commits
 - **Next**: [priorities from README Roadmap, or "Verify on workstation" if UI changes]
@@ -52,13 +60,13 @@ Complete the current session's Work Log table and fill in sections:
 
 Use status **Needs Workstation** if changes require UI or build verification.
 
-### 3. Update PROJECT_STATUS.md and README.md
+### 4. Update PROJECT_STATUS.md and README.md
 
 If features changed:
 - PROJECT_STATUS.md: Update "Last Updated", Known Issues, feature status
-- README.md Roadmap: Move features between In Progress ↔ Planned as needed
+- README.md Roadmap: Move features between In Progress / Planned as needed
 
-### 4. Update state file
+### 5. Update state file
 
 ```bash
 BRANCH=$(git rev-parse --abbrev-ref HEAD)
@@ -68,7 +76,7 @@ cat > .claude/session-state.json << EOF
 EOF
 ```
 
-### 5. Commit and push
+### 6. Commit and push
 
 ```bash
 git add SESSION_LOG.md PROJECT_STATUS.md README.md .claude/session-state.json
@@ -81,7 +89,7 @@ Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
 git push -u origin "$(git rev-parse --abbrev-ref HEAD)"
 ```
 
-### 6. Create PR (optional)
+### 7. Create PR (optional)
 
 If ready for review:
 ```bash
@@ -90,21 +98,21 @@ gh pr create --title "<type>(<scope>): <description>" --body "## Summary
 
 ## Testing
 - [ ] CI build passes
-- [ ] ⚠️ Cloud session—manual testing recommended
+- [ ] Cloud session—manual testing recommended
 
 ---
-/vitalarc-end-cloud ☁️"
+/vitalarc-end-cloud"
 ```
 
-### 7. Output summary
+### 8. Output summary
 
 ```
 ═══════════════════════════════════════════════════════
-           VITALARC CLOUD SESSION COMPLETE ☁️
+           VITALARC CLOUD SESSION COMPLETE
 ═══════════════════════════════════════════════════════
 Branch:   [branch]
 Commits:  [N]
-Build:    ⏭️ Not verified
+Build:    Not verified
 Status:   [Complete / Needs Workstation]
 Next:     [priorities]
 ═══════════════════════════════════════════════════════

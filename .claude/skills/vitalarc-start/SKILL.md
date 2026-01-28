@@ -1,79 +1,84 @@
 ---
 name: vitalarc-start
 description: Initialize a VitalArc development session with auto-detected platform. Prefer /vitalarc-start-workstation (Mac) or /vitalarc-start-cloud (phone/browser) for platform-specific workflows.
-allowed-tools: Read, Grep, Glob, Bash, Write, Edit, Task
+disable-model-invocation: true
+allowed-tools: Read, Bash
 argument-hint: [focus-area]
 ---
 
 # VitalArc Session Init (Auto-detect)
 
-> **Prefer platform-specific skills:**
-> - `/vitalarc-start-workstation` — Mac, full builds
+> **Prefer platform-specific skills for explicit control:**
+> - `/vitalarc-start-workstation` — Mac, full builds and simulator
 > - `/vitalarc-start-cloud` — Phone/browser, no builds
 
-Auto-detects platform and initializes accordingly.
+This skill auto-detects platform and **delegates** to the appropriate platform-specific skill.
 
 ## Current State
 
 - **Platform**: !`uname -s | sed 's/Darwin/macOS/;s/Linux/cloud/'`
 - **Branch**: !`git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "detached"`
-- **Uncommitted**: !`git status --short 2>/dev/null | head -5`
 
 ## Steps
 
-### 1. Detect platform and delegate
+### 1. Detect platform
 
 ```bash
 PLATFORM=$([ "$(uname -s)" = "Darwin" ] && echo "mac" || echo "cloud")
+echo "Detected platform: $PLATFORM"
 ```
 
-If `mac`: Follow `/vitalarc-start-workstation` workflow (with build check).
-If `cloud`: Follow `/vitalarc-start-cloud` workflow (skip builds).
+### 2. Delegate to platform-specific skill
 
-### 2. Sync with main
+Based on detected platform, **invoke the appropriate skill**:
 
-```bash
-[ -n "$(git status --porcelain)" ] && git stash push -m "Auto-stash $(date +%Y-%m-%d-%H%M)"
-git fetch origin && git checkout main && git pull origin main --ff-only
+#### If macOS (Darwin):
+
+Tell the user:
+```
+Platform detected: macOS
+
+Please run: /vitalarc-start-workstation $ARGUMENTS
+
+This will give you full build and simulator capabilities.
 ```
 
-### 3. Determine session number
+Then follow ALL steps from `/vitalarc-start-workstation` with `$ARGUMENTS`.
 
-```bash
-TODAY=$(date +%Y-%m-%d)
-CURRENT_SESSION=$(grep -E "^## Session [0-9]+" SESSION_LOG.md | head -1 | sed 's/## Session \([0-9]*\).*/\1/')
-LAST_DATE=$(grep -E "^## Session ${CURRENT_SESSION:-0}" SESSION_LOG.md | head -1 | grep -oE "[A-Z][a-z]+ [0-9]+, [0-9]+" | xargs -I{} date -j -f "%B %d, %Y" "{}" +%Y-%m-%d 2>/dev/null)
-[ "$LAST_DATE" = "$TODAY" ] && SESSION=$CURRENT_SESSION || SESSION=$((${CURRENT_SESSION:-0} + 1))
-MINOR=$(git branch -a | grep -cE "dev/${PLATFORM}-[a-z]+-${SESSION}\\.[0-9]+-${TODAY}" || echo 0)
+#### If Linux/Cloud:
+
+Tell the user:
+```
+Platform detected: cloud
+
+Please run: /vitalarc-start-cloud $ARGUMENTS
+
+This is optimized for bug fixes, docs, and small changes.
 ```
 
-### 4. Create branch
+Then follow ALL steps from `/vitalarc-start-cloud` with `$ARGUMENTS`.
 
-```bash
-FOCUS="${PLATFORM}-${ARGUMENTS:-session}"
-BRANCH="dev/${FOCUS}-${SESSION}.${MINOR}-${TODAY}"
-git checkout -b "$BRANCH"
+### 3. Output delegation notice
+
+```
+═══════════════════════════════════════════════════════
+              PLATFORM AUTO-DETECTION
+═══════════════════════════════════════════════════════
+Detected:  [mac/cloud]
+Skill:     /vitalarc-start-[workstation/cloud]
+Arguments: [$ARGUMENTS or "none"]
+───────────────────────────────────────────────────────
+Tip: Use platform-specific skills directly for
+     explicit control over your session type.
+═══════════════════════════════════════════════════════
 ```
 
-### 5. Update state and restore stash
+## Why Delegate?
 
-```bash
-cat > .claude/session-state.json << EOF
-{"current_session":$SESSION,"branch":"$BRANCH","platform":"$PLATFORM","started_at":"$(date -u +%Y-%m-%dT%H:%M:%SZ)"}
-EOF
-git stash list | grep -q "Auto-stash $(date +%Y-%m-%d)" && git stash pop
-```
+The platform-specific skills (`/vitalarc-start-workstation` and `/vitalarc-start-cloud`) contain the complete, authoritative workflows. This skill exists for convenience but delegates to avoid:
 
-### 6. Read docs
+1. **Code duplication** — Changes only need to be made in one place
+2. **Inconsistency** — Platform skills are always the source of truth
+3. **Maintenance burden** — Fewer places to update when workflows change
 
-Read: CLAUDE.md, PROJECT_STATUS.md, SESSION_LOG.md (last 100 lines), README.md (Roadmap).
-
-### 7. Build check (macOS only)
-
-```bash
-[ "$(uname -s)" = "Darwin" ] && xcodebuild -scheme VitalArc -destination 'platform=iOS Simulator,name=iPhone 17 Pro' build 2>&1 | grep -E "(error:|BUILD)"
-```
-
-### 8. Create session log entry
-
-Use platform-appropriate template from `/vitalarc-start-workstation` or `/vitalarc-start-cloud`.
+For full functionality, use the platform-specific skills directly.
