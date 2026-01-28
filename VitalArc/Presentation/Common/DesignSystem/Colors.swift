@@ -81,6 +81,14 @@ extension Color {
         })
     }
 
+    static var vitalAdaptiveTextTertiary: Color {
+        Color(UIColor { traitCollection in
+            traitCollection.userInterfaceStyle == .dark
+                ? UIColor(Color(hex: "#9CA3AF"))
+                : UIColor(Color.vitalTextTertiary)
+        })
+    }
+
     // MARK: - Gradient Backgrounds
 
     static let vitalPrimaryGradient = LinearGradient(
