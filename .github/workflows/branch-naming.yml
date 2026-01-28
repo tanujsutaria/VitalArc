@@ -22,17 +22,21 @@ jobs:
               return;
             }
 
-            // Branch naming pattern: dev/<platform>-<focus>-<session>.<minor>-YYYY-MM-DD
-            // platform: mac or cloud
-            // focus: feature area (e.g., nutrition, workout, session)
-            // session: session number
-            // minor: sub-version (0, 1, 2...)
-            // date: ISO date format
+            // Pattern 1: Workstation branches
+            // dev/<platform>-<focus>-<session>.<minor>-YYYY-MM-DD
+            const devPattern = /^dev\/(mac|cloud)-[a-z]+-\d+\.\d+-\d{4}-\d{2}-\d{2}$/;
 
-            const pattern = /^dev\/(mac|cloud)-[a-z]+-\d+\.\d+-\d{4}-\d{2}-\d{2}$/;
+            // Pattern 2: Claude Code cloud session branches (platform-controlled)
+            // claude/<skill>-<sessionID>
+            const claudePattern = /^claude\/[a-z-]+-[a-zA-Z0-9]+$/;
 
-            if (pattern.test(branchName)) {
-              console.log(`Branch name "${branchName}" follows the naming convention.`);
+            if (devPattern.test(branchName)) {
+              console.log(`Branch name "${branchName}" follows dev/ naming convention.`);
+              return;
+            }
+
+            if (claudePattern.test(branchName)) {
+              console.log(`Branch name "${branchName}" is a Claude Code cloud session branch - OK.`);
               return;
             }
 
@@ -42,10 +46,11 @@ jobs:
 
             Branch name \`${branchName}\` does not follow the required naming convention.
 
-            ### Required Format
+            ### Allowed Formats
+
+            **1. Workstation branches** (manual creation):
             \`dev/<platform>-<focus>-<session>.<minor>-YYYY-MM-DD\`
 
-            ### Components
             | Component | Description | Required |
             |-----------|-------------|----------|
             | \`dev/\` | Branch prefix | Yes |
@@ -55,13 +60,15 @@ jobs:
             | \`<minor>\` | Sub-version for same day (0, 1, 2...) | Yes |
             | \`<date>\` | ISO date (YYYY-MM-DD) | Yes |
 
+            **2. Claude Code cloud branches** (platform-controlled):
+            \`claude/<skill>-<sessionID>\`
+
             ### Valid Examples
             - \`dev/mac-nutrition-12.0-2026-01-27\`
-            - \`dev/mac-session-12.0-2026-01-27\`
             - \`dev/cloud-workout-12.0-2026-01-27\`
+            - \`claude/vitalarc-start-cloud-abc123\`
 
             ### Invalid Examples
-            - \`claude/vitalarc-start-UA45Z\` - Wrong prefix
             - \`dev/nutrition-12.0-2026-01-27\` - Missing platform
             - \`feature/nutrition\` - Wrong prefix, missing required parts
             `;
