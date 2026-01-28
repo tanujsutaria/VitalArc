@@ -1,5 +1,40 @@
 # VitalArc Development Session Log
 
+## Session 11.2 - January 27, 2026 (Evening)
+
+### Session Start
+- **Time**: Evening
+- **Platform**: macOS (local)
+- **Focus**: README Update
+- **Branch**: dev/mac-readme-update-11.2-2026-01-27
+- **Base**: main @ 9c3944c chore(infra): remove build logs and add .gitignore (#16)
+
+### Pre-Session Status
+- **Build**: ✅ Passing
+- **Uncommitted Changes**: .claude/settings.json
+- **Recent Activity**: Session 11.1 cleanup merged
+
+### Session Goals
+1. Update README.md to reflect actual current state
+2. Fix outdated status, project structure, and documentation links
+
+### Work Completed
+- Rewrote README.md to reflect actual project state (was planning doc, now accurate)
+- Added Roadmap section with "In Progress" and "Planned" features
+- Fixed exercise count: 200+ → 960+ (in both README and PROJECT_STATUS)
+- Fixed project structure to match actual directory layout
+- Removed references to non-existent targets (watchOS, Widgets) and docs
+- Updated vitalarc-start skill to suggest focus areas from roadmap
+- Updated vitalarc-end skill to reference roadmap for "Next" priorities
+
+### Session End
+- **Status**: Documentation overhaul complete
+- **Build**: ✅ Passing
+- **Commits**: 2 (docs + chore)
+- **Next**: Continue "In Progress" features (recovery fine-tuning, strain TRIMP, sleep analysis) or start notifications (high priority)
+
+---
+
 ## Session 11.1 - January 27, 2026 (Evening)
 
 ### Session Start
