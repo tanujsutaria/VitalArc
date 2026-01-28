@@ -102,10 +102,21 @@ git push -u origin "$(git rev-parse --abbrev-ref HEAD)"
 
 ### 8. Create PR (optional)
 
-If ready for review:
+If ready for review, create PR following conventional commits format:
+
+**PR Title**: `<type>(<scope>): <short description>`
+- Example: `feat(workout): add custom exercise creation`
+- Example: `fix(nutrition): correct calorie calculation`
+
+**PR Body Template**:
 ```bash
-gh pr create --title "<type>(<scope>): <description>" --body "## Summary
-- [changes]
+gh pr create --title "<type>(<scope>): <description>" --body "$(cat <<'EOF'
+## Summary
+- [Primary change and why]
+- [Secondary changes if any]
+
+## Changes
+- [List of modified areas]
 
 ## Testing
 - [x] Build passes locally
@@ -113,8 +124,12 @@ gh pr create --title "<type>(<scope>): <description>" --body "## Summary
 - [ ] Manual testing done
 
 ---
-/vitalarc-end-workstation"
+Session: [N] | Platform: macOS | Build: Verified
+EOF
+)"
 ```
+
+See CLAUDE.md for valid types (`feat`, `fix`, `refactor`, `docs`, etc.) and scopes (`workout`, `nutrition`, `ui`, `infra`, etc.).
 
 ### 9. Output summary
 

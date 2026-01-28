@@ -168,7 +168,7 @@ struct WorkoutLoggingView: View {
     private var emptyState: some View {
         VStack(spacing: 16) {
             Image(systemName: "figure.strengthtraining.traditional")
-                .font(.system(size: 60))
+                .font(.system(size: Spacing.iconGiant))
                 .foregroundStyle(.secondary)
 
             Text("No Exercises Added")

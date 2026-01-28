@@ -619,7 +619,7 @@ struct AnalyticsDashboardView: View {
                         .frame(width: 80, height: 80)
 
                     Image(systemName: "figure.stand")
-                        .font(.system(size: 36))
+                        .font(.system(size: Spacing.icon2XLarge))
                         .foregroundStyle(Color.vitalSuccess)
                 }
 

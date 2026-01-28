@@ -37,8 +37,9 @@ HealthKit features require a physical device with Apple Developer account and He
 - `dev/mac-session-12.0-2026-01-27` - General work on macOS
 - `dev/cloud-workout-12.0-2026-01-27` - Working on workout on cloud
 
+**Cloud session exception**: When using Claude Code platform (phone/browser), the platform controls the branch name using format `claude/<skill>-<sessionID>`. This is acceptable for cloud sessions since manual branch creation isn't available.
+
 **Invalid examples**:
-- `claude/vitalarc-start-UA45Z` - Wrong prefix, missing required parts
 - `dev/nutrition-12.0-2026-01-27` - Missing platform
 - `feature/nutrition` - Wrong prefix, missing session info
 

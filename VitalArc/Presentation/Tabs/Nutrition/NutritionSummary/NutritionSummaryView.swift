@@ -139,7 +139,7 @@ private struct EmptyNutritionView: View {
                     .frame(width: 80, height: 80)
 
                 Image(systemName: "chart.pie")
-                    .font(.system(size: 40))
+                    .font(.system(size: Spacing.icon2XLarge))
                     .foregroundStyle(Color.vitalWarning)
             }
 

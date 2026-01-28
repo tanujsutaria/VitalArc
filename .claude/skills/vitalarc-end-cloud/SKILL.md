@@ -91,18 +91,33 @@ git push -u origin "$(git rev-parse --abbrev-ref HEAD)"
 
 ### 7. Create PR (optional)
 
-If ready for review:
+If ready for review, create PR following conventional commits format:
+
+**PR Title**: `<type>(<scope>): <short description>`
+- Example: `fix(infra): correct session numbering logic`
+- Example: `refactor(ui): standardize icon sizes with design tokens`
+
+**PR Body Template**:
 ```bash
-gh pr create --title "<type>(<scope>): <description>" --body "## Summary
-- [changes]
+gh pr create --title "<type>(<scope>): <description>" --body "$(cat <<'EOF'
+## Summary
+- [Primary change and why]
+- [Secondary changes if any]
+
+## Changes
+- [List of modified areas]
 
 ## Testing
 - [ ] CI build passes
-- [ ] Cloud session—manual testing recommended
+- [ ] Cloud session—manual testing recommended on workstation
 
 ---
-/vitalarc-end-cloud"
+Session: [N] | Platform: cloud
+EOF
+)"
 ```
+
+See CLAUDE.md for valid types (`feat`, `fix`, `refactor`, `docs`, etc.) and scopes (`workout`, `nutrition`, `ui`, `infra`, etc.).
 
 ### 8. Output summary
 

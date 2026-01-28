@@ -28,18 +28,38 @@ git fetch origin && git checkout main && git pull origin main --ff-only
 
 ### 2. Determine session number
 
-Session numbers increment on date change. Same-day sessions use minor versions (11.0, 11.1).
+**Session numbering rules:**
+- **Major number** increments when the DATE changes (e.g., Session 12 → Session 13)
+- **Minor version** increments for same-day sessions (e.g., 12 → 12.1 → 12.2)
+- Minor versions are determined by counting SESSION_LOG.md entries for that major number + date
 
-Use the shared script or inline logic:
+Use the shared script:
 ```bash
-# Option 1: Use shared script
 source .claude/skills/_shared/scripts/determine-session.sh cloud
+# Sets: SESSION (major), MINOR, FULL_SESSION (e.g., "12.2"), TODAY
+```
 
-# Option 2: Inline (if script unavailable)
+**Or inline logic** (if script unavailable):
+```bash
 TODAY=$(date +%Y-%m-%d)
-CURRENT_SESSION=$(grep -E "^## Session [0-9]+" SESSION_LOG.md | head -1 | sed 's/## Session \([0-9]*\).*/\1/')
-LAST_DATE=$(grep -E "^## Session ${CURRENT_SESSION:-0}" SESSION_LOG.md | head -1 | grep -oE "[A-Z][a-z]+ [0-9]+, [0-9]+" | xargs -I{} date -j -f "%B %d, %Y" "{}" +%Y-%m-%d 2>/dev/null)
-[ "$LAST_DATE" = "$TODAY" ] && SESSION=$CURRENT_SESSION || SESSION=$((${CURRENT_SESSION:-0} + 1))
+# Get latest session entry and extract major number
+LATEST_ENTRY=$(grep -E "^## Session [0-9]+(\.[0-9]+)? - " SESSION_LOG.md | head -1)
+LATEST_MAJOR=$(echo "$LATEST_ENTRY" | sed -E 's/## Session ([0-9]+).*/\1/')
+LATEST_MAJOR=${LATEST_MAJOR:-0}
+# Extract and convert the date
+LATEST_DATE_STR=$(echo "$LATEST_ENTRY" | grep -oE "[A-Z][a-z]+ [0-9]+, [0-9]+" | head -1)
+LATEST_DATE=$(date -d "$LATEST_DATE_STR" +%Y-%m-%d 2>/dev/null || echo "")
+# Determine session number
+if [ "$LATEST_DATE" = "$TODAY" ]; then
+    SESSION=$LATEST_MAJOR
+    # Count existing sessions with this major number on today
+    MINOR=$(grep -E "^## Session ${SESSION}(\.[0-9]+)? - .*${LATEST_DATE_STR}" SESSION_LOG.md | wc -l | tr -d ' ')
+else
+    SESSION=$((LATEST_MAJOR + 1))
+    MINOR=0
+fi
+# Format full session number
+[ "$MINOR" -eq 0 ] && FULL_SESSION="$SESSION" || FULL_SESSION="${SESSION}.${MINOR}"
 ```
 
 ### 3. Use platform-provided branch
@@ -53,7 +73,7 @@ Use the branch specified in the Git Development Branch Requirements from the sys
 ```bash
 BRANCH=$(git rev-parse --abbrev-ref HEAD)
 cat > .claude/session-state.json << EOF
-{"current_session":$SESSION,"branch":"$BRANCH","platform":"cloud","started_at":"$(date -u +%Y-%m-%dT%H:%M:%SZ)","build_capable":false}
+{"current_session":"$FULL_SESSION","branch":"$BRANCH","platform":"cloud","started_at":"$(date -u +%Y-%m-%dT%H:%M:%SZ)","build_capable":false}
 EOF
 ```
 
@@ -78,10 +98,12 @@ Cloud is best for logic bugs, docs, and small refactors—not UI changes.
 
 ### 7. Create session log entry
 
-Add to SESSION_LOG.md using the template from [session-log-cloud.md](../_shared/templates/session-log-cloud.md):
+Add to SESSION_LOG.md using the template from [session-log-cloud.md](../_shared/templates/session-log-cloud.md).
+
+**Use `$FULL_SESSION` for the session number** (e.g., "Session 12.2" not "Session 13"):
 
 ```markdown
-## Session [N] - [Month Day, Year] ([Time of Day])
+## Session [FULL_SESSION] - [Month Day, Year] ([Time of Day])
 
 ### Session Start
 - **Time**: [specific time, e.g., "3:45 PM PST" or "Evening"]
@@ -122,7 +144,7 @@ Add to SESSION_LOG.md using the template from [session-log-cloud.md](../_shared/
          VITALARC CLOUD SESSION INITIALIZED
 ═══════════════════════════════════════════════════════
 Branch:   [branch]
-Session:  [N]
+Session:  [FULL_SESSION]
 Focus:    [focus]
 ───────────────────────────────────────────────────────
 Best for: Bug fixes, docs, code review, small changes

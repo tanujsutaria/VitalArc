@@ -33,7 +33,7 @@ struct ExerciseRowView: View {
                     // Equipment badge
                     HStack(spacing: 4) {
                         Image(systemName: equipmentIcon)
-                            .font(.system(size: 10))
+                            .font(.system(size: Spacing.iconTiny))
                         Text(exercise.equipment.rawValue)
                             .font(.vitalCaptionSmall)
                     }

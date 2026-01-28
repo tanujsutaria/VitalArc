@@ -166,7 +166,7 @@ struct ExerciseLibraryView: View {
     private var emptyStateView: some View {
         VStack(spacing: Spacing.lg) {
             Image(systemName: "dumbbell.fill")
-                .font(.system(size: 64))
+                .font(.system(size: Spacing.iconHero))
                 .foregroundStyle(Color.vitalAdaptiveTextTertiary)
 
             Text("No Exercises")

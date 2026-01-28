@@ -40,7 +40,7 @@ struct TrainingHeatmapView: View {
                     if currentStreak > 0 {
                         HStack(spacing: 4) {
                             Image(systemName: "flame.fill")
-                                .font(.system(size: 12))
+                                .font(.system(size: Spacing.iconXSmall))
                             Text("\(currentStreak) day streak")
                                 .font(.vitalCaptionSmall)
                         }

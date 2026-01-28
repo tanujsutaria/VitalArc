@@ -34,11 +34,18 @@ enum Spacing {
     static let radiusXLarge: CGFloat = 24
 
     // MARK: - Icon Sizes
+    // Used for SF Symbol icons via .font(.system(size:))
 
-    static let iconSmall: CGFloat = 16
-    static let iconMedium: CGFloat = 20
-    static let iconLarge: CGFloat = 24
-    static let iconXLarge: CGFloat = 32
+    static let iconTiny: CGFloat = 10      // Badges, indicators
+    static let iconXSmall: CGFloat = 12    // Small badges
+    static let iconSmall: CGFloat = 16     // Inline icons
+    static let iconMedium: CGFloat = 20    // Standard icons
+    static let iconLarge: CGFloat = 24     // Prominent icons
+    static let iconXLarge: CGFloat = 32    // Section headers
+    static let icon2XLarge: CGFloat = 40   // Chart/card icons
+    static let iconHuge: CGFloat = 48      // Empty states
+    static let iconGiant: CGFloat = 60     // Hero sections
+    static let iconHero: CGFloat = 64      // Large empty states
 
     // MARK: - Border Width
 
