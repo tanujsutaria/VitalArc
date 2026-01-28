@@ -45,13 +45,19 @@ Fill in the current session's "Work Completed" and "Session End" sections:
 - **Status**: [Summary]
 - **Build**: [Passing / Failing / Skipped (cloud)]
 - **Commits**: [N] commits
-- **Next**: [Priorities for next session]
+- **Next**: [Priorities for next session - reference README.md Roadmap]
 ```
 
-### 4. Update PROJECT_STATUS.md
+**For "Next" field**: Read the Roadmap section in README.md to suggest priorities:
+1. If current session advanced an "In Progress" feature, suggest completing it
+2. Otherwise suggest the next highest-priority item from the roadmap
+3. Reference specific features: recovery, strain, sleep, nutrition-algorithm, notifications, watch, widgets, cloudkit
 
-**IMPORTANT**: Review and update PROJECT_STATUS.md if ANY of these changed:
+### 4. Update PROJECT_STATUS.md and README.md Roadmap
 
+**IMPORTANT**: Review and update these files if features changed:
+
+#### PROJECT_STATUS.md
 | Section | Update when... |
 |---------|----------------|
 | **Last Updated** | Always update to today's date |
@@ -60,9 +66,16 @@ Fill in the current session's "Work Completed" and "Session End" sections:
 | **Known Issues** | Issues fixed, discovered, or details changed |
 | **Codebase Stats** | Files added/removed, significant code changes |
 
+#### README.md Roadmap
+| Section | Update when... |
+|---------|----------------|
+| **In Progress** | Feature completed or progress made |
+| **Planned** | Feature started (move to In Progress) or completed |
+
 **Check these against session work:**
 - Did we fix any known issues? Remove or update them
-- Did we complete any partial features? Move to Ready
+- Did we complete any partial features? Move to Ready in both files
+- Did we start a planned feature? Move from Planned → In Progress in README
 - Did we discover new issues? Add them
 - Did file counts change significantly? Update stats
 
@@ -87,7 +100,7 @@ EOF
 ### 5. Commit documentation
 
 ```bash
-git add SESSION_LOG.md PROJECT_STATUS.md CLAUDE.md .claude/session-state.json 2>/dev/null
+git add SESSION_LOG.md PROJECT_STATUS.md README.md CLAUDE.md .claude/session-state.json 2>/dev/null
 git commit -m "docs(session): update session [N] documentation
 
 - [Summary from $ARGUMENTS]

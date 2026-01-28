@@ -27,7 +27,7 @@ The app compiles and runs with core MVP requirements addressed:
 |---------|--------|-------|
 | Health Dashboard | Ready | Uses lbs |
 | Workout Tracking | Ready | Minor polish needed |
-| Exercise Library | Ready | 200+ exercises |
+| Exercise Library | Ready | 960+ exercises |
 | Templates System | Ready | Day-by-day editor |
 | Mesocycle System | Ready | - |
 | Analytics Dashboard | Ready | - |

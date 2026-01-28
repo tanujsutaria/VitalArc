@@ -1,68 +1,101 @@
 # VitalArc
 
-**The unified iOS fitness platform combining workout tracking, nutrition management, and health analytics.**
+**A unified iOS fitness platform combining workout tracking, nutrition management, and health analytics.**
 
-VitalArc replaces three separate apps (RP Hypertrophy, MacroFactor, Athlytic/Bevel) with a single, integrated experience that leverages Apple Health for comprehensive fitness tracking.
+VitalArc integrates workout tracking, nutrition logging, and health analytics into a single app that leverages Apple Health for comprehensive fitness data.
+
+## Current Status
+
+**Stage**: MVP-Ready
+
+| Feature | Status |
+|---------|--------|
+| Health Dashboard | ✅ Ready |
+| Workout Tracking | ✅ Ready |
+| Exercise Library | ✅ 960+ exercises |
+| Templates & Mesocycles | ✅ Ready |
+| Nutrition Tracking | ✅ Ready |
+| Food Search (API) | ⚠️ API keys not configured |
+| Analytics Dashboard | ✅ Ready |
+| Design System | ✅ ~90% adoption |
+| Recovery Score | ⚠️ HRV algorithm done, fine-tuning needed |
+
+See `PROJECT_STATUS.md` for detailed status.
+
+## Roadmap
+
+### In Progress
+| Feature | Status | Remaining |
+|---------|--------|-----------|
+| Recovery Score | HRV algorithm done | Fine-tuning |
+| Strain Tracking | UI complete | TRIMP calculation |
+| Sleep Analysis | Basic score | Sleep stage analysis |
+| Nutrition Algorithm | Daily totals | Adaptive TDEE estimation |
+
+### Planned
+| Feature | Priority | Description |
+|---------|----------|-------------|
+| Notifications | High | Workout reminders, recovery alerts |
+| Apple Watch | Medium | Companion app for workout tracking |
+| Widgets | Medium | Home screen glanceables |
+| CloudKit Sync | Medium | Cross-device data sync |
+| AI Features | Low | Predictive insights, coaching |
+| Social Features | Low | Progress sharing, challenges |
 
 ## Core Features
 
-### 1. Workout Tracking (RP Hypertrophy-style)
-- Mesocycle-based periodization with automatic progression
+### Workout Tracking
+- Mesocycle-based periodization with progression
 - RIR (Reps in Reserve) tracking and volume autoregulation
-- Feedback-driven set/rep adjustments based on pump, soreness, and performance
-- MEV → MRV volume progression with intelligent deload scheduling
-- 500+ exercise library with muscle group mapping
+- Feedback-driven adjustments based on pump, soreness, performance
+- Day-by-day template editor
+- 960+ exercise library organized by equipment type
 
-### 2. Nutrition Tracking (MacroFactor-style)
-- Adaptive TDEE algorithm that learns from your data
-- Timeline-based food logging with AI-powered entry
-- Automatic macro adjustments based on weight trends
-- Coached, Collaborative, and Manual program modes
-- Comprehensive micronutrient tracking
+### Nutrition Tracking
+- Timeline-based food logging
+- Multi-API food search (Nutritionix, OpenFoodFacts, USDA)
+- Macro and calorie tracking
+- Cached API responses for performance
 
-### 3. Health Analytics (Athlytic/Bevel-style)
-- Recovery score based on HRV and RHR trends
-- Strain/exertion tracking with TRIMP methodology
-- Sleep quality analysis with debt tracking
-- Training load monitoring (Acute vs Chronic)
-- Real-time readiness recommendations
-
-### 4. Unified Intelligence (New Features)
-- Cross-domain AI insights connecting workout, nutrition, and recovery
-- Predictive analytics for optimal training timing
-- Social features for sharing progress and competing
-- Advanced correlation analysis across all health data
+### Health Analytics
+- Recovery score based on HRV trends
+- Sleep quality analysis
+- Weight and body metrics tracking
+- PDF/CSV export for analytics data
 
 ## Technical Stack
 
-- **Platform**: iOS 17+ (iPhone), watchOS 10+ (Apple Watch)
+- **Platform**: iOS 17+
 - **Language**: Swift 5.9+
 - **UI Framework**: SwiftUI
-- **Architecture**: MVVM + Clean Architecture
-- **Local Storage**: SwiftData (Core Data successor)
-- **Cloud Sync**: CloudKit
-- **Health Integration**: HealthKit (read/write)
-- **AI/ML**: Core ML, Create ML, on-device LLM integration
+- **Architecture**: Clean Architecture + MVVM
+- **Local Storage**: SwiftData
+- **Health Integration**: HealthKit
 
 ## Project Structure
 
 ```
 VitalArc/
-├── docs/
-│   ├── specs/                    # Feature specifications
-│   ├── architecture/             # Technical architecture docs
-│   ├── ai-agent-tasks/          # Task files for AI implementation
-│   └── api/                      # API documentation
-├── VitalArc/                     # Main iOS app
-│   ├── App/                      # App entry point
-│   ├── Core/                     # Shared utilities, extensions
-│   ├── Domain/                   # Business logic, use cases
-│   ├── Data/                     # Repositories, data sources
-│   ├── Presentation/             # Views, ViewModels
-│   └── Infrastructure/           # HealthKit, CloudKit, ML
-├── VitalArcWatch/               # watchOS companion app
-├── VitalArcWidgets/             # Home screen widgets
-└── Tests/                        # Unit and integration tests
+├── Domain/                  # Pure Swift business logic
+│   ├── Entities/            # Business models (UserProfile, Workout, Food, etc.)
+│   ├── Repositories/        # Protocol definitions for data access
+│   └── UseCases/            # Single-responsibility business operations
+├── Data/
+│   ├── Models/              # SwiftData @Model classes
+│   └── Seeds/               # Exercise database (960+ exercises)
+├── Infrastructure/
+│   ├── HealthKit/           # HealthKitManager, permissions, queries
+│   ├── Networking/          # Food API clients
+│   ├── Cache/               # API response caching
+│   └── Export/              # PDF/CSV export utilities
+├── Presentation/
+│   ├── Common/              # Design system, shared components
+│   ├── Onboarding/          # Welcome, profile setup, permissions
+│   └── Tabs/                # Main app tabs (Health, Workout, Nutrition, Profile)
+└── docs/                    # Documentation
+    ├── ARCHITECTURE.md      # Technical architecture deep-dive
+    ├── DESIGN_SYSTEM.md     # Component and token reference
+    └── SETUP.md             # Development environment setup
 ```
 
 ## Getting Started
@@ -79,69 +112,35 @@ VitalArc/
 4. Enable HealthKit capability
 5. Build and run on a physical device
 
-## Development Phases
+### API Configuration
+Food APIs have placeholder keys that need to be configured:
+- `NutritionixAPI.swift`: Get keys from nutritionix.com
+- `USDAFoodAPI.swift`: Get key from fdc.nal.usda.gov
+- `OpenFoodFactsAPI.swift`: No key required (public API)
 
-See [docs/specs/ROADMAP.md](docs/specs/ROADMAP.md) for the complete development roadmap.
+## Development
 
-### Phase 1: Foundation (Weeks 1-4)
-- Project setup, HealthKit integration, data models
-- Basic workout logging and exercise library
+See `CLAUDE.md` for development conventions, build commands, and architecture details.
 
-### Phase 2: Workout Engine (Weeks 5-8)
-- Mesocycle creation and management
-- RIR tracking and volume progression algorithms
-- Feedback collection and autoregulation
+### Quick Commands
+```bash
+# Build
+xcodebuild -scheme VitalArc -destination 'platform=iOS Simulator,name=iPhone 17 Pro' build
 
-### Phase 3: Nutrition System (Weeks 9-12)
-- Food database and logging interface
-- Adaptive TDEE algorithm
-- Macro recommendations and adjustments
+# Test
+xcodebuild -scheme VitalArc -destination 'platform=iOS Simulator,name=iPhone 17 Pro' test
+```
 
-### Phase 4: Health Analytics (Weeks 13-16)
-- Recovery score calculation
-- Strain/exertion tracking
-- Sleep analysis and recommendations
+## Codebase Stats
 
-### Phase 5: Intelligence Layer (Weeks 17-20)
-- Cross-domain insights and correlations
-- Predictive recommendations
-- AI-powered coaching
-
-### Phase 6: Social & Polish (Weeks 21-24)
-- Social features and sharing
-- watchOS companion app
-- Widgets and notifications
-
-## Documentation
-
-- [Product Requirements Document](docs/specs/PRD.md)
-- [Technical Architecture](docs/architecture/ARCHITECTURE.md)
-- [Data Models](docs/architecture/DATA_MODELS.md)
-- [HealthKit Integration](docs/architecture/HEALTHKIT.md)
-- [Algorithm Specifications](docs/specs/ALGORITHMS.md)
-- [AI Agent Task List](docs/ai-agent-tasks/TASK_INDEX.md)
-
-## Current Implementation Status
-
-**Stage**: Pre-MVP (Foundation Built, Polish Required)
-
-| Feature | Status |
-|---------|--------|
-| Workout Tracking | ✅ Built |
-| Exercise Library | ✅ 200+ exercises seeded |
-| Templates & Mesocycles | ✅ Built |
-| Nutrition Logging | ✅ Built |
-| Food Search (API) | ⚠️ Built, **API keys not configured** |
-| Health Dashboard | ✅ Built |
-| Analytics Dashboard | ✅ Built |
-| Design System | ⚠️ 58% adoption |
-| Recovery/Strain Algorithms | ⚠️ UI only, algorithms pending |
-| TDEE Algorithm | ❌ Not implemented |
-| AI Features | ❌ Not implemented |
-| Apple Watch | ❌ Not implemented |
-| CloudKit Sync | ❌ Not implemented |
-
-See `PROJECT_STATUS.md` for detailed status and MVP blockers.
+| Metric | Value |
+|--------|-------|
+| Swift files | ~153 |
+| Lines of code | ~35,000 |
+| Views | 70 |
+| ViewModels | 10 |
+| Use cases | 16 |
+| Exercises | 960+ |
 
 ## License
 

@@ -107,6 +107,22 @@ Read these files:
 1. **CLAUDE.md** - Architecture and conventions
 2. **PROJECT_STATUS.md** - Current feature status
 3. **SESSION_LOG.md** (last 100 lines) - Recent history
+4. **README.md** (Roadmap section) - Planned features and priorities
+
+### 6a. Suggest focus from roadmap (if no focus provided)
+
+If no `$ARGUMENTS` focus was provided, read the Roadmap section from README.md and suggest a focus area:
+
+**Priority order for suggestions:**
+1. "In Progress" features that need remaining work
+2. "Planned" features marked as High priority
+3. "Planned" features marked as Medium priority
+
+Example suggestions:
+- `recovery` - Fine-tune recovery score algorithm
+- `strain` - Implement TRIMP calculation
+- `notifications` - Add workout reminders
+- `watch` - Start Apple Watch companion app
 
 ### 7. Build check (macOS only)
 
