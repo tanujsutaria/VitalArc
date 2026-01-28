@@ -1,8 +1,6 @@
 {
   "current_session": 11,
-  "branch": "dev/mac-frontend-enhancements-11.0-2026-01-27",
-  "platform": "mac",
-  "started_at": "2026-01-27T00:00:00Z",
-  "base_commit": "d907004",
-  "note": "Session 11 completed - state file initialized for durability"
+  "branch": "dev/mac-cleanup-11.1-2026-01-27",
+  "status": "completed",
+  "ended_at": "2026-01-27T20:00:00Z"
 }

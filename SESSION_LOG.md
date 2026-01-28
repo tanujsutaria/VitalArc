@@ -1,5 +1,40 @@
 # VitalArc Development Session Log
 
+## Session 11.1 - January 27, 2026 (Evening)
+
+### Session Start
+- **Time**: Evening
+- **Platform**: macOS (local)
+- **Focus**: Repository Cleanup
+- **Branch**: dev/mac-cleanup-11.1-2026-01-27
+- **Base**: main @ ab9b92a chore(deps): bump actions/labeler from 5 to 6 (#7)
+
+### Pre-Session Status
+- **Build**: ✅ Passing
+- **Uncommitted Changes**: 7 build log files accidentally committed to repo, missing .gitignore
+- **Recent Activity**: Session 11.0 frontend design analysis (incomplete)
+
+### Session Goals
+1. Remove build log files from repository
+2. Add .gitignore with standard Xcode patterns
+3. Fix vitalarc-start skill to handle same-day sessions correctly
+
+### Work Completed
+- Removed 7 build log files that were accidentally committed to repository
+- Created `.gitignore` with standard Xcode/iOS patterns (build logs, DerivedData, xcuserdata, etc.)
+- Fixed `vitalarc-start` skill to properly handle same-day sessions:
+  - Session numbers now only increment when the **date changes**
+  - Multiple sessions on the same day use minor versions (11.0 → 11.1 → 11.2)
+  - Minor version calculation counts existing branches for the session+date
+
+### Session End
+- **Status**: Repository cleanup complete, skill bug fixed
+- **Build**: ✅ Passing
+- **Commits**: 2 (chore + docs)
+- **Next**: Continue Session 11 frontend enhancements or start new feature work
+
+---
+
 ## Session 11 - January 27, 2026 (Evening)
 
 ### Session Start
