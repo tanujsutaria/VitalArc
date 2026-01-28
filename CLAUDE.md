@@ -2,8 +2,6 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-> **Agent Note**: The `/docs/` folder contains detailed human documentation (design system reference, architecture deep-dive, setup guide). Do not read these unless specifically asked - they're for human developers, not agent context.
-
 ## Build Commands
 
 ```bash
@@ -22,23 +20,7 @@ HealthKit features require a physical device with Apple Developer account and He
 ## Git Workflow
 
 **Branch naming**: `dev/<focus>-<session>.<minor>-YYYY-MM-DD`
-
-| Component | Description | Required |
-|-----------|-------------|----------|
-| `dev/` | Branch prefix | Yes |
-| `<focus>` | Feature area (e.g., `nutrition`, `workout`) or `mac-session`/`cloud-session` for general work | Yes |
-| `<session>` | Session number from SESSION_LOG.md | Yes |
-| `<minor>` | Sub-version for same day (0, 1, 2...) | Yes |
-| `<date>` | ISO date (YYYY-MM-DD) | Yes |
-
-**Valid examples**:
-- `dev/nutrition-12.0-2026-01-27` - Working on nutrition feature
-- `dev/mac-session-12.0-2026-01-27` - General work on macOS
-- `dev/cloud-session-12.1-2026-01-27` - Second session same day on cloud
-
-**Invalid examples**:
-- `claude/vitalarc-start-UA45Z` - Wrong prefix, missing required parts
-- `feature/nutrition` - Wrong prefix, missing session info
+- Example: `dev/nutrition-8.0-2026-01-26`
 
 **Conventional Commits**: All commits must follow this format:
 
@@ -249,13 +231,10 @@ Automated workflows are configured in `.github/workflows/`:
 - Conventional commit type in title
 - PR size (XS/S/M/L/XL)
 
+See `.github/GITHUB_INTEGRATION.md` for full setup documentation.
+
 ## Current Status
 
-See `PROJECT_STATUS.md` for feature status and `SESSION_LOG.md` for development history.
-
-## For Humans
-
-See `/docs/` for detailed documentation:
-- `DESIGN_SYSTEM.md` - Complete component and token reference
-- `ARCHITECTURE.md` - Deep-dive into app architecture
-- `SETUP.md` - Development environment setup guide
+See `PROJECT_STATUS.md` for current feature status and MVP blockers.
+See `EXECUTION_PLAN_SESSION5.md` for planned work.
+See `SESSION_LOG.md` for development history.
