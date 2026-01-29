@@ -80,8 +80,102 @@ final class HealthKitManager {
 
     // MARK: - Individual Metric Queries
 
-    /// Fetch heart rate variability (HRV)
+    /// Fetch heart rate variability (HRV) during sleep periods
+    /// Uses the Oura-style approach: average all HRV readings during sleep
     private func fetchHRV(start: Date, end: Date) async throws -> Double? {
+        // First, get sleep periods for this date range
+        let sleepPeriods = try await fetchSleepPeriods(start: start, end: end)
+
+        guard !sleepPeriods.isEmpty else {
+            // No sleep data - fall back to any HRV reading
+            return try await fetchAnyHRV(start: start, end: end)
+        }
+
+        // Fetch all HRV samples during sleep periods
+        guard let hrvType = HKQuantityType.quantityType(forIdentifier: .heartRateVariabilitySDNN) else {
+            throw HealthKitError.queryFailed
+        }
+
+        var allSleepHRVValues: [Double] = []
+
+        for period in sleepPeriods {
+            let hrvValues = try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<[Double], Error>) in
+                let query = HealthKitQuery.sampleQuery(
+                    for: hrvType,
+                    start: period.start,
+                    end: period.end
+                ) { samples, error in
+                    if let error = error {
+                        continuation.resume(throwing: error)
+                        return
+                    }
+
+                    guard let hrvSamples = samples as? [HKQuantitySample] else {
+                        continuation.resume(returning: [])
+                        return
+                    }
+
+                    let values = hrvSamples.map { sample in
+                        sample.quantity.doubleValue(for: HKUnit.secondUnit(with: .milli))
+                    }
+                    continuation.resume(returning: values)
+                }
+
+                healthStore.execute(query)
+            }
+
+            allSleepHRVValues.append(contentsOf: hrvValues)
+        }
+
+        // Return average of all sleep HRV readings (Oura-style)
+        guard !allSleepHRVValues.isEmpty else {
+            return try await fetchAnyHRV(start: start, end: end)
+        }
+
+        return allSleepHRVValues.reduce(0, +) / Double(allSleepHRVValues.count)
+    }
+
+    /// Fetch sleep periods (start/end times) for HRV correlation
+    private func fetchSleepPeriods(start: Date, end: Date) async throws -> [(start: Date, end: Date)] {
+        guard let sleepType = HKCategoryType.categoryType(forIdentifier: .sleepAnalysis) else {
+            throw HealthKitError.queryFailed
+        }
+
+        return try await withCheckedThrowingContinuation { continuation in
+            let query = HealthKitQuery.sampleQuery(
+                for: sleepType,
+                start: start,
+                end: end
+            ) { samples, error in
+                if let error = error {
+                    continuation.resume(throwing: error)
+                    return
+                }
+
+                guard let sleepSamples = samples as? [HKCategorySample] else {
+                    continuation.resume(returning: [])
+                    return
+                }
+
+                // Filter to actual sleep states and extract periods
+                let periods = sleepSamples
+                    .filter { sample in
+                        sample.value == HKCategoryValueSleepAnalysis.asleepUnspecified.rawValue ||
+                        sample.value == HKCategoryValueSleepAnalysis.asleepCore.rawValue ||
+                        sample.value == HKCategoryValueSleepAnalysis.asleepDeep.rawValue ||
+                        sample.value == HKCategoryValueSleepAnalysis.asleepREM.rawValue
+                    }
+                    .map { (start: $0.startDate, end: $0.endDate) }
+
+                continuation.resume(returning: periods)
+            }
+
+            healthStore.execute(query)
+        }
+    }
+
+    /// Fallback: fetch any HRV reading when no sleep data available
+    private func fetchAnyHRV(start: Date, end: Date) async throws -> Double? {
         guard let hrvType = HKQuantityType.quantityType(forIdentifier: .heartRateVariabilitySDNN) else {
             throw HealthKitError.queryFailed
         }

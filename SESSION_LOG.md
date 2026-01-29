@@ -1,5 +1,92 @@
 # VitalArc Development Session Log
 
+## Session 13.0 - January 29, 2026 (Morning)
+
+### Session Start
+- **Time**: Morning UTC
+- **Platform**: cloud ☁️
+- **Focus**: Analytics bug fixes, HRV calculation improvements
+- **Branch**: claude/vitalarc-start-cloud-oW16y
+- **Base**: main @ b45428a refactor(infra): fix agent swarm architecture with maps-to-agent metadata (#23)
+
+### Environment
+- **Build Capable**: No
+- **Test Capable**: No
+
+### Pre-Session Status
+- **Build**: ⏭️ Skipped (cloud)
+- **Uncommitted Changes**: None
+- **Recent Activity**: Session 12.4 fixed agent swarm architecture, integrated TRIMP with analytics dashboard, completed Notifications repository layer
+
+### Suggested Focus Areas (Cloud-Appropriate)
+1. **HR Data Integration for Strain Calculation** (Score: 8) - Query HealthKit for HR samples, integrate into CalculateStrainScoreUseCase
+2. **Notification Scheduling & Delivery** (Score: 7) - Implement UNUserNotificationCenter scheduling, wire up preferences to delivery
+3. **Recovery Score Fine-tuning** (Score: 7) - Validate/parameterize HRV algorithm weights, test against real data
+
+### Session Goals
+1. Fix analytics dashboard bugs identified during testing
+2. Update session skill numbering format
+
+### Work Log
+| Time | Action | Files | Notes |
+|------|--------|-------|-------|
+| Morning | Session started | - | Cloud session initialized |
+| Morning | Fixed session numbering | SKILL.md files | Always include minor version (13.0 not 13) |
+| Morning | Fixed sleep average bug | HealthKitMapper.swift | Merge overlapping sleep intervals |
+| Morning | Fixed sleep chart overflow | HealthTrendsView.swift | Dynamic Y-axis scaling |
+| Morning | Fixed HRV 7/30 day bug | AnalyticsDashboardViewModel.swift | Always fetch 30 days for HRV |
+| Morning | Fixed HRV calculation | HealthKitManager.swift | Use sleep-period HRV only (Oura-style) |
+| Morning | Design system scan | - | 267 violations identified for workstation fix |
+| Morning | Session ended | - | 5 commits, PR ready |
+
+### Work Completed
+
+#### Analytics Dashboard Bug Fixes
+Fixed three bugs identified from user testing screenshots:
+
+1. **Sleep Average Showing 22.3 hrs** (HealthKitMapper.swift)
+   - Root cause: Multiple sources (Apple Watch, iPhone, third-party apps) create overlapping sleep samples
+   - Old behavior: Simply summed all sample durations, causing double/triple counting
+   - Fix: Merge overlapping time intervals before summing total sleep
+
+2. **Sleep Chart Bars Overflowing Y-Axis** (HealthTrendsView.swift:429)
+   - Root cause: Y-axis hardcoded to `0...12` hours max
+   - Fix: Dynamic scaling using `max(maxSleepHours + 2, 12)`
+
+3. **HRV Chart Same Data for 7/30 Day Views** (AnalyticsDashboardViewModel.swift)
+   - Root cause: `loadHealthData` only fetched data for selected time range (e.g., 1 week)
+   - If user selected "1 Week", `metrics.suffix(30)` returned same 7 entries as `suffix(7)`
+   - Fix: Always fetch minimum 30 days of health data, filter by actual dates for 7/30 day views
+
+#### HRV Calculation Improvement
+Fixed conceptual flaw in HRV calculation for recovery:
+
+- **Problem**: Was grabbing any HRV sample (including daytime readings)
+- **Issue**: Daytime HRV is highly variable (stress, caffeine, activity)
+- **Research**: Whoop/Oura only use sleep-period HRV for recovery calculations
+  - Whoop: Uses last slow-wave sleep phase
+  - Oura: Averages all HRV readings during entire sleep period
+- **Fix**: Implemented Oura-style approach:
+  1. Fetch sleep periods from HealthKit
+  2. Query HRV samples that fall within sleep periods
+  3. Average all sleep HRV readings
+  4. Fall back to any HRV if no sleep data available
+
+#### Session Skill Updates
+Updated `vitalarc-start-cloud` and `vitalarc-start-workstation` skills to always include minor version in session numbering (e.g., "13.0" not just "13").
+
+#### Design System Scan (Workstation Todo)
+Identified 267 design token violations for next workstation session:
+- Corner Radius: 108 violations (use `Spacing.radiusSmall/Medium`)
+- Frame Width: 82 violations (use `Spacing.icon*` constants)
+- Frame Height: 44 violations (standardize chart heights)
+- Typography: 32 violations (headline/caption → `.vitalH2/.vitalCaption`)
+- Colors: 1 violation (excellent compliance)
+
+**Priority files:** ProfileSetupView.swift (8), MesocycleDetailView.swift (14), HealthTrendsView.swift (13)
+
+---
+
 ## Session 12.4 - January 28, 2026 (Late Evening)
 
 ### Session Start

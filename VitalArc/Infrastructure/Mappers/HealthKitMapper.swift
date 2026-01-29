@@ -94,20 +94,43 @@ struct HealthKitMapper {
     }
 
     /// Calculate total sleep hours from multiple sleep samples
+    /// Merges overlapping intervals to avoid double-counting from multiple sources
     static func calculateTotalSleepHours(from samples: [HKCategorySample]) -> Double? {
         guard !samples.isEmpty else { return nil }
 
-        let totalSeconds = samples
+        // Filter to only actual sleep states and extract intervals
+        let sleepIntervals = samples
             .filter { sample in
-                // Only count actual sleep states
                 sample.value == HKCategoryValueSleepAnalysis.asleepUnspecified.rawValue ||
                 sample.value == HKCategoryValueSleepAnalysis.asleepCore.rawValue ||
                 sample.value == HKCategoryValueSleepAnalysis.asleepDeep.rawValue ||
                 sample.value == HKCategoryValueSleepAnalysis.asleepREM.rawValue
             }
-            .reduce(0.0) { result, sample in
-                result + sample.endDate.timeIntervalSince(sample.startDate)
+            .map { (start: $0.startDate, end: $0.endDate) }
+            .sorted { $0.start < $1.start }
+
+        guard !sleepIntervals.isEmpty else { return nil }
+
+        // Merge overlapping intervals to avoid double-counting
+        var mergedIntervals: [(start: Date, end: Date)] = []
+        var currentInterval = sleepIntervals[0]
+
+        for interval in sleepIntervals.dropFirst() {
+            if interval.start <= currentInterval.end {
+                // Overlapping - extend current interval
+                currentInterval.end = max(currentInterval.end, interval.end)
+            } else {
+                // No overlap - save current and start new
+                mergedIntervals.append(currentInterval)
+                currentInterval = interval
             }
+        }
+        mergedIntervals.append(currentInterval)
+
+        // Sum merged intervals
+        let totalSeconds = mergedIntervals.reduce(0.0) { result, interval in
+            result + interval.end.timeIntervalSince(interval.start)
+        }
 
         return totalSeconds / 3600 // Convert to hours
     }
