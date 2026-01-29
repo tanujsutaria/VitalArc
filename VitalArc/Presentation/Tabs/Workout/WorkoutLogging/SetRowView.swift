@@ -75,7 +75,7 @@ struct SetRowView: View {
             }
             .buttonStyle(.plain)
         }
-        .padding(.vertical, 8)
+        .padding(.vertical, Spacing.sm)
     }
 }
 

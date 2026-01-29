@@ -181,7 +181,7 @@ struct WorkoutLoggingView: View {
                 .multilineTextAlignment(.center)
 
             addExerciseButton
-                .padding(.top, 8)
+                .padding(.top, Spacing.sm)
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 60)

@@ -8,7 +8,10 @@
 import Foundation
 import HealthKit
 
-/// Manages HealthKit data access and synchronization
+/// Manages HealthKit data access and synchronization.
+///
+/// Note: This class is intentionally NOT @MainActor to allow background HealthKit queries.
+/// ViewModels using this class are @MainActor isolated and handle thread transitions.
 final class HealthKitManager {
 
     // MARK: - Properties

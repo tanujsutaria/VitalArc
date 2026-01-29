@@ -199,7 +199,7 @@ private struct DatabaseBadge: View {
                 .foregroundStyle(Color.vitalAdaptiveTextSecondary)
         }
         .padding(.horizontal, Spacing.sm)
-        .padding(.vertical, Spacing.xs + 2)
+        .padding(.vertical, Spacing.xs)
         .background(color.opacity(0.1))
         .cornerRadius(Spacing.radiusSmall)
     }

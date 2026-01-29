@@ -49,7 +49,7 @@ struct FoodCard: View {
                 VStack(alignment: .leading, spacing: Spacing.sm) {
                     // Header
                     HStack {
-                        VStack(alignment: .leading, spacing: 4) {
+                        VStack(alignment: .leading, spacing: Spacing.xs) {
                             Text(foodName)
                                 .font(.vitalLabel)
                                 .foregroundStyle(Color.vitalAdaptiveTextPrimary)
@@ -63,7 +63,7 @@ struct FoodCard: View {
                         Spacer()
 
                         // Calories badge
-                        VStack(spacing: 2) {
+                        VStack(spacing: Spacing.xxs) {
                             Text("\(calories)")
                                 .font(.vitalNumberSmall)
                                 .foregroundStyle(Color.vitalAdaptiveTextPrimary)
@@ -74,7 +74,7 @@ struct FoodCard: View {
                         .padding(.horizontal, Spacing.sm)
                         .padding(.vertical, Spacing.xs)
                         .background(Color.vitalWarning.opacity(0.15))
-                        .cornerRadius(8)
+                        .cornerRadius(Spacing.sm)
                     }
 
                     // Macro bars
@@ -107,10 +107,10 @@ struct FoodCard: View {
                             Text(mealType)
                                 .font(.vitalCaptionSmall)
                                 .foregroundStyle(.white)
-                                .padding(.horizontal, 8)
-                                .padding(.vertical, 4)
+                                .padding(.horizontal, Spacing.sm)
+                                .padding(.vertical, Spacing.xs)
                                 .background(Color.vitalPrimary)
-                                .cornerRadius(6)
+                                .cornerRadius(Spacing.radiusSmall)
                         }
 
                         Spacer()
@@ -121,7 +121,7 @@ struct FoodCard: View {
                                 onDelete()
                             }) {
                                 Image(systemName: "trash")
-                                    .font(.system(size: 14, weight: .medium))
+                                    .font(.system(size: Spacing.iconSmall, weight: .medium))
                                     .foregroundStyle(Color.vitalDanger)
                             }
                             .vitalScaleButton()
@@ -155,13 +155,13 @@ struct MacroBar: View {
                     // Background
                     Rectangle()
                         .fill(color.opacity(0.15))
-                        .cornerRadius(4)
+                        .cornerRadius(Spacing.xs)
 
                     // Progress
                     Rectangle()
                         .fill(color)
                         .frame(width: min(CGFloat(value / maxValue) * geometry.size.width, geometry.size.width))
-                        .cornerRadius(4)
+                        .cornerRadius(Spacing.xs)
                         .animation(.vitalSpring, value: value)
                 }
             }
@@ -197,12 +197,12 @@ struct FoodSearchResultRow: View {
                         .frame(width: 40, height: 40)
 
                     Image(systemName: "fork.knife")
-                        .font(.system(size: 16, weight: .semibold))
+                        .font(.system(size: Spacing.lg, weight: .semibold))
                         .foregroundStyle(Color.vitalWarning)
                 }
 
                 // Food info
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: Spacing.xs) {
                     Text(foodName)
                         .font(.vitalLabel)
                         .foregroundStyle(Color.vitalAdaptiveTextPrimary)
@@ -232,7 +232,7 @@ struct FoodSearchResultRow: View {
                     .foregroundStyle(Color.vitalAdaptiveTextSecondary)
 
                 Image(systemName: "chevron.right")
-                    .font(.system(size: 12, weight: .semibold))
+                    .font(.system(size: Spacing.iconXSmall, weight: .semibold))
                     .foregroundStyle(Color.vitalAdaptiveTextSecondary)
             }
             .padding(Spacing.md)

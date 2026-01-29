@@ -40,8 +40,8 @@ struct FeedbackView: View {
                                 Text("Describe your feedback...")
                                     .font(.vitalBody)
                                     .foregroundStyle(Color.vitalAdaptiveTextTertiary)
-                                    .padding(.top, 8)
-                                    .padding(.leading, 4)
+                                    .padding(.top, Spacing.sm)
+                                    .padding(.leading, Spacing.xs)
                                     .allowsHitTesting(false)
                             }
                         }

@@ -121,8 +121,8 @@ struct AnalyticsDashboardView: View {
                     } label: {
                         Text(range.rawValue)
                             .font(.vitalLabelSmall)
-                            .padding(.horizontal, 12)
-                            .padding(.vertical, 8)
+                            .padding(.horizontal, Spacing.md)
+                            .padding(.vertical, Spacing.sm)
                             .background(
                                 viewModel.selectedTimeRange == range
                                     ? Color.vitalPrimary
@@ -154,7 +154,7 @@ struct AnalyticsDashboardView: View {
                         }
                         HapticFeedback.selection()
                     } label: {
-                        VStack(spacing: 6) {
+                        VStack(spacing: Spacing.xs) {
                             Text(section.rawValue)
                                 .font(.vitalLabel)
                                 .foregroundStyle(
@@ -170,9 +170,9 @@ struct AnalyticsDashboardView: View {
                                         : Color.clear
                                 )
                                 .frame(height: 3)
-                                .cornerRadius(1.5)
+                                .cornerRadius(Spacing.xxs)
                         }
-                        .padding(.horizontal, 16)
+                        .padding(.horizontal, Spacing.lg)
                     }
                 }
             }

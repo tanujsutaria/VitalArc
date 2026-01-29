@@ -66,19 +66,19 @@ struct ExerciseCard: View {
                             Text(muscleGroup)
                                 .font(.vitalCaptionSmall)
                                 .foregroundStyle(muscleGroupColor)
-                                .padding(.horizontal, 6)
-                                .padding(.vertical, 2)
+                                .padding(.horizontal, Spacing.xs)
+                                .padding(.vertical, Spacing.xxs)
                                 .background(muscleGroupColor.opacity(0.15))
-                                .cornerRadius(4)
+                                .cornerRadius(Spacing.xs)
 
                             if let equipment = equipment {
                                 Text(equipment)
                                     .font(.vitalCaptionSmall)
                                     .foregroundStyle(Color.vitalAdaptiveTextSecondary)
-                                    .padding(.horizontal, 6)
-                                    .padding(.vertical, 2)
+                                    .padding(.horizontal, Spacing.xs)
+                                    .padding(.vertical, Spacing.xxs)
                                     .background(Color.vitalAdaptiveBorder.opacity(0.5))
-                                    .cornerRadius(4)
+                                    .cornerRadius(Spacing.xs)
                             }
                         }
 
@@ -183,7 +183,7 @@ struct ExerciseRowCompact: View {
                     .font(.system(size: Spacing.iconLarge))
                     .foregroundStyle(Color.vitalPrimary)
 
-                VStack(alignment: .leading, spacing: 2) {
+                VStack(alignment: .leading, spacing: Spacing.xxs) {
                     Text(exerciseName)
                         .font(.vitalLabel)
                         .foregroundStyle(Color.vitalAdaptiveTextPrimary)
@@ -196,7 +196,7 @@ struct ExerciseRowCompact: View {
                 Spacer()
 
                 Image(systemName: "chevron.right")
-                    .font(.system(size: 12, weight: .semibold))
+                    .font(.system(size: Spacing.iconXSmall, weight: .semibold))
                     .foregroundStyle(Color.vitalAdaptiveTextSecondary)
             }
             .padding(Spacing.md)

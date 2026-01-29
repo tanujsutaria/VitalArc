@@ -10,7 +10,7 @@
 
 The app compiles and runs with core MVP requirements addressed:
 - American units enforced across all screens
-- Design system ~95% adopted
+- Design system ~99% adopted
 - Settings/About features implemented
 - Standardized error handling
 - Analytics export (PDF/CSV) functional
@@ -33,18 +33,18 @@ The app compiles and runs with core MVP requirements addressed:
 | Mesocycle System | Ready | - |
 | Analytics Dashboard | Ready | TRIMP integrated |
 | Nutrition Tracking | Ready | **API keys not configured** |
-| Design System | Ready | ~95% adoption |
+| Design System | Ready | ~99% adoption |
 | Profile/Settings | Ready | - |
 
 ### Partially Implemented
 
 | Feature | Done | Missing |
 |---------|------|---------|
-| Recovery Score | HRV algorithm, unit tests | UI integration |
+| Recovery Score | HRV algorithm, unit tests, recovery alerts | HR data from HealthKit |
 | Strain Tracking | TRIMP calculation, UI display, unit tests | HR data from HealthKit |
 | Sleep Analysis | Basic score | Sleep stage analysis |
-| Nutrition Algorithm | Daily totals, TDEE estimation (Mifflin-St Jeor) | UI integration |
-| Notifications | UI, ViewModel, Repository | Scheduling, actual delivery |
+| Nutrition Algorithm | Daily totals, TDEE estimation, **TDEE UI integration** | Macro tracking refinement |
+| Notifications | UI, ViewModel, Repository, **nutrition reminders toggle** | Scheduling, actual delivery |
 
 ### Not Implemented
 
@@ -64,8 +64,8 @@ The app compiles and runs with core MVP requirements addressed:
    - `NutritionixAPI.swift`: placeholder keys
    - `USDAFoodAPI.swift`: demo key (rate-limited)
 
-2. **Design System Gaps**: Minor remaining instances
-   - ~10 instances of hardcoded fonts (down from 28)
+2. **Design System Gaps**: Near complete
+   - ~4 minor violations (3 cornerRadius(3), 1 padding(60))
 
 3. **Testing**: ~68% preview coverage
 
@@ -75,9 +75,9 @@ The app compiles and runs with core MVP requirements addressed:
 
 | Metric | Value |
 |--------|-------|
-| Swift files | ~163 |
-| Lines of code | ~39,000 |
-| Views | 72 |
+| Swift files | ~165 |
+| Lines of code | ~39,500 |
+| Views | 73 |
 | ViewModels | 11 |
-| Use cases | 18 |
-| Test files | 9 |
+| Use cases | 19 |
+| Test files | 10 |

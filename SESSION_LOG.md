@@ -1,5 +1,83 @@
 # VitalArc Development Session Log
 
+## Session 13.3 - January 29, 2026 (Night)
+
+### Session Start
+- **Time**: Night PST
+- **Platform**: macOS 🖥️
+- **Focus**: General session
+- **Branch**: dev/mac-session-13.3-2026-01-29
+- **Base**: main @ 5b340c1
+
+### Environment
+- **Build Capable**: Yes
+- **Test Capable**: Yes (unit + UI)
+
+### Pre-Session Status
+- **Build**: ✅ Passed (after fix)
+- **Uncommitted Changes**: None
+- **Recent Activity**: Session 13.2 added TRIMP tests and TDEE use case
+
+### Session Goals
+1. General development as directed
+2. Build fix for NotificationScheduler integration
+
+### Work Log
+| Time | Action | Files | Notes |
+|------|--------|-------|-------|
+| Night | Session started | - | Build initially failed |
+| Night | Fixed build | NotificationScheduler.swift, NotificationSettingsViewModel.swift | Added missing file to Xcode project, fixed @MainActor init issue, added missing ViewModel bindings |
+| Night | Design system migration | 30+ view files | Fixed 293+ violations (typography + spacing tokens) |
+| Night | TDEE use case wiring | DependencyContainer.swift, ProfileViewModel.swift, ProfileView.swift | Wired CalculateTDEEUseCase to profile for calorie/macro display |
+| Night | Notification completion | NotificationSettingsViewModel.swift, NotificationSettingsView.swift | Removed duplicate @AppStorage, added nutrition reminders toggle, connected recovery alerts |
+| Night | Bug fixes | HealthKitManager.swift, project.pbxproj | Added thread safety documentation, added GENERATE_INFOPLIST_FILE to test target |
+| Night | Test verification | - | All 105 tests passing, 0 failures |
+| Night | Session ended | - | Complete |
+
+### Session End
+- **Time**: Night PST
+- **Duration**: ~3 hours
+- **Status**: Complete
+- **Build**: ✅ Passing
+- **Tests**: ✅ 105 tests, 0 failures
+- **Commits**: Pending
+
+### Work Completed
+
+#### Design System Migration (293+ Violations Fixed)
+Comprehensive migration of 30+ view files from hardcoded values to design tokens:
+- **Typography**: Replaced `.font(.system(...))` with `.font(.vitalBody)`, `.font(.vitalCaption)`, etc.
+- **Spacing**: Replaced hardcoded numeric values with `Spacing.sm`, `Spacing.md`, `Spacing.lg`, etc.
+- **Corner Radius**: Replaced `.cornerRadius(N)` with `Spacing.radiusSmall`, `Spacing.radiusMedium`
+- **Icon Sizes**: Replaced `.frame(width: N, height: N)` with `Spacing.iconSmall`, `Spacing.iconMedium`, etc.
+
+Files migrated include: ProfileSetupView, MesocycleDetailView, HealthTrendsView, ExerciseLibraryView, WorkoutLoggingView, NutritionSummaryView, FoodLoggingView, AnalyticsDashboardView, and 20+ others.
+
+#### TDEE Use Case Wiring
+Integrated `CalculateTDEEUseCase` into the Profile tab:
+- Added use case to `DependencyContainer`
+- Wired to `ProfileViewModel` with calorie and macro calculation
+- Updated `ProfileView` to display TDEE results (daily calories, protein/carb/fat targets)
+
+#### Notification System Completion
+Finished notification settings implementation:
+- Removed duplicate `@AppStorage` declarations that conflicted with repository persistence
+- Added nutrition reminders toggle with configurable timing
+- Connected recovery alerts to actual recovery score threshold
+- Ensured single source of truth via `NotificationPreferencesRepository`
+
+#### Bug Fixes
+- **HealthKitManager**: Added documentation explaining `@MainActor` isolation strategy for thread safety
+- **Test Target**: Added `GENERATE_INFOPLIST_FILE = YES` to Debug and Release configurations to fix test build
+
+### Workstation Todos Completed (from Session 13.2)
+- [x] Run full test suite to verify new tests pass (105 tests, 0 failures)
+- [x] Integrate CalculateTDEEUseCase into ProfileViewModel
+- [x] Add TDEE display to Profile tab
+- [x] Design system fixes (293 violations fixed)
+
+---
+
 ## Session 13.2 - January 29, 2026 (Evening)
 
 ### Session Start
