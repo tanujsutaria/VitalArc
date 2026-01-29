@@ -248,7 +248,7 @@ struct HealthDashboardView: View {
                         .frame(width: 48, height: 48)
 
                     Image(systemName: "figure.mind.and.body")
-                        .font(.system(size: 24, weight: .semibold))
+                        .font(.system(size: Spacing.iconLarge, weight: .semibold))
                         .foregroundStyle(.white)
                 }
 

@@ -88,7 +88,7 @@ struct HRVTrendChartView: View {
                                     let diff = latest.value - baseline
                                     HStack(spacing: 4) {
                                         Image(systemName: diff >= 0 ? "arrow.up" : "arrow.down")
-                                            .font(.system(size: 12, weight: .bold))
+                                            .font(.vitalLabelSmall)
                                         Text(String(format: "%+.0f ms", diff))
                                             .font(.vitalLabel)
                                     }

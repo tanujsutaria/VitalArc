@@ -19,7 +19,7 @@ struct ExerciseRowView: View {
                     .frame(width: 48, height: 48)
 
                 categoryIcon
-                    .font(.system(size: 20, weight: .semibold))
+                    .font(.system(size: Spacing.iconMedium, weight: .semibold))
                     .foregroundStyle(categoryColor)
             }
 
@@ -59,7 +59,7 @@ struct ExerciseRowView: View {
             Spacer()
 
             Image(systemName: "chevron.right")
-                .font(.system(size: 12, weight: .semibold))
+                .font(.system(size: Spacing.iconSmall, weight: .semibold))
                 .foregroundStyle(Color.vitalAdaptiveTextSecondary)
         }
         .padding(Spacing.md)

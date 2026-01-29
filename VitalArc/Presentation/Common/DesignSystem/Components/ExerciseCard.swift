@@ -51,7 +51,7 @@ struct ExerciseCard: View {
                             .frame(width: 48, height: 48)
 
                         Image(systemName: muscleGroupIcon)
-                            .font(.system(size: 20, weight: .semibold))
+                            .font(.system(size: Spacing.iconMedium, weight: .semibold))
                             .foregroundStyle(muscleGroupColor)
                     }
 
@@ -111,14 +111,14 @@ struct ExerciseCard: View {
                             onDelete()
                         }) {
                             Image(systemName: "trash")
-                                .font(.system(size: 16, weight: .medium))
+                                .font(.system(size: Spacing.iconSmall, weight: .medium))
                                 .foregroundStyle(Color.vitalDanger)
                                 .frame(width: 32, height: 32)
                         }
                         .vitalScaleButton()
                     } else if onTap != nil {
                         Image(systemName: "chevron.right")
-                            .font(.system(size: 14, weight: .semibold))
+                            .font(.system(size: Spacing.iconSmall, weight: .semibold))
                             .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                     }
                 }

@@ -68,85 +68,81 @@ fi
 
 Use the branch specified in the Git Development Branch Requirements from the system context.
 
-### 4. Update state file
-
-```bash
-BRANCH=$(git rev-parse --abbrev-ref HEAD)
-cat > .claude/session-state.json << EOF
-{"current_session":"$FULL_SESSION","branch":"$BRANCH","platform":"cloud","started_at":"$(date -u +%Y-%m-%dT%H:%M:%SZ)","build_capable":false}
-EOF
-```
-
-### 5. Restore stash and read docs
+### 4. Restore stash
 
 ```bash
 git stash list | grep -q "Auto-stash $(date +%Y-%m-%d)" && git stash pop
 ```
 
-Read: CLAUDE.md, PROJECT_STATUS.md (focus on Known Issues), SESSION_LOG.md (last 100 lines), README.md (Roadmap).
+### 5. Invoke Session Orchestrator
 
-### 6. Suggest focus (if none provided)
+**Delegate all agent coordination to session-orchestrator:**
 
-If no `$ARGUMENTS`, analyze the project to suggest focus areas appropriate for cloud sessions.
+```
+┌───────────────────────────────────────────────────────────────┐
+│              DELEGATE TO SESSION-ORCHESTRATOR                  │
+├───────────────────────────────────────────────────────────────┤
+│  session-orchestrator --mode=start --platform=cloud           │
+│                       [--focus=$FOCUS]                        │
+│                                                               │
+│  The orchestrator will spawn:                                 │
+│    • context-loader (reads CLAUDE.md, PROJECT_STATUS.md)      │
+│    • focus-suggester (if no focus provided)                   │
+│    • design-system-scanner (token compliance - read only)     │
+│    • config-validator (API keys, entitlements)                │
+│    • session-state-manager (init state file)                  │
+│    • session-log-creator (create log entry)                   │
+│    • stats-gatherer (codebase metrics)                        │
+│                                                               │
+│  Note: build-validator skipped (no Xcode on cloud)            │
+└───────────────────────────────────────────────────────────────┘
+```
 
-**Use the Task tool** with `subagent_type: Explore` to:
-- Review PROJECT_STATUS.md Known Issues
-- Check documentation tasks in README.md
-- Review recent SESSION_LOG.md entries
-
-Cloud is best for logic bugs, docs, and small refactors—not UI changes.
-
-### 7. Create session log entry
-
-Add to SESSION_LOG.md using the template from [session-log-cloud.md](../_shared/templates/session-log-cloud.md).
-
-**Use `$FULL_SESSION` for the session number** (e.g., "Session 12.2" not "Session 13"):
+**Invoke using Task tool:**
 
 ```markdown
-## Session [FULL_SESSION] - [Month Day, Year] ([Time of Day])
-
-### Session Start
-- **Time**: [specific time, e.g., "3:45 PM PST" or "Evening"]
-- **Platform**: cloud
-- **Focus**: [focus or "General"]
-- **Branch**: [branch]
-- **Base**: main @ [commit hash] [commit message]
-
-### Environment
-- **Build Capable**: No
-- **Test Capable**: No
-
-### Pre-Session Status
-- **Build**: Skipped (cloud)
-- **Uncommitted Changes**: [list or None]
-- **Recent Activity**: [summary of previous session's outcome]
-
-### Session Goals
-1. [Primary goal]
-2. [Secondary goal if applicable]
-
-### Work Log
-| Time | Action | Files | Notes |
-|------|--------|-------|-------|
-| [time] | Session started | - | [focus] |
-
-### Work Completed
-[To be filled]
-
-### Session End
-[To be filled by /vitalarc-end-cloud]
+Task: session-orchestrator
+Prompt: "--mode=start --platform=cloud --focus=$FOCUS --build-capable=false"
 ```
 
-### 8. Output summary
+The orchestrator will:
+1. Load project context
+2. Suggest focus if none provided (filtered for cloud-appropriate tasks)
+3. Scan for design system violations (read-only)
+4. Validate configuration
+5. Create session state file
+6. Create SESSION_LOG.md entry
+7. Gather codebase statistics
+
+**Cloud session limitations:**
+- Cannot run build-validator (no Xcode)
+- design-system-scanner reports only, no auto-fix recommended
+- Focus suggestions filtered to non-UI work
+
+### 6. Output summary
+
+After orchestrator completes, display:
 
 ```
-═══════════════════════════════════════════════════════
+═══════════════════════════════════════════════════════════════
          VITALARC CLOUD SESSION INITIALIZED
-═══════════════════════════════════════════════════════
+═══════════════════════════════════════════════════════════════
 Branch:   [branch]
 Session:  [FULL_SESSION]
 Focus:    [focus]
-───────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────
 Best for: Bug fixes, docs, code review, small changes
-═══════════════════════════════════════════════════════
+═══════════════════════════════════════════════════════════════
 ```
+
+## Responsibilities
+
+| This Skill Handles | Orchestrator Handles |
+|-------------------|---------------------|
+| Git stash/sync | Context loading |
+| Branch handling | Focus suggestions |
+| Stash restoration | Design system scanning |
+| Final summary output | Config validation |
+| | Session state management |
+| | Session log creation |
+| | Stats gathering |

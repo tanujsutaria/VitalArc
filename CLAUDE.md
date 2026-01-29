@@ -122,6 +122,58 @@ Both workstreams use an enhanced session log with a **Work Log table** for track
 
 The original `/vitalarc-start` and `/vitalarc-end` skills are still available as general-purpose fallbacks that auto-detect platform.
 
+## Agent Swarms
+
+Task-specific agents that auto-invoke to accelerate development. Based on [Anthropic's agent best practices](https://docs.anthropic.com).
+
+### Session Management Agents
+
+| Agent | Auto-invokes When | Purpose |
+|-------|-------------------|---------|
+| `focus-suggester` | Starting session without focus, asking "what's next?" | Analyzes roadmap and suggests highest-value focus areas |
+| `progress-tracker` | Work is completed, files modified | Updates SESSION_LOG.md Work Log table automatically |
+| `commit-formatter` | Preparing to commit, user says "commit" | Generates conventional commit messages from staged changes |
+
+### Feature Development Agents
+
+| Agent | Auto-invokes When | Purpose |
+|-------|-------------------|---------|
+| `domain-modeler` | Planning features needing entities/use cases | Designs domain layer following Clean Architecture |
+| `swiftui-architect` | Planning new screens or UI components | Designs view hierarchies and state management |
+| `test-scaffolder` | Feature implemented, user asks for tests | Generates XCTest files following project patterns |
+
+### Pre-Commit Quality Gate
+
+| Agent | Auto-invokes When | Purpose |
+|-------|-------------------|---------|
+| `build-validator` | Before commits, after code changes | Verifies Xcode build passes |
+| `design-system-auditor` | Before commits, during UI review | Finds hardcoded colors/spacing that should use tokens |
+
+### Swarm Patterns
+
+**Feature Development Flow:**
+```
+1. domain-modeler + swiftui-architect (parallel analysis)
+2. Implementation
+3. test-scaffolder (generate tests)
+4. build-validator + design-system-auditor (quality gate)
+5. commit-formatter (prepare commit)
+```
+
+**Quick Fix Flow:**
+```
+1. Fix implementation
+2. build-validator (verify build)
+3. commit-formatter (prepare commit)
+```
+
+### Manual Invocation
+
+Agents auto-invoke based on context, but can be triggered explicitly:
+- `/focus-suggester` - Get focus recommendations
+- `/design-system-auditor` - Run design audit
+- `/commit-formatter` - Generate commit message
+
 ## Architecture Overview
 
 VitalArc uses **Clean Architecture** with **MVVM** pattern:

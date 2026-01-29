@@ -75,7 +75,7 @@ struct ProfileView: View {
                                 .frame(width: 100, height: 100)
                                 .overlay {
                                     Text(profile.name.prefix(1).uppercased())
-                                        .font(.system(size: 40, weight: .bold))
+                                        .font(.vitalDisplayLarge)
                                         .foregroundColor(.white)
                                 }
                         }
@@ -187,7 +187,7 @@ struct ProfileView: View {
                                         .frame(width: 40, height: 40)
 
                                     Image(systemName: "gear")
-                                        .font(.system(size: 18, weight: .semibold))
+                                        .font(.system(size: Spacing.iconMedium, weight: .semibold))
                                         .foregroundStyle(Color.vitalPrimary)
                                 }
 
@@ -198,7 +198,7 @@ struct ProfileView: View {
                                 Spacer()
 
                                 Image(systemName: "chevron.right")
-                                    .font(.system(size: 12, weight: .semibold))
+                                    .font(.system(size: Spacing.iconXSmall, weight: .semibold))
                                     .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                             }
                             .padding(Spacing.md)
@@ -219,7 +219,7 @@ struct ProfileView: View {
                                         .frame(width: 40, height: 40)
 
                                     Image(systemName: "info.circle")
-                                        .font(.system(size: 18, weight: .semibold))
+                                        .font(.system(size: Spacing.iconMedium, weight: .semibold))
                                         .foregroundStyle(Color.vitalInfo)
                                 }
 
@@ -230,7 +230,7 @@ struct ProfileView: View {
                                 Spacer()
 
                                 Image(systemName: "chevron.right")
-                                    .font(.system(size: 12, weight: .semibold))
+                                    .font(.system(size: Spacing.iconXSmall, weight: .semibold))
                                     .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                             }
                             .padding(Spacing.md)
@@ -486,7 +486,7 @@ struct StatCard: View {
                         .frame(width: 48, height: 48)
 
                     Image(systemName: icon)
-                        .font(.system(size: 20, weight: .semibold))
+                        .font(.system(size: Spacing.iconMedium, weight: .semibold))
                         .foregroundStyle(color)
                 }
 
@@ -519,7 +519,7 @@ struct StatCardWithSource: View {
                         .frame(width: 48, height: 48)
 
                     Image(systemName: icon)
-                        .font(.system(size: 20, weight: .semibold))
+                        .font(.system(size: Spacing.iconMedium, weight: .semibold))
                         .foregroundStyle(color)
                 }
 
@@ -539,7 +539,7 @@ struct StatCardWithSource: View {
                             .foregroundStyle(Color.vitalDanger)
                     }
                     Text(source)
-                        .font(.system(size: 9))
+                        .font(.vitalCaptionSmall)
                         .foregroundStyle(Color.vitalAdaptiveTextTertiary)
                 }
             }

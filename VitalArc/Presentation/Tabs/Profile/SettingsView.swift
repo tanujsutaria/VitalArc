@@ -49,11 +49,18 @@ struct SettingsView: View {
 
                 // Notifications Section
                 Section("Notifications") {
-                    Toggle("Enable Notifications", isOn: $enableNotifications)
-
-                    if enableNotifications {
-                        Toggle("Workout Reminders", isOn: $enableWorkoutReminders)
-                        Toggle("Meal Reminders", isOn: $enableMealReminders)
+                    NavigationLink {
+                        NotificationSettingsView()
+                    } label: {
+                        HStack {
+                            Label("Notification Settings", systemImage: "bell.fill")
+                            Spacer()
+                            if enableNotifications {
+                                Text("On")
+                                    .font(.vitalCaption)
+                                    .foregroundStyle(Color.vitalAdaptiveTextSecondary)
+                            }
+                        }
                     }
                 }
 

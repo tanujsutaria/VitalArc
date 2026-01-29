@@ -2,7 +2,7 @@
 name: vitalarc-end-workstation
 description: Finalize a VitalArc workstation development session. Use when ending a session on Mac. Verifies build passes, runs tests, commits documentation, and pushes changes.
 disable-model-invocation: true
-allowed-tools: Read, Grep, Glob, Bash, Write, Edit
+allowed-tools: Read, Grep, Glob, Bash, Write, Edit, Task
 argument-hint: [summary]
 ---
 
@@ -18,17 +18,53 @@ Finalize a workstation session with build verification.
 
 ## Steps
 
-### 1. Build check
+### 1. Invoke Session Orchestrator
 
-**Do not proceed if build fails.** Fix issues first.
+**Delegate all validation and agent coordination to session-orchestrator:**
 
-```bash
-# Option 1: Use verification script
-.claude/skills/_shared/scripts/verify-session.sh --require-build
-
-# Option 2: Direct build check
-xcodebuild -scheme VitalArc -destination 'platform=iOS Simulator,name=iPhone 17 Pro' build 2>&1 | grep -E "(error:|BUILD)"
 ```
+┌───────────────────────────────────────────────────────────────┐
+│              DELEGATE TO SESSION-ORCHESTRATOR                  │
+├───────────────────────────────────────────────────────────────┤
+│  session-orchestrator --mode=end --platform=mac               │
+│                                                               │
+│  The orchestrator will spawn:                                 │
+│    Phase 1 (Parallel):                                        │
+│    • design-system-scanner (final compliance check)           │
+│    • progress-tracker (update work log)                       │
+│    • stats-gatherer (session metrics)                         │
+│    • build-validator (BLOCKING - must pass)                   │
+│                                                               │
+│    Phase 2 (Conditional):                                     │
+│    • design-system-fixer (if violations found)                │
+│                                                               │
+│    Phase 3 (Sequential):                                      │
+│    • session-state-manager (finalize state)                   │
+│    • commit-formatter (prepare commit message)                │
+│                                                               │
+│    Phase 4 (Workstation only):                                │
+│    • pr-formatter (generate PR title/body)                    │
+└───────────────────────────────────────────────────────────────┘
+```
+
+**Invoke using Task tool:**
+
+```markdown
+Task: session-orchestrator
+Prompt: "--mode=end --platform=mac --build-capable=true"
+```
+
+The orchestrator will:
+1. Verify build passes (BLOCKING - session cannot end if build fails)
+2. Scan for design system violations
+3. Auto-fix violations if found
+4. Update work log with final entries
+5. Gather session statistics
+6. Finalize session state
+7. Generate commit message
+8. Generate PR title and body
+
+**⚠️ IMPORTANT: If build fails, the orchestrator will STOP and report the error. Fix build issues before re-running.**
 
 ### 2. Run tests (optional)
 
@@ -36,58 +72,15 @@ xcodebuild -scheme VitalArc -destination 'platform=iOS Simulator,name=iPhone 17 
 xcodebuild -scheme VitalArc -destination 'platform=iOS Simulator,name=iPhone 17 Pro' test 2>&1 | grep -E "(Test Case|passed|failed)"
 ```
 
-### 3. Gather stats
+### 3. Update documentation files
 
-```bash
-git log --oneline --since="6 hours ago"
-git diff --stat HEAD~10 2>/dev/null | tail -3
-```
-
-### 4. Update SESSION_LOG.md
-
-Complete the current session's Work Log table and fill in sections using the template from [session-end.md](../_shared/templates/session-end.md):
-
-```markdown
-### Work Log
-| Time | Action | Files | Notes |
-|------|--------|-------|-------|
-| ... | ... | ... | ... |
-| [now] | Build verified | - | Passing |
-| [now] | Session ended | - | [summary] |
-
-### Work Completed
-- [Features/fixes implemented]
-- [UI changes verified in simulator]
-- [Files modified]
-- Commits: [list with hash and message]
-
-### Session End
-- **Time**: [end time]
-- **Duration**: ~[N] hours (calculate from start time in session-state.json)
-- **Status**: Complete / In Progress
-- **Build**: Passing
-- **Tests**: [N passed, N failed / Not run]
-- **Commits**: [N] commits
-- **Next**: [priorities from README Roadmap]
-```
-
-### 5. Update PROJECT_STATUS.md and README.md
-
-If features changed:
+If features changed (orchestrator should report this):
 - PROJECT_STATUS.md: Update "Last Updated", feature status, Known Issues, Codebase Stats
 - README.md Roadmap: Move features between In Progress / Planned / Completed
 
-### 6. Update state file
+### 4. Commit and push
 
-```bash
-BRANCH=$(git rev-parse --abbrev-ref HEAD)
-SESSION=$(echo "$BRANCH" | grep -oE '[0-9]+\.[0-9]+' | head -1 | cut -d. -f1)
-cat > .claude/session-state.json << EOF
-{"current_session":${SESSION:-0},"branch":"$BRANCH","platform":"mac","status":"completed","ended_at":"$(date -u +%Y-%m-%dT%H:%M:%SZ)","build":"passing"}
-EOF
-```
-
-### 7. Commit and push
+Using the commit message generated by the orchestrator:
 
 ```bash
 git add SESSION_LOG.md PROJECT_STATUS.md README.md .claude/session-state.json
@@ -100,9 +93,9 @@ Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
 git push -u origin "$(git rev-parse --abbrev-ref HEAD)"
 ```
 
-### 8. Create PR (optional)
+### 5. Create PR (optional)
 
-If ready for review, create PR following conventional commits format:
+If ready for review, use the PR details from pr-formatter:
 
 **PR Title**: `<type>(<scope>): <short description>`
 - Example: `feat(workout): add custom exercise creation`
@@ -131,16 +124,45 @@ EOF
 
 See CLAUDE.md for valid types (`feat`, `fix`, `refactor`, `docs`, etc.) and scopes (`workout`, `nutrition`, `ui`, `infra`, etc.).
 
-### 9. Output summary
+### 6. Output summary
 
 ```
-═══════════════════════════════════════════════════════
+═══════════════════════════════════════════════════════════════
        VITALARC WORKSTATION SESSION COMPLETE
-═══════════════════════════════════════════════════════
+═══════════════════════════════════════════════════════════════
 Branch:   [branch]
 Commits:  [N]
 Build:    Passing
 Tests:    [status]
 Next:     [priorities]
-═══════════════════════════════════════════════════════
+═══════════════════════════════════════════════════════════════
+```
+
+## Responsibilities
+
+| This Skill Handles | Orchestrator Handles |
+|-------------------|---------------------|
+| Test execution (optional) | Build validation (blocking) |
+| Doc file updates | Design system scanning/fixing |
+| Git commit | Progress tracking |
+| Git push | Stats gathering |
+| PR creation | Session state finalization |
+| Final summary output | Commit message generation |
+| | PR content generation |
+
+## Error Handling
+
+### Build Failure
+
+If the orchestrator reports a build failure:
+
+```
+═══════════════════════════════════════════════════════════════
+       ❌ SESSION END BLOCKED - BUILD FAILED
+═══════════════════════════════════════════════════════════════
+Fix build errors before ending session.
+
+Run: xcodebuild ... to see full errors
+Then: Re-run /vitalarc-end-workstation
+═══════════════════════════════════════════════════════════════
 ```

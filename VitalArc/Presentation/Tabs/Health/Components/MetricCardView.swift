@@ -48,7 +48,7 @@ struct MetricCardView: View {
                             .frame(width: 36, height: 36)
 
                         Image(systemName: icon)
-                            .font(.system(size: 16, weight: .semibold))
+                            .font(.system(size: Spacing.iconSmall, weight: .semibold))
                             .foregroundStyle(color)
                     }
 
@@ -81,9 +81,9 @@ struct MetricCardView: View {
     private func trendIndicator(_ trend: TrendDirection) -> some View {
         HStack(spacing: 2) {
             Image(systemName: trend.icon)
-                .font(.system(size: 10, weight: .semibold))
+                .font(.vitalCaptionSmall)
             Text(trend.description)
-                .font(.system(size: 10, weight: .semibold))
+                .font(.vitalCaptionSmall)
         }
         .foregroundStyle(trend.color)
         .padding(.horizontal, Spacing.xs + Spacing.xxs)
