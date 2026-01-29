@@ -1,6 +1,6 @@
 # VitalArc Project Status
 
-**Last Updated**: January 28, 2026
+**Last Updated**: January 29, 2026
 **Build**: Passing
 **Stage**: MVP-Ready
 
@@ -40,10 +40,10 @@ The app compiles and runs with core MVP requirements addressed:
 
 | Feature | Done | Missing |
 |---------|------|---------|
-| Recovery Score | HRV algorithm | Fine-tuning |
-| Strain Tracking | TRIMP calculation, UI display | HR data from HealthKit |
+| Recovery Score | HRV algorithm, unit tests | UI integration |
+| Strain Tracking | TRIMP calculation, UI display, unit tests | HR data from HealthKit |
 | Sleep Analysis | Basic score | Sleep stage analysis |
-| Nutrition Algorithm | Daily totals | TDEE estimation |
+| Nutrition Algorithm | Daily totals, TDEE estimation (Mifflin-St Jeor) | UI integration |
 | Notifications | UI, ViewModel, Repository | Scheduling, actual delivery |
 
 ### Not Implemented
@@ -75,9 +75,9 @@ The app compiles and runs with core MVP requirements addressed:
 
 | Metric | Value |
 |--------|-------|
-| Swift files | ~160 |
-| Lines of code | ~38,000 |
+| Swift files | ~163 |
+| Lines of code | ~39,000 |
 | Views | 72 |
 | ViewModels | 11 |
-| Use cases | 17 |
-| Test files | 7 |
+| Use cases | 18 |
+| Test files | 9 |
