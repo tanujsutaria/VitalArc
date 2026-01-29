@@ -203,7 +203,7 @@ final class AnalyticsTests: XCTestCase {
 
         let score = calculateHRVScore(todayHRV: todayHRV, baseline: baseline)
 
-        XCTAssertEqual(score, 100, accuracy: 1)
+        XCTAssertEqual(score!, 100, accuracy: 1)
     }
 
     func testHRVScoreAtBaseline() throws {
@@ -250,7 +250,7 @@ final class AnalyticsTests: XCTestCase {
 
         let score = calculateHRScore(todayHR: todayHR, baseline: baseline)
 
-        XCTAssertEqual(score, 100, accuracy: 1)
+        XCTAssertEqual(score!, 100, accuracy: 1)
     }
 
     func testHRScoreAtBaseline() throws {

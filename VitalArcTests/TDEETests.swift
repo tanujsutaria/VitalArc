@@ -162,24 +162,31 @@ final class TDEETests: XCTestCase {
     }
 
     func testFatCalculation() throws {
-        // Fat should be ~35% of total calories
-        // 2500 cal × 35% = 875 cal / 9 cal/g = 97g
+        // Fat is 50% of remaining calories after protein
+        // 80kg × 2g/kg = 160g protein = 640 cal
+        // Remaining: 2500 - 640 = 1860 cal
+        // Fat: 1860 × 0.5 / 9 = 103g
         let macros = calculateMacros(calories: 2500, weight: 80)
 
-        XCTAssertEqual(macros.fat, 97, accuracy: 5)
+        XCTAssertEqual(macros.fat, 103, accuracy: 5)
     }
 
     func testCarbCalculation() throws {
-        // Carbs fill remaining calories after protein and fat
+        // Carbs are 50% of remaining calories after protein
+        // 80kg × 2g/kg = 160g protein = 640 cal
+        // Remaining: 2500 - 640 = 1860 cal
+        // Carbs: 1860 × 0.5 / 4 = 232.5g
         let macros = calculateMacros(calories: 2500, weight: 80)
 
-        // Total calories should approximately match
+        XCTAssertEqual(macros.carbs, 232, accuracy: 5)
+
+        // Total calories should exactly match (no overflow)
         let proteinCal = macros.protein * 4
         let fatCal = macros.fat * 9
         let carbCal = macros.carbs * 4
         let totalCal = proteinCal + fatCal + carbCal
 
-        XCTAssertEqual(totalCal, 2500, accuracy: 50) // Allow some rounding
+        XCTAssertEqual(totalCal, 2500, accuracy: 1) // Should be exact now
     }
 
     // MARK: - Full TDEE Result Tests
@@ -334,16 +341,18 @@ final class TDEETests: XCTestCase {
     }
 
     private func calculateMacros(calories: Double, weight: Double) -> (protein: Double, fat: Double, carbs: Double) {
-        let proteinGrams = weight * 2.0
+        // Protein: 2.0g/kg, capped at 35% of calories
+        let idealProteinGrams = weight * 2.0
+        let maxProteinCalories = calories * 0.35
+        let proteinGrams = min(idealProteinGrams, maxProteinCalories / 4)
         let proteinCalories = proteinGrams * 4
 
-        let remainingCalories = calories - proteinCalories
-
-        let fatCalories = calories * 0.35
+        // Remaining split 50/50 between fat and carbs
+        let remainingCalories = max(0, calories - proteinCalories)
+        let fatCalories = remainingCalories * 0.5
         let fatGrams = fatCalories / 9
-
-        let carbCalories = remainingCalories - fatCalories
-        let carbGrams = max(0, carbCalories / 4)
+        let carbCalories = remainingCalories * 0.5
+        let carbGrams = carbCalories / 4
 
         return (proteinGrams, fatGrams, carbGrams)
     }

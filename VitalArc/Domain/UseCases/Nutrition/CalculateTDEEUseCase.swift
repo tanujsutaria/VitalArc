@@ -25,16 +25,13 @@ struct TDEEResult: Equatable {
         case mifflinStJeor = "Mifflin-St Jeor"
     }
 
-    /// Macro distribution percentages
+    /// Macro calorie conversions
+    /// Note: Protein is calculated by body weight (2.0g/kg, capped at 35% of calories)
+    /// Remaining calories split 50/50 between fat and carbs
     struct MacroDistribution {
         static let proteinCaloriesPerGram: Double = 4
         static let carbCaloriesPerGram: Double = 4
         static let fatCaloriesPerGram: Double = 9
-
-        // Default distribution: 30% protein, 35% carbs, 35% fat
-        static let proteinPercent: Double = 0.30
-        static let carbPercent: Double = 0.35
-        static let fatPercent: Double = 0.35
     }
 }
 
@@ -150,20 +147,22 @@ final class CalculateTDEEUseCase: CalculateTDEEUseCaseProtocol {
 
     private func calculateMacros(calories: Double, weight: Double) -> (protein: Double, fat: Double, carbs: Double) {
         // Protein: 1.6-2.2g per kg body weight for active individuals
-        // Using 2.0g/kg as default for fitness-focused users
-        let proteinGrams = weight * 2.0
+        // Using 2.0g/kg as default, capped at 35% of total calories
+        let idealProteinGrams = weight * 2.0
+        let maxProteinCalories = calories * 0.35
+        let proteinGrams = min(idealProteinGrams, maxProteinCalories / TDEEResult.MacroDistribution.proteinCaloriesPerGram)
         let proteinCalories = proteinGrams * TDEEResult.MacroDistribution.proteinCaloriesPerGram
 
         // Remaining calories split between fat and carbs
-        let remainingCalories = calories - proteinCalories
+        let remainingCalories = max(0, calories - proteinCalories)
 
-        // Fat: 25-35% of total calories
-        let fatCalories = calories * TDEEResult.MacroDistribution.fatPercent
+        // Fat: ~50% of remaining calories (targets ~30% of total)
+        let fatCalories = remainingCalories * 0.5
         let fatGrams = fatCalories / TDEEResult.MacroDistribution.fatCaloriesPerGram
 
-        // Carbs: remaining calories
-        let carbCalories = remainingCalories - fatCalories
-        let carbGrams = max(0, carbCalories / TDEEResult.MacroDistribution.carbCaloriesPerGram)
+        // Carbs: remaining 50% of non-protein calories
+        let carbCalories = remainingCalories * 0.5
+        let carbGrams = carbCalories / TDEEResult.MacroDistribution.carbCaloriesPerGram
 
         return (proteinGrams, fatGrams, carbGrams)
     }
