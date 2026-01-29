@@ -35,6 +35,7 @@
 | Morning | Fixed sleep average bug | HealthKitMapper.swift | Merge overlapping sleep intervals |
 | Morning | Fixed sleep chart overflow | HealthTrendsView.swift | Dynamic Y-axis scaling |
 | Morning | Fixed HRV 7/30 day bug | AnalyticsDashboardViewModel.swift | Always fetch 30 days for HRV |
+| Morning | Fixed HRV calculation | HealthKitManager.swift | Use sleep-period HRV only (Oura-style) |
 
 ### Work Completed
 
@@ -54,6 +55,20 @@ Fixed three bugs identified from user testing screenshots:
    - Root cause: `loadHealthData` only fetched data for selected time range (e.g., 1 week)
    - If user selected "1 Week", `metrics.suffix(30)` returned same 7 entries as `suffix(7)`
    - Fix: Always fetch minimum 30 days of health data, filter by actual dates for 7/30 day views
+
+#### HRV Calculation Improvement
+Fixed conceptual flaw in HRV calculation for recovery:
+
+- **Problem**: Was grabbing any HRV sample (including daytime readings)
+- **Issue**: Daytime HRV is highly variable (stress, caffeine, activity)
+- **Research**: Whoop/Oura only use sleep-period HRV for recovery calculations
+  - Whoop: Uses last slow-wave sleep phase
+  - Oura: Averages all HRV readings during entire sleep period
+- **Fix**: Implemented Oura-style approach:
+  1. Fetch sleep periods from HealthKit
+  2. Query HRV samples that fall within sleep periods
+  3. Average all sleep HRV readings
+  4. Fall back to any HRV if no sleep data available
 
 #### Session Skill Updates
 Updated `vitalarc-start-cloud` and `vitalarc-start-workstation` skills to always include minor version in session numbering (e.g., "13.0" not just "13").
