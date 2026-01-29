@@ -48,7 +48,7 @@ struct MetricCardView: View {
                             .frame(width: 36, height: 36)
 
                         Image(systemName: icon)
-                            .font(.system(size: Spacing.iconSmall, weight: .semibold))
+                            .font(.vitalIconSmallSemibold)
                             .foregroundStyle(color)
                     }
 

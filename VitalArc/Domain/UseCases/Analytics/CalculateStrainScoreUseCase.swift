@@ -62,7 +62,7 @@ final class CalculateStrainScoreUseCase {
 
     /// Calculate strain score for a specific date
     func execute(for date: Date) async throws -> StrainResult? {
-        let (hrMax, hrRest) = try await getHeartRateParameters()
+        let (hrMax, hrRest, biologicalSex) = try await getHeartRateParameters()
 
         // Fetch actual workouts from HealthKit
         let workoutDataList = try await healthKitManager.fetchWorkoutData(for: date)
@@ -95,7 +95,8 @@ final class CalculateStrainScoreUseCase {
                     samples: workout.heartRateSamples,
                     duration: workout.duration,
                     hrMax: hrMax,
-                    hrRest: hrRest
+                    hrRest: hrRest,
+                    biologicalSex: biologicalSex
                 )
                 totalTrimp += trimp
                 usedBanister = true
@@ -167,7 +168,7 @@ final class CalculateStrainScoreUseCase {
             )
         }
 
-        let (hrMax, hrRest) = try await getHeartRateParameters()
+        let (hrMax, hrRest, biologicalSex) = try await getHeartRateParameters()
 
         var totalTrimp: Double = 0
         var totalDuration: TimeInterval = 0
@@ -183,7 +184,8 @@ final class CalculateStrainScoreUseCase {
                     samples: workout.heartRateSamples,
                     duration: workout.duration,
                     hrMax: hrMax,
-                    hrRest: hrRest
+                    hrRest: hrRest,
+                    biologicalSex: biologicalSex
                 )
                 totalTrimp += trimp
                 usedBanister = true
@@ -264,11 +266,22 @@ final class CalculateStrainScoreUseCase {
         samples: [HeartRateSample],
         duration: TimeInterval,
         hrMax: Double,
-        hrRest: Double
+        hrRest: Double,
+        biologicalSex: BiologicalSex = .male
     ) -> Double {
         guard !samples.isEmpty else { return 0 }
 
-        let exponentialFactor = 1.92 // Male default
+        // Exponential factor based on biological sex (Banister 1991)
+        // Males: 1.92, Females: 1.67, Other: average of both
+        let exponentialFactor: Double
+        switch biologicalSex {
+        case .male:
+            exponentialFactor = 1.92
+        case .female:
+            exponentialFactor = 1.67
+        case .other:
+            exponentialFactor = 1.795 // Average of male/female
+        }
         let hrReserve = hrMax - hrRest
         guard hrReserve > 0 else { return 0 }
 
@@ -323,15 +336,23 @@ final class CalculateStrainScoreUseCase {
 
     // MARK: - Heart Rate Parameters
 
-    private func getHeartRateParameters() async throws -> (hrMax: Double, hrRest: Double) {
+    private func getHeartRateParameters() async throws -> (hrMax: Double, hrRest: Double, sex: BiologicalSex) {
         if let profile = try await userRepository.getUserProfile() {
-            let hrMax = estimateHRMax(age: profile.age)
-            // Try to get actual resting HR from health data
-            let hrRest = await getRestingHeartRate() ?? estimateHRRest()
-            return (hrMax, hrRest)
+            // Use custom HR max if set, otherwise estimate from age
+            let hrMax = Double(profile.effectiveHRMax)
+
+            // Use custom HR resting if set, otherwise try HealthKit, then estimate
+            let hrRest: Double
+            if let customResting = profile.customHRResting {
+                hrRest = Double(customResting)
+            } else {
+                hrRest = await getRestingHeartRate() ?? Double(profile.estimatedHRResting)
+            }
+
+            return (hrMax, hrRest, profile.biologicalSex)
         }
 
-        return (estimateHRMax(age: 30), estimateHRRest())
+        return (estimateHRMax(age: 30), estimateHRRest(), .male)
     }
 
     private func getRestingHeartRate() async -> Double? {

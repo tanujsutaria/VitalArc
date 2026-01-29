@@ -146,7 +146,7 @@ private struct SourceBadge: View {
     var body: some View {
         HStack(spacing: Spacing.xxs) {
             Image(systemName: source.iconName)
-                .font(.system(size: Spacing.iconTiny))
+                .font(.vitalIconTiny)
             Text(source.displayName)
                 .font(.vitalCaptionSmall)
         }

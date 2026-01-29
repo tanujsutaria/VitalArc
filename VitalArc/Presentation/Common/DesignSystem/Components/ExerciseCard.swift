@@ -51,7 +51,7 @@ struct ExerciseCard: View {
                             .frame(width: 48, height: 48)
 
                         Image(systemName: muscleGroupIcon)
-                            .font(.system(size: Spacing.iconMedium, weight: .semibold))
+                            .font(.vitalIconMediumSemibold)
                             .foregroundStyle(muscleGroupColor)
                     }
 
@@ -111,14 +111,14 @@ struct ExerciseCard: View {
                             onDelete()
                         }) {
                             Image(systemName: "trash")
-                                .font(.system(size: Spacing.iconSmall, weight: .medium))
+                                .font(.vitalIconSmallMedium)
                                 .foregroundStyle(Color.vitalDanger)
                                 .frame(width: 32, height: 32)
                         }
                         .vitalScaleButton()
                     } else if onTap != nil {
                         Image(systemName: "chevron.right")
-                            .font(.system(size: Spacing.iconSmall, weight: .semibold))
+                            .font(.vitalIconSmallSemibold)
                             .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                     }
                 }
@@ -180,7 +180,7 @@ struct ExerciseRowCompact: View {
         }) {
             HStack(spacing: Spacing.md) {
                 Image(systemName: "plus.circle.fill")
-                    .font(.system(size: Spacing.iconLarge))
+                    .font(.vitalIconLarge)
                     .foregroundStyle(Color.vitalPrimary)
 
                 VStack(alignment: .leading, spacing: Spacing.xxs) {
@@ -196,7 +196,7 @@ struct ExerciseRowCompact: View {
                 Spacer()
 
                 Image(systemName: "chevron.right")
-                    .font(.system(size: Spacing.iconXSmall, weight: .semibold))
+                    .font(.vitalIconXSmallSemibold)
                     .foregroundStyle(Color.vitalAdaptiveTextSecondary)
             }
             .padding(Spacing.md)

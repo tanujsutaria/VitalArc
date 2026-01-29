@@ -151,7 +151,7 @@ struct MuscleVolumeChartView: View {
     private var emptyState: some View {
         VStack(spacing: Spacing.md) {
             Image(systemName: "figure.strengthtraining.traditional")
-                .font(.system(size: Spacing.icon2XLarge))
+                .font(.vitalIcon2XLarge)
                 .foregroundStyle(Color.vitalAdaptiveTextSecondary)
 
             Text("No volume data yet")

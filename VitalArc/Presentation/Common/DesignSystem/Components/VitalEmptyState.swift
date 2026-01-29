@@ -38,7 +38,7 @@ struct VitalEmptyState: View {
                         .frame(width: 100, height: 100)
 
                     Image(systemName: icon)
-                        .font(.system(size: Spacing.iconHuge))
+                        .font(.vitalIconHuge)
                         .foregroundStyle(Color.vitalPrimary)
                 }
 
@@ -111,7 +111,7 @@ struct VitalErrorState: View {
                         .frame(width: 100, height: 100)
 
                     Image(systemName: "exclamationmark.triangle")
-                        .font(.system(size: Spacing.iconHuge))
+                        .font(.vitalIconHuge)
                         .foregroundStyle(Color.vitalDanger)
                 }
 
