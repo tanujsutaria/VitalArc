@@ -1,5 +1,95 @@
 # VitalArc Development Session Log
 
+## Session 13.2 - January 29, 2026 (Evening)
+
+### Session Start
+- **Time**: Evening UTC
+- **Platform**: cloud ☁️
+- **Focus**: TBD (see suggestions below)
+- **Branch**: claude/vitalarc-start-cloud-pWlmt
+- **Base**: main @ 06ac0b7 docs(session): initialize Session 13.1 cloud session (#25)
+
+### Environment
+- **Build Capable**: No
+- **Test Capable**: No
+
+### Pre-Session Status
+- **Build**: ⏭️ Skipped (cloud)
+- **Uncommitted Changes**: None
+- **Recent Activity**: Session 13.1 implemented notification scheduling and HR data integration for strain calculation
+
+### Suggested Focus Areas (Cloud-Appropriate)
+1. **Missing Test Coverage for TRIMP Calculations** (Score: 5) - PR review blocker, strain scoring logic lacks unit tests
+2. **Recovery Score Fine-tuning** (Score: 5) - Validate/parameterize HRV algorithm weights, add test cases
+3. **TDEE Estimation Algorithm** (Score: 3) - Implement calorie needs calculation using Mifflin-St Jeor formula
+
+### Design System Status
+- **Colors**: ✅ No violations
+- **Typography**: 39 violations (system fonts instead of tokens)
+- **Spacing**: 254 violations (hardcoded numeric values)
+- **Total**: 293 violations (report only - cloud session)
+
+### Session Goals
+1. Add comprehensive TRIMP/strain calculation unit tests
+2. Add recovery score algorithm unit tests
+3. Implement TDEE use case with Mifflin-St Jeor formula
+
+### Work Log
+| Time | Action | Files | Notes |
+|------|--------|-------|-------|
+| Evening | Session started | - | Cloud session initialized |
+| Evening | Created analytics tests | AnalyticsTests.swift | 30+ tests for TRIMP (Banister/Edwards), strain levels, recovery scoring |
+| Evening | Created TDEE use case | CalculateTDEEUseCase.swift | Mifflin-St Jeor formula with activity multipliers and macro calculation |
+| Evening | Created TDEE tests | TDEETests.swift | 20+ tests for BMR, TDEE, activity multipliers, macros |
+| Evening | PR review #1 | - | Found 2 critical bugs: macro overflow, optional unwrapping |
+| Evening | Fixed macro calculation | CalculateTDEEUseCase.swift | Protein capped at 35%, 50/50 fat/carb split |
+| Evening | Fixed test assertions | AnalyticsTests.swift, TDEETests.swift | Added optional unwrapping, updated expectations |
+| Evening | PR review #2 | - | ✅ All issues resolved, ready to merge |
+| Evening | Session ended | - | Cloud session complete |
+
+### Session End
+- **Time**: Evening UTC
+- **Commits**: 3
+- **Build**: ⏭️ Not verified (cloud session - CI will validate)
+- **Status**: ✅ Complete
+
+### Workstation Todos (Propagated Forward)
+- [ ] Run full test suite to verify new tests pass
+- [ ] Integrate CalculateTDEEUseCase into NutritionViewModel
+- [ ] Add TDEE display to Profile or Nutrition tab
+- [ ] Design system fixes (293 violations - requires workstation)
+
+### Changes Summary
+
+#### New Files Created
+1. **VitalArcTests/AnalyticsTests.swift** - Comprehensive test coverage for:
+   - Banister TRIMP calculation (exponential method)
+   - Edwards TRIMP calculation (zone-based method)
+   - TRIMP to strain score conversion (0-21 scale)
+   - Strain level classification tests
+   - HRV score calculation with baseline comparison
+   - Resting HR score calculation (inverse logic)
+   - Sleep score calculation
+   - Recovery readiness classification
+   - Weighted recovery score calculation
+
+2. **VitalArc/Domain/UseCases/Nutrition/CalculateTDEEUseCase.swift** - TDEE implementation:
+   - Mifflin-St Jeor BMR formula (male/female/other)
+   - Activity level multipliers (sedentary through extreme)
+   - Weight goal adjustments (±500 cal for lose/gain)
+   - Macro goal calculation (protein 2g/kg, 35% fat, remaining carbs)
+   - TDEEResult struct with full breakdown
+
+3. **VitalArcTests/TDEETests.swift** - TDEE test coverage:
+   - BMR calculation for all biological sexes
+   - BMR scaling with age/weight/height
+   - Activity multiplier values
+   - Goal adjustment calculations
+   - Macro distribution tests
+   - Comparison with existing simple formula
+
+---
+
 ## Session 13.1 - January 29, 2026 (Afternoon)
 
 ### Session Start
