@@ -1,5 +1,128 @@
 # VitalArc Development Session Log
 
+## Session 13.1 - January 29, 2026 (Afternoon)
+
+### Session Start
+- **Time**: Afternoon UTC
+- **Platform**: cloud ☁️
+- **Focus**: TBD (see suggestions below)
+- **Branch**: claude/vitalarc-start-cloud-iAQS9
+- **Base**: main @ 19f3324 docs(session): initialize Session 13 cloud session (#24)
+
+### Environment
+- **Build Capable**: No
+- **Test Capable**: No
+
+### Pre-Session Status
+- **Build**: ⏭️ Skipped (cloud)
+- **Uncommitted Changes**: None
+- **Recent Activity**: Session 13.0 fixed analytics bugs (sleep average, HRV calculation), implemented Oura-style sleep-period HRV
+
+### Suggested Focus Areas (Cloud-Appropriate)
+1. **HR Data Integration for Strain Calculation** (Score: 10) - Query HealthKit for HR samples, integrate into CalculateStrainScoreUseCase
+2. **Notification Scheduling & Delivery** (Score: 10) - Implement UNUserNotificationCenter scheduling, wire preferences to delivery
+3. **Recovery Score Fine-tuning** (Score: 7) - Validate/parameterize HRV algorithm weights, add test cases
+
+### Design System Status
+- **Colors**: ✅ No violations
+- **Typography**: 44 violations (mostly icon sizing)
+- **Spacing**: 8 violations (cornerRadius)
+- **Total**: 52 violations (report only - cloud session)
+
+### Session Goals
+1. Implement notification scheduling and delivery
+2. Integrate HR data from HealthKit into strain calculation
+
+### Work Log
+| Time | Action | Files | Notes |
+|------|--------|-------|-------|
+| Afternoon | Session started | - | Cloud session initialized |
+| Afternoon | Created NotificationScheduler | NotificationScheduler.swift | Full scheduling service with day-of-week, nutrition reminders |
+| Afternoon | Updated NotificationSettingsViewModel | NotificationSettingsViewModel.swift | Integrated with scheduler and domain model |
+| Afternoon | Added HealthKit workout queries | HealthKitManager.swift | fetchWorkouts, fetchHeartRateSamples, convertToWorkoutData |
+| Afternoon | Added workout activity type names | HealthKitManager.swift | HKWorkoutActivityType.name extension |
+| Afternoon | Updated strain calculation | CalculateStrainScoreUseCase.swift | Now uses real HealthKit workout and HR data |
+| Afternoon | Ran PR review | - | Found 4 important issues, 0 critical |
+| Afternoon | Fixed dateRange bug | CalculateStrainScoreUseCase.swift | Now uses 7-day average for resting HR |
+| Afternoon | Fixed dual persistence | NotificationSettingsViewModel.swift | Repository as single source of truth |
+| Afternoon | Session ended | - | 3 commits, PR ready |
+
+### Work Completed
+
+#### Notification Scheduling & Delivery
+Created `NotificationScheduler` infrastructure service with:
+- Day-of-week workout reminders with contextual messages
+- Nutrition reminders (configurable hours before end of day)
+- Recovery alerts based on actual recovery score threshold
+- Badge count management
+- Full integration with `NotificationPreferences` domain model
+
+Updated `NotificationSettingsViewModel` to:
+- Use `NotificationScheduler` instead of direct UNUserNotificationCenter calls
+- Support day-of-week selection (Mon/Tue/Wed/Thu/Fri/Sat/Sun toggles)
+- Integrate with `NotificationPreferencesRepository` for persistence
+- Show pending notification count
+
+#### HR Data Integration for Strain Calculation
+Added HealthKit workout and HR queries:
+- `fetchWorkouts(from:to:)` - Query HKWorkout objects
+- `fetchHeartRateSamples(from:to:)` - Query HR samples during time period
+- `fetchHeartRateSamples(for:)` - Query HR samples for a specific workout
+- `convertToWorkoutData(_:)` - Convert HKWorkout to domain WorkoutData with HR
+- `HKWorkoutActivityType.name` - Human-readable workout type names
+
+Updated `CalculateStrainScoreUseCase` to:
+- Fetch actual workouts from HealthKit (no longer just estimation)
+- Use Banister TRIMP when HR samples available (most accurate)
+- Fall back to Edwards TRIMP when only average HR available
+- Fall back to duration-based estimation when no HR data
+- Track calculation method used (Banister/Edwards/Estimated)
+- Calculate max HR and HR reserve from actual data
+- Use actual resting HR from HealthKit when available
+
+#### PR Review Fixes
+After running code review, fixed two issues:
+1. **Unused `dateRange` variable** - Now properly queries 7 days of metrics and averages resting HR for a more reliable baseline
+2. **Dual persistence anti-pattern** - Repository is now single source of truth; UserDefaults only updated on successful repository save
+
+### Session End
+- **Time**: Afternoon UTC
+- **Duration**: ~1 hour
+- **Status**: Complete
+- **Build**: ⏭️ Not verified (cloud)
+- **Tests**: N/A (cloud)
+- **Commits**: 4 commits
+
+### Next Session Actions (Workstation)
+
+**From PR Review - Remaining Issues:**
+
+1. **Missing Test Coverage for TRIMP Calculations** (Important)
+   - Files needing tests:
+     - `NotificationScheduler.swift` - scheduling logic, day-of-week
+     - `NotificationSettingsViewModel.swift` - day selection, time conversion
+     - `CalculateStrainScoreUseCase.swift` - TRIMP formulas
+   - Specific test cases needed:
+     - Banister TRIMP with known HR samples → expected values
+     - Edwards zone boundaries (50%, 60%, 70%, 80%, 90% max HR)
+     - Day-of-week selection persistence
+     - Recovery alert threshold triggering
+     - Zero duration workout handling
+     - Maximum heart rate scenarios
+
+2. **HealthKitManager Thread Safety Documentation** (Minor)
+   - `CalculateStrainScoreUseCase` is `@MainActor` but calls non-@MainActor `HealthKitManager`
+   - Works correctly (async methods cross actor boundaries safely)
+   - Consider adding comment explaining the intentional actor isolation strategy
+   - Location: `HealthKitManager.swift` header or ARCHITECTURE.md
+
+**Build Verification:**
+- Verify Xcode build passes with new files
+- Test notification scheduling on physical device
+- Test HealthKit workout queries with real data
+
+---
+
 ## Session 13.0 - January 29, 2026 (Morning)
 
 ### Session Start

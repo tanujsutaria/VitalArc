@@ -33,14 +33,20 @@ struct HeartRateSample: Equatable {
 final class CalculateStrainScoreUseCase {
     private let healthRepository: HealthRepository
     private let userRepository: UserRepository
+    private let healthKitManager: HealthKitManager
 
     /// Scaling factor for converting raw TRIMP to 0-21 strain score
     /// Based on typical TRIMP values: 50-300 TRIMP = 0-21 strain
     private let trimpToStrainScaleFactor: Double = 21.0 / 250.0
 
-    init(healthRepository: HealthRepository, userRepository: UserRepository) {
+    init(
+        healthRepository: HealthRepository,
+        userRepository: UserRepository,
+        healthKitManager: HealthKitManager = HealthKitManager()
+    ) {
         self.healthRepository = healthRepository
         self.userRepository = userRepository
+        self.healthKitManager = healthKitManager
     }
 
     // MARK: - Public Interface
@@ -56,25 +62,176 @@ final class CalculateStrainScoreUseCase {
 
     /// Calculate strain score for a specific date
     func execute(for date: Date) async throws -> StrainResult? {
-        // For now, return estimated strain based on workout count
-        // Full implementation requires HealthKit workout queries
         let (hrMax, hrRest) = try await getHeartRateParameters()
 
-        // Estimate based on typical workout duration
-        let estimatedDuration: TimeInterval = 60 * 60 // 1 hour
-        let estimatedTrimp = estimateTRIMPFromDuration(estimatedDuration)
-        let strainScore = min(estimatedTrimp * trimpToStrainScaleFactor, 21.0)
+        // Fetch actual workouts from HealthKit
+        let workoutDataList = try await healthKitManager.fetchWorkoutData(for: date)
+
+        // No workouts on this day
+        guard !workoutDataList.isEmpty else {
+            return StrainResult(
+                date: date,
+                trimpScore: 0,
+                strainScore: 0,
+                duration: 0,
+                workoutCount: 0,
+                calculationMethod: .estimated
+            )
+        }
+
+        // Aggregate TRIMP across all workouts
+        var totalTrimp: Double = 0
+        var totalDuration: TimeInterval = 0
+        var allHRSamples: [Double] = []
+        var maxHR: Double = 0
+        var usedBanister = false
+
+        for workout in workoutDataList {
+            totalDuration += workout.duration
+
+            if !workout.heartRateSamples.isEmpty {
+                // Use Banister method with HR samples (most accurate)
+                let trimp = calculateBanisterTRIMP(
+                    samples: workout.heartRateSamples,
+                    duration: workout.duration,
+                    hrMax: hrMax,
+                    hrRest: hrRest
+                )
+                totalTrimp += trimp
+                usedBanister = true
+
+                // Track HR stats
+                let hrValues = workout.heartRateSamples.map(\.bpm)
+                allHRSamples.append(contentsOf: hrValues)
+                if let workoutMax = hrValues.max() {
+                    maxHR = max(maxHR, workoutMax)
+                }
+
+            } else if let avgHR = workout.averageHeartRate {
+                // Use Edwards method with average HR
+                let trimp = calculateEdwardsTRIMP(
+                    averageHR: avgHR,
+                    duration: workout.duration,
+                    hrMax: hrMax
+                )
+                totalTrimp += trimp
+                allHRSamples.append(avgHR)
+                maxHR = max(maxHR, avgHR)
+
+            } else {
+                // Fallback: estimate based on duration
+                totalTrimp += estimateTRIMPFromDuration(workout.duration)
+            }
+        }
+
+        // Calculate averages
+        let averageHR: Double? = allHRSamples.isEmpty ? nil : allHRSamples.reduce(0, +) / Double(allHRSamples.count)
+        let hrReserve: Double? = averageHR.map { ($0 - hrRest) / (hrMax - hrRest) * 100 }
+
+        // Convert to strain score (0-21 scale)
+        let strainScore = min(totalTrimp * trimpToStrainScaleFactor, 21.0)
+
+        // Determine calculation method used
+        let method: StrainResult.TRIMPMethod
+        if usedBanister {
+            method = .banister
+        } else if !allHRSamples.isEmpty {
+            method = .edwards
+        } else {
+            method = .estimated
+        }
 
         return StrainResult(
             date: date,
-            trimpScore: estimatedTrimp,
+            trimpScore: totalTrimp,
             strainScore: strainScore,
-            duration: estimatedDuration,
-            averageHeartRate: nil,
-            maxHeartRate: nil,
-            heartRateReserve: nil,
-            workoutCount: 1,
-            calculationMethod: .estimated
+            duration: totalDuration,
+            averageHeartRate: averageHR,
+            maxHeartRate: maxHR > 0 ? maxHR : nil,
+            heartRateReserve: hrReserve,
+            workoutCount: workoutDataList.count,
+            calculationMethod: method
+        )
+    }
+
+    /// Calculate strain from provided workout data (for in-app logged workouts)
+    func execute(for workouts: [WorkoutData], on date: Date) async throws -> StrainResult? {
+        guard !workouts.isEmpty else {
+            return StrainResult(
+                date: date,
+                trimpScore: 0,
+                strainScore: 0,
+                duration: 0,
+                workoutCount: 0,
+                calculationMethod: .estimated
+            )
+        }
+
+        let (hrMax, hrRest) = try await getHeartRateParameters()
+
+        var totalTrimp: Double = 0
+        var totalDuration: TimeInterval = 0
+        var allHRSamples: [Double] = []
+        var maxHR: Double = 0
+        var usedBanister = false
+
+        for workout in workouts {
+            totalDuration += workout.duration
+
+            if !workout.heartRateSamples.isEmpty {
+                let trimp = calculateBanisterTRIMP(
+                    samples: workout.heartRateSamples,
+                    duration: workout.duration,
+                    hrMax: hrMax,
+                    hrRest: hrRest
+                )
+                totalTrimp += trimp
+                usedBanister = true
+
+                let hrValues = workout.heartRateSamples.map(\.bpm)
+                allHRSamples.append(contentsOf: hrValues)
+                if let workoutMax = hrValues.max() {
+                    maxHR = max(maxHR, workoutMax)
+                }
+
+            } else if let avgHR = workout.averageHeartRate {
+                let trimp = calculateEdwardsTRIMP(
+                    averageHR: avgHR,
+                    duration: workout.duration,
+                    hrMax: hrMax
+                )
+                totalTrimp += trimp
+                allHRSamples.append(avgHR)
+                maxHR = max(maxHR, avgHR)
+
+            } else {
+                totalTrimp += estimateTRIMPFromDuration(workout.duration)
+            }
+        }
+
+        let averageHR: Double? = allHRSamples.isEmpty ? nil : allHRSamples.reduce(0, +) / Double(allHRSamples.count)
+        let hrReserve: Double? = averageHR.map { ($0 - hrRest) / (hrMax - hrRest) * 100 }
+        let strainScore = min(totalTrimp * trimpToStrainScaleFactor, 21.0)
+
+        let method: StrainResult.TRIMPMethod
+        if usedBanister {
+            method = .banister
+        } else if !allHRSamples.isEmpty {
+            method = .edwards
+        } else {
+            method = .estimated
+        }
+
+        return StrainResult(
+            date: date,
+            trimpScore: totalTrimp,
+            strainScore: strainScore,
+            duration: totalDuration,
+            averageHeartRate: averageHR,
+            maxHeartRate: maxHR > 0 ? maxHR : nil,
+            heartRateReserve: hrReserve,
+            workoutCount: workouts.count,
+            calculationMethod: method
         )
     }
 
@@ -169,11 +326,25 @@ final class CalculateStrainScoreUseCase {
     private func getHeartRateParameters() async throws -> (hrMax: Double, hrRest: Double) {
         if let profile = try await userRepository.getUserProfile() {
             let hrMax = estimateHRMax(age: profile.age)
-            let hrRest = estimateHRRest()
+            // Try to get actual resting HR from health data
+            let hrRest = await getRestingHeartRate() ?? estimateHRRest()
             return (hrMax, hrRest)
         }
 
         return (estimateHRMax(age: 30), estimateHRRest())
+    }
+
+    private func getRestingHeartRate() async -> Double? {
+        // Get resting HR over last 7 days for a more reliable baseline
+        let dateRange = HealthKitQuery.dateRangeForLastDays(7)
+        guard let metrics = try? await healthKitManager.fetchHealthMetrics(from: dateRange.start, to: dateRange.end) else {
+            return nil
+        }
+
+        let restingHRValues = metrics.compactMap(\.restingHeartRate)
+        guard !restingHRValues.isEmpty else { return nil }
+
+        return restingHRValues.reduce(0, +) / Double(restingHRValues.count)
     }
 
     private func estimateHRMax(age: Int) -> Double {
