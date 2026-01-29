@@ -30,12 +30,51 @@
 - **Total**: 52 violations (report only - cloud session)
 
 ### Session Goals
-1. [To be determined based on user direction]
+1. Implement notification scheduling and delivery
+2. Integrate HR data from HealthKit into strain calculation
 
 ### Work Log
 | Time | Action | Files | Notes |
 |------|--------|-------|-------|
 | Afternoon | Session started | - | Cloud session initialized |
+| Afternoon | Created NotificationScheduler | NotificationScheduler.swift | Full scheduling service with day-of-week, nutrition reminders |
+| Afternoon | Updated NotificationSettingsViewModel | NotificationSettingsViewModel.swift | Integrated with scheduler and domain model |
+| Afternoon | Added HealthKit workout queries | HealthKitManager.swift | fetchWorkouts, fetchHeartRateSamples, convertToWorkoutData |
+| Afternoon | Added workout activity type names | HealthKitManager.swift | HKWorkoutActivityType.name extension |
+| Afternoon | Updated strain calculation | CalculateStrainScoreUseCase.swift | Now uses real HealthKit workout and HR data |
+
+### Work Completed
+
+#### Notification Scheduling & Delivery
+Created `NotificationScheduler` infrastructure service with:
+- Day-of-week workout reminders with contextual messages
+- Nutrition reminders (configurable hours before end of day)
+- Recovery alerts based on actual recovery score threshold
+- Badge count management
+- Full integration with `NotificationPreferences` domain model
+
+Updated `NotificationSettingsViewModel` to:
+- Use `NotificationScheduler` instead of direct UNUserNotificationCenter calls
+- Support day-of-week selection (Mon/Tue/Wed/Thu/Fri/Sat/Sun toggles)
+- Integrate with `NotificationPreferencesRepository` for persistence
+- Show pending notification count
+
+#### HR Data Integration for Strain Calculation
+Added HealthKit workout and HR queries:
+- `fetchWorkouts(from:to:)` - Query HKWorkout objects
+- `fetchHeartRateSamples(from:to:)` - Query HR samples during time period
+- `fetchHeartRateSamples(for:)` - Query HR samples for a specific workout
+- `convertToWorkoutData(_:)` - Convert HKWorkout to domain WorkoutData with HR
+- `HKWorkoutActivityType.name` - Human-readable workout type names
+
+Updated `CalculateStrainScoreUseCase` to:
+- Fetch actual workouts from HealthKit (no longer just estimation)
+- Use Banister TRIMP when HR samples available (most accurate)
+- Fall back to Edwards TRIMP when only average HR available
+- Fall back to duration-based estimation when no HR data
+- Track calculation method used (Banister/Edwards/Estimated)
+- Calculate max HR and HR reserve from actual data
+- Use actual resting HR from HealthKit when available
 
 ---
 
