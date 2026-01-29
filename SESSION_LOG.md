@@ -5,7 +5,7 @@
 ### Session Start
 - **Time**: Morning UTC
 - **Platform**: cloud ☁️
-- **Focus**: TBD (see suggested focus areas below)
+- **Focus**: Analytics bug fixes, HRV calculation improvements
 - **Branch**: claude/vitalarc-start-cloud-oW16y
 - **Base**: main @ b45428a refactor(infra): fix agent swarm architecture with maps-to-agent metadata (#23)
 
@@ -36,6 +36,8 @@
 | Morning | Fixed sleep chart overflow | HealthTrendsView.swift | Dynamic Y-axis scaling |
 | Morning | Fixed HRV 7/30 day bug | AnalyticsDashboardViewModel.swift | Always fetch 30 days for HRV |
 | Morning | Fixed HRV calculation | HealthKitManager.swift | Use sleep-period HRV only (Oura-style) |
+| Morning | Design system scan | - | 267 violations identified for workstation fix |
+| Morning | Session ended | - | 5 commits, PR ready |
 
 ### Work Completed
 
@@ -72,6 +74,16 @@ Fixed conceptual flaw in HRV calculation for recovery:
 
 #### Session Skill Updates
 Updated `vitalarc-start-cloud` and `vitalarc-start-workstation` skills to always include minor version in session numbering (e.g., "13.0" not just "13").
+
+#### Design System Scan (Workstation Todo)
+Identified 267 design token violations for next workstation session:
+- Corner Radius: 108 violations (use `Spacing.radiusSmall/Medium`)
+- Frame Width: 82 violations (use `Spacing.icon*` constants)
+- Frame Height: 44 violations (standardize chart heights)
+- Typography: 32 violations (headline/caption → `.vitalH2/.vitalCaption`)
+- Colors: 1 violation (excellent compliance)
+
+**Priority files:** ProfileSetupView.swift (8), MesocycleDetailView.swift (14), HealthTrendsView.swift (13)
 
 ---
 
