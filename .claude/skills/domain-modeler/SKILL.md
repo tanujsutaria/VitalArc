@@ -1,6 +1,7 @@
 ---
 name: domain-modeler
 description: Design domain layer components for VitalArc features following Clean Architecture. Use when planning new features that need entities, repositories, or use cases. Analyzes existing patterns and produces consistent domain designs.
+maps-to-agent: Plan
 allowed-tools: Read, Grep, Glob, Write, Edit
 ---
 

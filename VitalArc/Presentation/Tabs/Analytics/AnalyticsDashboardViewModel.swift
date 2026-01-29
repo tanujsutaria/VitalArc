@@ -17,6 +17,7 @@ final class AnalyticsDashboardViewModel {
     private let trackProgressiveOverloadUseCase: TrackProgressiveOverloadUseCase
     private let generateProgressReportUseCase: GenerateProgressReportUseCase
     private let calculateRecoveryScoreUseCase: CalculateRecoveryScoreUseCase
+    private let calculateStrainScoreUseCase: CalculateStrainScoreUseCase
     private let analyticsRepository: AnalyticsRepository
     private let healthRepository: HealthRepository
     private let nutritionRepository: NutritionRepository
@@ -31,6 +32,7 @@ final class AnalyticsDashboardViewModel {
     var recoveryScore: Double = 0
     var recoveryResult: RecoveryScoreResult?
     var strainScore: Double = 0
+    var strainResult: StrainResult?
     var sleepScore: Double = 0
     var weeklyTrainingVolume: Double = 0
 
@@ -80,6 +82,7 @@ final class AnalyticsDashboardViewModel {
         trackProgressiveOverloadUseCase: TrackProgressiveOverloadUseCase,
         generateProgressReportUseCase: GenerateProgressReportUseCase,
         calculateRecoveryScoreUseCase: CalculateRecoveryScoreUseCase,
+        calculateStrainScoreUseCase: CalculateStrainScoreUseCase,
         analyticsRepository: AnalyticsRepository,
         healthRepository: HealthRepository,
         nutritionRepository: NutritionRepository
@@ -88,6 +91,7 @@ final class AnalyticsDashboardViewModel {
         self.trackProgressiveOverloadUseCase = trackProgressiveOverloadUseCase
         self.generateProgressReportUseCase = generateProgressReportUseCase
         self.calculateRecoveryScoreUseCase = calculateRecoveryScoreUseCase
+        self.calculateStrainScoreUseCase = calculateStrainScoreUseCase
         self.analyticsRepository = analyticsRepository
         self.healthRepository = healthRepository
         self.nutritionRepository = nutritionRepository
@@ -315,20 +319,32 @@ final class AnalyticsDashboardViewModel {
             }
         }
 
+        // Calculate Strain Score using TRIMP calculation
+        Task {
+            do {
+                if let result = try await calculateStrainScoreUseCase.execute(for: Date()) {
+                    strainResult = result
+                    strainScore = result.strainScore
+                } else {
+                    // No workout data for today
+                    strainScore = 0
+                }
+            } catch {
+                // Fallback to estimated strain if calculation fails
+                if let report = currentReport {
+                    strainScore = min(report.workoutConsistency / 100 * 21, 21)
+                } else {
+                    strainScore = 0
+                }
+            }
+        }
+
         // Sleep Score (based on duration and consistency)
         if !sleepTrend.isEmpty {
             let avgSleep = sleepTrend.map { $0.totalHours }.reduce(0, +) / Double(sleepTrend.count)
             sleepScore = min(max((avgSleep / sleepTargetHours) * 100, 0), 100)
         } else {
             sleepScore = Double.random(in: 60...90)
-        }
-
-        // Strain Score (based on workout volume and intensity)
-        if let report = currentReport {
-            // Scale workout consistency to 0-21 (max strain for WHOOP-style)
-            strainScore = min(report.workoutConsistency / 100 * 21, 21)
-        } else {
-            strainScore = Double.random(in: 8...16)
         }
     }
 

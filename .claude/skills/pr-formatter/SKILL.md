@@ -1,7 +1,7 @@
 ---
 name: pr-formatter
 description: Generate PR title and body following conventional commits format. Includes testing checklist and session metadata. Workstation only.
-disable-model-invocation: true
+maps-to-agent: general-purpose
 allowed-tools: Read, Bash, Grep
 argument-hint: [--draft] [--no-checklist]
 ---

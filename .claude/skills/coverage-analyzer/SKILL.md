@@ -1,7 +1,7 @@
 ---
 name: coverage-analyzer
 description: Identify untested code and suggest test priorities. Analyzes source files vs test files to find coverage gaps.
-disable-model-invocation: true
+maps-to-agent: Explore
 allowed-tools: Read, Glob, Grep
 argument-hint: [--layer=domain|presentation|all] [--verbose]
 ---

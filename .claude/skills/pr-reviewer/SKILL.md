@@ -1,7 +1,7 @@
 ---
 name: pr-reviewer
 description: Analyze pull requests and suggest improvements. Read-only analysis of PR changes, comments, and CI status. Works on both platforms.
-disable-model-invocation: true
+maps-to-agent: feature-dev:code-reviewer
 allowed-tools: Read, Bash, Grep, Glob, WebFetch
 argument-hint: <pr-number-or-url>
 ---

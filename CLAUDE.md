@@ -118,61 +118,57 @@ Both workstreams use an enhanced session log with a **Work Log table** for track
 | 8:00 | Session ended | - | Complete |
 ```
 
-### Legacy Skills
-
-The original `/vitalarc-start` and `/vitalarc-end` skills are still available as general-purpose fallbacks that auto-detect platform.
-
 ## Agent Swarms
 
-Task-specific agents that auto-invoke to accelerate development. Based on [Anthropic's agent best practices](https://docs.anthropic.com).
+Skills in `.claude/skills/` serve as **prompt templates** for specialized tasks. They can be:
+1. **Invoked directly** via `/skill-name` (e.g., `/focus-suggester`)
+2. **Spawned as Task agents** by reading the SKILL.md and using the `maps-to-agent` type
 
-### Session Management Agents
+### How Parallel Execution Works
 
-| Agent | Auto-invokes When | Purpose |
-|-------|-------------------|---------|
-| `focus-suggester` | Starting session without focus, asking "what's next?" | Analyzes roadmap and suggests highest-value focus areas |
-| `progress-tracker` | Work is completed, files modified | Updates SESSION_LOG.md Work Log table automatically |
-| `commit-formatter` | Preparing to commit, user says "commit" | Generates conventional commit messages from staged changes |
+Skills are NOT custom agent types. To run skills in parallel during session workflows:
 
-### Feature Development Agents
+1. Read the worker SKILL.md file
+2. Check `maps-to-agent` metadata for the correct Task agent type
+3. Spawn Task agents with built-in types (`Explore`, `Plan`, `Bash`, `general-purpose`)
+4. Launch multiple Task calls in a single message for parallel execution
 
-| Agent | Auto-invokes When | Purpose |
-|-------|-------------------|---------|
-| `domain-modeler` | Planning features needing entities/use cases | Designs domain layer following Clean Architecture |
-| `swiftui-architect` | Planning new screens or UI components | Designs view hierarchies and state management |
-| `test-scaffolder` | Feature implemented, user asks for tests | Generates XCTest files following project patterns |
+### Agent Type Mappings
 
-### Pre-Commit Quality Gate
+Each skill has a `maps-to-agent` field indicating which Task agent type to use:
 
-| Agent | Auto-invokes When | Purpose |
-|-------|-------------------|---------|
-| `build-validator` | Before commits, after code changes | Verifies Xcode build passes |
-| `design-system-auditor` | Before commits, during UI review | Finds hardcoded colors/spacing that should use tokens |
+| maps-to-agent | Use For | Skills |
+|---------------|---------|--------|
+| `Explore` | Read-only analysis | focus-suggester, design-system-scanner, design-system-auditor, coverage-analyzer, config-validator |
+| `Plan` | Architecture design | domain-modeler, swiftui-architect, feature-planner, dependency-wirer |
+| `Bash` | Command execution | build-validator |
+| `general-purpose` | Read-write operations | commit-formatter, test-scaffolder, progress-tracker, design-system-fixer, pr-formatter |
+| `feature-dev:code-reviewer` | Code review | pr-reviewer |
 
-### Swarm Patterns
+### Available Skills
 
-**Feature Development Flow:**
-```
-1. domain-modeler + swiftui-architect (parallel analysis)
-2. Implementation
-3. test-scaffolder (generate tests)
-4. build-validator + design-system-auditor (quality gate)
-5. commit-formatter (prepare commit)
-```
+**Session Management:**
+- `/focus-suggester` - Recommend development focus areas
+- `/progress-tracker` - Update SESSION_LOG.md Work Log
+- `/commit-formatter` - Generate conventional commit messages
 
-**Quick Fix Flow:**
-```
-1. Fix implementation
-2. build-validator (verify build)
-3. commit-formatter (prepare commit)
-```
+**Feature Development:**
+- `/domain-modeler` - Design domain entities, repositories, use cases
+- `/swiftui-architect` - Design view hierarchies and state management
+- `/feature-planner` - Plan full feature architecture
+- `/test-scaffolder` - Generate XCTest files
 
-### Manual Invocation
+**Quality & Validation:**
+- `/build-validator` - Verify Xcode build passes
+- `/design-system-scanner` - Find design token violations (read-only)
+- `/design-system-fixer` - Fix design token violations (workstation only)
+- `/design-system-auditor` - Comprehensive design audit
+- `/config-validator` - Check API keys and entitlements
+- `/coverage-analyzer` - Identify untested code
 
-Agents auto-invoke based on context, but can be triggered explicitly:
-- `/focus-suggester` - Get focus recommendations
-- `/design-system-auditor` - Run design audit
-- `/commit-formatter` - Generate commit message
+**Code Review & PR:**
+- `/pr-formatter` - Generate PR title and body
+- `/pr-reviewer` - Analyze pull requests
 
 ## Architecture Overview
 

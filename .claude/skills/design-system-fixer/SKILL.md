@@ -1,7 +1,7 @@
 ---
 name: design-system-fixer
 description: Auto-fix design system violations found by design-system-scanner. Workstation only - requires build verification after fixes. Takes scanner report as input.
-disable-model-invocation: true
+maps-to-agent: general-purpose
 allowed-tools: Read, Edit, Bash
 argument-hint: [--file=specific/file.swift] [--dry-run] [--all]
 ---

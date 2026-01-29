@@ -1,7 +1,7 @@
 ---
 name: design-system-scanner
 description: Audit VitalArc views for design system compliance. Read-only scanning - finds violations but does NOT fix them. Works on both cloud and workstation. For fixes, use design-system-fixer.
-disable-model-invocation: true
+maps-to-agent: Explore
 allowed-tools: Read, Glob, Grep
 argument-hint: [--path=specific/path] [--verbose]
 ---

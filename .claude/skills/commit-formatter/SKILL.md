@@ -1,6 +1,7 @@
 ---
 name: commit-formatter
 description: Generate properly formatted conventional commit messages for VitalArc. Use automatically when preparing to commit changes, or when the user asks to commit. Analyzes staged changes and produces commit messages following project conventions.
+maps-to-agent: general-purpose
 allowed-tools: Read, Bash, Grep, Glob
 ---
 

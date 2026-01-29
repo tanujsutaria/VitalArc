@@ -477,6 +477,10 @@ struct AnalyticsTabView: View {
                 calculateRecoveryScoreUseCase: CalculateRecoveryScoreUseCase(
                     healthRepository: container.healthRepository
                 ),
+                calculateStrainScoreUseCase: CalculateStrainScoreUseCase(
+                    healthRepository: container.healthRepository,
+                    userRepository: container.userRepository
+                ),
                 analyticsRepository: container.analyticsRepository,
                 healthRepository: container.healthRepository,
                 nutritionRepository: container.nutritionRepository

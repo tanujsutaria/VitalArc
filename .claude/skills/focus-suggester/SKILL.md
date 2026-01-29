@@ -1,6 +1,7 @@
 ---
 name: focus-suggester
 description: Analyze VitalArc roadmap and recent session history to suggest the most valuable focus area for the current development session. Use automatically when starting a session without a specified focus, or when the user asks what to work on next.
+maps-to-agent: Explore
 allowed-tools: Read, Grep, Glob
 ---
 

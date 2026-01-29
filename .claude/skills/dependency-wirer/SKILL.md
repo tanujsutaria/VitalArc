@@ -1,7 +1,7 @@
 ---
 name: dependency-wirer
 description: Update DependencyContainer.swift to wire new repositories, use cases, and ViewModels. Follows VitalArc's dependency injection patterns.
-disable-model-invocation: true
+maps-to-agent: Plan
 allowed-tools: Read, Edit, Grep, Glob
 argument-hint: <feature-name> [--entity=Name] [--repository=Name] [--usecase=Name]
 ---

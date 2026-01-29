@@ -1,8 +1,8 @@
 ---
 name: feature-planner
 description: Orchestrator for planning new feature architecture. Coordinates domain-modeler, swiftui-architect, dependency-wirer, and test-scaffolder in sequence.
-disable-model-invocation: true
-allowed-tools: Task, Read, Glob, Grep
+maps-to-agent: Plan
+allowed-tools: Read, Glob, Grep
 argument-hint: <feature-name> [--skip-tests] [--domain-only] [--ui-only]
 ---
 
