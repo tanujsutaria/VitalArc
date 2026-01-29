@@ -36,7 +36,16 @@ struct VitalArcApp: App {
             HealthMetricsModel.self,
 
             // User Domain Models
-            UserProfileModel.self
+            UserProfileModel.self,
+
+            // Analytics Domain Models
+            ProgressSnapshotModel.self,
+            VolumeMetricsModel.self,
+            PersonalRecordModel.self,
+            WorkoutTemplateModel.self,
+
+            // Notification Domain Models
+            NotificationPreferencesModel.self
         ])
 
         let modelConfiguration = ModelConfiguration(

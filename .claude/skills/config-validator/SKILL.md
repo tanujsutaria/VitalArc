@@ -1,7 +1,7 @@
 ---
 name: config-validator
 description: Check API keys, entitlements, and build settings. Reports configuration status and missing requirements. Read-only, works on both platforms.
-disable-model-invocation: true
+maps-to-agent: Explore
 allowed-tools: Read, Glob, Grep, Bash
 argument-hint: [--verbose]
 ---

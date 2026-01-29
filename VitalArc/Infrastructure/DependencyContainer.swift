@@ -22,6 +22,7 @@ final class DependencyContainer {
     let mesocycleRepository: MesocycleRepository
     let analyticsRepository: AnalyticsRepository
     let templateRepository: TemplateRepository
+    let notificationPreferencesRepository: NotificationPreferencesRepository
 
     init(modelContext: ModelContext) {
         self.modelContext = modelContext
@@ -34,6 +35,7 @@ final class DependencyContainer {
         self.mesocycleRepository = SwiftDataMesocycleRepository(modelContext: modelContext)
         self.analyticsRepository = SwiftDataAnalyticsRepository(modelContext: modelContext)
         self.templateRepository = SwiftDataTemplateRepository(modelContext: modelContext)
+        self.notificationPreferencesRepository = SwiftDataNotificationPreferencesRepository(modelContext: modelContext)
     }
 }
 
@@ -887,6 +889,62 @@ final class SwiftDataTemplateRepository: TemplateRepository {
             model.lastUsed = Date()
             try modelContext.save()
         }
+    }
+}
+
+/// SwiftData implementation of NotificationPreferencesRepository
+@MainActor
+final class SwiftDataNotificationPreferencesRepository: NotificationPreferencesRepository {
+    private let modelContext: ModelContext
+
+    init(modelContext: ModelContext) {
+        self.modelContext = modelContext
+    }
+
+    func getPreferences() async throws -> NotificationPreferences? {
+        let descriptor = FetchDescriptor<NotificationPreferencesModel>()
+        let models = try modelContext.fetch(descriptor)
+        return models.first?.toDomain()
+    }
+
+    func savePreferences(_ preferences: NotificationPreferences) async throws {
+        // Delete any existing preferences (singleton pattern)
+        let descriptor = FetchDescriptor<NotificationPreferencesModel>()
+        let existingModels = try modelContext.fetch(descriptor)
+        for model in existingModels {
+            modelContext.delete(model)
+        }
+
+        // Insert new preferences
+        let model = NotificationPreferencesModel.fromDomain(preferences)
+        modelContext.insert(model)
+        try modelContext.save()
+    }
+
+    func updatePreferences(_ preferences: NotificationPreferences) async throws {
+        let descriptor = FetchDescriptor<NotificationPreferencesModel>()
+        let models = try modelContext.fetch(descriptor)
+
+        if let existing = models.first {
+            // Update existing
+            existing.workoutRemindersEnabled = preferences.workoutRemindersEnabled
+            existing.recoveryAlertsEnabled = preferences.recoveryAlertsEnabled
+            existing.nutritionRemindersEnabled = preferences.nutritionRemindersEnabled
+            existing.recoveryThreshold = preferences.recoveryThreshold
+            existing.workoutReminderDaysData = try? JSONEncoder().encode(preferences.workoutReminderDays)
+            existing.workoutReminderHour = preferences.workoutReminderTime.hour ?? 18
+            existing.workoutReminderMinute = preferences.workoutReminderTime.minute ?? 0
+            existing.nutritionReminderHours = preferences.nutritionReminderHours
+            existing.updatedAt = Date()
+            try modelContext.save()
+        } else {
+            // Create new if none exists
+            try await savePreferences(preferences)
+        }
+    }
+
+    func resetToDefaults() async throws {
+        try await savePreferences(.default)
     }
 }
 

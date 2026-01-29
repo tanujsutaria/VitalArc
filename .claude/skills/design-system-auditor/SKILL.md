@@ -1,6 +1,7 @@
 ---
 name: design-system-auditor
 description: Audit VitalArc SwiftUI views for design system compliance. Use automatically before commits, during code review, or when the user asks to check design consistency. Finds hardcoded colors, spacing, and fonts that should use design tokens.
+maps-to-agent: Explore
 allowed-tools: Read, Grep, Glob, Edit
 ---
 

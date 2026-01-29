@@ -1,5 +1,100 @@
 # VitalArc Development Session Log
 
+## Session 12.4 - January 28, 2026 (Late Evening)
+
+### Session Start
+- **Time**: Late Evening PST
+- **Platform**: macOS
+- **Focus**: Agent swarm architecture fix
+- **Branch**: dev/mac-session-12.4-2026-01-28
+- **Base**: main @ 7cd38e3 feat(notifications): add notification settings and TRIMP calculation (#22)
+
+### Environment
+- **Build Capable**: Yes
+- **Test Capable**: Yes (unit + UI)
+
+### Pre-Session Status
+- **Build**: Passing
+- **Uncommitted Changes**: None
+- **Recent Activity**: Session 12.3 created agent swarm architecture with orchestrator-worker pattern
+
+### Session Goals
+1. Fix agent swarm architecture to use maps-to-agent metadata pattern
+2. Clean up non-executable orchestrator skills
+3. Update worker skills with proper metadata
+4. Integrate TRIMP with AnalyticsDashboardViewModel
+5. Complete Notifications repository layer
+
+### Work Log
+| Time | Action | Files | Notes |
+|------|--------|-------|-------|
+| Late Evening | Session started | - | Focus: agent swarm architecture fix |
+| Late Evening | Analyzed skill architecture | - | Skills need maps-to-agent metadata, not direct agent directories |
+| Late Evening | Deleted orchestrator skills | 6 SKILL.md files | Non-executable orchestrators removed |
+| Late Evening | Updated worker skills | 16 SKILL.md files | Added maps-to-agent metadata |
+| Late Evening | Updated session skills | 4 SKILL.md files | Reference prompt pattern for invoking workers |
+| Late Evening | Integrated TRIMP | AnalyticsDashboardViewModel.swift | CalculateStrainScoreUseCase now wired |
+| Late Evening | Completed Notifications repo | NotificationRepository.swift, etc. | Full repository layer |
+| Late Evening | Updated PROJECT_STATUS.md | PROJECT_STATUS.md | Reflected current state |
+| Late Evening | Tested parallel execution | - | Task agents work correctly |
+| Late Evening | Session ended | - | Complete |
+
+### Work Completed
+
+#### Agent Swarm Architecture Fix
+The previous session created orchestrator skills that weren't executable. Fixed by:
+
+1. **Deleted 6 non-executable orchestrator skills**:
+   - `session-orchestrator` - Was a meta-skill, not directly usable
+   - `session-state-manager` - Internal coordination
+   - `session-log-creator` - Internal coordination
+   - `context-loader` - Internal coordination
+   - `stats-gatherer` - Internal coordination
+   - `config-validator` - Internal coordination
+
+2. **Updated 16 worker skills with maps-to-agent metadata**:
+   - Added `maps-to-agent: <agent-name>` to each skill's SKILL.md
+   - Pattern allows skills to invoke agents via reference prompt
+   - Workers: focus-suggester, progress-tracker, commit-formatter, domain-modeler, swiftui-architect, test-scaffolder, build-validator, design-system-auditor, design-system-scanner, design-system-fixer, pre-commit-quality-gate, feature-planner, coverage-analyzer, dependency-wirer, pr-formatter, pr-reviewer
+
+3. **Updated 4 session skills with reference prompt pattern**:
+   - `vitalarc-start-workstation` - References worker agents for parallel execution
+   - `vitalarc-start-cloud` - References worker agents for parallel execution
+   - `vitalarc-end-workstation` - References worker agents for commit preparation
+   - `vitalarc-end-cloud` - References worker agents for commit preparation
+
+#### TRIMP Integration with Analytics Dashboard
+- Wired `CalculateStrainScoreUseCase` to `AnalyticsDashboardViewModel`
+- Strain score now calculated from workout data using Banister/Edwards TRIMP method
+- Displays in Analytics dashboard alongside recovery and sleep scores
+
+#### Notifications Repository Layer Complete
+- Created `NotificationRepository` protocol in Domain layer
+- Implemented `UserDefaultsNotificationRepository` for preferences persistence
+- Connected to `NotificationSettingsViewModel`
+- Full CRUD operations for notification preferences
+
+#### PROJECT_STATUS.md Updates
+- Updated agent swarm section with corrected architecture
+- Marked Notifications feature as complete
+- Updated TRIMP/Strain calculation status
+
+#### Parallel Task Agent Testing
+- Verified Task tool executes agents in parallel when requested
+- Multiple worker agents can run simultaneously for efficiency
+- Context isolation working correctly between agents
+
+### Session End
+- **Time**: Late Evening PST
+- **Duration**: ~2 hours
+- **Status**: Complete
+- **Build**: Passing
+- **Tests**: Not run
+- **Commits**: Pending PR
+- **Next**: Continue with roadmap features, consider sleep analysis or goal setting
+
+---
+
 ## Session 12.3 - January 28, 2026 (Evening)
 
 ### Session Start

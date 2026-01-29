@@ -1,6 +1,7 @@
 ---
 name: test-scaffolder
 description: Generate test stubs and test cases for VitalArc code. Use when new features are implemented and need test coverage, or when the user asks to add tests. Creates XCTest files following project patterns.
+maps-to-agent: general-purpose
 allowed-tools: Read, Grep, Glob, Write, Edit, Bash
 ---
 

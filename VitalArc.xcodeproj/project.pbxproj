@@ -55,6 +55,7 @@
 		3E1B0C7751AADD39EF3E8DC6 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E7DFF422F05B2EBBF2F2EB8 /* ProfileView.swift */; };
 		3EC7F8F3D2E7735357137756 /* HealthKitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18547D5100E844205BA8F7DB /* HealthKitTests.swift */; };
 		3FE9DA0276B8CBFA1FCB72AE /* PersonalRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6257D052A93093617A976F17 /* PersonalRecord.swift */; };
+		40BCB9556774C75ACF6B4362 /* NotificationPreferencesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7300CDDB0E0A565D147AF704 /* NotificationPreferencesModel.swift */; };
 		426945A51D2DDBB7074CF960 /* CalculateProgressionUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BC1E6E21D322A72D4ACED10 /* CalculateProgressionUseCase.swift */; };
 		428D7507D086EF8FAEEFBBEF /* ExerciseLibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE891E4BBFFF15541D2786C2 /* ExerciseLibraryView.swift */; };
 		46D4E897F5B549D64F2E56A7 /* OpenFoodFactsModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E923DFB84D644F6AF4B771E /* OpenFoodFactsModels.swift */; };
@@ -82,6 +83,7 @@
 		649D3E16AF3D327E95E58167 /* BarcodeScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A549F3A257247635B5773B3 /* BarcodeScannerView.swift */; };
 		64B4F348DC03AF0B64E2A1F5 /* ExerciseSeedsCalisthenics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 707211DD311A7D50F8D17198 /* ExerciseSeedsCalisthenics.swift */; };
 		657D67F7058E649BB94D8610 /* NutritionAnalyticsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5C035B41767CBFF37E55735 /* NutritionAnalyticsView.swift */; };
+		674A300DA81A6B1D9BDEEFAF /* NotificationRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED79CC39784E3751024A7EF8 /* NotificationRepository.swift */; };
 		67DA77DDC72CBB407FB9FCAA /* CalculateRecoveryScoreUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87FA51F82E4A66D2732F46F3 /* CalculateRecoveryScoreUseCase.swift */; };
 		68832F20D51C7E717D136F19 /* MesocycleDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6D92310228F2EFD9021CC14 /* MesocycleDetailView.swift */; };
 		689492DAB7DC1E95E0CFD10F /* ProgressSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20FFB7DEB7F82AB028C8E5A7 /* ProgressSnapshot.swift */; };
@@ -283,6 +285,7 @@
 		707211DD311A7D50F8D17198 /* ExerciseSeedsCalisthenics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseSeedsCalisthenics.swift; sourceTree = "<group>"; };
 		708D8CAEBF3A2697BF19F4C2 /* MesocycleRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MesocycleRepository.swift; sourceTree = "<group>"; };
 		713CC4DBB1A20EF6367309D9 /* TemplateExercisePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemplateExercisePickerView.swift; sourceTree = "<group>"; };
+		7300CDDB0E0A565D147AF704 /* NotificationPreferencesModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = NotificationPreferencesModel.swift; path = NotificationPreferencesModel.swift; sourceTree = "<group>"; };
 		74792C4BA68818E4B69DE9F5 /* ExerciseSeedsBands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseSeedsBands.swift; sourceTree = "<group>"; };
 		787CB00A431620BCAC5268E4 /* TemplateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemplateTests.swift; sourceTree = "<group>"; };
 		7A46BFE2B45F985DD7684B9E /* ViewExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewExtensions.swift; sourceTree = "<group>"; };
@@ -363,6 +366,7 @@
 		E7136C312A60E7F45BD0F51B /* OnboardingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewModel.swift; sourceTree = "<group>"; };
 		EA9021F64844D904DA8B4F54 /* TemplateDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemplateDetailView.swift; sourceTree = "<group>"; };
 		ED62B6AB234CF0E23406C77D /* HealthDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthDashboardView.swift; sourceTree = "<group>"; };
+		ED79CC39784E3751024A7EF8 /* NotificationRepository.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = NotificationRepository.swift; path = NotificationRepository.swift; sourceTree = "<group>"; };
 		ED85BA1AEF7BA60C2B9C2348 /* HealthMetricsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthMetricsModel.swift; sourceTree = "<group>"; };
 		EDBCFB23D782852C55C4ECF4 /* ExerciseSeedsMachine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseSeedsMachine.swift; sourceTree = "<group>"; };
 		EF3EBB9425026757A4C2AAE8 /* TrainingBlockModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingBlockModel.swift; sourceTree = "<group>"; };
@@ -855,6 +859,14 @@
 			path = Nutrition;
 			sourceTree = "<group>";
 		};
+		A0B7501EB391A52DAADD68A1 /* Notifications */ = {
+			isa = PBXGroup;
+			children = (
+				7300CDDB0E0A565D147AF704 /* NotificationPreferencesModel.swift */,
+			);
+			name = Notifications;
+			sourceTree = "<group>";
+		};
 		A6FD4C3832DAE49FB5F7335E /* Training */ = {
 			isa = PBXGroup;
 			children = (
@@ -940,6 +952,7 @@
 				DB56E8DFB32798591DE26D36 /* TemplateRepository.swift */,
 				54BE18D10F70E33E0E20F52A /* UserRepository.swift */,
 				54AE04B0B914B459BB6B3E97 /* WorkoutRepository.swift */,
+				ED79CC39784E3751024A7EF8 /* NotificationRepository.swift */,
 			);
 			path = Repositories;
 			sourceTree = "<group>";
@@ -984,6 +997,7 @@
 				0B8F2EE5BD593BEC509C1A8E /* Training */,
 				6533C4548A51FB361D8019AC /* User */,
 				408D1B54332CEDFF1FFF945A /* Workout */,
+				A0B7501EB391A52DAADD68A1 /* Notifications */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -1337,6 +1351,8 @@
 				ED3ECFA00AAF0CB09C762F8D /* NotificationSettingsViewModel.swift in Sources */,
 				D2BC861AB4D37169A8B6B03B /* NotificationPreviewCard.swift in Sources */,
 				FFEBB3934D9C27AE5C7B682A /* NotificationSettingsView.swift in Sources */,
+				40BCB9556774C75ACF6B4362 /* NotificationPreferencesModel.swift in Sources */,
+				674A300DA81A6B1D9BDEEFAF /* NotificationRepository.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
