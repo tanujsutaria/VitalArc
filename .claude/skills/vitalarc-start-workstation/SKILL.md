@@ -22,25 +22,26 @@ git fetch origin && git checkout main && git pull origin main --ff-only
 ### 2. Determine session number
 
 **Session numbering rules:**
-- **Major number** increments when the DATE changes (e.g., Session 12 → Session 13)
-- **Minor version** increments for same-day sessions (e.g., 12 → 12.1 → 12.2)
+- **Major number** increments when the DATE changes (e.g., Session 12.x → Session 13.0)
+- **Minor version** increments for same-day sessions (e.g., 13.0 → 13.1 → 13.2)
+- **Always include minor version** in format (e.g., 13.0, not just 13)
 - Minor versions are determined by counting SESSION_LOG.md entries for that major number + date
 
 ```bash
 TODAY=$(date +%Y-%m-%d)
-LATEST_ENTRY=$(grep -E "^## Session [0-9]+(\.[0-9]+)? - " SESSION_LOG.md | head -1)
-LATEST_MAJOR=$(echo "$LATEST_ENTRY" | sed -E 's/## Session ([0-9]+).*/\1/')
+LATEST_ENTRY=$(grep -E "^## Session [0-9]+\.[0-9]+ - " SESSION_LOG.md | head -1)
+LATEST_MAJOR=$(echo "$LATEST_ENTRY" | sed -E 's/## Session ([0-9]+)\..*/\1/')
 LATEST_MAJOR=${LATEST_MAJOR:-0}
 LATEST_DATE_STR=$(echo "$LATEST_ENTRY" | grep -oE "[A-Z][a-z]+ [0-9]+, [0-9]+" | head -1)
 LATEST_DATE=$(date -j -f "%B %d, %Y" "$LATEST_DATE_STR" +%Y-%m-%d 2>/dev/null || echo "")
 if [ "$LATEST_DATE" = "$TODAY" ]; then
     SESSION=$LATEST_MAJOR
-    MINOR=$(grep -E "^## Session ${SESSION}(\.[0-9]+)? - .*${LATEST_DATE_STR}" SESSION_LOG.md | wc -l | tr -d ' ')
+    MINOR=$(grep -E "^## Session ${SESSION}\.[0-9]+ - .*${LATEST_DATE_STR}" SESSION_LOG.md | wc -l | tr -d ' ')
 else
     SESSION=$((LATEST_MAJOR + 1))
     MINOR=0
 fi
-[ "$MINOR" -eq 0 ] && FULL_SESSION="$SESSION" || FULL_SESSION="${SESSION}.${MINOR}"
+FULL_SESSION="${SESSION}.${MINOR}"
 ```
 
 ### 3. Create branch
