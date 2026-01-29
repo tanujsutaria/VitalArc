@@ -252,7 +252,7 @@ struct ExerciseLibraryView: View {
                                     .frame(width: 40, height: 40)
 
                                 Image(systemName: "star.fill")
-                                    .font(.system(size: 16, weight: .semibold))
+                                    .font(.system(size: Spacing.iconSmall, weight: .semibold))
                                     .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                             }
 
@@ -308,7 +308,7 @@ struct BodyPartSectionHeader: View {
                         .frame(width: 40, height: 40)
 
                     Image(systemName: icon)
-                        .font(.system(size: 16, weight: .semibold))
+                        .font(.system(size: Spacing.iconSmall, weight: .semibold))
                         .foregroundStyle(color)
                 }
 
@@ -327,7 +327,7 @@ struct BodyPartSectionHeader: View {
 
                 // Expand/Collapse indicator
                 Image(systemName: "chevron.down")
-                    .font(.system(size: 14, weight: .semibold))
+                    .font(.system(size: Spacing.iconSmall, weight: .semibold))
                     .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                     .rotationEffect(.degrees(isExpanded ? 0 : -90))
             }

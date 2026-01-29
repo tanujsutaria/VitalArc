@@ -85,16 +85,53 @@ git stash list | grep -q "Auto-stash $(date +%Y-%m-%d)" && git stash pop
 
 Read: CLAUDE.md, PROJECT_STATUS.md (focus on Known Issues), SESSION_LOG.md (last 100 lines), README.md (Roadmap).
 
-### 6. Suggest focus (if none provided)
+### 6. Session Start Agent Swarm
 
-If no `$ARGUMENTS`, analyze the project to suggest focus areas appropriate for cloud sessions.
+Run these agents **in parallel** to get a comprehensive session kickoff:
 
-**Use the Task tool** with `subagent_type: Explore` to:
-- Review PROJECT_STATUS.md Known Issues
-- Check documentation tasks in README.md
-- Review recent SESSION_LOG.md entries
+```
+┌───────────────────────────────────────────────────┐
+│            CLOUD SESSION START SWARM              │
+├─────────────────┬─────────────────────────────────┤
+│ focus-suggester │ design-system-auditor           │
+│ (if no focus)   │ (token compliance - read only)  │
+└─────────────────┴─────────────────────────────────┘
+```
 
-Cloud is best for logic bugs, docs, and small refactors—not UI changes.
+**Invoke using Task tool with parallel calls:**
+
+1. **focus-suggester** (if no `$ARGUMENTS` provided):
+   - Analyzes README.md Roadmap, PROJECT_STATUS.md Known Issues, recent SESSION_LOG.md
+   - Returns ranked focus recommendations appropriate for cloud sessions
+   - Filters to: logic bugs, documentation, code review, small refactors
+
+2. **design-system-auditor** (read-only mode):
+   - Scans Presentation/ for hardcoded colors, spacing, fonts
+   - Reports violation count (fixes require workstation session)
+
+**Output format:**
+```markdown
+## Session Health Check
+
+### Focus Recommendations (Cloud-Appropriate)
+1. **Documentation updates** (Score: 12) - README needs refresh
+2. **Logic bug in CalorieUseCase** (Score: 10) - Known issue
+3. **Code review PR #15** (Score: 8) - Pending review
+
+### Design System Compliance
+⚠️ 12 violations found in 5 files
+- ProfileView.swift: 3 hardcoded colors
+- WorkoutView.swift: 2 hardcoded spacing
+[Note: Auto-fix requires workstation session]
+
+### Build Status
+⏭️ Skipped (cloud session - no Xcode)
+```
+
+**Cloud session limitations:**
+- Cannot run build-validator (no Xcode)
+- design-system-auditor reports only, no auto-fix recommended
+- Focus suggestions filtered to non-UI work
 
 ### 7. Create session log entry
 

@@ -18,21 +18,67 @@ Finalize a cloud session. No build verification—CI will validate.
 
 ## Steps
 
-### 1. Verify session state
+### 1. Session End Agent Swarm
+
+Run these agents for session close:
+
+```
+┌───────────────────────────────────────────────────┐
+│            CLOUD SESSION END SWARM                │
+├─────────────────────┬─────────────────────────────┤
+│ progress-tracker    │ commit-formatter            │
+│ (update work log)   │ (prepare commit)            │
+└─────────────────────┴─────────────────────────────┘
+```
+
+**Sequential execution:**
+
+1. **progress-tracker**:
+   - Updates SESSION_LOG.md Work Log with final entries
+   - Adds session end timestamp
+   - Notes "Build not verified (cloud)"
+
+2. **commit-formatter**:
+   - Analyzes all staged changes
+   - Generates conventional commit message
+   - Adds note about cloud session
+
+**Output format:**
+```markdown
+## Session End Checklist
+
+### Build Validation
+⏭️ Skipped (cloud session - CI will verify)
+
+### Work Log Updated
+✅ SESSION_LOG.md updated with final entries
+
+### Commit Ready
+```bash
+git commit -m "fix(nutrition): correct calorie calculation
+
+- Fixed off-by-one error in macro totals
+- Cloud session - build verification pending
+
+Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
+```
+```
+
+### 2. Verify session state (fallback)
 
 ```bash
 # Optional: Run verification without build check
 .claude/skills/_shared/scripts/verify-session.sh
 ```
 
-### 2. Gather stats
+### 3. Gather stats
 
 ```bash
 git log --oneline --since="6 hours ago"
 git diff --stat HEAD~10 2>/dev/null | tail -3
 ```
 
-### 3. Update SESSION_LOG.md
+### 4. Update SESSION_LOG.md
 
 Complete the current session's Work Log table and fill in sections using the template from [session-end.md](../_shared/templates/session-end.md):
 
@@ -60,13 +106,13 @@ Complete the current session's Work Log table and fill in sections using the tem
 
 Use status **Needs Workstation** if changes require UI or build verification.
 
-### 4. Update PROJECT_STATUS.md and README.md
+### 5. Update PROJECT_STATUS.md and README.md
 
 If features changed:
 - PROJECT_STATUS.md: Update "Last Updated", Known Issues, feature status
 - README.md Roadmap: Move features between In Progress / Planned as needed
 
-### 5. Update state file
+### 6. Update state file
 
 ```bash
 BRANCH=$(git rev-parse --abbrev-ref HEAD)
@@ -76,7 +122,7 @@ cat > .claude/session-state.json << EOF
 EOF
 ```
 
-### 6. Commit and push
+### 7. Commit and push
 
 ```bash
 git add SESSION_LOG.md PROJECT_STATUS.md README.md .claude/session-state.json
@@ -89,7 +135,7 @@ Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
 git push -u origin "$(git rev-parse --abbrev-ref HEAD)"
 ```
 
-### 7. Create PR (optional)
+### 8. Create PR (optional)
 
 If ready for review, create PR following conventional commits format:
 
@@ -119,7 +165,7 @@ EOF
 
 See CLAUDE.md for valid types (`feat`, `fix`, `refactor`, `docs`, etc.) and scopes (`workout`, `nutrition`, `ui`, `infra`, etc.).
 
-### 8. Output summary
+### 9. Output summary
 
 ```
 ═══════════════════════════════════════════════════════

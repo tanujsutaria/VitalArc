@@ -78,7 +78,7 @@ struct FoodResultRowView: View {
 
                 // Chevron
                 Image(systemName: "chevron.right")
-                    .font(.system(size: 12, weight: .semibold))
+                    .font(.vitalLabelSmall)
                     .foregroundStyle(Color.vitalAdaptiveTextSecondary)
             }
             .padding(Spacing.md)
@@ -125,7 +125,7 @@ private struct FoodIcon: View {
                 .frame(width: 56, height: 56)
 
             Image(systemName: source.iconName)
-                .font(.system(size: 24, weight: .semibold))
+                .font(.vitalDisplaySmall)
                 .foregroundStyle(sourceColor)
         }
     }
@@ -148,7 +148,7 @@ private struct SourceBadge: View {
             Image(systemName: source.iconName)
                 .font(.system(size: Spacing.iconTiny))
             Text(source.displayName)
-                .font(.system(size: 9, weight: .medium))
+                .font(.vitalCaptionSmall)
         }
         .foregroundStyle(badgeColor)
         .padding(.horizontal, 6)

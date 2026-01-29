@@ -114,7 +114,7 @@ struct FeatureRow: View {
                     .frame(width: 48, height: 48)
 
                 Image(systemName: icon)
-                    .font(.system(size: 20, weight: .semibold))
+                    .font(.system(size: Spacing.iconMedium, weight: .semibold))
                     .foregroundStyle(color)
             }
 

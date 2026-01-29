@@ -88,18 +88,53 @@ git stash list | grep -q "Auto-stash $(date +%Y-%m-%d)" && git stash pop
 
 Read: CLAUDE.md, PROJECT_STATUS.md, SESSION_LOG.md (last 100 lines), README.md (Roadmap).
 
-### 6. Suggest focus (if none provided)
+### 6. Session Start Agent Swarm
 
-If no `$ARGUMENTS`, analyze the project to suggest focus areas.
+Run these agents **in parallel** to get a comprehensive session kickoff:
 
-**Use the Task tool** with `subagent_type: Explore` to:
-- Read README.md Roadmap section
-- Review PROJECT_STATUS.md Known Issues
-- Check recent SESSION_LOG.md entries
+```
+┌─────────────────────────────────────────────────────────────┐
+│                   SESSION START SWARM                        │
+├─────────────────┬─────────────────┬─────────────────────────┤
+│ focus-suggester │ build-validator │ design-system-auditor   │
+│ (if no focus)   │ (build check)   │ (token compliance)      │
+└─────────────────┴─────────────────┴─────────────────────────┘
+```
 
-Prioritize "In Progress" features, then high-priority "Planned" items.
+**Invoke using Task tool with parallel calls:**
 
-### 7. Build check
+1. **focus-suggester** (if no `$ARGUMENTS` provided):
+   - Analyzes README.md Roadmap, PROJECT_STATUS.md Known Issues, recent SESSION_LOG.md
+   - Returns ranked focus recommendations with rationale
+
+2. **build-validator**:
+   - Runs `xcodebuild` to verify project compiles
+   - Reports any errors or warnings
+
+3. **design-system-auditor**:
+   - Scans Presentation/ for hardcoded colors, spacing, fonts
+   - Reports violation count and top issues
+
+**Output format:**
+```markdown
+## Session Health Check
+
+### Focus Recommendations
+1. **Notifications** (Score: 15) - High priority, not started
+2. **Typography tokens** (Score: 12) - 36 remaining instances
+3. **Recovery fine-tuning** (Score: 10) - In progress
+
+### Build Status
+✅ BUILD SUCCEEDED (0 errors, 0 warnings)
+
+### Design System Compliance
+⚠️ 12 violations found in 5 files
+- ProfileView.swift: 3 hardcoded colors
+- WorkoutView.swift: 2 hardcoded spacing
+[Run `/design-system-auditor fix` to auto-fix]
+```
+
+### 7. Build check (fallback)
 
 ```bash
 xcodebuild -scheme VitalArc -destination 'platform=iOS Simulator,name=iPhone 17 Pro' build 2>&1 | grep -E "(error:|BUILD)"

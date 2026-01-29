@@ -18,7 +18,72 @@ Finalize a workstation session with build verification.
 
 ## Steps
 
-### 1. Build check
+### 1. Session End Agent Swarm
+
+Run these agents **in parallel** for a comprehensive session close:
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    SESSION END SWARM                             │
+├─────────────────┬─────────────────────┬─────────────────────────┤
+│ build-validator │ design-system-      │ progress-tracker        │
+│ (final check)   │ auditor (compliance)│ (update work log)       │
+└─────────────────┴─────────────────────┴─────────────────────────┘
+                              ↓
+                    ┌─────────────────┐
+                    │ commit-formatter│
+                    │ (prepare commit)│
+                    └─────────────────┘
+```
+
+**Phase 1 - Parallel validation:**
+
+1. **build-validator**:
+   - Verifies project compiles
+   - **BLOCKS session end if fails** - fix issues first
+
+2. **design-system-auditor**:
+   - Final compliance scan
+   - Reports any new violations introduced this session
+   - Optionally auto-fix before commit
+
+3. **progress-tracker**:
+   - Updates SESSION_LOG.md Work Log with final entries
+   - Adds session end timestamp
+
+**Phase 2 - Sequential (after validation passes):**
+
+4. **commit-formatter**:
+   - Analyzes all staged changes
+   - Generates conventional commit message
+   - Includes session summary
+
+**Output format:**
+```markdown
+## Session End Checklist
+
+### Build Validation
+✅ BUILD SUCCEEDED (0 errors)
+
+### Design System Compliance
+✅ No new violations (or: ⚠️ 2 new violations - auto-fixed)
+
+### Work Log Updated
+✅ SESSION_LOG.md updated with final entries
+
+### Commit Ready
+```bash
+git commit -m "feat(notifications): add workout reminder scheduling
+
+- Created NotificationManager with UNUserNotificationCenter
+- Added settings UI for notification preferences
+- Tests added for scheduling logic
+
+Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
+```
+```
+
+### 2. Build check (fallback)
 
 **Do not proceed if build fails.** Fix issues first.
 
@@ -30,20 +95,20 @@ Finalize a workstation session with build verification.
 xcodebuild -scheme VitalArc -destination 'platform=iOS Simulator,name=iPhone 17 Pro' build 2>&1 | grep -E "(error:|BUILD)"
 ```
 
-### 2. Run tests (optional)
+### 3. Run tests (optional)
 
 ```bash
 xcodebuild -scheme VitalArc -destination 'platform=iOS Simulator,name=iPhone 17 Pro' test 2>&1 | grep -E "(Test Case|passed|failed)"
 ```
 
-### 3. Gather stats
+### 4. Gather stats
 
 ```bash
 git log --oneline --since="6 hours ago"
 git diff --stat HEAD~10 2>/dev/null | tail -3
 ```
 
-### 4. Update SESSION_LOG.md
+### 5. Update SESSION_LOG.md
 
 Complete the current session's Work Log table and fill in sections using the template from [session-end.md](../_shared/templates/session-end.md):
 
@@ -71,13 +136,13 @@ Complete the current session's Work Log table and fill in sections using the tem
 - **Next**: [priorities from README Roadmap]
 ```
 
-### 5. Update PROJECT_STATUS.md and README.md
+### 6. Update PROJECT_STATUS.md and README.md
 
 If features changed:
 - PROJECT_STATUS.md: Update "Last Updated", feature status, Known Issues, Codebase Stats
 - README.md Roadmap: Move features between In Progress / Planned / Completed
 
-### 6. Update state file
+### 7. Update state file
 
 ```bash
 BRANCH=$(git rev-parse --abbrev-ref HEAD)
@@ -87,7 +152,7 @@ cat > .claude/session-state.json << EOF
 EOF
 ```
 
-### 7. Commit and push
+### 8. Commit and push
 
 ```bash
 git add SESSION_LOG.md PROJECT_STATUS.md README.md .claude/session-state.json
@@ -100,7 +165,7 @@ Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
 git push -u origin "$(git rev-parse --abbrev-ref HEAD)"
 ```
 
-### 8. Create PR (optional)
+### 9. Create PR (optional)
 
 If ready for review, create PR following conventional commits format:
 
@@ -131,7 +196,7 @@ EOF
 
 See CLAUDE.md for valid types (`feat`, `fix`, `refactor`, `docs`, etc.) and scopes (`workout`, `nutrition`, `ui`, `infra`, etc.).
 
-### 9. Output summary
+### 10. Output summary
 
 ```
 ═══════════════════════════════════════════════════════

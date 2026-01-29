@@ -202,7 +202,7 @@ struct StrengthProgressionChartView: View {
                     .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                 HStack(spacing: 4) {
                     Image(systemName: change >= 0 ? "arrow.up.right" : "arrow.down.right")
-                        .font(.system(size: 10, weight: .bold))
+                        .font(.vitalCaptionSmall)
                     Text(String(format: "%+.1f%%", percentChange))
                         .font(.vitalLabel)
                 }
