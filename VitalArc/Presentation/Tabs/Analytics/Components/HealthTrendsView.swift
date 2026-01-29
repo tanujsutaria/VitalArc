@@ -57,7 +57,7 @@ struct HRVTrendChartView: View {
                         }
                     }
                     .pickerStyle(.segmented)
-                    .frame(width: 150)
+                    .frame(width: Spacing.pickerWidthCompact)
                 }
 
                 if !currentData.isEmpty {
@@ -79,7 +79,7 @@ struct HRVTrendChartView: View {
                             }
 
                             if let baseline = baseline {
-                                Divider().frame(height: 40)
+                                Divider().frame(height: Spacing.icon2XLarge)
 
                                 VStack(alignment: .leading, spacing: Spacing.xxs) {
                                     Text("vs Baseline")
@@ -158,7 +158,7 @@ struct HRVTrendChartView: View {
                             AxisGridLine(stroke: StrokeStyle(lineWidth: 0.5, dash: [4]))
                         }
                     }
-                    .frame(height: 180)
+                    .frame(height: Spacing.chartHeightLarge)
                     .animation(.vitalSpringBouncy, value: hasAppeared)
                     .animation(.vitalSpring, value: selectedPeriod)
                 } else {
@@ -187,7 +187,7 @@ struct HRVTrendChartView: View {
 
         return Text(status.text)
             .font(.vitalLabelSmall)
-            .foregroundStyle(.white)
+            .foregroundStyle(Color.vitalTextOnPrimary)
             .padding(.horizontal, Spacing.sm)
             .padding(.vertical, Spacing.xs)
             .background(status.color)
@@ -203,7 +203,7 @@ struct HRVTrendChartView: View {
                 .font(.vitalBody)
                 .foregroundStyle(Color.vitalAdaptiveTextSecondary)
         }
-        .frame(height: 180)
+        .frame(height: Spacing.chartHeightLarge)
         .frame(maxWidth: .infinity)
     }
 }
@@ -282,15 +282,15 @@ struct RestingHRChartView: View {
                             }
                         }
                     }
-                    .frame(height: 120)
+                    .frame(height: Spacing.chartHeightCompact)
                     .animation(.vitalSpringBouncy, value: hasAppeared)
 
                     // Summary stats
                     HStack(spacing: Spacing.lg) {
                         statItem(title: "Avg", value: String(format: "%.0f", averageValue), unit: "BPM")
-                        Divider().frame(height: 24)
+                        Divider().frame(height: Spacing.lg)
                         statItem(title: "Min", value: String(format: "%.0f", minValue), unit: "BPM")
-                        Divider().frame(height: 24)
+                        Divider().frame(height: Spacing.lg)
                         statItem(title: "Max", value: String(format: "%.0f", maxValue), unit: "BPM")
                         Spacer()
                     }
@@ -339,7 +339,7 @@ struct RestingHRChartView: View {
         Text("No heart rate data")
             .font(.vitalBody)
             .foregroundStyle(Color.vitalAdaptiveTextSecondary)
-            .frame(height: 120)
+            .frame(height: Spacing.chartHeightCompact)
             .frame(maxWidth: .infinity)
     }
 }
@@ -427,7 +427,7 @@ struct SleepTrendChartView: View {
                         }
                     }
                     .chartYScale(domain: 0...max(maxSleepHours + 2, 12))
-                    .frame(height: 160)
+                    .frame(height: Spacing.chartHeightMedium)
                     .animation(.vitalSpringBouncy, value: hasAppeared)
 
                     // Weekly summary
@@ -441,7 +441,7 @@ struct SleepTrendChartView: View {
                                 .foregroundStyle(Color.vitalAdaptiveTextPrimary)
                         }
 
-                        Divider().frame(height: 30)
+                        Divider().frame(height: Spacing.xl)
 
                         VStack(alignment: .leading, spacing: Spacing.xxs) {
                             Text("Goal Met")
@@ -529,7 +529,7 @@ struct SleepTrendChartView: View {
                 .font(.vitalBody)
                 .foregroundStyle(Color.vitalAdaptiveTextSecondary)
         }
-        .frame(height: 160)
+        .frame(height: Spacing.chartHeightMedium)
         .frame(maxWidth: .infinity)
     }
 }

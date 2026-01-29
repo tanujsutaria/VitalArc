@@ -47,11 +47,36 @@ enum Spacing {
     static let iconGiant: CGFloat = 60     // Hero sections
     static let iconHero: CGFloat = 64      // Large empty states
 
+    // MARK: - Avatar Sizes
+
+    static let avatarSmall: CGFloat = 40   // List items, compact views
+    static let avatarMedium: CGFloat = 48  // Cards, stat items
+    static let avatarLarge: CGFloat = 64   // Profile headers (compact)
+    static let avatarXLarge: CGFloat = 100 // Profile avatar inner
+    static let avatarXLargeBorder: CGFloat = 108  // Profile avatar border
+    static let avatarXLargeOuter: CGFloat = 116   // Profile avatar outer
+
     // MARK: - Border Width
 
     static let borderThin: CGFloat = 1
     static let borderMedium: CGFloat = 2
     static let borderThick: CGFloat = 3
+
+    // MARK: - Chart Heights
+
+    static let chartHeightCompact: CGFloat = 120   // Small inline charts
+    static let chartHeightSmall: CGFloat = 150     // Trend charts
+    static let chartHeightMedium: CGFloat = 160    // Standard charts
+    static let chartHeightLarge: CGFloat = 180     // Featured charts
+
+    // MARK: - Component Widths
+
+    static let pickerWidthCompact: CGFloat = 150   // Segmented pickers
+
+    // MARK: - Chart Sizes
+
+    static let pieChartSize: CGFloat = 140         // Pie/donut chart diameter
+    static let pieChartHole: CGFloat = 80          // Donut chart inner hole
 }
 
 // MARK: - Shadow Styles

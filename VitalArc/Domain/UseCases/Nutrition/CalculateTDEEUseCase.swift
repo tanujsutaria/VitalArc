@@ -36,6 +36,7 @@ struct TDEEResult: Equatable {
 }
 
 /// Protocol for TDEE calculation
+@MainActor
 protocol CalculateTDEEUseCaseProtocol {
     func execute() async throws -> TDEEResult?
     func execute(for profile: UserProfile) -> TDEEResult

@@ -64,19 +64,19 @@ struct ProfileView: View {
                         ZStack {
                             Circle()
                                 .fill(Color.vitalPrimaryGradient)
-                                .frame(width: 116, height: 116)
+                                .frame(width: Spacing.avatarXLargeOuter, height: Spacing.avatarXLargeOuter)
 
                             Circle()
                                 .fill(Color.vitalAdaptiveSurface)
-                                .frame(width: 108, height: 108)
+                                .frame(width: Spacing.avatarXLargeBorder, height: Spacing.avatarXLargeBorder)
 
                             Circle()
                                 .fill(Color.vitalPrimaryGradient)
-                                .frame(width: 100, height: 100)
+                                .frame(width: Spacing.avatarXLarge, height: Spacing.avatarXLarge)
                                 .overlay {
                                     Text(profile.name.prefix(1).uppercased())
                                         .font(.vitalDisplayLarge)
-                                        .foregroundColor(.white)
+                                        .foregroundColor(.vitalTextOnPrimary)
                                 }
                         }
                         .vitalElevatedShadow()
@@ -242,7 +242,7 @@ struct ProfileView: View {
                                 ZStack {
                                     Circle()
                                         .fill(Color.vitalPrimary.opacity(0.15))
-                                        .frame(width: 40, height: 40)
+                                        .frame(width: Spacing.avatarSmall, height: Spacing.avatarSmall)
 
                                     Image(systemName: "gear")
                                         .font(.system(size: Spacing.iconMedium, weight: .semibold))
@@ -274,7 +274,7 @@ struct ProfileView: View {
                                 ZStack {
                                     Circle()
                                         .fill(Color.vitalInfo.opacity(0.15))
-                                        .frame(width: 40, height: 40)
+                                        .frame(width: Spacing.avatarSmall, height: Spacing.avatarSmall)
 
                                     Image(systemName: "info.circle")
                                         .font(.system(size: Spacing.iconMedium, weight: .semibold))
@@ -499,7 +499,7 @@ struct ProfileView: View {
                             }
                         }
                         .font(.vitalH3)
-                        .foregroundColor(.white)
+                        .foregroundColor(.vitalTextOnPrimary)
                         .frame(maxWidth: .infinity)
                         .padding(Spacing.lg)
                         .background(viewModel.canSave ? Color.vitalPrimary : Color.vitalAdaptiveTextSecondary)
@@ -568,7 +568,7 @@ struct StatCard: View {
                 ZStack {
                     Circle()
                         .fill(color.opacity(0.15))
-                        .frame(width: 48, height: 48)
+                        .frame(width: Spacing.avatarMedium, height: Spacing.avatarMedium)
 
                     Image(systemName: icon)
                         .font(.system(size: Spacing.iconMedium, weight: .semibold))
@@ -601,7 +601,7 @@ struct StatCardWithSource: View {
                 ZStack {
                     Circle()
                         .fill(color.opacity(0.15))
-                        .frame(width: 48, height: 48)
+                        .frame(width: Spacing.avatarMedium, height: Spacing.avatarMedium)
 
                     Image(systemName: icon)
                         .font(.system(size: Spacing.iconMedium, weight: .semibold))

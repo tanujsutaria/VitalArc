@@ -89,6 +89,11 @@ extension Color {
         })
     }
 
+    // MARK: - Text on Colored Backgrounds
+
+    /// Use for text on primary, secondary, or gradient backgrounds
+    static let vitalTextOnPrimary = Color.white
+
     // MARK: - Gradient Backgrounds
 
     static let vitalPrimaryGradient = LinearGradient(
