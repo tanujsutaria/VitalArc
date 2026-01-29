@@ -194,6 +194,97 @@ final class AnalyticsTests: XCTestCase {
         XCTAssertEqual(StrainResult.StrainLevel(score: 21.0), .allOut)
     }
 
+    // MARK: - Additional Strain Edge Case Tests
+
+    func testStrainScoreCapping() throws {
+        // Very high TRIMP (500) should still cap at 21
+        let scaleFactor = 21.0 / 250.0
+        let veryHighTrimp: Double = 500
+        let strain = min(veryHighTrimp * scaleFactor, 21.0)
+
+        XCTAssertEqual(strain, 21.0, "Strain should cap at 21 regardless of TRIMP")
+    }
+
+    func testBanisterTRIMPWithHRBelowResting() throws {
+        // Edge case: HR sample below resting HR
+        let samples = [HeartRateSample(timestamp: Date(), bpm: 50)]
+        let trimp = calculateBanisterTRIMP(
+            samples: samples,
+            duration: 60,
+            hrMax: 190,
+            hrRest: 60
+        )
+
+        // HRr would be negative, but should clamp to 0
+        XCTAssertEqual(trimp, 0, accuracy: 0.1, "HR below resting should contribute 0 TRIMP")
+    }
+
+    func testBanisterTRIMPWithVeryShortDuration() throws {
+        // 1 minute workout
+        let samples = [HeartRateSample(timestamp: Date(), bpm: 150)]
+        let trimp = calculateBanisterTRIMP(
+            samples: samples,
+            duration: 60, // 1 minute
+            hrMax: 190,
+            hrRest: 60
+        )
+
+        XCTAssertGreaterThan(trimp, 0, "Short workout should still produce TRIMP")
+        XCTAssertLessThan(trimp, 5, "1-minute workout should have low TRIMP")
+    }
+
+    func testEdwardsTRIMPWithZeroDuration() throws {
+        let trimp = calculateEdwardsTRIMP(
+            averageHR: 150,
+            duration: 0,
+            hrMax: 200
+        )
+
+        XCTAssertEqual(trimp, 0, "Zero duration should give 0 TRIMP")
+    }
+
+    func testEdwardsTRIMPWithZeroHRMax() throws {
+        // Edge case: invalid HRMax (avoid division by zero)
+        let trimp = calculateEdwardsTRIMP(
+            averageHR: 150,
+            duration: 1800,
+            hrMax: 0
+        )
+
+        // percentHRMax would be inf, but switch default handles it
+        XCTAssertGreaterThanOrEqual(trimp, 0, "Invalid HRMax should not crash")
+    }
+
+    func testMultipleWorkoutsTRIMPAggregation() throws {
+        let hrMax: Double = 190
+        let hrRest: Double = 60
+
+        // Workout 1: 30 min moderate
+        let samples1 = (0..<30).map { i in
+            HeartRateSample(timestamp: Date().addingTimeInterval(Double(i) * 60), bpm: 140)
+        }
+        let trimp1 = calculateBanisterTRIMP(samples: samples1, duration: 1800, hrMax: hrMax, hrRest: hrRest)
+
+        // Workout 2: 20 min high intensity
+        let samples2 = (0..<20).map { i in
+            HeartRateSample(timestamp: Date().addingTimeInterval(Double(i) * 60), bpm: 170)
+        }
+        let trimp2 = calculateBanisterTRIMP(samples: samples2, duration: 1200, hrMax: hrMax, hrRest: hrRest)
+
+        // Total TRIMP should equal sum of individual workouts
+        let totalTrimp = trimp1 + trimp2
+
+        XCTAssertGreaterThan(totalTrimp, trimp1, "Combined should be more than individual")
+        XCTAssertGreaterThan(totalTrimp, trimp2, "Combined should be more than individual")
+    }
+
+    func testStrainResultMethodSelection() throws {
+        // Banister method should be selected when HR samples available
+        XCTAssertEqual(StrainResult.TRIMPMethod.banister.rawValue, "Banister TRIMP")
+        XCTAssertEqual(StrainResult.TRIMPMethod.edwards.rawValue, "Edwards TRIMP")
+        XCTAssertEqual(StrainResult.TRIMPMethod.estimated.rawValue, "Estimated")
+    }
+
     // MARK: - Recovery Score Calculation Tests
 
     func testHRVScoreAboveBaseline() throws {

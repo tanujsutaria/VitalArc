@@ -1,5 +1,71 @@
 # VitalArc Development Session Log
 
+## Session 13.4 - January 29, 2026 (Night)
+
+### Session Start
+- **Time**: Night PST
+- **Platform**: macOS 🖥️
+- **Focus**: General session
+- **Branch**: dev/mac-session-13.4-2026-01-29
+- **Base**: main @ b2ae0f2
+
+### Environment
+- **Build Capable**: Yes
+- **Test Capable**: Yes (unit + UI)
+
+### Pre-Session Status
+- **Build**: ✅ Passed
+- **Uncommitted Changes**: None
+- **Recent Activity**: Session 13.3 completed design system migration (293+ fixes), TDEE wiring, notification completion
+
+### Session Goals
+1. Address remaining design system violations (~188 remaining)
+2. Fix Swift 6 concurrency warnings
+3. General development as directed
+
+### Work Log
+| Time | Action | Files | Notes |
+|------|--------|-------|-------|
+| Night | Session started | - | Build verified ✅ |
+| Night | Swift 6 concurrency fixes | FoodAPICoordinator.swift, CalculateTDEEUseCase.swift, AnalyticsDashboardViewModel.swift | Fixed actor isolation warnings |
+| Night | Design system tokens added | Spacing.swift, Colors.swift | Added avatar, chart height, pie chart, text-on-primary tokens |
+| Night | Design system migration | ProfileView.swift, HealthTrendsView.swift, NutritionAnalyticsView.swift | Fixed 40+ violations in top 3 files |
+| Night | Test coverage added | NotificationSchedulerTests.swift, AnalyticsTests.swift | 18 new tests (notification scheduling, strain edge cases) |
+| Night | Tests verified | - | 123 tests passing ✅ (up from 105) |
+| Night | Session ended | - | Complete |
+
+### Session End
+- **Time**: Night PST
+- **Duration**: ~2 hours
+- **Status**: Complete
+- **Build**: ✅ Passing
+- **Tests**: ✅ 123 tests, 0 failures
+- **Commits**: Pending
+
+### Work Completed
+
+#### Swift 6 Concurrency Fixes
+- Fixed `FoodAPICoordinator` actor isolation warning by extracting configuration check before async let
+- Added `@MainActor` to `CalculateTDEEUseCaseProtocol` for proper isolation
+- Fixed type inference warnings in `AnalyticsDashboardViewModel` by calling void methods directly
+
+#### Design System Tokens Added
+- **Spacing.swift**: `avatarSmall` (40), `avatarMedium` (48), `avatarXLarge` (100), `avatarXLargeBorder` (108), `avatarXLargeOuter` (116)
+- **Spacing.swift**: `chartHeightCompact` (120), `chartHeightSmall` (150), `chartHeightMedium` (160), `chartHeightLarge` (180)
+- **Spacing.swift**: `pieChartSize` (140), `pieChartHole` (80), `pickerWidthCompact` (150)
+- **Colors.swift**: `vitalTextOnPrimary` for text on gradient/primary backgrounds
+
+#### Design System Migration (40+ Fixes)
+- **ProfileView.swift**: Avatar sizes, button frames, `.foregroundColor(.white)` → tokens
+- **HealthTrendsView.swift**: Chart heights, divider heights, picker widths, `.foregroundStyle(.white)` → tokens
+- **NutritionAnalyticsView.swift**: Pie chart sizes, chart heights, divider heights → tokens
+
+#### Test Coverage (18 New Tests)
+- **NotificationSchedulerTests.swift** (new file): 14 tests for workout reminder body generation, recovery alert messages, nutrition reminder hour calculation, identifier uniqueness
+- **AnalyticsTests.swift**: 7 additional strain edge case tests (score capping, HR below resting, very short workouts, zero duration, multiple workout aggregation)
+
+---
+
 ## Session 13.3 - January 29, 2026 (Night)
 
 ### Session Start

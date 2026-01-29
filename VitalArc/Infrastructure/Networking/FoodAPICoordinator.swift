@@ -25,12 +25,12 @@ final class FoodAPICoordinator: FoodAPICoordinatorProtocol {
         nutritionix: NutritionixAPIProtocol = NutritionixAPI(),
         openFoodFacts: OpenFoodFactsAPIProtocol = OpenFoodFactsAPI(),
         usda: USDAFoodAPIProtocol = USDAFoodAPI(),
-        cache: FoodCache = FoodCache.shared
+        cache: FoodCache? = nil
     ) {
         self.nutritionix = nutritionix
         self.openFoodFacts = openFoodFacts
         self.usda = usda
-        self.cache = cache
+        self.cache = cache ?? FoodCache.shared
     }
 
     /// Search across multiple food databases
@@ -49,13 +49,12 @@ final class FoodAPICoordinator: FoodAPICoordinatorProtocol {
         var allFoods: [Food] = []
 
         // 2. Try all sources in parallel
-        async let nutritionixResults: [Food]? = {
-            // Only use Nutritionix if configured
-            guard (nutritionix as? NutritionixAPI)?.isConfigured ?? false else {
-                return nil
-            }
-            return try? await nutritionix.search(query: trimmedQuery)
-        }()
+        // Check Nutritionix configuration before parallel execution
+        let isNutritionixConfigured = (nutritionix as? NutritionixAPI)?.isConfigured ?? false
+
+        async let nutritionixResults: [Food]? = isNutritionixConfigured
+            ? try? await nutritionix.search(query: trimmedQuery)
+            : nil
 
         async let offResults: [Food]? = try? await openFoodFacts.search(query: trimmedQuery, page: 1)
         async let usdaResults: [Food]? = try? await usda.searchFoods(query: trimmedQuery)

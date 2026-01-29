@@ -111,16 +111,16 @@ final class AnalyticsDashboardViewModel {
             async let volume = loadVolumeMetrics(startDate: startDate, endDate: endDate)
             async let snapshots = analyticsRepository.getProgressSnapshots(from: startDate, to: endDate)
             async let records = analyticsRepository.getPersonalRecords()
-            async let health = loadHealthData(startDate: startDate, endDate: endDate)
-            async let nutrition = loadNutritionData(startDate: startDate, endDate: endDate)
 
             // Await all results
             currentReport = try await report
             volumeMetrics = try await volume
             progressSnapshots = try await snapshots
             personalRecords = try await records
-            _ = try await health
-            _ = try await nutrition
+
+            // Load health and nutrition data (these update state directly)
+            try await loadHealthData(startDate: startDate, endDate: endDate)
+            try await loadNutritionData(startDate: startDate, endDate: endDate)
 
             // Process loaded data
             processVolumeData()

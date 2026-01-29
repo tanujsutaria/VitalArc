@@ -106,7 +106,7 @@ struct CalorieAdherenceChartView: View {
                         }
                     }
                     .chartYScale(domain: 0...150)
-                    .frame(height: 180)
+                    .frame(height: Spacing.chartHeightLarge)
                     .animation(.vitalSpringBouncy, value: hasAppeared)
 
                     // Summary
@@ -120,7 +120,7 @@ struct CalorieAdherenceChartView: View {
                                 .foregroundStyle(Color.vitalSuccess)
                         }
 
-                        Divider().frame(height: 30)
+                        Divider().frame(height: Spacing.xl)
 
                         VStack(alignment: .leading, spacing: Spacing.xxs) {
                             Text("Avg Consumed")
@@ -131,7 +131,7 @@ struct CalorieAdherenceChartView: View {
                                 .foregroundStyle(Color.vitalAdaptiveTextPrimary)
                         }
 
-                        Divider().frame(height: 30)
+                        Divider().frame(height: Spacing.xl)
 
                         VStack(alignment: .leading, spacing: Spacing.xxs) {
                             Text("Target")
@@ -199,7 +199,7 @@ struct CalorieAdherenceChartView: View {
                 .font(.vitalBody)
                 .foregroundStyle(Color.vitalAdaptiveTextSecondary)
         }
-        .frame(height: 180)
+        .frame(height: Spacing.chartHeightLarge)
         .frame(maxWidth: .infinity)
     }
 }
@@ -251,7 +251,7 @@ struct MacroBreakdownChartView: View {
                         // Background
                         Circle()
                             .fill(Color.vitalAdaptiveBorder.opacity(0.2))
-                            .frame(width: 140, height: 140)
+                            .frame(width: Spacing.pieChartSize, height: Spacing.pieChartSize)
 
                         // Sectors
                         pieChart
@@ -266,7 +266,7 @@ struct MacroBreakdownChartView: View {
                                 .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                         }
                     }
-                    .frame(width: 140, height: 140)
+                    .frame(width: Spacing.pieChartSize, height: Spacing.pieChartSize)
 
                     // Legend
                     VStack(alignment: .leading, spacing: Spacing.md) {
@@ -327,9 +327,9 @@ struct MacroBreakdownChartView: View {
             // Inner circle (donut hole)
             Circle()
                 .fill(Color.vitalAdaptiveSurface)
-                .frame(width: 80, height: 80)
+                .frame(width: Spacing.pieChartHole, height: Spacing.pieChartHole)
         }
-        .frame(width: 140, height: 140)
+        .frame(width: Spacing.pieChartSize, height: Spacing.pieChartSize)
         .animation(.vitalSpringBouncy, value: hasAppeared)
     }
 
@@ -482,7 +482,7 @@ struct ProteinTrendChartView: View {
                             AxisGridLine()
                         }
                     }
-                    .frame(height: 150)
+                    .frame(height: Spacing.chartHeightSmall)
                     .animation(.vitalSpringBouncy, value: hasAppeared)
 
                     // Summary
