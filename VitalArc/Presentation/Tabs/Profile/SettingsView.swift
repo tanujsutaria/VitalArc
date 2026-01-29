@@ -20,8 +20,6 @@ struct SettingsView: View {
 
     @AppStorage("useMetricUnits") private var useMetricUnits = false
     @AppStorage("enableNotifications") private var enableNotifications = true
-    @AppStorage("enableWorkoutReminders") private var enableWorkoutReminders = false
-    @AppStorage("enableMealReminders") private var enableMealReminders = false
 
     @State private var showingDeleteConfirmation = false
     @State private var showingFeedback = false

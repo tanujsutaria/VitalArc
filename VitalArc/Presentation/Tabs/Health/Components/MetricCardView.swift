@@ -79,17 +79,17 @@ struct MetricCardView: View {
     // MARK: - Helpers
 
     private func trendIndicator(_ trend: TrendDirection) -> some View {
-        HStack(spacing: 2) {
+        HStack(spacing: Spacing.xxs) {
             Image(systemName: trend.icon)
                 .font(.vitalCaptionSmall)
             Text(trend.description)
                 .font(.vitalCaptionSmall)
         }
         .foregroundStyle(trend.color)
-        .padding(.horizontal, Spacing.xs + Spacing.xxs)
-        .padding(.vertical, Spacing.xxs + 1)
+        .padding(.horizontal, Spacing.sm)
+        .padding(.vertical, Spacing.xxs)
         .background(trend.color.opacity(0.15))
-        .cornerRadius(6)
+        .cornerRadius(Spacing.radiusSmall)
     }
 }
 

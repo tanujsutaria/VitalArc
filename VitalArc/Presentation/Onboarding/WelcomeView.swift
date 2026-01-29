@@ -118,7 +118,7 @@ struct FeatureRow: View {
                     .foregroundStyle(color)
             }
 
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .leading, spacing: Spacing.xs) {
                 Text(title)
                     .font(.vitalLabel)
                     .foregroundStyle(Color.vitalAdaptiveTextPrimary)

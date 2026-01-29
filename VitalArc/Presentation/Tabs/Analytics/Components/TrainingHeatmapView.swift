@@ -38,15 +38,15 @@ struct TrainingHeatmapView: View {
 
                     // Streak badge
                     if currentStreak > 0 {
-                        HStack(spacing: 4) {
+                        HStack(spacing: Spacing.xs) {
                             Image(systemName: "flame.fill")
                                 .font(.system(size: Spacing.iconXSmall))
                             Text("\(currentStreak) day streak")
                                 .font(.vitalCaptionSmall)
                         }
                         .foregroundStyle(.white)
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 4)
+                        .padding(.horizontal, Spacing.sm)
+                        .padding(.vertical, Spacing.xs)
                         .background(Color.vitalWarning)
                         .cornerRadius(Spacing.radiusSmall)
                     }

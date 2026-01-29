@@ -170,10 +170,10 @@ private struct BadgeModifier: ViewModifier {
                     Text(text)
                         .font(.vitalLabelTiny)
                         .foregroundStyle(.white)
-                        .padding(.horizontal, 6)
-                        .padding(.vertical, 3)
+                        .padding(.horizontal, Spacing.xs)
+                        .padding(.vertical, Spacing.xxs)
                         .background(color)
-                        .cornerRadius(10)
+                        .cornerRadius(Spacing.radiusSmall)
                         .offset(x: xOffset, y: yOffset)
                 }
             }

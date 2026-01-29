@@ -64,11 +64,11 @@ struct HRVTrendChartView: View {
                     // Current value highlight
                     if let latest = currentData.last {
                         HStack(spacing: Spacing.lg) {
-                            VStack(alignment: .leading, spacing: 2) {
+                            VStack(alignment: .leading, spacing: Spacing.xxs) {
                                 Text("Current")
                                     .font(.vitalCaptionSmall)
                                     .foregroundStyle(Color.vitalAdaptiveTextSecondary)
-                                HStack(alignment: .firstTextBaseline, spacing: 4) {
+                                HStack(alignment: .firstTextBaseline, spacing: Spacing.xs) {
                                     Text(String(format: "%.0f", latest.value))
                                         .font(.vitalNumberLarge)
                                         .foregroundStyle(Color.vitalAdaptiveTextPrimary)
@@ -81,12 +81,12 @@ struct HRVTrendChartView: View {
                             if let baseline = baseline {
                                 Divider().frame(height: 40)
 
-                                VStack(alignment: .leading, spacing: 2) {
+                                VStack(alignment: .leading, spacing: Spacing.xxs) {
                                     Text("vs Baseline")
                                         .font(.vitalCaptionSmall)
                                         .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                                     let diff = latest.value - baseline
-                                    HStack(spacing: 4) {
+                                    HStack(spacing: Spacing.xs) {
                                         Image(systemName: diff >= 0 ? "arrow.up" : "arrow.down")
                                             .font(.vitalLabelSmall)
                                         Text(String(format: "%+.0f ms", diff))
@@ -188,8 +188,8 @@ struct HRVTrendChartView: View {
         return Text(status.text)
             .font(.vitalLabelSmall)
             .foregroundStyle(.white)
-            .padding(.horizontal, 10)
-            .padding(.vertical, 5)
+            .padding(.horizontal, Spacing.sm)
+            .padding(.vertical, Spacing.xs)
             .background(status.color)
             .cornerRadius(Spacing.radiusSmall)
     }
@@ -232,7 +232,7 @@ struct RestingHRChartView: View {
                     Spacer()
 
                     if let latest = data.last {
-                        HStack(spacing: 4) {
+                        HStack(spacing: Spacing.xs) {
                             Text(String(format: "%.0f", latest.value))
                                 .font(.vitalNumberSmall)
                             Text("BPM")
@@ -320,11 +320,11 @@ struct RestingHRChartView: View {
     }
 
     private func statItem(title: String, value: String, unit: String) -> some View {
-        VStack(alignment: .leading, spacing: 2) {
+        VStack(alignment: .leading, spacing: Spacing.xxs) {
             Text(title)
                 .font(.vitalCaptionSmall)
                 .foregroundStyle(Color.vitalAdaptiveTextSecondary)
-            HStack(spacing: 2) {
+            HStack(spacing: Spacing.xxs) {
                 Text(value)
                     .font(.vitalLabel)
                     .foregroundStyle(Color.vitalAdaptiveTextPrimary)
@@ -407,7 +407,7 @@ struct SleepTrendChartView: View {
                                     endPoint: .bottom
                                 )
                             )
-                            .cornerRadius(4)
+                            .cornerRadius(Spacing.xs)
                         }
                     }
                     .chartXAxis {
@@ -432,7 +432,7 @@ struct SleepTrendChartView: View {
 
                     // Weekly summary
                     HStack(spacing: Spacing.lg) {
-                        VStack(alignment: .leading, spacing: 2) {
+                        VStack(alignment: .leading, spacing: Spacing.xxs) {
                             Text("Avg Sleep")
                                 .font(.vitalCaptionSmall)
                                 .foregroundStyle(Color.vitalAdaptiveTextSecondary)
@@ -443,7 +443,7 @@ struct SleepTrendChartView: View {
 
                         Divider().frame(height: 30)
 
-                        VStack(alignment: .leading, spacing: 2) {
+                        VStack(alignment: .leading, spacing: Spacing.xxs) {
                             Text("Goal Met")
                                 .font(.vitalCaptionSmall)
                                 .foregroundStyle(Color.vitalAdaptiveTextSecondary)
@@ -455,7 +455,7 @@ struct SleepTrendChartView: View {
                         Spacer()
 
                         // Quality indicator
-                        VStack(alignment: .trailing, spacing: 2) {
+                        VStack(alignment: .trailing, spacing: Spacing.xxs) {
                             Text("Quality")
                                 .font(.vitalCaptionSmall)
                                 .foregroundStyle(Color.vitalAdaptiveTextSecondary)
@@ -490,7 +490,7 @@ struct SleepTrendChartView: View {
     }
 
     private func sleepDurationBadge(_ hours: Double) -> some View {
-        HStack(spacing: 4) {
+        HStack(spacing: Spacing.xs) {
             Text(String(format: "%.1f", hours))
                 .font(.vitalLabel)
             Text("hrs")
@@ -510,10 +510,10 @@ struct SleepTrendChartView: View {
             }
         }()
 
-        return HStack(spacing: 4) {
+        return HStack(spacing: Spacing.xs) {
             Circle()
                 .fill(quality.color)
-                .frame(width: 8, height: 8)
+                .frame(width: Spacing.sm, height: Spacing.sm)
             Text(quality.text)
                 .font(.vitalLabelSmall)
                 .foregroundStyle(quality.color)

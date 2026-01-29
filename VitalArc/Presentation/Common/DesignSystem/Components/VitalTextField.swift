@@ -97,7 +97,7 @@ struct VitalTextEditor: View {
                         .font(.vitalBody)
                         .foregroundStyle(Color.vitalTextTertiary)
                         .padding(.horizontal, Spacing.md)
-                        .padding(.vertical, Spacing.md + 2)
+                        .padding(.vertical, Spacing.md)
                 }
 
                 TextEditor(text: $text)

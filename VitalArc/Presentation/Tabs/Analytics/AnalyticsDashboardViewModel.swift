@@ -324,6 +324,18 @@ final class AnalyticsDashboardViewModel {
                 let result = try await calculateRecoveryScoreUseCase.execute()
                 recoveryResult = result
                 recoveryScore = Double(result.score)
+
+                // Trigger recovery alert check if enabled
+                let recoveryAlertsEnabled = UserDefaults.standard.bool(forKey: "enableRecoveryAlerts")
+                let recoveryThreshold = UserDefaults.standard.integer(forKey: "recoveryThreshold")
+                if recoveryAlertsEnabled && result.score <= recoveryThreshold {
+                    let scheduler = NotificationScheduler()
+                    try? await scheduler.scheduleRecoveryAlertIfNeeded(
+                        recoveryScore: Double(result.score),
+                        threshold: recoveryThreshold,
+                        enabled: recoveryAlertsEnabled
+                    )
+                }
             } catch {
                 // Fallback to demo score if calculation fails
                 recoveryScore = Double.random(in: 65...95)

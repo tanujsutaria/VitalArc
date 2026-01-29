@@ -79,12 +79,20 @@ struct NotificationSettingsView: View {
                                 }
                             }
                         }
+
+                    // Nutrition Reminders Toggle
+                    Toggle("Nutrition Reminders", isOn: $viewModel.nutritionRemindersEnabled)
+                        .tint(Color.vitalPrimary)
+                        .onChange(of: viewModel.nutritionRemindersEnabled) { _, _ in
+                            HapticFeedback.selection()
+                        }
                 } header: {
                     Text("Notification Types")
                 } footer: {
                     VStack(alignment: .leading, spacing: Spacing.xs) {
                         Text("Workout Reminders: Daily reminder at your chosen time")
                         Text("Recovery Alerts: Suggestions when you may need rest")
+                        Text("Nutrition Reminders: Reminders to log your meals")
                     }
                     .font(.vitalCaption)
                 }

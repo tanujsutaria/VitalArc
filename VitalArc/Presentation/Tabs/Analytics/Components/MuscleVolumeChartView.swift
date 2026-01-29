@@ -70,7 +70,7 @@ struct MuscleVolumeChartView: View {
                                     endPoint: .trailing
                                 )
                             )
-                            .cornerRadius(6)
+                            .cornerRadius(Spacing.radiusSmall)
                             .annotation(position: .trailing, alignment: .leading, spacing: 4) {
                                 if hasAppeared {
                                     Text(formatVolume(item.volume))
@@ -93,7 +93,7 @@ struct MuscleVolumeChartView: View {
 
                     // Summary
                     HStack(spacing: Spacing.lg) {
-                        VStack(alignment: .leading, spacing: 2) {
+                        VStack(alignment: .leading, spacing: Spacing.xxs) {
                             Text("Total Volume")
                                 .font(.vitalCaptionSmall)
                                 .foregroundStyle(Color.vitalAdaptiveTextSecondary)
@@ -105,7 +105,7 @@ struct MuscleVolumeChartView: View {
                         Divider()
                             .frame(height: 30)
 
-                        VStack(alignment: .leading, spacing: 2) {
+                        VStack(alignment: .leading, spacing: Spacing.xxs) {
                             Text("Top Muscle")
                                 .font(.vitalCaptionSmall)
                                 .foregroundStyle(Color.vitalAdaptiveTextSecondary)

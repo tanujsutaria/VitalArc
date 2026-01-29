@@ -14,31 +14,32 @@ struct ProfileSetupView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 24) {
+            VStack(alignment: .leading, spacing: Spacing.xl) {
                 // Header
-                VStack(alignment: .leading, spacing: 8) {
+                VStack(alignment: .leading, spacing: Spacing.sm) {
                     Text("Create Your Profile")
-                        .font(.largeTitle)
-                        .fontWeight(.bold)
+                        .font(.vitalDisplayLarge)
                     Text("Help us personalize your experience")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
+                        .font(.vitalBody)
+                        .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                 }
-                .padding(.bottom, 8)
+                .padding(.bottom, Spacing.sm)
 
                 // Name
-                VStack(alignment: .leading, spacing: 8) {
+                VStack(alignment: .leading, spacing: Spacing.sm) {
                     Text("Name")
-                        .font(.headline)
+                        .font(.vitalH3)
+                        .foregroundStyle(Color.vitalAdaptiveTextPrimary)
                     TextField("Enter your name", text: $viewModel.userName)
                         .textFieldStyle(.roundedBorder)
                         .textContentType(.name)
                 }
 
                 // Birth Date
-                VStack(alignment: .leading, spacing: 8) {
+                VStack(alignment: .leading, spacing: Spacing.sm) {
                     Text("Birth Date")
-                        .font(.headline)
+                        .font(.vitalH3)
+                        .foregroundStyle(Color.vitalAdaptiveTextPrimary)
                     DatePicker(
                         "Birth Date",
                         selection: $viewModel.birthDate,
@@ -50,9 +51,10 @@ struct ProfileSetupView: View {
                 }
 
                 // Biological Sex
-                VStack(alignment: .leading, spacing: 8) {
+                VStack(alignment: .leading, spacing: Spacing.sm) {
                     Text("Biological Sex")
-                        .font(.headline)
+                        .font(.vitalH3)
+                        .foregroundStyle(Color.vitalAdaptiveTextPrimary)
                     Picker("Biological Sex", selection: $viewModel.selectedSex) {
                         ForEach(BiologicalSex.allCases, id: \.self) { sex in
                             Text(sex.rawValue).tag(sex)
@@ -62,10 +64,11 @@ struct ProfileSetupView: View {
                 }
 
                 // Height
-                VStack(alignment: .leading, spacing: 8) {
+                VStack(alignment: .leading, spacing: Spacing.sm) {
                     Text("Height")
-                        .font(.headline)
-                    HStack(spacing: 12) {
+                        .font(.vitalH3)
+                        .foregroundStyle(Color.vitalAdaptiveTextPrimary)
+                    HStack(spacing: Spacing.md) {
                         Picker("Feet", selection: $viewModel.heightFeet) {
                             ForEach(4...7, id: \.self) { feet in
                                 Text("\(feet) ft").tag(feet)
@@ -85,22 +88,24 @@ struct ProfileSetupView: View {
                 }
 
                 // Weight
-                VStack(alignment: .leading, spacing: 8) {
+                VStack(alignment: .leading, spacing: Spacing.sm) {
                     Text("Weight")
-                        .font(.headline)
+                        .font(.vitalH3)
+                        .foregroundStyle(Color.vitalAdaptiveTextPrimary)
                     HStack {
                         TextField("Weight", value: $viewModel.weightLbs, format: .number)
                             .keyboardType(.decimalPad)
                             .textFieldStyle(.roundedBorder)
                         Text("lbs")
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                     }
                 }
 
                 // Activity Level
-                VStack(alignment: .leading, spacing: 8) {
+                VStack(alignment: .leading, spacing: Spacing.sm) {
                     Text("Activity Level")
-                        .font(.headline)
+                        .font(.vitalH3)
+                        .foregroundStyle(Color.vitalAdaptiveTextPrimary)
                     Picker("Activity Level", selection: $viewModel.selectedActivityLevel) {
                         ForEach(ActivityLevel.allCases, id: \.self) { level in
                             Text(level.rawValue).tag(level)
@@ -110,9 +115,10 @@ struct ProfileSetupView: View {
                 }
 
                 // Weight Goal
-                VStack(alignment: .leading, spacing: 8) {
+                VStack(alignment: .leading, spacing: Spacing.sm) {
                     Text("Weight Goal")
-                        .font(.headline)
+                        .font(.vitalH3)
+                        .foregroundStyle(Color.vitalAdaptiveTextPrimary)
                     Picker("Weight Goal", selection: $viewModel.selectedWeightGoal) {
                         ForEach(WeightGoal.allCases, id: \.self) { goal in
                             Text(goal.rawValue).tag(goal)
@@ -122,7 +128,7 @@ struct ProfileSetupView: View {
                 }
 
                 // Navigation Buttons
-                HStack(spacing: 16) {
+                HStack(spacing: Spacing.lg) {
                     Button(action: onBack) {
                         Text("Back")
                             .font(.vitalH3)
@@ -135,7 +141,7 @@ struct ProfileSetupView: View {
 
                     Button(action: onContinue) {
                         Text("Continue")
-                            .font(.headline)
+                            .font(.vitalH3)
                             .foregroundColor(.white)
                             .frame(maxWidth: .infinity)
                             .padding(Spacing.lg)
@@ -147,7 +153,7 @@ struct ProfileSetupView: View {
                     }
                     .disabled(!viewModel.canProceedFromProfileSetup)
                 }
-                .padding(.top, 8)
+                .padding(.top, Spacing.sm)
             }
             .padding()
         }

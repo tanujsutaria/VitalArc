@@ -92,7 +92,7 @@ struct MetricCard: View {
                     .foregroundStyle(Color.vitalAdaptiveTextSecondary)
 
                 // Value
-                HStack(alignment: .firstTextBaseline, spacing: 4) {
+                HStack(alignment: .firstTextBaseline, spacing: Spacing.xs) {
                     Text(value)
                         .font(.vitalNumberMedium)
                         .foregroundStyle(Color.vitalAdaptiveTextPrimary)
@@ -114,17 +114,17 @@ struct MetricCard: View {
 
     @ViewBuilder
     private func trendIndicator(_ trend: TrendDirection) -> some View {
-        HStack(spacing: 2) {
+        HStack(spacing: Spacing.xxs) {
             Image(systemName: trend.icon)
                 .font(.vitalCaptionSmall)
             Text(trend.description)
                 .font(.vitalCaptionSmall)
         }
         .foregroundStyle(trend.color)
-        .padding(.horizontal, 6)
-        .padding(.vertical, 3)
+        .padding(.horizontal, Spacing.xs)
+        .padding(.vertical, Spacing.xxs)
         .background(trend.color.opacity(0.15))
-        .cornerRadius(6)
+        .cornerRadius(Spacing.radiusSmall)
     }
 }
 

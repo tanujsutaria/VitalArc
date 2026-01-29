@@ -57,8 +57,8 @@ struct StrengthProgressionChartView: View {
                     Text("Est. 1RM")
                         .font(.vitalCaptionSmall)
                         .foregroundStyle(Color.vitalAdaptiveTextSecondary)
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 4)
+                        .padding(.horizontal, Spacing.sm)
+                        .padding(.vertical, Spacing.xs)
                         .background(Color.vitalAdaptiveBackground)
                         .cornerRadius(Spacing.radiusSmall)
                 }
@@ -247,16 +247,16 @@ private struct ExerciseFilterPill: View {
 
     var body: some View {
         Button(action: action) {
-            HStack(spacing: 6) {
+            HStack(spacing: Spacing.xs) {
                 Circle()
                     .fill(color)
-                    .frame(width: 8, height: 8)
+                    .frame(width: Spacing.sm, height: Spacing.sm)
 
                 Text(name)
                     .font(.vitalCaptionSmall)
             }
-            .padding(.horizontal, 10)
-            .padding(.vertical, 6)
+            .padding(.horizontal, Spacing.sm)
+            .padding(.vertical, Spacing.xs)
             .background(isSelected ? color.opacity(0.15) : Color.vitalAdaptiveBackground)
             .foregroundStyle(isSelected ? color : Color.vitalAdaptiveTextSecondary)
             .cornerRadius(Spacing.radiusSmall)

@@ -125,7 +125,7 @@ struct VitalBarChart: View {
                             endPoint: .bottom
                         )
                     )
-                    .cornerRadius(6)
+                    .cornerRadius(Spacing.radiusSmall)
                 }
                 .chartXAxis {
                     AxisMarks(values: .stride(by: .day)) { _ in
@@ -185,7 +185,7 @@ struct CircularProgressRing: View {
                 .animation(.vitalSpring, value: progress)
 
             // Percentage text
-            VStack(spacing: 2) {
+            VStack(spacing: Spacing.xxs) {
                 Text("\(Int(progress * 100))%")
                     .font(.vitalNumberLarge)
                     .foregroundStyle(Color.vitalAdaptiveTextPrimary)
@@ -203,7 +203,7 @@ private struct StatLabel: View {
     let color: Color
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 2) {
+        VStack(alignment: .leading, spacing: Spacing.xxs) {
             Text(title)
                 .font(.vitalCaptionSmall)
                 .foregroundStyle(Color.vitalAdaptiveTextSecondary)

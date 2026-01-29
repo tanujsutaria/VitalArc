@@ -27,7 +27,50 @@ final class NotificationSettingsViewModel {
     // MARK: - Computed Properties
 
     var notificationsEnabled: Bool {
-        authorizationStatus == .authorized
+        get { authorizationStatus == .authorized }
+        set {
+            // Setting is handled via requestNotificationPermissions/cancelAllNotifications
+            // This setter exists to support SwiftUI binding
+        }
+    }
+
+    var workoutRemindersEnabled: Bool {
+        get { preferences.workoutRemindersEnabled }
+        set {
+            preferences.workoutRemindersEnabled = newValue
+            Task { await saveAndReschedule() }
+        }
+    }
+
+    var recoveryAlertsEnabled: Bool {
+        get { preferences.recoveryAlertsEnabled }
+        set {
+            preferences.recoveryAlertsEnabled = newValue
+            Task { await saveAndReschedule() }
+        }
+    }
+
+    var nutritionRemindersEnabled: Bool {
+        get { preferences.nutritionRemindersEnabled }
+        set {
+            preferences.nutritionRemindersEnabled = newValue
+            Task { await saveAndReschedule() }
+        }
+    }
+
+    var workoutReminderTime: Date {
+        get {
+            let calendar = Calendar.current
+            let hour = preferences.workoutReminderTime.hour ?? 18
+            let minute = preferences.workoutReminderTime.minute ?? 0
+            return calendar.date(bySettingHour: hour, minute: minute, second: 0, of: Date()) ?? Date()
+        }
+        set {
+            let calendar = Calendar.current
+            let components = calendar.dateComponents([.hour, .minute], from: newValue)
+            preferences.workoutReminderTime = components
+            Task { await saveAndReschedule() }
+        }
     }
 
     var workoutReminderTimeAsDate: Date {
@@ -93,8 +136,8 @@ final class NotificationSettingsViewModel {
 
     // MARK: - Initialization
 
-    init(scheduler: NotificationScheduler = NotificationScheduler(), repository: NotificationPreferencesRepository? = nil) {
-        self.scheduler = scheduler
+    init(scheduler: NotificationScheduler? = nil, repository: NotificationPreferencesRepository? = nil) {
+        self.scheduler = scheduler ?? NotificationScheduler()
         self.repository = repository
         self.preferences = .default
 
@@ -172,6 +215,34 @@ final class NotificationSettingsViewModel {
         } catch {
             errorMessage = "Failed to schedule recovery alert."
         }
+    }
+
+    // MARK: - Individual Notification Scheduling
+
+    func scheduleWorkoutReminder() async {
+        guard authorizationStatus == .authorized else { return }
+        do {
+            try await scheduler.scheduleFromPreferences(preferences)
+            await updatePendingCount()
+        } catch {
+            errorMessage = "Failed to schedule workout reminder."
+        }
+    }
+
+    func cancelWorkoutReminder() async {
+        preferences.workoutRemindersEnabled = false
+        await saveAndReschedule()
+    }
+
+    func scheduleRecoveryAlerts() async {
+        guard authorizationStatus == .authorized else { return }
+        preferences.recoveryAlertsEnabled = true
+        await saveAndReschedule()
+    }
+
+    func cancelRecoveryAlerts() async {
+        preferences.recoveryAlertsEnabled = false
+        await saveAndReschedule()
     }
 
     // MARK: - Bulk Operations

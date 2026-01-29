@@ -59,7 +59,7 @@ struct ScoreRingView: View {
             }
             .frame(width: size, height: size)
 
-            VStack(spacing: 2) {
+            VStack(spacing: Spacing.xxs) {
                 Text(title)
                     .font(.vitalLabelSmall)
                     .foregroundStyle(Color.vitalAdaptiveTextPrimary)
@@ -135,15 +135,15 @@ struct LargeScoreCard: View {
                         .foregroundStyle(.white)
 
                     if let trend = trend, let trendValue = trendValue {
-                        HStack(spacing: 4) {
+                        HStack(spacing: Spacing.xs) {
                             Image(systemName: trend.icon)
                                 .font(.system(size: Spacing.iconTiny, weight: .semibold))
                             Text(trendValue)
                                 .font(.vitalCaptionSmall)
                         }
                         .foregroundStyle(.white.opacity(0.8))
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 4)
+                        .padding(.horizontal, Spacing.sm)
+                        .padding(.vertical, Spacing.xs)
                         .background(.white.opacity(0.2))
                         .cornerRadius(Spacing.radiusSmall)
                     }

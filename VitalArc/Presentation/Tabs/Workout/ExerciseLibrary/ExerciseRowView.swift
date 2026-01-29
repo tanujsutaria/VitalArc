@@ -31,27 +31,27 @@ struct ExerciseRowView: View {
 
                 HStack(spacing: Spacing.xs) {
                     // Equipment badge
-                    HStack(spacing: 4) {
+                    HStack(spacing: Spacing.xs) {
                         Image(systemName: equipmentIcon)
                             .font(.system(size: Spacing.iconTiny))
                         Text(exercise.equipment.rawValue)
                             .font(.vitalCaptionSmall)
                     }
                     .foregroundStyle(Color.vitalAdaptiveTextSecondary)
-                    .padding(.horizontal, 6)
-                    .padding(.vertical, 2)
+                    .padding(.horizontal, Spacing.xs)
+                    .padding(.vertical, Spacing.xxs)
                     .background(Color.vitalAdaptiveBorder.opacity(0.5))
-                    .cornerRadius(4)
+                    .cornerRadius(Spacing.xs)
 
                     // Primary Muscles
                     if let firstMuscle = exercise.primaryMuscles.first {
                         Text(firstMuscle.rawValue)
                             .font(.vitalCaptionSmall)
                             .foregroundStyle(categoryColor)
-                            .padding(.horizontal, 6)
-                            .padding(.vertical, 2)
+                            .padding(.horizontal, Spacing.xs)
+                            .padding(.vertical, Spacing.xxs)
                             .background(categoryColor.opacity(0.15))
-                            .cornerRadius(4)
+                            .cornerRadius(Spacing.xs)
                     }
                 }
             }

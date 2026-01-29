@@ -113,7 +113,7 @@ struct WorkoutHistoryView: View {
                 }
             }
         }
-        .padding(.bottom, 12)
+        .padding(.bottom, Spacing.md)
     }
 
     // MARK: - Workouts List
@@ -248,7 +248,7 @@ struct WorkoutRowView: View {
                     .lineLimit(2)
             }
         }
-        .padding(.vertical, 4)
+        .padding(.vertical, Spacing.xs)
     }
 
     private func formatTime(_ date: Date) -> String {

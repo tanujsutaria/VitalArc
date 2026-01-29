@@ -103,7 +103,7 @@ struct PersonalRecordRow: View {
                             .font(.vitalCaptionSmall)
                             .fontWeight(.bold)
                             .padding(.horizontal, Spacing.sm)
-                            .padding(.vertical, 2)
+                            .padding(.vertical, Spacing.xxs)
                             .background(Color.vitalDanger)
                             .foregroundStyle(.white)
                             .cornerRadius(Spacing.xs)

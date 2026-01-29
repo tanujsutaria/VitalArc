@@ -24,6 +24,9 @@ final class DependencyContainer {
     let templateRepository: TemplateRepository
     let notificationPreferencesRepository: NotificationPreferencesRepository
 
+    // Use Cases
+    let calculateTDEEUseCase: CalculateTDEEUseCase
+
     init(modelContext: ModelContext) {
         self.modelContext = modelContext
 
@@ -36,6 +39,9 @@ final class DependencyContainer {
         self.analyticsRepository = SwiftDataAnalyticsRepository(modelContext: modelContext)
         self.templateRepository = SwiftDataTemplateRepository(modelContext: modelContext)
         self.notificationPreferencesRepository = SwiftDataNotificationPreferencesRepository(modelContext: modelContext)
+
+        // Initialize use cases
+        self.calculateTDEEUseCase = CalculateTDEEUseCase(userRepository: self.userRepository)
     }
 }
 

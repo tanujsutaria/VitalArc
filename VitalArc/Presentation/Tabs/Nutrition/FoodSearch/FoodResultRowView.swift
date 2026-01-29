@@ -104,7 +104,7 @@ private struct MacroLabel: View {
     let color: Color
 
     var body: some View {
-        HStack(spacing: 2) {
+        HStack(spacing: Spacing.xxs) {
             Text("\(value)")
                 .font(.vitalLabelSmall)
             Text(unit)
@@ -144,17 +144,17 @@ private struct SourceBadge: View {
     let source: FoodSource
 
     var body: some View {
-        HStack(spacing: 3) {
+        HStack(spacing: Spacing.xxs) {
             Image(systemName: source.iconName)
                 .font(.system(size: Spacing.iconTiny))
             Text(source.displayName)
                 .font(.vitalCaptionSmall)
         }
         .foregroundStyle(badgeColor)
-        .padding(.horizontal, 6)
-        .padding(.vertical, 3)
+        .padding(.horizontal, Spacing.xs)
+        .padding(.vertical, Spacing.xxs)
         .background(badgeColor.opacity(0.15))
-        .cornerRadius(4)
+        .cornerRadius(Spacing.xs)
     }
 
     private var badgeColor: Color {

@@ -48,15 +48,15 @@ struct CalorieAdherenceChartView: View {
                     Spacer()
 
                     // Weekly average badge
-                    HStack(spacing: 4) {
+                    HStack(spacing: Spacing.xs) {
                         Text("Avg:")
                             .font(.vitalCaptionSmall)
                         Text(String(format: "%.0f%%", weeklyAverage))
                             .font(.vitalLabel)
                     }
                     .foregroundStyle(adherenceColor(weeklyAverage))
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 4)
+                    .padding(.horizontal, Spacing.sm)
+                    .padding(.vertical, Spacing.xs)
                     .background(adherenceColor(weeklyAverage).opacity(0.15))
                     .cornerRadius(Spacing.radiusSmall)
                 }
@@ -86,7 +86,7 @@ struct CalorieAdherenceChartView: View {
                                     endPoint: .bottom
                                 )
                             )
-                            .cornerRadius(4)
+                            .cornerRadius(Spacing.xs)
                         }
                     }
                     .chartXAxis {
@@ -111,7 +111,7 @@ struct CalorieAdherenceChartView: View {
 
                     // Summary
                     HStack(spacing: Spacing.lg) {
-                        VStack(alignment: .leading, spacing: 2) {
+                        VStack(alignment: .leading, spacing: Spacing.xxs) {
                             Text("Days On Target")
                                 .font(.vitalCaptionSmall)
                                 .foregroundStyle(Color.vitalAdaptiveTextSecondary)
@@ -122,7 +122,7 @@ struct CalorieAdherenceChartView: View {
 
                         Divider().frame(height: 30)
 
-                        VStack(alignment: .leading, spacing: 2) {
+                        VStack(alignment: .leading, spacing: Spacing.xxs) {
                             Text("Avg Consumed")
                                 .font(.vitalCaptionSmall)
                                 .foregroundStyle(Color.vitalAdaptiveTextSecondary)
@@ -133,7 +133,7 @@ struct CalorieAdherenceChartView: View {
 
                         Divider().frame(height: 30)
 
-                        VStack(alignment: .leading, spacing: 2) {
+                        VStack(alignment: .leading, spacing: Spacing.xxs) {
                             Text("Target")
                                 .font(.vitalCaptionSmall)
                                 .foregroundStyle(Color.vitalAdaptiveTextSecondary)
@@ -257,7 +257,7 @@ struct MacroBreakdownChartView: View {
                         pieChart
 
                         // Center text
-                        VStack(spacing: 2) {
+                        VStack(spacing: Spacing.xxs) {
                             Text(String(format: "%.0f", data.total))
                                 .font(.vitalNumberMedium)
                                 .foregroundStyle(Color.vitalAdaptiveTextPrimary)
@@ -339,10 +339,10 @@ struct MacroBreakdownChartView: View {
         HStack(spacing: Spacing.sm) {
             Circle()
                 .fill(color)
-                .frame(width: 10, height: 10)
+                .frame(width: Spacing.sm, height: Spacing.sm)
 
-            VStack(alignment: .leading, spacing: 1) {
-                HStack(spacing: 4) {
+            VStack(alignment: .leading, spacing: Spacing.xxs) {
+                HStack(spacing: Spacing.xs) {
                     Text(name)
                         .font(.vitalLabelSmall)
                         .foregroundStyle(Color.vitalAdaptiveTextPrimary)
@@ -351,7 +351,7 @@ struct MacroBreakdownChartView: View {
                         .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                 }
 
-                HStack(spacing: 4) {
+                HStack(spacing: Spacing.xs) {
                     Text(String(format: "%.0fg", grams))
                         .font(.vitalCaption)
                         .foregroundStyle(Color.vitalAdaptiveTextPrimary)
@@ -428,7 +428,7 @@ struct ProteinTrendChartView: View {
 
                     // Current status
                     if let latest = data.last {
-                        HStack(spacing: 4) {
+                        HStack(spacing: Spacing.xs) {
                             Text(String(format: "%.1fg/kg", latest.proteinPerKg))
                                 .font(.vitalLabel)
                         }
@@ -487,7 +487,7 @@ struct ProteinTrendChartView: View {
 
                     // Summary
                     HStack(spacing: Spacing.lg) {
-                        VStack(alignment: .leading, spacing: 2) {
+                        VStack(alignment: .leading, spacing: Spacing.xxs) {
                             Text("Target")
                                 .font(.vitalCaptionSmall)
                                 .foregroundStyle(Color.vitalAdaptiveTextSecondary)
@@ -496,7 +496,7 @@ struct ProteinTrendChartView: View {
                                 .foregroundStyle(Color.vitalSuccess)
                         }
 
-                        VStack(alignment: .leading, spacing: 2) {
+                        VStack(alignment: .leading, spacing: Spacing.xxs) {
                             Text("Daily Target")
                                 .font(.vitalCaptionSmall)
                                 .foregroundStyle(Color.vitalAdaptiveTextSecondary)
