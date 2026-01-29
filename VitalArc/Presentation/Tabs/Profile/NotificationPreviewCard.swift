@@ -23,7 +23,7 @@ struct NotificationPreviewCard: View {
                         .frame(width: 40, height: 40)
 
                     Image(systemName: icon)
-                        .font(.system(size: Spacing.iconMedium, weight: .semibold))
+                        .font(.vitalIconMediumSemibold)
                         .foregroundStyle(color)
                 }
 

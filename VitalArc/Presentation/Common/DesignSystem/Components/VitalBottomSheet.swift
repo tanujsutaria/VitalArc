@@ -175,7 +175,7 @@ struct VitalActionSheet: View {
                             HStack(spacing: Spacing.md) {
                                 if let icon = action.icon {
                                     Image(systemName: icon)
-                                        .font(.system(size: Spacing.iconMedium, weight: .medium))
+                                        .font(.vitalIconMediumMedium)
                                         .foregroundStyle(action.style.color)
                                         .frame(width: 24)
                                 }

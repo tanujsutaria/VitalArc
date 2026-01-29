@@ -192,7 +192,7 @@ struct CalorieAdherenceChartView: View {
     private var emptyState: some View {
         VStack(spacing: Spacing.md) {
             Image(systemName: "fork.knife")
-                .font(.system(size: Spacing.icon2XLarge))
+                .font(.vitalIcon2XLarge)
                 .foregroundStyle(Color.vitalAdaptiveTextSecondary)
 
             Text("No nutrition data")

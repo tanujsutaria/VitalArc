@@ -18,6 +18,8 @@ final class UserProfileModel {
     var weight: Double
     var activityLevel: String
     var weightGoal: String
+    var customHRMax: Int?
+    var customHRResting: Int?
     var createdAt: Date
     var updatedAt: Date
 
@@ -30,6 +32,8 @@ final class UserProfileModel {
         weight: Double,
         activityLevel: String,
         weightGoal: String = "Maintain Weight",
+        customHRMax: Int? = nil,
+        customHRResting: Int? = nil,
         createdAt: Date = Date(),
         updatedAt: Date = Date()
     ) {
@@ -41,6 +45,8 @@ final class UserProfileModel {
         self.weight = weight
         self.activityLevel = activityLevel
         self.weightGoal = weightGoal
+        self.customHRMax = customHRMax
+        self.customHRResting = customHRResting
         self.createdAt = createdAt
         self.updatedAt = updatedAt
     }
@@ -56,6 +62,8 @@ final class UserProfileModel {
             weight: weight,
             activityLevel: ActivityLevel(rawValue: activityLevel) ?? .moderate,
             weightGoal: WeightGoal(rawValue: weightGoal) ?? .maintain,
+            customHRMax: customHRMax,
+            customHRResting: customHRResting,
             createdAt: createdAt,
             updatedAt: updatedAt
         )
@@ -72,6 +80,8 @@ final class UserProfileModel {
             weight: profile.weight,
             activityLevel: profile.activityLevel.rawValue,
             weightGoal: profile.weightGoal.rawValue,
+            customHRMax: profile.customHRMax,
+            customHRResting: profile.customHRResting,
             createdAt: profile.createdAt,
             updatedAt: profile.updatedAt
         )

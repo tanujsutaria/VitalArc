@@ -41,6 +41,10 @@ final class ProfileViewModel {
     var editWeightGoal: WeightGoal = .maintain
     var useManualWeight: Bool = false
 
+    // Custom heart rate settings
+    var editCustomHRMax: String = "" // Empty string = use estimated
+    var editCustomHRResting: String = "" // Empty string = use HealthKit/estimated
+
     init(
         userRepository: UserRepository,
         healthRepository: HealthRepository? = nil,
@@ -107,6 +111,8 @@ final class ProfileViewModel {
                             weight: weight,
                             activityLevel: currentProfile.activityLevel,
                             weightGoal: currentProfile.weightGoal,
+                            customHRMax: currentProfile.customHRMax,
+                            customHRResting: currentProfile.customHRResting,
                             createdAt: currentProfile.createdAt,
                             updatedAt: Date()
                         )
@@ -144,6 +150,10 @@ final class ProfileViewModel {
             let heightCm = UnitConversion.feetInchesToCm(feet: editHeightFeet, inches: editHeightInches)
             let weightKg = UnitConversion.lbsToKg(editWeightLbs)
 
+            // Parse custom HR values (empty string = nil = use estimated)
+            let customHRMax = Int(editCustomHRMax)
+            let customHRResting = Int(editCustomHRResting)
+
             let updatedProfile = UserProfile(
                 id: currentProfile.id,
                 name: editName.trimmingCharacters(in: .whitespaces),
@@ -153,6 +163,8 @@ final class ProfileViewModel {
                 weight: weightKg,
                 activityLevel: editActivityLevel,
                 weightGoal: editWeightGoal,
+                customHRMax: customHRMax,
+                customHRResting: customHRResting,
                 createdAt: currentProfile.createdAt,
                 updatedAt: Date()
             )
@@ -182,6 +194,10 @@ final class ProfileViewModel {
 
         editActivityLevel = profile.activityLevel
         editWeightGoal = profile.weightGoal
+
+        // Custom HR values (convert Int? to String for text field)
+        editCustomHRMax = profile.customHRMax.map { String($0) } ?? ""
+        editCustomHRResting = profile.customHRResting.map { String($0) } ?? ""
     }
 
     var canSave: Bool {
@@ -211,6 +227,23 @@ final class ProfileViewModel {
             return "from Apple Health"
         }
         return "manual entry"
+    }
+
+    // Heart rate display helpers
+    var displayHRMax: String {
+        guard let profile = profile else { return "-" }
+        if let custom = profile.customHRMax {
+            return "\(custom) bpm (custom)"
+        }
+        return "\(profile.estimatedHRMax) bpm (estimated)"
+    }
+
+    var displayHRResting: String {
+        guard let profile = profile else { return "-" }
+        if let custom = profile.customHRResting {
+            return "\(custom) bpm (custom)"
+        }
+        return "\(profile.estimatedHRResting) bpm (default)"
     }
 }
 

@@ -118,7 +118,7 @@ struct MesocycleDetailView: View {
 
             HStack(spacing: Spacing.md) {
                 Image(systemName: mesocycle.goal.icon)
-                    .font(.system(size: Spacing.iconXLarge))
+                    .font(.vitalIconXLarge)
                     .foregroundStyle(Color.vitalPrimary)
 
                 VStack(alignment: .leading, spacing: Spacing.xs) {
@@ -269,7 +269,7 @@ struct MesocycleDetailView: View {
     private var emptyScheduleView: some View {
         VStack(spacing: Spacing.lg) {
             Image(systemName: "calendar.badge.plus")
-                .font(.system(size: Spacing.iconGiant))
+                .font(.vitalIconGiant)
                 .foregroundStyle(Color.vitalAdaptiveTextSecondary)
 
             Text("No Training Schedule")

@@ -19,7 +19,7 @@ struct ExerciseRowView: View {
                     .frame(width: 48, height: 48)
 
                 categoryIcon
-                    .font(.system(size: Spacing.iconMedium, weight: .semibold))
+                    .font(.vitalIconMediumSemibold)
                     .foregroundStyle(categoryColor)
             }
 
@@ -33,7 +33,7 @@ struct ExerciseRowView: View {
                     // Equipment badge
                     HStack(spacing: Spacing.xs) {
                         Image(systemName: equipmentIcon)
-                            .font(.system(size: Spacing.iconTiny))
+                            .font(.vitalIconTiny)
                         Text(exercise.equipment.rawValue)
                             .font(.vitalCaptionSmall)
                     }
@@ -59,7 +59,7 @@ struct ExerciseRowView: View {
             Spacer()
 
             Image(systemName: "chevron.right")
-                .font(.system(size: Spacing.iconSmall, weight: .semibold))
+                .font(.vitalIconSmallSemibold)
                 .foregroundStyle(Color.vitalAdaptiveTextSecondary)
         }
         .padding(Spacing.md)

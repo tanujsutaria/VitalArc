@@ -1,5 +1,41 @@
 # VitalArc Development Session Log
 
+## Session 13.5 - January 29, 2026 (Night)
+
+### Session Start
+- **Time**: Night PST
+- **Platform**: macOS 🖥️
+- **Focus**: General session
+- **Branch**: dev/mac-session-13.5-2026-01-29
+- **Base**: main @ 4a6cb15
+
+### Environment
+- **Build Capable**: Yes
+- **Test Capable**: Yes (unit + UI)
+
+### Pre-Session Status
+- **Build**: ✅ Passed (6 minor warnings)
+- **Uncommitted Changes**: None
+- **Recent Activity**: Session 13.4 - Swift 6 concurrency fixes, 40+ design token fixes, 18 new tests (123 total)
+
+### Session Goals
+1. HealthKit HR data integration (highest value)
+2. Design system font migration (58 violations remaining)
+3. General development as directed
+
+### Work Log
+| Time | Action | Files | Notes |
+|------|--------|-------|-------|
+| Night | Session started | - | Build verified ✅ |
+| Night | Fixed gender-aware TRIMP | CalculateStrainScoreUseCase.swift | k=1.92 (male), 1.67 (female), 1.795 (other) |
+| Night | Added custom HR max/resting | UserProfile, UserProfileModel, ProfileView, ProfileViewModel | Users can override age-based HR estimates |
+| Night | Added icon font tokens | Typography.swift | 28 new tokens for icon fonts |
+| Night | Migrated 54 font violations | 32 files across Presentation/ | 100% design token adoption for fonts |
+| Night | Fixed updateUserProfile bug | DependencyContainer.swift | Custom HR fields now persisted on update |
+| Night | Session ended | - | Build verified ✅, ready for commit |
+
+---
+
 ## Session 13.4 - January 29, 2026 (Night)
 
 ### Session Start

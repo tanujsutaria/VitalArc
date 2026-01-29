@@ -124,7 +124,7 @@ struct LargeScoreCard: View {
                 VStack(alignment: .leading, spacing: Spacing.xs) {
                     HStack(spacing: Spacing.xs) {
                         Image(systemName: icon)
-                            .font(.system(size: Spacing.iconSmall, weight: .semibold))
+                            .font(.vitalIconSmallSemibold)
                         Text(title)
                             .font(.vitalLabel)
                     }
@@ -137,7 +137,7 @@ struct LargeScoreCard: View {
                     if let trend = trend, let trendValue = trendValue {
                         HStack(spacing: Spacing.xs) {
                             Image(systemName: trend.icon)
-                                .font(.system(size: Spacing.iconTiny, weight: .semibold))
+                                .font(.vitalIconTinySemibold)
                             Text(trendValue)
                                 .font(.vitalCaptionSmall)
                         }

@@ -17,6 +17,8 @@ struct UserProfile: Identifiable, Equatable {
     let weight: Double // in kg
     let activityLevel: ActivityLevel
     let weightGoal: WeightGoal
+    let customHRMax: Int? // User-specified max heart rate (overrides age-based estimate)
+    let customHRResting: Int? // User-specified resting heart rate (overrides HealthKit)
     let createdAt: Date
     let updatedAt: Date
 
@@ -29,6 +31,8 @@ struct UserProfile: Identifiable, Equatable {
         weight: Double,
         activityLevel: ActivityLevel,
         weightGoal: WeightGoal = .maintain,
+        customHRMax: Int? = nil,
+        customHRResting: Int? = nil,
         createdAt: Date = Date(),
         updatedAt: Date = Date()
     ) {
@@ -40,6 +44,8 @@ struct UserProfile: Identifiable, Equatable {
         self.weight = weight
         self.activityLevel = activityLevel
         self.weightGoal = weightGoal
+        self.customHRMax = customHRMax
+        self.customHRResting = customHRResting
         self.createdAt = createdAt
         self.updatedAt = updatedAt
     }
@@ -73,6 +79,26 @@ struct UserProfile: Identifiable, Equatable {
         case .gain:
             return maintenance + 500
         }
+    }
+
+    /// Estimated max heart rate using age-based formula (220 - age)
+    var estimatedHRMax: Int {
+        220 - age
+    }
+
+    /// Effective max heart rate (custom if set, otherwise estimated)
+    var effectiveHRMax: Int {
+        customHRMax ?? estimatedHRMax
+    }
+
+    /// Default resting heart rate estimate
+    var estimatedHRResting: Int {
+        60
+    }
+
+    /// Effective resting heart rate (custom if set, otherwise default)
+    var effectiveHRResting: Int {
+        customHRResting ?? estimatedHRResting
     }
 }
 

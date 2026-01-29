@@ -166,7 +166,7 @@ struct ExerciseLibraryView: View {
     private var emptyStateView: some View {
         VStack(spacing: Spacing.lg) {
             Image(systemName: "dumbbell.fill")
-                .font(.system(size: Spacing.iconHero))
+                .font(.vitalIconHero)
                 .foregroundStyle(Color.vitalAdaptiveTextTertiary)
 
             Text("No Exercises")
@@ -252,7 +252,7 @@ struct ExerciseLibraryView: View {
                                     .frame(width: 40, height: 40)
 
                                 Image(systemName: "star.fill")
-                                    .font(.system(size: Spacing.iconSmall, weight: .semibold))
+                                    .font(.vitalIconSmallSemibold)
                                     .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                             }
 
@@ -308,7 +308,7 @@ struct BodyPartSectionHeader: View {
                         .frame(width: 40, height: 40)
 
                     Image(systemName: icon)
-                        .font(.system(size: Spacing.iconSmall, weight: .semibold))
+                        .font(.vitalIconSmallSemibold)
                         .foregroundStyle(color)
                 }
 
@@ -327,7 +327,7 @@ struct BodyPartSectionHeader: View {
 
                 // Expand/Collapse indicator
                 Image(systemName: "chevron.down")
-                    .font(.system(size: Spacing.iconSmall, weight: .semibold))
+                    .font(.vitalIconSmallSemibold)
                     .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                     .rotationEffect(.degrees(isExpanded ? 0 : -90))
             }

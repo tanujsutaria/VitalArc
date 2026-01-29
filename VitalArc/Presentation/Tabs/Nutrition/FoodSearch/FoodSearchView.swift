@@ -106,7 +106,7 @@ private struct FoodSearchErrorView: View {
                         .frame(width: 100, height: 100)
 
                     Image(systemName: "exclamationmark.triangle.fill")
-                        .font(.system(size: Spacing.iconHuge))
+                        .font(.vitalIconHuge)
                         .foregroundStyle(Color.vitalWarning)
                 }
 
@@ -150,7 +150,7 @@ private struct InitialSearchView: View {
                         .frame(width: 100, height: 100)
 
                     Image(systemName: "magnifyingglass")
-                        .font(.system(size: Spacing.iconHuge))
+                        .font(.vitalIconHuge)
                         .foregroundStyle(Color.vitalPrimary)
                 }
 

@@ -121,7 +121,7 @@ struct FoodCard: View {
                                 onDelete()
                             }) {
                                 Image(systemName: "trash")
-                                    .font(.system(size: Spacing.iconSmall, weight: .medium))
+                                    .font(.vitalIconSmallMedium)
                                     .foregroundStyle(Color.vitalDanger)
                             }
                             .vitalScaleButton()
@@ -232,7 +232,7 @@ struct FoodSearchResultRow: View {
                     .foregroundStyle(Color.vitalAdaptiveTextSecondary)
 
                 Image(systemName: "chevron.right")
-                    .font(.system(size: Spacing.iconXSmall, weight: .semibold))
+                    .font(.vitalIconXSmallSemibold)
                     .foregroundStyle(Color.vitalAdaptiveTextSecondary)
             }
             .padding(Spacing.md)

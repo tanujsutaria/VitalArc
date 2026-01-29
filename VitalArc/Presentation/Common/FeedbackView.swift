@@ -125,7 +125,7 @@ struct FeedbackView: View {
     private var sentOverlay: some View {
         VStack(spacing: Spacing.md) {
             Image(systemName: "checkmark.circle.fill")
-                .font(.system(size: Spacing.iconHero))
+                .font(.vitalIconHero)
                 .foregroundStyle(Color.vitalSuccess)
 
             Text("Feedback Sent!")

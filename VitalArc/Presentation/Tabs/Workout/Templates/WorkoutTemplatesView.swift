@@ -226,7 +226,7 @@ struct StartWorkoutFromTemplateSheet: View {
                 // Template info
                 VStack(spacing: Spacing.sm) {
                     Image(systemName: template.category.icon)
-                        .font(.system(size: Spacing.iconHuge))
+                        .font(.vitalIconHuge)
                         .foregroundStyle(Color.vitalPrimary)
 
                     Text(template.name)

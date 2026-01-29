@@ -213,6 +213,28 @@ struct ProfileView: View {
                         }
                     }
 
+                    // Heart Rate Settings Section
+                    VStack(alignment: .leading, spacing: Spacing.md) {
+                        Text("Heart Rate")
+                            .font(.vitalH2)
+                            .foregroundStyle(Color.vitalAdaptiveTextPrimary)
+                            .padding(.horizontal, Spacing.screenPadding)
+
+                        VitalCard {
+                            VStack(spacing: Spacing.sm) {
+                                InfoRow(label: "Max HR", value: viewModel.displayHRMax)
+                                Divider()
+                                InfoRow(label: "Resting HR", value: viewModel.displayHRResting)
+                            }
+                        }
+                        .padding(.horizontal, Spacing.screenPadding)
+
+                        Text("Custom values improve strain calculation accuracy")
+                            .font(.vitalCaption)
+                            .foregroundStyle(Color.vitalAdaptiveTextTertiary)
+                            .padding(.horizontal, Spacing.screenPadding)
+                    }
+
                     // Goals Section
                     VStack(alignment: .leading, spacing: Spacing.md) {
                         Text("Goals")
@@ -245,7 +267,7 @@ struct ProfileView: View {
                                         .frame(width: Spacing.avatarSmall, height: Spacing.avatarSmall)
 
                                     Image(systemName: "gear")
-                                        .font(.system(size: Spacing.iconMedium, weight: .semibold))
+                                        .font(.vitalIconMediumSemibold)
                                         .foregroundStyle(Color.vitalPrimary)
                                 }
 
@@ -256,7 +278,7 @@ struct ProfileView: View {
                                 Spacer()
 
                                 Image(systemName: "chevron.right")
-                                    .font(.system(size: Spacing.iconXSmall, weight: .semibold))
+                                    .font(.vitalIconXSmallSemibold)
                                     .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                             }
                             .padding(Spacing.md)
@@ -277,7 +299,7 @@ struct ProfileView: View {
                                         .frame(width: Spacing.avatarSmall, height: Spacing.avatarSmall)
 
                                     Image(systemName: "info.circle")
-                                        .font(.system(size: Spacing.iconMedium, weight: .semibold))
+                                        .font(.vitalIconMediumSemibold)
                                         .foregroundStyle(Color.vitalInfo)
                                 }
 
@@ -288,7 +310,7 @@ struct ProfileView: View {
                                 Spacer()
 
                                 Image(systemName: "chevron.right")
-                                    .font(.system(size: Spacing.iconXSmall, weight: .semibold))
+                                    .font(.vitalIconXSmallSemibold)
                                     .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                             }
                             .padding(Spacing.md)
@@ -471,6 +493,49 @@ struct ProfileView: View {
                         }
                         .pickerStyle(.segmented)
                     }
+
+                    // Custom Heart Rate Settings
+                    VStack(alignment: .leading, spacing: Spacing.md) {
+                        Text("Heart Rate (Optional)")
+                            .font(.vitalH3)
+                            .foregroundStyle(Color.vitalAdaptiveTextPrimary)
+
+                        Text("Leave blank to use estimated values")
+                            .font(.vitalCaption)
+                            .foregroundStyle(Color.vitalAdaptiveTextSecondary)
+
+                        HStack(spacing: Spacing.lg) {
+                            VStack(alignment: .leading, spacing: Spacing.xs) {
+                                Text("Max HR")
+                                    .font(.vitalCaption)
+                                    .foregroundStyle(Color.vitalAdaptiveTextSecondary)
+                                HStack {
+                                    TextField("Auto", text: $vm.editCustomHRMax)
+                                        .keyboardType(.numberPad)
+                                        .textFieldStyle(.roundedBorder)
+                                        .frame(width: 80)
+                                    Text("bpm")
+                                        .font(.vitalCaption)
+                                        .foregroundStyle(Color.vitalAdaptiveTextSecondary)
+                                }
+                            }
+
+                            VStack(alignment: .leading, spacing: Spacing.xs) {
+                                Text("Resting HR")
+                                    .font(.vitalCaption)
+                                    .foregroundStyle(Color.vitalAdaptiveTextSecondary)
+                                HStack {
+                                    TextField("Auto", text: $vm.editCustomHRResting)
+                                        .keyboardType(.numberPad)
+                                        .textFieldStyle(.roundedBorder)
+                                        .frame(width: 80)
+                                    Text("bpm")
+                                        .font(.vitalCaption)
+                                        .foregroundStyle(Color.vitalAdaptiveTextSecondary)
+                                }
+                            }
+                        }
+                    }
                 }
                 .padding(.horizontal)
 
@@ -571,7 +636,7 @@ struct StatCard: View {
                         .frame(width: Spacing.avatarMedium, height: Spacing.avatarMedium)
 
                     Image(systemName: icon)
-                        .font(.system(size: Spacing.iconMedium, weight: .semibold))
+                        .font(.vitalIconMediumSemibold)
                         .foregroundStyle(color)
                 }
 
@@ -604,7 +669,7 @@ struct StatCardWithSource: View {
                         .frame(width: Spacing.avatarMedium, height: Spacing.avatarMedium)
 
                     Image(systemName: icon)
-                        .font(.system(size: Spacing.iconMedium, weight: .semibold))
+                        .font(.vitalIconMediumSemibold)
                         .foregroundStyle(color)
                 }
 
@@ -620,7 +685,7 @@ struct StatCardWithSource: View {
                 HStack(spacing: 2) {
                     if source.contains("Apple Health") {
                         Image(systemName: "heart.fill")
-                            .font(.system(size: Spacing.iconTiny))
+                            .font(.vitalIconTiny)
                             .foregroundStyle(Color.vitalDanger)
                     }
                     Text(source)

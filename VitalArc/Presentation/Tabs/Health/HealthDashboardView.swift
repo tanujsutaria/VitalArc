@@ -248,7 +248,7 @@ struct HealthDashboardView: View {
                         .frame(width: 48, height: 48)
 
                     Image(systemName: "figure.mind.and.body")
-                        .font(.system(size: Spacing.iconLarge, weight: .semibold))
+                        .font(.vitalIconLargeSemibold)
                         .foregroundStyle(.white)
                 }
 
@@ -265,7 +265,7 @@ struct HealthDashboardView: View {
                 Spacer()
 
                 Image(systemName: recoveryIcon(recovery))
-                    .font(.system(size: Spacing.iconXLarge))
+                    .font(.vitalIconXLarge)
                     .foregroundStyle(.white.opacity(0.3))
             }
         }
@@ -369,7 +369,7 @@ struct HealthDashboardView: View {
                         .frame(width: 100, height: 100)
 
                     Image(systemName: "heart.text.square")
-                        .font(.system(size: Spacing.iconHuge))
+                        .font(.vitalIconHuge)
                         .foregroundStyle(Color.vitalDanger)
                 }
 
@@ -426,7 +426,7 @@ struct HealthDashboardView: View {
                         .frame(width: 100, height: 100)
 
                     Image(systemName: "exclamationmark.triangle")
-                        .font(.system(size: Spacing.iconHuge))
+                        .font(.vitalIconHuge)
                         .foregroundStyle(Color.vitalWarning)
                 }
 
