@@ -24,13 +24,39 @@
 3. **Recovery Score Fine-tuning** (Score: 7) - Validate/parameterize HRV algorithm weights, test against real data
 
 ### Session Goals
-1. [Select focus area from suggestions above]
-2. [Secondary goal if applicable]
+1. Fix analytics dashboard bugs identified during testing
+2. Update session skill numbering format
 
 ### Work Log
 | Time | Action | Files | Notes |
 |------|--------|-------|-------|
 | Morning | Session started | - | Cloud session initialized |
+| Morning | Fixed session numbering | SKILL.md files | Always include minor version (13.0 not 13) |
+| Morning | Fixed sleep average bug | HealthKitMapper.swift | Merge overlapping sleep intervals |
+| Morning | Fixed sleep chart overflow | HealthTrendsView.swift | Dynamic Y-axis scaling |
+| Morning | Fixed HRV 7/30 day bug | AnalyticsDashboardViewModel.swift | Always fetch 30 days for HRV |
+
+### Work Completed
+
+#### Analytics Dashboard Bug Fixes
+Fixed three bugs identified from user testing screenshots:
+
+1. **Sleep Average Showing 22.3 hrs** (HealthKitMapper.swift)
+   - Root cause: Multiple sources (Apple Watch, iPhone, third-party apps) create overlapping sleep samples
+   - Old behavior: Simply summed all sample durations, causing double/triple counting
+   - Fix: Merge overlapping time intervals before summing total sleep
+
+2. **Sleep Chart Bars Overflowing Y-Axis** (HealthTrendsView.swift:429)
+   - Root cause: Y-axis hardcoded to `0...12` hours max
+   - Fix: Dynamic scaling using `max(maxSleepHours + 2, 12)`
+
+3. **HRV Chart Same Data for 7/30 Day Views** (AnalyticsDashboardViewModel.swift)
+   - Root cause: `loadHealthData` only fetched data for selected time range (e.g., 1 week)
+   - If user selected "1 Week", `metrics.suffix(30)` returned same 7 entries as `suffix(7)`
+   - Fix: Always fetch minimum 30 days of health data, filter by actual dates for 7/30 day views
+
+#### Session Skill Updates
+Updated `vitalarc-start-cloud` and `vitalarc-start-workstation` skills to always include minor version in session numbering (e.g., "13.0" not just "13").
 
 ---
 
