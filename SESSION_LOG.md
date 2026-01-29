@@ -42,6 +42,10 @@
 | Afternoon | Added HealthKit workout queries | HealthKitManager.swift | fetchWorkouts, fetchHeartRateSamples, convertToWorkoutData |
 | Afternoon | Added workout activity type names | HealthKitManager.swift | HKWorkoutActivityType.name extension |
 | Afternoon | Updated strain calculation | CalculateStrainScoreUseCase.swift | Now uses real HealthKit workout and HR data |
+| Afternoon | Ran PR review | - | Found 4 important issues, 0 critical |
+| Afternoon | Fixed dateRange bug | CalculateStrainScoreUseCase.swift | Now uses 7-day average for resting HR |
+| Afternoon | Fixed dual persistence | NotificationSettingsViewModel.swift | Repository as single source of truth |
+| Afternoon | Session ended | - | 3 commits, PR ready |
 
 ### Work Completed
 
@@ -75,6 +79,47 @@ Updated `CalculateStrainScoreUseCase` to:
 - Track calculation method used (Banister/Edwards/Estimated)
 - Calculate max HR and HR reserve from actual data
 - Use actual resting HR from HealthKit when available
+
+#### PR Review Fixes
+After running code review, fixed two issues:
+1. **Unused `dateRange` variable** - Now properly queries 7 days of metrics and averages resting HR for a more reliable baseline
+2. **Dual persistence anti-pattern** - Repository is now single source of truth; UserDefaults only updated on successful repository save
+
+### Session End
+- **Time**: Afternoon UTC
+- **Duration**: ~1 hour
+- **Status**: Complete
+- **Build**: ⏭️ Not verified (cloud)
+- **Tests**: N/A (cloud)
+- **Commits**: 4 commits
+
+### Next Session Actions (Workstation)
+
+**From PR Review - Remaining Issues:**
+
+1. **Missing Test Coverage for TRIMP Calculations** (Important)
+   - Files needing tests:
+     - `NotificationScheduler.swift` - scheduling logic, day-of-week
+     - `NotificationSettingsViewModel.swift` - day selection, time conversion
+     - `CalculateStrainScoreUseCase.swift` - TRIMP formulas
+   - Specific test cases needed:
+     - Banister TRIMP with known HR samples → expected values
+     - Edwards zone boundaries (50%, 60%, 70%, 80%, 90% max HR)
+     - Day-of-week selection persistence
+     - Recovery alert threshold triggering
+     - Zero duration workout handling
+     - Maximum heart rate scenarios
+
+2. **HealthKitManager Thread Safety Documentation** (Minor)
+   - `CalculateStrainScoreUseCase` is `@MainActor` but calls non-@MainActor `HealthKitManager`
+   - Works correctly (async methods cross actor boundaries safely)
+   - Consider adding comment explaining the intentional actor isolation strategy
+   - Location: `HealthKitManager.swift` header or ARCHITECTURE.md
+
+**Build Verification:**
+- Verify Xcode build passes with new files
+- Test notification scheduling on physical device
+- Test HealthKit workout queries with real data
 
 ---
 
