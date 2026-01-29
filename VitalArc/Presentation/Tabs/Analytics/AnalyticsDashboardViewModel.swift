@@ -143,34 +143,45 @@ final class AnalyticsDashboardViewModel {
     }
 
     private func loadHealthData(startDate: Date, endDate: Date) async throws {
-        // Load health metrics from repository
-        let metrics = try await healthRepository.getHealthMetrics(from: startDate, to: endDate)
+        let calendar = Calendar.current
 
-        // Process HRV data
-        hrvTrend7Day = metrics.suffix(7).compactMap { metric in
+        // Always fetch 30 days of data for HRV trends (independent of selected time range)
+        let thirtyDaysAgo = calendar.date(byAdding: .day, value: -30, to: endDate) ?? startDate
+        let healthStartDate = min(startDate, thirtyDaysAgo)
+
+        // Load health metrics from repository
+        let metrics = try await healthRepository.getHealthMetrics(from: healthStartDate, to: endDate)
+
+        // Sort metrics by date to ensure correct ordering
+        let sortedMetrics = metrics.sorted { $0.date < $1.date }
+
+        // Process HRV data - use last 7 and last 30 days respectively
+        let sevenDaysAgo = calendar.date(byAdding: .day, value: -7, to: endDate) ?? endDate
+
+        hrvTrend7Day = sortedMetrics.filter { $0.date >= sevenDaysAgo }.compactMap { metric in
             guard let hrv = metric.heartRateVariability else { return nil }
             return HealthTrendData(date: metric.date, value: hrv)
         }
 
-        hrvTrend30Day = metrics.suffix(30).compactMap { metric in
+        hrvTrend30Day = sortedMetrics.filter { $0.date >= thirtyDaysAgo }.compactMap { metric in
             guard let hrv = metric.heartRateVariability else { return nil }
             return HealthTrendData(date: metric.date, value: hrv)
         }
 
         // Calculate HRV baseline (30-day average)
-        let hrvValues = metrics.compactMap { $0.heartRateVariability }
+        let hrvValues = sortedMetrics.filter { $0.date >= thirtyDaysAgo }.compactMap { $0.heartRateVariability }
         if !hrvValues.isEmpty {
             hrvBaseline = hrvValues.reduce(0, +) / Double(hrvValues.count)
         }
 
-        // Process resting heart rate
-        restingHRTrend = metrics.suffix(7).compactMap { metric in
+        // Process resting heart rate (last 7 days)
+        restingHRTrend = sortedMetrics.filter { $0.date >= sevenDaysAgo }.compactMap { metric in
             guard let hr = metric.restingHeartRate else { return nil }
             return HealthTrendData(date: metric.date, value: hr)
         }
 
-        // Process sleep data
-        sleepTrend = metrics.suffix(7).compactMap { metric in
+        // Process sleep data (last 7 days)
+        sleepTrend = sortedMetrics.filter { $0.date >= sevenDaysAgo }.compactMap { metric in
             guard let sleep = metric.sleepHours else { return nil }
             return SleepTrendData(
                 date: metric.date,
@@ -182,7 +193,7 @@ final class AnalyticsDashboardViewModel {
         }
 
         // Get latest weight
-        if let latestWeight = metrics.last?.weight {
+        if let latestWeight = sortedMetrics.last?.weight {
             currentWeight = latestWeight
         }
     }

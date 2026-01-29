@@ -426,7 +426,7 @@ struct SleepTrendChartView: View {
                             AxisGridLine()
                         }
                     }
-                    .chartYScale(domain: 0...12)
+                    .chartYScale(domain: 0...max(maxSleepHours + 2, 12))
                     .frame(height: 160)
                     .animation(.vitalSpringBouncy, value: hasAppeared)
 
@@ -483,6 +483,10 @@ struct SleepTrendChartView: View {
 
     private var daysMetGoal: Int {
         data.filter { $0.totalHours >= targetHours }.count
+    }
+
+    private var maxSleepHours: Double {
+        data.map { $0.totalHours }.max() ?? 12
     }
 
     private func sleepDurationBadge(_ hours: Double) -> some View {
