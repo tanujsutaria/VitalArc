@@ -215,17 +215,20 @@ final class NotificationSettingsViewModel {
     }
 
     private func savePreferences() async {
-        // Save to repository if available
+        // Use repository as single source of truth when available
         if let repository = repository {
             do {
                 try await repository.savePreferences(preferences)
+                // Only sync to UserDefaults on successful repository save
+                saveToUserDefaults()
             } catch {
+                // Don't update UserDefaults on repository failure to maintain consistency
                 errorMessage = "Failed to save notification preferences."
             }
+        } else {
+            // No repository - use UserDefaults as fallback
+            saveToUserDefaults()
         }
-
-        // Always sync to UserDefaults for backward compatibility
-        saveToUserDefaults()
     }
 
     private func saveAndReschedule() async {

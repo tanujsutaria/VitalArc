@@ -335,11 +335,16 @@ final class CalculateStrainScoreUseCase {
     }
 
     private func getRestingHeartRate() async -> Double? {
+        // Get resting HR over last 7 days for a more reliable baseline
         let dateRange = HealthKitQuery.dateRangeForLastDays(7)
-        if let metrics = try? await healthKitManager.fetchHealthMetrics(for: Date()) {
-            return metrics.restingHeartRate
+        guard let metrics = try? await healthKitManager.fetchHealthMetrics(from: dateRange.start, to: dateRange.end) else {
+            return nil
         }
-        return nil
+
+        let restingHRValues = metrics.compactMap(\.restingHeartRate)
+        guard !restingHRValues.isEmpty else { return nil }
+
+        return restingHRValues.reduce(0, +) / Double(restingHRValues.count)
     }
 
     private func estimateHRMax(age: Int) -> Double {
