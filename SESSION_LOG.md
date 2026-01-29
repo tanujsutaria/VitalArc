@@ -30,13 +30,46 @@
 - **Total**: 293 violations (report only - cloud session)
 
 ### Session Goals
-1. TBD based on selected focus area
-2.
+1. Add comprehensive TRIMP/strain calculation unit tests
+2. Add recovery score algorithm unit tests
+3. Implement TDEE use case with Mifflin-St Jeor formula
 
 ### Work Log
 | Time | Action | Files | Notes |
 |------|--------|-------|-------|
 | Evening | Session started | - | Cloud session initialized |
+| Evening | Created analytics tests | AnalyticsTests.swift | 30+ tests for TRIMP (Banister/Edwards), strain levels, recovery scoring |
+| Evening | Created TDEE use case | CalculateTDEEUseCase.swift | Mifflin-St Jeor formula with activity multipliers and macro calculation |
+| Evening | Created TDEE tests | TDEETests.swift | 20+ tests for BMR, TDEE, activity multipliers, macros |
+
+### Changes Summary
+
+#### New Files Created
+1. **VitalArcTests/AnalyticsTests.swift** - Comprehensive test coverage for:
+   - Banister TRIMP calculation (exponential method)
+   - Edwards TRIMP calculation (zone-based method)
+   - TRIMP to strain score conversion (0-21 scale)
+   - Strain level classification tests
+   - HRV score calculation with baseline comparison
+   - Resting HR score calculation (inverse logic)
+   - Sleep score calculation
+   - Recovery readiness classification
+   - Weighted recovery score calculation
+
+2. **VitalArc/Domain/UseCases/Nutrition/CalculateTDEEUseCase.swift** - TDEE implementation:
+   - Mifflin-St Jeor BMR formula (male/female/other)
+   - Activity level multipliers (sedentary through extreme)
+   - Weight goal adjustments (±500 cal for lose/gain)
+   - Macro goal calculation (protein 2g/kg, 35% fat, remaining carbs)
+   - TDEEResult struct with full breakdown
+
+3. **VitalArcTests/TDEETests.swift** - TDEE test coverage:
+   - BMR calculation for all biological sexes
+   - BMR scaling with age/weight/height
+   - Activity multiplier values
+   - Goal adjustment calculations
+   - Macro distribution tests
+   - Comparison with existing simple formula
 
 ---
 
