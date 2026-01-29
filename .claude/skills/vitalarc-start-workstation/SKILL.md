@@ -72,127 +72,78 @@ BRANCH="dev/mac-${FOCUS}-${FULL_SESSION}-${TODAY}"
 git checkout -b "$BRANCH"
 ```
 
-### 4. Update state file
-
-```bash
-cat > .claude/session-state.json << EOF
-{"current_session":"$FULL_SESSION","branch":"$BRANCH","platform":"mac","started_at":"$(date -u +%Y-%m-%dT%H:%M:%SZ)","build_capable":true}
-EOF
-```
-
-### 5. Restore stash and read docs
+### 4. Restore stash
 
 ```bash
 git stash list | grep -q "Auto-stash $(date +%Y-%m-%d)" && git stash pop
 ```
 
-Read: CLAUDE.md, PROJECT_STATUS.md, SESSION_LOG.md (last 100 lines), README.md (Roadmap).
+### 5. Invoke Session Orchestrator
 
-### 6. Session Start Agent Swarm
-
-Run these agents **in parallel** to get a comprehensive session kickoff:
+**Delegate all agent coordination to session-orchestrator:**
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                   SESSION START SWARM                        │
-├─────────────────┬─────────────────┬─────────────────────────┤
-│ focus-suggester │ build-validator │ design-system-auditor   │
-│ (if no focus)   │ (build check)   │ (token compliance)      │
-└─────────────────┴─────────────────┴─────────────────────────┘
+┌───────────────────────────────────────────────────────────────┐
+│              DELEGATE TO SESSION-ORCHESTRATOR                  │
+├───────────────────────────────────────────────────────────────┤
+│  session-orchestrator --mode=start --platform=mac             │
+│                       [--focus=$FOCUS]                        │
+│                                                               │
+│  The orchestrator will spawn:                                 │
+│    • context-loader (reads CLAUDE.md, PROJECT_STATUS.md)      │
+│    • focus-suggester (if no focus provided)                   │
+│    • design-system-scanner (token compliance)                 │
+│    • config-validator (API keys, entitlements)                │
+│    • build-validator (Xcode build check)                      │
+│    • session-state-manager (init state file)                  │
+│    • session-log-creator (create log entry)                   │
+│    • stats-gatherer (codebase metrics)                        │
+└───────────────────────────────────────────────────────────────┘
 ```
 
-**Invoke using Task tool with parallel calls:**
-
-1. **focus-suggester** (if no `$ARGUMENTS` provided):
-   - Analyzes README.md Roadmap, PROJECT_STATUS.md Known Issues, recent SESSION_LOG.md
-   - Returns ranked focus recommendations with rationale
-
-2. **build-validator**:
-   - Runs `xcodebuild` to verify project compiles
-   - Reports any errors or warnings
-
-3. **design-system-auditor**:
-   - Scans Presentation/ for hardcoded colors, spacing, fonts
-   - Reports violation count and top issues
-
-**Output format:**
-```markdown
-## Session Health Check
-
-### Focus Recommendations
-1. **Notifications** (Score: 15) - High priority, not started
-2. **Typography tokens** (Score: 12) - 36 remaining instances
-3. **Recovery fine-tuning** (Score: 10) - In progress
-
-### Build Status
-✅ BUILD SUCCEEDED (0 errors, 0 warnings)
-
-### Design System Compliance
-⚠️ 12 violations found in 5 files
-- ProfileView.swift: 3 hardcoded colors
-- WorkoutView.swift: 2 hardcoded spacing
-[Run `/design-system-auditor fix` to auto-fix]
-```
-
-### 7. Build check (fallback)
-
-```bash
-xcodebuild -scheme VitalArc -destination 'platform=iOS Simulator,name=iPhone 17 Pro' build 2>&1 | grep -E "(error:|BUILD)"
-```
-
-### 8. Create session log entry
-
-Add to SESSION_LOG.md using the template from [session-log-workstation.md](../_shared/templates/session-log-workstation.md).
-
-**Use `$FULL_SESSION` for the session number** (e.g., "Session 12.2" not "Session 13"):
+**Invoke using Task tool:**
 
 ```markdown
-## Session [FULL_SESSION] - [Month Day, Year] ([Time of Day])
-
-### Session Start
-- **Time**: [specific time, e.g., "3:45 PM PST" or "Evening"]
-- **Platform**: macOS
-- **Focus**: [focus or "General development"]
-- **Branch**: [branch]
-- **Base**: main @ [commit hash] [commit message]
-
-### Environment
-- **Build Capable**: Yes
-- **Test Capable**: Yes (unit + UI)
-
-### Pre-Session Status
-- **Build**: Passing / Failing
-- **Uncommitted Changes**: [list or None]
-- **Recent Activity**: [summary of previous session's outcome]
-
-### Session Goals
-1. [Primary goal based on focus]
-2. [Secondary goal]
-3. [Stretch goal if applicable]
-
-### Work Log
-| Time | Action | Files | Notes |
-|------|--------|-------|-------|
-| [time] | Session started | - | Build verified |
-
-### Work Completed
-[To be filled]
-
-### Session End
-[To be filled by /vitalarc-end-workstation]
+Task: session-orchestrator
+Prompt: "--mode=start --platform=mac --focus=$FOCUS --build-capable=true"
 ```
 
-### 9. Output summary
+The orchestrator will:
+1. Load project context
+2. Suggest focus if none provided
+3. Check build status
+4. Scan for design system violations
+5. Validate configuration
+6. Create session state file
+7. Create SESSION_LOG.md entry
+8. Gather codebase statistics
+
+### 6. Output summary
+
+After orchestrator completes, display:
 
 ```
-═══════════════════════════════════════════════════════
+═══════════════════════════════════════════════════════════════
        VITALARC WORKSTATION SESSION INITIALIZED
-═══════════════════════════════════════════════════════
+═══════════════════════════════════════════════════════════════
 Branch:   [branch]
 Session:  [FULL_SESSION]
-Build:    [status]
+Build:    [status from orchestrator]
 Focus:    [focus]
-───────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────
 Full builds, simulator, and testing available
-═══════════════════════════════════════════════════════
+═══════════════════════════════════════════════════════════════
 ```
+
+## Responsibilities
+
+| This Skill Handles | Orchestrator Handles |
+|-------------------|---------------------|
+| Git stash/sync | Context loading |
+| Branch creation | Focus suggestions |
+| Stash restoration | Build validation |
+| Final summary output | Design system scanning |
+| | Config validation |
+| | Session state management |
+| | Session log creation |
+| | Stats gathering |

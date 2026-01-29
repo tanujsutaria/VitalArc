@@ -68,122 +68,81 @@ fi
 
 Use the branch specified in the Git Development Branch Requirements from the system context.
 
-### 4. Update state file
-
-```bash
-BRANCH=$(git rev-parse --abbrev-ref HEAD)
-cat > .claude/session-state.json << EOF
-{"current_session":"$FULL_SESSION","branch":"$BRANCH","platform":"cloud","started_at":"$(date -u +%Y-%m-%dT%H:%M:%SZ)","build_capable":false}
-EOF
-```
-
-### 5. Restore stash and read docs
+### 4. Restore stash
 
 ```bash
 git stash list | grep -q "Auto-stash $(date +%Y-%m-%d)" && git stash pop
 ```
 
-Read: CLAUDE.md, PROJECT_STATUS.md (focus on Known Issues), SESSION_LOG.md (last 100 lines), README.md (Roadmap).
+### 5. Invoke Session Orchestrator
 
-### 6. Session Start Agent Swarm
-
-Run these agents **in parallel** to get a comprehensive session kickoff:
+**Delegate all agent coordination to session-orchestrator:**
 
 ```
-┌───────────────────────────────────────────────────┐
-│            CLOUD SESSION START SWARM              │
-├─────────────────┬─────────────────────────────────┤
-│ focus-suggester │ design-system-auditor           │
-│ (if no focus)   │ (token compliance - read only)  │
-└─────────────────┴─────────────────────────────────┘
+┌───────────────────────────────────────────────────────────────┐
+│              DELEGATE TO SESSION-ORCHESTRATOR                  │
+├───────────────────────────────────────────────────────────────┤
+│  session-orchestrator --mode=start --platform=cloud           │
+│                       [--focus=$FOCUS]                        │
+│                                                               │
+│  The orchestrator will spawn:                                 │
+│    • context-loader (reads CLAUDE.md, PROJECT_STATUS.md)      │
+│    • focus-suggester (if no focus provided)                   │
+│    • design-system-scanner (token compliance - read only)     │
+│    • config-validator (API keys, entitlements)                │
+│    • session-state-manager (init state file)                  │
+│    • session-log-creator (create log entry)                   │
+│    • stats-gatherer (codebase metrics)                        │
+│                                                               │
+│  Note: build-validator skipped (no Xcode on cloud)            │
+└───────────────────────────────────────────────────────────────┘
 ```
 
-**Invoke using Task tool with parallel calls:**
+**Invoke using Task tool:**
 
-1. **focus-suggester** (if no `$ARGUMENTS` provided):
-   - Analyzes README.md Roadmap, PROJECT_STATUS.md Known Issues, recent SESSION_LOG.md
-   - Returns ranked focus recommendations appropriate for cloud sessions
-   - Filters to: logic bugs, documentation, code review, small refactors
-
-2. **design-system-auditor** (read-only mode):
-   - Scans Presentation/ for hardcoded colors, spacing, fonts
-   - Reports violation count (fixes require workstation session)
-
-**Output format:**
 ```markdown
-## Session Health Check
-
-### Focus Recommendations (Cloud-Appropriate)
-1. **Documentation updates** (Score: 12) - README needs refresh
-2. **Logic bug in CalorieUseCase** (Score: 10) - Known issue
-3. **Code review PR #15** (Score: 8) - Pending review
-
-### Design System Compliance
-⚠️ 12 violations found in 5 files
-- ProfileView.swift: 3 hardcoded colors
-- WorkoutView.swift: 2 hardcoded spacing
-[Note: Auto-fix requires workstation session]
-
-### Build Status
-⏭️ Skipped (cloud session - no Xcode)
+Task: session-orchestrator
+Prompt: "--mode=start --platform=cloud --focus=$FOCUS --build-capable=false"
 ```
+
+The orchestrator will:
+1. Load project context
+2. Suggest focus if none provided (filtered for cloud-appropriate tasks)
+3. Scan for design system violations (read-only)
+4. Validate configuration
+5. Create session state file
+6. Create SESSION_LOG.md entry
+7. Gather codebase statistics
 
 **Cloud session limitations:**
 - Cannot run build-validator (no Xcode)
-- design-system-auditor reports only, no auto-fix recommended
+- design-system-scanner reports only, no auto-fix recommended
 - Focus suggestions filtered to non-UI work
 
-### 7. Create session log entry
+### 6. Output summary
 
-Add to SESSION_LOG.md using the template from [session-log-cloud.md](../_shared/templates/session-log-cloud.md).
-
-**Use `$FULL_SESSION` for the session number** (e.g., "Session 12.2" not "Session 13"):
-
-```markdown
-## Session [FULL_SESSION] - [Month Day, Year] ([Time of Day])
-
-### Session Start
-- **Time**: [specific time, e.g., "3:45 PM PST" or "Evening"]
-- **Platform**: cloud
-- **Focus**: [focus or "General"]
-- **Branch**: [branch]
-- **Base**: main @ [commit hash] [commit message]
-
-### Environment
-- **Build Capable**: No
-- **Test Capable**: No
-
-### Pre-Session Status
-- **Build**: Skipped (cloud)
-- **Uncommitted Changes**: [list or None]
-- **Recent Activity**: [summary of previous session's outcome]
-
-### Session Goals
-1. [Primary goal]
-2. [Secondary goal if applicable]
-
-### Work Log
-| Time | Action | Files | Notes |
-|------|--------|-------|-------|
-| [time] | Session started | - | [focus] |
-
-### Work Completed
-[To be filled]
-
-### Session End
-[To be filled by /vitalarc-end-cloud]
-```
-
-### 8. Output summary
+After orchestrator completes, display:
 
 ```
-═══════════════════════════════════════════════════════
+═══════════════════════════════════════════════════════════════
          VITALARC CLOUD SESSION INITIALIZED
-═══════════════════════════════════════════════════════
+═══════════════════════════════════════════════════════════════
 Branch:   [branch]
 Session:  [FULL_SESSION]
 Focus:    [focus]
-───────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────
 Best for: Bug fixes, docs, code review, small changes
-═══════════════════════════════════════════════════════
+═══════════════════════════════════════════════════════════════
 ```
+
+## Responsibilities
+
+| This Skill Handles | Orchestrator Handles |
+|-------------------|---------------------|
+| Git stash/sync | Context loading |
+| Branch handling | Focus suggestions |
+| Stash restoration | Design system scanning |
+| Final summary output | Config validation |
+| | Session state management |
+| | Session log creation |
+| | Stats gathering |
