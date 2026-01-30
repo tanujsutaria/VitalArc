@@ -17,7 +17,7 @@ The app compiles and runs with core MVP requirements addressed:
 - In-app feedback mechanism
 - Recovery score algorithm implemented
 - TRIMP/Strain calculation implemented
-- **Notification use cases and infrastructure added** (Session 14.0-14.1)
+- **Notification use cases and infrastructure added** (Session 14.0)
 
 **Ready for beta testing.**
 
