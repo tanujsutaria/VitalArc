@@ -21,7 +21,7 @@ final class NotificationSettingsViewModel {
 
     // MARK: - Dependencies
 
-    private let scheduler: NotificationScheduler
+    private let scheduler: NotificationSchedulerProtocol
     private let repository: NotificationPreferencesRepository?
 
     // MARK: - Computed Properties
@@ -136,7 +136,7 @@ final class NotificationSettingsViewModel {
 
     // MARK: - Initialization
 
-    init(scheduler: NotificationScheduler? = nil, repository: NotificationPreferencesRepository? = nil) {
+    init(scheduler: NotificationSchedulerProtocol? = nil, repository: NotificationPreferencesRepository? = nil) {
         self.scheduler = scheduler ?? NotificationScheduler()
         self.repository = repository
         self.preferences = .default

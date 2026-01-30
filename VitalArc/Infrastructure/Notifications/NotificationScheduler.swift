@@ -8,9 +8,27 @@
 import Foundation
 import UserNotifications
 
+/// Protocol for notification scheduling operations
+/// Enables dependency injection and testing
+@MainActor
+protocol NotificationSchedulerProtocol {
+    func requestAuthorization() async throws -> Bool
+    func checkAuthorizationStatus() async -> UNAuthorizationStatus
+    func scheduleFromPreferences(_ preferences: NotificationPreferences) async throws
+    func scheduleRecoveryAlertIfNeeded(recoveryScore: Double, threshold: Int, enabled: Bool) async throws
+    func cancelWorkoutReminders() async
+    func cancelRecoveryAlerts()
+    func cancelNutritionReminders()
+    func cancelAllScheduledNotifications() async
+    func updateBadgeCount(_ count: Int) async throws
+    func clearBadge() async throws
+    func getPendingNotificationCount() async -> Int
+    func getPendingNotificationIdentifiers() async -> [String]
+}
+
 /// Handles scheduling and management of local notifications
 @MainActor
-final class NotificationScheduler {
+final class NotificationScheduler: NotificationSchedulerProtocol {
 
     // MARK: - Notification Identifiers
 

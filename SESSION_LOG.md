@@ -1,5 +1,65 @@
 # VitalArc Development Session Log
 
+## Session 14.1 - January 30, 2026
+
+> **Traceability**: Combines cloud (PR #32) and workstation integration.
+
+### Session Start
+- **Time**: Cloud (UTC) → Workstation (6:00 PM PST)
+- **Platform**: cloud ☁️ → macOS 🖥️
+- **Focus**: NotificationSchedulerProtocol + Workstation Integration
+- **Branch**: claude/vitalarc-cloud-setup-DWMbl → dev/mac-session-14.1-2026-01-30
+- **Base**: main @ d7adb6e
+
+### Cloud Work (PR #32)
+| Action | Files | Notes |
+|--------|-------|-------|
+| Created NotificationSchedulerProtocol | NotificationScheduler.swift | Enables DI and testability ✅ |
+| Updated NotificationSettingsViewModel | NotificationSettingsViewModel.swift | Uses protocol type ✅ |
+| Created MockAnalyticsRepository | MockAnalyticsRepository.swift | ⚠️ Compile errors |
+| Created MockAnalyticsUseCases | MockAnalyticsUseCases.swift | ⚠️ Compile errors |
+| Created AnalyticsDashboardViewModelTests | AnalyticsDashboardViewModelTests.swift | ⚠️ Depends on broken mocks |
+
+### Workstation Integration
+| Time | Action | Result |
+|------|--------|--------|
+| 6:00 PM | Merged cloud PR #32 | ✅ |
+| 6:03 PM | Added 5 notification files to Xcode project | ✅ |
+| 6:05 PM | Removed `final` from 5 analytics use cases | ✅ |
+| 6:08 PM | Removed incompatible test files from project | Files kept on disk |
+| 6:12 PM | Build & test verification | 291 tests pass ✅ |
+
+### Files Successfully Integrated
+- `NotificationScheduler.swift` - Added NotificationSchedulerProtocol ✅
+- `NotificationSettingsViewModel.swift` - Uses protocol type ✅
+- 5 notification use cases added to Xcode project ✅
+
+### Files Modified for Testability (removed `final`)
+- `CalculateVolumeUseCase.swift`
+- `CalculateRecoveryScoreUseCase.swift`
+- `CalculateStrainScoreUseCase.swift`
+- `GenerateProgressReportUseCase.swift`
+- `TrackProgressiveOverloadUseCase.swift`
+
+### Files On Disk - Pending Fixes
+| File | Issue |
+|------|-------|
+| `MockAnalyticsRepository.swift` | Wrong entity init params |
+| `MockAnalyticsUseCases.swift` | Was inheriting final classes |
+| `MockHealthRepository.swift` | Duplicate of existing |
+| `MockUserRepository.swift` | Duplicate of existing |
+| `MockMesocycleRepository.swift` | Duplicate of existing |
+| `MockGetExercisesUseCase.swift` | Wrong enum values |
+| + 8 ViewModel test files | Depend on broken mocks |
+
+### Session Summary
+- **Build**: SUCCEEDED ✅
+- **Tests**: 291 passing ✅
+- **Integrated**: NotificationSchedulerProtocol, 5 notification files to Xcode
+- **Pending**: ~15 cloud test files need fixes
+
+---
+
 ## Session 14.0 - January 30, 2026
 
 ### Session Start

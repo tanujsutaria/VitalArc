@@ -44,7 +44,7 @@ struct RecoveryScoreResult {
 }
 
 @MainActor
-final class CalculateRecoveryScoreUseCase {
+class CalculateRecoveryScoreUseCase {
     private let healthRepository: HealthRepository
 
     /// Weights for each factor in the recovery score

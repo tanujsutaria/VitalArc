@@ -1,7 +1,8 @@
 # VitalArc Project Status
 
-**Last Updated**: January 30, 2026
-**Build**: Passing (cloud session - not verified)
+**Last Updated**: January 30, 2026 (Session 14.1)
+**Build**: Passing ✅ (Workstation verified)
+**Tests**: 291 passing ✅
 **Stage**: MVP-Ready
 
 ---
@@ -17,7 +18,8 @@ The app compiles and runs with core MVP requirements addressed:
 - In-app feedback mechanism
 - Recovery score algorithm implemented
 - TRIMP/Strain calculation implemented
-- **Notification use cases and infrastructure added** (Session 14.0)
+- Notification system architecture complete (Session 14)
+- NotificationSchedulerProtocol enables DI/testability (Session 14)
 
 **Ready for beta testing.**
 
@@ -45,7 +47,7 @@ The app compiles and runs with core MVP requirements addressed:
 |---------|------|---------|
 | Sleep Analysis | Basic score | Sleep stage analysis |
 | Nutrition Algorithm | Daily totals, TDEE estimation, **TDEE UI integration** | Macro tracking refinement |
-| Notifications | UI, ViewModel, Repository, Use Cases, Infrastructure | ViewModel integration with use cases |
+| Notifications | UI, ViewModel, Repository, Use Cases, Infrastructure, Protocol | Wire use cases into ViewModel |
 
 ### Not Implemented
 
@@ -66,9 +68,12 @@ The app compiles and runs with core MVP requirements addressed:
    - `USDAFoodAPI.swift`: demo key (rate-limited)
 
 2. **Design System Gaps**: Near complete
-   - ~4 minor violations (3 cornerRadius(3), 1 padding(60))
+   - ~126 frame dimension violations (acceptable for charts)
+   - ~4 minor violations (cornerRadius, padding)
 
-3. **Testing**: ~470 unit tests, ~68% preview coverage
+3. **Cloud Session Test Files**: ~15 files on disk need fixes before integration
+   - Wrong entity constructors, duplicate mocks, enum mismatches
+   - See SESSION_LOG.md Session 14 for details
 
 ---
 
@@ -76,27 +81,29 @@ The app compiles and runs with core MVP requirements addressed:
 
 | Metric | Value |
 |--------|-------|
-| Swift files | ~185 |
-| Lines of code | ~43,000 |
+| Swift files | ~190 |
+| Lines of code | ~44,000 |
 | Views | 73 |
-| ViewModels | 11 |
-| Use cases | 22 |
-| Test files | 29 |
-| Unit tests | ~520 |
+| ViewModels | 12 |
+| Use cases | 25 |
+| Test files | 14 (in project) |
+| Unit tests | 291 (passing) |
 
 ### Test Coverage by ViewModel
 
-| ViewModel | Status | Tests |
-|-----------|--------|-------|
-| OnboardingViewModel | Tested | 26 |
-| ProfileViewModel | Tested | 30 |
-| FoodSearchViewModel | Tested | 24 |
-| FoodLoggingViewModel | Tested | ~20 |
-| WorkoutLoggingViewModel | Tested | ~20 |
-| MetricDetailViewModel | Tested | ~10 |
-| ExerciseLibraryViewModel | Tested | 10 |
-| WorkoutHistoryViewModel | Tested | 15 |
-| HealthDashboardViewModel | Tested | 24 |
-| MesocycleViewModel | Tested | 20 |
-| NotificationSettingsViewModel | Tested | 25 |
-| AnalyticsDashboardViewModel | Pending | - |
+| ViewModel | Status | Tests | Notes |
+|-----------|--------|-------|-------|
+| OnboardingViewModel | Pending | - | Test file needs fixes |
+| ProfileViewModel | Pending | - | Test file needs fixes |
+| FoodSearchViewModel | Pending | - | Test file needs fixes |
+| FoodLoggingViewModel | Tested | ~20 | In project ✅ |
+| WorkoutLoggingViewModel | Tested | 28 | In project ✅ |
+| MetricDetailViewModel | Tested | ~10 | In project ✅ |
+| ExerciseLibraryViewModel | Pending | - | Test file needs fixes |
+| WorkoutHistoryViewModel | Pending | - | Test file needs fixes |
+| HealthDashboardViewModel | Pending | - | Test file needs fixes |
+| MesocycleViewModel | Pending | - | Test file needs fixes |
+| NotificationSettingsViewModel | Pending | - | Test file needs fixes |
+| AnalyticsDashboardViewModel | Pending | - | Test file needs fixes |
+
+**Note**: Cloud sessions created test files for 8 additional ViewModels (~195 tests), but they require fixes before integration. Files exist on disk in `VitalArcTests/`.
