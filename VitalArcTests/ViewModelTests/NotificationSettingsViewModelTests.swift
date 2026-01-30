@@ -16,18 +16,20 @@ import UserNotifications
 final class NotificationSettingsViewModelTests: XCTestCase {
 
     var mockRepository: MockNotificationPreferencesRepository!
+    var mockScheduler: MockNotificationScheduler!
     var viewModel: NotificationSettingsViewModel!
 
     override func setUp() {
         super.setUp()
         mockRepository = MockNotificationPreferencesRepository()
-        // Note: Using real NotificationScheduler since it's a concrete type
-        // For full testing, NotificationScheduler should be a protocol
-        viewModel = NotificationSettingsViewModel(scheduler: nil, repository: mockRepository)
+        mockScheduler = MockNotificationScheduler()
+        mockScheduler.mockAuthorizationStatus = .authorized
+        viewModel = NotificationSettingsViewModel(scheduler: mockScheduler, repository: mockRepository)
     }
 
     override func tearDown() {
         mockRepository = nil
+        mockScheduler = nil
         viewModel = nil
         super.tearDown()
     }
@@ -314,28 +316,16 @@ final class NotificationSettingsViewModelTests: XCTestCase {
 
 // MARK: - Architecture Notes
 /*
- For full NotificationScheduler testing, the following changes would be needed:
+ NotificationSchedulerProtocol has been implemented (Session 14.1):
+ - NotificationSchedulerProtocol defined in NotificationScheduler.swift
+ - NotificationScheduler conforms to protocol
+ - MockNotificationScheduler conforms to protocol
+ - NotificationSettingsViewModel accepts protocol type
 
- 1. Create NotificationSchedulerProtocol:
-    protocol NotificationSchedulerProtocol {
-        func requestAuthorization() async throws -> Bool
-        func checkAuthorizationStatus() async -> UNAuthorizationStatus
-        func scheduleFromPreferences(_ preferences: NotificationPreferences) async throws
-        func scheduleRecoveryAlertIfNeeded(recoveryScore: Double, threshold: Int, enabled: Bool) async throws
-        func cancelAllScheduledNotifications() async
-        func getPendingNotificationCount() async -> Int
-        func clearBadge() async throws
-    }
-
- 2. Make NotificationScheduler conform to protocol
-
- 3. Update NotificationSettingsViewModel init:
-    init(scheduler: NotificationSchedulerProtocol? = nil, repository: NotificationPreferencesRepository? = nil)
-
- 4. Then MockNotificationScheduler can be used for full testing of:
-    - requestNotificationPermissions()
-    - checkAuthorizationStatus()
-    - checkRecoveryAndScheduleAlert()
-    - cancelAllNotifications()
-    - clearBadge()
+ MockNotificationScheduler can now be used for full testing of:
+ - requestNotificationPermissions()
+ - checkAuthorizationStatus()
+ - checkRecoveryAndScheduleAlert()
+ - cancelAllNotifications()
+ - clearBadge()
 */

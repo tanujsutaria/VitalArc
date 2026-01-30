@@ -81,8 +81,8 @@ The app compiles and runs with core MVP requirements addressed:
 | Views | 73 |
 | ViewModels | 11 |
 | Use cases | 22 |
-| Test files | 29 |
-| Unit tests | ~520 |
+| Test files | 32 |
+| Unit tests | ~545 |
 
 ### Test Coverage by ViewModel
 
@@ -99,4 +99,4 @@ The app compiles and runs with core MVP requirements addressed:
 | HealthDashboardViewModel | Tested | 24 |
 | MesocycleViewModel | Tested | 20 |
 | NotificationSettingsViewModel | Tested | 25 |
-| AnalyticsDashboardViewModel | Pending | - |
+| AnalyticsDashboardViewModel | Tested | 25 |

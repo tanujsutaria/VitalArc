@@ -11,7 +11,7 @@ import UserNotifications
 
 /// Mock NotificationScheduler for unit testing NotificationSettingsViewModel
 @MainActor
-final class MockNotificationScheduler {
+final class MockNotificationScheduler: NotificationSchedulerProtocol {
     // MARK: - Mock Data
 
     var mockAuthorizationStatus: UNAuthorizationStatus = .notDetermined
