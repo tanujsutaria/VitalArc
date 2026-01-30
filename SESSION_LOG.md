@@ -5,7 +5,7 @@
 ### Session Start
 - **Time**: UTC
 - **Platform**: cloud
-- **Focus**: Awaiting direction
+- **Focus**: Remaining ViewModel tests + NotificationSettings integration
 - **Branch**: claude/vitalarc-start-cloud-NxkxJ
 - **Base**: main @ 6c9c46b (continuing from Session 14.0)
 
@@ -19,12 +19,38 @@
 - **Recent Activity**: Session 14.0 - Notification system architecture, 80 new ViewModel tests
 
 ### Session Goals
-1. Awaiting user direction
+1. Create remaining ViewModel tests (6 ViewModels)
+2. Integrate notification use cases into NotificationSettingsViewModel
+3. Update PROJECT_STATUS.md
 
 ### Work Log
 | Time | Action | Files | Notes |
 |------|--------|-------|-------|
 | - | Session started | - | Cloud session, continuation |
+| - | Created feature plans | - | Test coverage + NotificationSettings integration |
+| - | Created MockGetExercisesUseCase | MockGetExercisesUseCase.swift | For ExerciseLibrary tests |
+| - | Created ExerciseLibraryViewModelTests | ExerciseLibraryViewModelTests.swift | 10 tests |
+| - | Created WorkoutHistoryViewModelTests | WorkoutHistoryViewModelTests.swift | 15 tests |
+| - | Created HealthDashboardViewModelTests | HealthDashboardViewModelTests.swift | 24 tests |
+| - | Updated PROJECT_STATUS.md | PROJECT_STATUS.md | Test coverage tracking |
+
+### Files Created
+
+**Mocks:**
+- `MockGetExercisesUseCase.swift` - Use case mock with filtering simulation
+
+**ViewModel Tests:**
+- `ExerciseLibraryViewModelTests.swift` - 10 tests (category filtering, search)
+- `WorkoutHistoryViewModelTests.swift` - 15 tests (date range, delete, stats)
+- `HealthDashboardViewModelTests.swift` - 24 tests (metrics, HealthKit, computed props)
+
+### Files Modified
+- `PROJECT_STATUS.md` - Updated test counts and ViewModel coverage table
+
+### Session Summary
+- Added ~50 new ViewModel tests for 3 more ViewModels
+- Total test coverage now at 9/12 ViewModels (75%)
+- Remaining: MesocycleViewModel, NotificationSettingsViewModel, AnalyticsDashboardViewModel
 
 ---
 
