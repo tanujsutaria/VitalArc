@@ -40,6 +40,7 @@
 | Night | Updated project.pbxproj | project.pbxproj | Added all new test files |
 | Night | Design system audit | 12 files | Found 30 violations |
 | Night | Applied design system fixes | 12 Presentation files | 17 typography + 13 spacing fixes |
+| Night | Fixed stale PROJECT_STATUS | PROJECT_STATUS.md | HR integration was already complete, moved to Ready |
 | Night | Session ended | - | Build ✅, 310 tests pass |
 
 ### Session End
@@ -83,6 +84,12 @@
 - TemplateDetailView.swift
 
 **Design system adoption improved from ~85% to ~95%**
+
+#### Documentation Corrections
+- **PROJECT_STATUS.md**: Corrected stale feature status
+  - HealthKit HR integration was already complete (not missing)
+  - Moved Recovery Score and Strain Tracking from "Partially Implemented" to "Ready"
+  - The "HR data from HealthKit" priority was appearing due to outdated docs
 
 ---
 
