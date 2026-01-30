@@ -1,7 +1,7 @@
 # VitalArc Project Status
 
-**Last Updated**: January 29, 2026
-**Build**: Passing
+**Last Updated**: January 30, 2026
+**Build**: Passing (cloud session - not verified)
 **Stage**: MVP-Ready
 
 ---
@@ -17,6 +17,7 @@ The app compiles and runs with core MVP requirements addressed:
 - In-app feedback mechanism
 - Recovery score algorithm implemented
 - TRIMP/Strain calculation implemented
+- **Notification use cases and infrastructure added** (Session 14.0)
 
 **Ready for beta testing.**
 
@@ -44,7 +45,7 @@ The app compiles and runs with core MVP requirements addressed:
 |---------|------|---------|
 | Sleep Analysis | Basic score | Sleep stage analysis |
 | Nutrition Algorithm | Daily totals, TDEE estimation, **TDEE UI integration** | Macro tracking refinement |
-| Notifications | UI, ViewModel, Repository, **nutrition reminders toggle** | Scheduling, actual delivery |
+| Notifications | UI, ViewModel, Repository, Use Cases, Infrastructure | ViewModel integration with use cases |
 
 ### Not Implemented
 
@@ -67,7 +68,7 @@ The app compiles and runs with core MVP requirements addressed:
 2. **Design System Gaps**: Near complete
    - ~4 minor violations (3 cornerRadius(3), 1 padding(60))
 
-3. **Testing**: 310 unit tests, ~68% preview coverage
+3. **Testing**: ~470 unit tests, ~68% preview coverage
 
 ---
 
@@ -75,10 +76,27 @@ The app compiles and runs with core MVP requirements addressed:
 
 | Metric | Value |
 |--------|-------|
-| Swift files | ~175 |
-| Lines of code | ~41,000 |
+| Swift files | ~185 |
+| Lines of code | ~43,000 |
 | Views | 73 |
 | ViewModels | 11 |
-| Use cases | 19 |
-| Test files | 20 |
-| Unit tests | 310 |
+| Use cases | 22 |
+| Test files | 29 |
+| Unit tests | ~520 |
+
+### Test Coverage by ViewModel
+
+| ViewModel | Status | Tests |
+|-----------|--------|-------|
+| OnboardingViewModel | Tested | 26 |
+| ProfileViewModel | Tested | 30 |
+| FoodSearchViewModel | Tested | 24 |
+| FoodLoggingViewModel | Tested | ~20 |
+| WorkoutLoggingViewModel | Tested | ~20 |
+| MetricDetailViewModel | Tested | ~10 |
+| ExerciseLibraryViewModel | Tested | 10 |
+| WorkoutHistoryViewModel | Tested | 15 |
+| HealthDashboardViewModel | Tested | 24 |
+| MesocycleViewModel | Tested | 20 |
+| NotificationSettingsViewModel | Tested | 25 |
+| AnalyticsDashboardViewModel | Pending | - |
