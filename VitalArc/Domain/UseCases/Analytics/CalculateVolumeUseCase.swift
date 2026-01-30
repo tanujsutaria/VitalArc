@@ -8,7 +8,7 @@
 import Foundation
 
 /// Calculates training volume metrics for a given time period
-final class CalculateVolumeUseCase {
+class CalculateVolumeUseCase {
     private let workoutRepository: WorkoutRepository
 
     init(workoutRepository: WorkoutRepository) {

@@ -8,7 +8,7 @@
 import Foundation
 
 /// Tracks progressive overload for exercises
-final class TrackProgressiveOverloadUseCase {
+class TrackProgressiveOverloadUseCase {
     private let workoutRepository: WorkoutRepository
 
     init(workoutRepository: WorkoutRepository) {

@@ -30,7 +30,7 @@ struct HeartRateSample: Equatable {
 }
 
 @MainActor
-final class CalculateStrainScoreUseCase {
+class CalculateStrainScoreUseCase {
     private let healthRepository: HealthRepository
     private let userRepository: UserRepository
     private let healthKitManager: HealthKitManager

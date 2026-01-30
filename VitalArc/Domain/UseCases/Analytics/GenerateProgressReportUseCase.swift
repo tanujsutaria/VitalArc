@@ -8,7 +8,7 @@
 import Foundation
 
 /// Generates comprehensive progress reports
-final class GenerateProgressReportUseCase {
+class GenerateProgressReportUseCase {
     private let workoutRepository: WorkoutRepository
     private let healthRepository: HealthRepository
     private let nutritionRepository: NutritionRepository

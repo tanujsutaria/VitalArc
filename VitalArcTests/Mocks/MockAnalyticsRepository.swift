@@ -177,12 +177,8 @@ final class MockAnalyticsRepository: AnalyticsRepository {
         bodyWeight: Double? = 75.0
     ) -> ProgressSnapshot {
         return ProgressSnapshot(
-            id: UUID(),
             date: date,
-            bodyWeight: bodyWeight,
-            measurements: nil,
-            photos: nil,
-            notes: nil
+            bodyWeight: bodyWeight
         )
     }
 
@@ -206,16 +202,14 @@ final class MockAnalyticsRepository: AnalyticsRepository {
     static func createSamplePersonalRecord(
         exerciseName: String = "Bench Press",
         value: Double = 100,
-        recordType: PersonalRecordType = .oneRepMax
+        recordType: RecordType = .oneRepMax
     ) -> PersonalRecord {
         return PersonalRecord(
-            id: UUID(),
             exerciseId: UUID(),
             exerciseName: exerciseName,
-            value: value,
             recordType: recordType,
-            date: Date(),
-            workoutId: UUID()
+            value: value,
+            date: Date()
         )
     }
 }
