@@ -30,16 +30,29 @@
 | - | Created MockMesocycleRepository | MockMesocycleRepository.swift | Full mock with CRUD tracking |
 | - | Created MesocycleViewModelTests | MesocycleViewModelTests.swift | 20 tests |
 | - | Created MockNotificationScheduler | MockNotificationScheduler.swift | For notification testing |
+| - | Created MockNotificationPreferencesRepository | MockNotificationPreferencesRepository.swift | For preferences persistence |
+| - | Created NotificationSettingsViewModelTests | NotificationSettingsViewModelTests.swift | 25 tests |
+| - | Updated PROJECT_STATUS.md | PROJECT_STATUS.md | 11/12 ViewModels tested |
 
 ### Files Created
 - `MockMesocycleRepository.swift` - Full mock with status operations
 - `MesocycleViewModelTests.swift` - 20 tests covering CRUD, status, filtering
-- `MockNotificationScheduler.swift` - Mock for notification testing
+- `MockNotificationScheduler.swift` - Mock for notification scheduler
+- `MockNotificationPreferencesRepository.swift` - Mock for preferences persistence
+- `NotificationSettingsViewModelTests.swift` - 25 tests covering toggles, thresholds, days
 
 ### Session Summary
-- Added MesocycleViewModel tests (10/12 ViewModels now tested, 83%)
-- Created notification mock infrastructure for future tests
-- Total new tests this session: ~20
+- Added MesocycleViewModel tests (20 tests)
+- Added NotificationSettingsViewModel tests (25 tests)
+- Created notification mock infrastructure
+- **11/12 ViewModels now tested (92%)**
+- Total new tests this session: ~45
+- Only AnalyticsDashboardViewModel remains untested
+
+### Architecture Note
+NotificationSettingsViewModelTests includes comments for future improvements:
+- NotificationScheduler should be extracted to a protocol for full testability
+- MockNotificationScheduler is ready when protocol extraction is done
 
 ---
 
