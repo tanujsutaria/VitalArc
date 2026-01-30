@@ -41,7 +41,10 @@
 | Night | Design system audit | 12 files | Found 30 violations |
 | Night | Applied design system fixes | 12 Presentation files | 17 typography + 13 spacing fixes |
 | Night | Fixed stale PROJECT_STATUS | PROJECT_STATUS.md | HR integration was already complete, moved to Ready |
-| Night | Session ended | - | Build ✅, 310 tests pass |
+| Night | Code review fixes | MetricCard.swift, NutritionSummaryView.swift | Removed hardcoded frame sizes (80, 150), used design tokens |
+| Night | Architecture fix | Domain/Common → Presentation/Common/Models | Moved DateRange.swift, SelectedMetric.swift to fix Clean Architecture violation |
+| Night | Build verified | - | Build ✅ passing |
+| Night | Session ended | - | All code review feedback addressed |
 
 ### Session End
 - **Time**: Night PST
@@ -90,6 +93,18 @@
   - HealthKit HR integration was already complete (not missing)
   - Moved Recovery Score and Strain Tracking from "Partially Implemented" to "Ready"
   - The "HR data from HealthKit" priority was appearing due to outdated docs
+
+#### Code Review Fixes
+
+**Hardcoded Frame Sizes Removed:**
+- `MetricCard.swift`: Removed `.frame(width: 80)` - now uses dynamic sizing
+- `NutritionSummaryView.swift`: Removed `.frame(width: 150)` - now uses design tokens
+
+**Architecture Violation Fixed:**
+- Moved `Domain/Common/DateRange.swift` → `Presentation/Common/Models/DateRange.swift`
+- Moved `Domain/Common/SelectedMetric.swift` → `Presentation/Common/Models/SelectedMetric.swift`
+- These were presentation-layer concerns (view state) incorrectly placed in Domain layer
+- Domain layer should contain only pure business logic entities
 
 ---
 
