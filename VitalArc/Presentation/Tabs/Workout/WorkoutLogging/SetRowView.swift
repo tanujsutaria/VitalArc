@@ -12,10 +12,10 @@ struct SetRowView: View {
     let onDelete: () -> Void
 
     var body: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: Spacing.md) {
             // Set Number
             Text("\(setData.setNumber)")
-                .font(.headline)
+                .font(.vitalH4)
                 .foregroundStyle(.secondary)
                 .frame(width: 30)
 
@@ -62,7 +62,7 @@ struct SetRowView: View {
                 setData.completed.toggle()
             } label: {
                 Image(systemName: setData.completed ? "checkmark.circle.fill" : "circle")
-                    .font(.title2)
+                    .font(.vitalH2)
                     .foregroundStyle(setData.completed ? Color.vitalSuccess : .secondary)
             }
             .buttonStyle(.plain)
@@ -70,7 +70,7 @@ struct SetRowView: View {
             // Delete Button
             Button(role: .destructive, action: onDelete) {
                 Image(systemName: "trash")
-                    .font(.body)
+                    .font(.vitalBody)
                     .foregroundStyle(Color.vitalDanger)
             }
             .buttonStyle(.plain)

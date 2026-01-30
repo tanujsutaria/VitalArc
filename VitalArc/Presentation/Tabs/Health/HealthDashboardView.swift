@@ -12,10 +12,14 @@ struct HealthDashboardView: View {
     // MARK: - Properties
 
     @State private var viewModel: HealthDashboardViewModel
+    @State private var selectedMetric: HealthMetricType?
+
+    private let healthRepository: HealthRepository
 
     // MARK: - Initialization
 
     init(healthRepository: HealthRepository) {
+        self.healthRepository = healthRepository
         self._viewModel = State(initialValue: HealthDashboardViewModel(healthRepository: healthRepository))
     }
 
@@ -66,6 +70,36 @@ struct HealthDashboardView: View {
             } message: {
                 Text("Please grant access to HealthKit in Settings to view your health data.")
             }
+            .sheet(item: $selectedMetric) { metric in
+                MetricDetailSheet(
+                    metricType: metric,
+                    currentValue: getCurrentValue(for: metric),
+                    healthRepository: healthRepository
+                )
+                .presentationDetents([.medium, .large])
+                .presentationDragIndicator(.visible)
+            }
+        }
+    }
+
+    // MARK: - Helpers for Metric Values
+
+    private func getCurrentValue(for metric: HealthMetricType) -> Double {
+        guard let today = viewModel.todayMetrics else { return 0 }
+
+        switch metric {
+        case .hrv:
+            return today.heartRateVariability ?? 0
+        case .restingHR:
+            return today.restingHeartRate ?? 0
+        case .steps:
+            return Double(today.steps ?? 0)
+        case .activeEnergy:
+            return today.activeEnergy ?? 0
+        case .sleep:
+            return today.sleepHours ?? 0
+        case .weight:
+            return UnitConversion.kgToLbs(today.weight ?? 0)
         }
     }
 
@@ -74,6 +108,12 @@ struct HealthDashboardView: View {
     @ViewBuilder
     private var contentView: some View {
         VStack(spacing: Spacing.sectionSpacing) {
+            // Score rings section (Recovery & Sleep)
+            if let today = viewModel.todayMetrics {
+                scoreRingsSection(today)
+                    .transition(.vitalScale)
+            }
+
             // Today's metrics section
             if let today = viewModel.todayMetrics {
                 todayMetricsSection(today)
@@ -89,6 +129,130 @@ struct HealthDashboardView: View {
             }
         }
         .animation(.vitalSpring, value: viewModel.todayMetrics != nil)
+    }
+
+    // MARK: - Score Rings
+
+    private func scoreRingsSection(_ metrics: HealthMetrics) -> some View {
+        VStack(alignment: .leading, spacing: Spacing.md) {
+            Text("Today's Scores")
+                .font(.vitalDisplaySmall)
+                .foregroundStyle(Color.vitalAdaptiveTextPrimary)
+
+            HStack(spacing: Spacing.md) {
+                // Recovery Score
+                ScoreRingView(
+                    score: calculateRecoveryScore(metrics),
+                    title: "Recovery",
+                    subtitle: recoveryLabel(calculateRecoveryScore(metrics)),
+                    gradient: Color.vitalSuccessGradient,
+                    size: 90,
+                    lineWidth: 8
+                )
+
+                // Sleep Score
+                ScoreRingView(
+                    score: calculateSleepScore(metrics),
+                    title: "Sleep",
+                    subtitle: sleepLabel(calculateSleepScore(metrics)),
+                    gradient: Color.vitalAccentGradient,
+                    size: 90,
+                    lineWidth: 8
+                )
+
+                // Activity Score
+                ScoreRingView(
+                    score: calculateActivityScore(metrics),
+                    title: "Activity",
+                    subtitle: activityLabel(calculateActivityScore(metrics)),
+                    gradient: Color.vitalInfoGradient,
+                    size: 90,
+                    lineWidth: 8
+                )
+            }
+            .frame(maxWidth: .infinity)
+        }
+    }
+
+    // MARK: - Score Calculations
+
+    private func calculateRecoveryScore(_ metrics: HealthMetrics) -> Double {
+        // Recovery based on HRV and resting HR
+        var score: Double = 50 // Base score
+
+        if let hrv = metrics.heartRateVariability {
+            // HRV: Higher is generally better
+            // Typical range: 20-100ms
+            let hrvScore = min((hrv / 80) * 50, 50)
+            score = hrvScore
+        }
+
+        if let rhr = metrics.restingHeartRate {
+            // RHR: Lower is generally better for athletes
+            // Typical range: 50-80 BPM
+            let rhrScore = max(0, min((80 - rhr) / 30 * 30, 30))
+            score += rhrScore
+        }
+
+        return min(max(score, 0), 100)
+    }
+
+    private func calculateSleepScore(_ metrics: HealthMetrics) -> Double {
+        guard let sleepHours = metrics.sleepHours else { return 0 }
+        // Target: 7-9 hours
+        if sleepHours >= 7 && sleepHours <= 9 {
+            return min(100, 80 + (sleepHours - 7) * 10)
+        } else if sleepHours < 7 {
+            return max(0, (sleepHours / 7) * 80)
+        } else {
+            // More than 9 hours, slightly diminishing returns
+            return max(70, 90 - (sleepHours - 9) * 10)
+        }
+    }
+
+    private func calculateActivityScore(_ metrics: HealthMetrics) -> Double {
+        var score: Double = 0
+
+        // Steps contribution (target: 10,000)
+        if let steps = metrics.steps {
+            score += min(Double(steps) / 10000 * 50, 50)
+        }
+
+        // Active energy contribution (target: 500 kcal)
+        if let energy = metrics.activeEnergy {
+            score += min(energy / 500 * 50, 50)
+        }
+
+        return min(score, 100)
+    }
+
+    private func recoveryLabel(_ score: Double) -> String {
+        switch score {
+        case 0..<30: return "Poor"
+        case 30..<50: return "Fair"
+        case 50..<70: return "Good"
+        case 70..<85: return "Great"
+        default: return "Excellent"
+        }
+    }
+
+    private func sleepLabel(_ score: Double) -> String {
+        switch score {
+        case 0..<50: return "Poor"
+        case 50..<70: return "Fair"
+        case 70..<85: return "Good"
+        default: return "Excellent"
+        }
+    }
+
+    private func activityLabel(_ score: Double) -> String {
+        switch score {
+        case 0..<30: return "Low"
+        case 30..<50: return "Light"
+        case 50..<70: return "Moderate"
+        case 70..<85: return "Active"
+        default: return "High"
+        }
     }
 
     // MARK: - Today's Metrics
@@ -107,7 +271,8 @@ struct HealthDashboardView: View {
                         unit: "ms",
                         icon: "heart.fill",
                         color: .vitalDanger,
-                        sparklineData: getSparklineData(for: \.heartRateVariability)
+                        sparklineData: getSparklineData(for: \.heartRateVariability),
+                        onTap: { selectedMetric = .hrv }
                     )
                 }
 
@@ -118,7 +283,8 @@ struct HealthDashboardView: View {
                         unit: "BPM",
                         icon: "waveform.path.ecg",
                         color: .vitalAccent,
-                        sparklineData: getSparklineData(for: \.restingHeartRate)
+                        sparklineData: getSparklineData(for: \.restingHeartRate),
+                        onTap: { selectedMetric = .restingHR }
                     )
                 }
 
@@ -129,7 +295,8 @@ struct HealthDashboardView: View {
                         unit: "steps",
                         icon: "figure.walk",
                         color: .vitalInfo,
-                        sparklineData: viewModel.weekMetrics.compactMap { $0.steps.map(Double.init) }
+                        sparklineData: viewModel.weekMetrics.compactMap { $0.steps.map(Double.init) },
+                        onTap: { selectedMetric = .steps }
                     )
                 }
 
@@ -140,7 +307,8 @@ struct HealthDashboardView: View {
                         unit: "kcal",
                         icon: "flame.fill",
                         color: .vitalWarning,
-                        sparklineData: getSparklineData(for: \.activeEnergy)
+                        sparklineData: getSparklineData(for: \.activeEnergy),
+                        onTap: { selectedMetric = .activeEnergy }
                     )
                 }
 
@@ -151,7 +319,8 @@ struct HealthDashboardView: View {
                         unit: "hours",
                         icon: "bed.double.fill",
                         color: .vitalSecondary,
-                        sparklineData: getSparklineData(for: \.sleepHours)
+                        sparklineData: getSparklineData(for: \.sleepHours),
+                        onTap: { selectedMetric = .sleep }
                     )
                 }
 
@@ -162,7 +331,8 @@ struct HealthDashboardView: View {
                         unit: "lbs",
                         icon: "scalemass.fill",
                         color: .vitalSuccess,
-                        sparklineData: getWeightSparklineData()
+                        sparklineData: getWeightSparklineData(),
+                        onTap: { selectedMetric = .weight }
                     )
                 }
             }
@@ -252,7 +422,7 @@ struct HealthDashboardView: View {
                         .foregroundStyle(.white)
                 }
 
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: Spacing.xs) {
                     Text("Recovery Status")
                         .font(.vitalBodySmall)
                         .foregroundStyle(.white.opacity(0.9))

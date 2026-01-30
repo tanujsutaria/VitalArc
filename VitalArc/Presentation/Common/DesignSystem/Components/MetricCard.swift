@@ -45,6 +45,7 @@ struct MetricCard: View {
     let color: Color
     let trend: TrendDirection?
     let sparklineData: [Double]?
+    var onTap: (() -> Void)?
 
     init(
         title: String,
@@ -53,7 +54,8 @@ struct MetricCard: View {
         icon: String,
         color: Color,
         trend: TrendDirection? = nil,
-        sparklineData: [Double]? = nil
+        sparklineData: [Double]? = nil,
+        onTap: (() -> Void)? = nil
     ) {
         self.title = title
         self.value = value
@@ -62,9 +64,24 @@ struct MetricCard: View {
         self.color = color
         self.trend = trend
         self.sparklineData = sparklineData
+        self.onTap = onTap
     }
 
     var body: some View {
+        Group {
+            if let onTap = onTap {
+                Button(action: onTap) {
+                    cardContent
+                }
+                .buttonStyle(.plain)
+            } else {
+                cardContent
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var cardContent: some View {
         VitalCard(shadow: true) {
             VStack(alignment: .leading, spacing: Spacing.sm) {
                 // Header with icon and trend

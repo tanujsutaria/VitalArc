@@ -304,7 +304,7 @@ struct TemplateExercisePickerView: View {
 
                 // Add indicator
                 Image(systemName: "plus.circle")
-                    .font(.title3)
+                    .font(.vitalH3)
                     .foregroundStyle(Color.vitalPrimary)
             }
             .padding(Spacing.md)

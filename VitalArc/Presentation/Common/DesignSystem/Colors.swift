@@ -114,6 +114,12 @@ extension Color {
         endPoint: .bottomTrailing
     )
 
+    static let vitalInfoGradient = LinearGradient(
+        colors: [vitalInfo, Color(hex: "#0284C7")],
+        startPoint: .topLeading,
+        endPoint: .bottomTrailing
+    )
+
     // MARK: - Hex Color Initializer
 
     init(hex: String) {

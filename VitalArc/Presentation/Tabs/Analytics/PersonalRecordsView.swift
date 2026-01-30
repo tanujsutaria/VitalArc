@@ -87,7 +87,7 @@ struct PersonalRecordRow: View {
         HStack(spacing: Spacing.md) {
             // Icon
             Image(systemName: record.recordType.icon)
-                .font(.title2)
+                .font(.vitalH2)
                 .foregroundStyle(iconColor)
                 .frame(width: 40)
 

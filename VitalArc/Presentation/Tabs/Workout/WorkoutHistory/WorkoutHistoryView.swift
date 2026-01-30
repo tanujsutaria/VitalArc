@@ -51,7 +51,7 @@ struct WorkoutHistoryView: View {
     // MARK: - Statistics Card
 
     private var statisticsCard: some View {
-        HStack(spacing: 20) {
+        HStack(spacing: Spacing.screenPadding) {
             StatisticView(
                 title: "Workouts",
                 value: "\(viewModel.totalWorkouts)",
@@ -85,7 +85,7 @@ struct WorkoutHistoryView: View {
 
     private var dateRangeFilter: some View {
         ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 12) {
+            HStack(spacing: Spacing.md) {
                 ForEach(DateRange.allCases, id: \.self) { range in
                     Button {
                         Task {

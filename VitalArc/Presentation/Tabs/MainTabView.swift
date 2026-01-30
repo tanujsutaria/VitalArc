@@ -36,21 +36,12 @@ struct MainTabView: View {
                 }
                 .tag(2)
 
-            // Analytics Tab
-            if let container = container {
-                AnalyticsTabView(container: container)
-                    .tabItem {
-                        Label("Analytics", systemImage: "chart.xyaxis.line")
-                    }
-                    .tag(3)
-            }
-
             // Profile Tab
             ProfileView()
                 .tabItem {
                     Label("Profile", systemImage: "person.fill")
                 }
-                .tag(4)
+                .tag(3)
         }
         .tint(.accentColor)
     }
@@ -65,6 +56,7 @@ struct WorkoutTabView: View {
         case exercises = "Exercises"
         case templates = "Templates"
         case mesocycles = "Mesocycles"
+        case history = "History"
     }
 
     var body: some View {
@@ -94,6 +86,8 @@ struct WorkoutTabView: View {
                         WorkoutTemplatesContentView(container: container)
                     case .mesocycles:
                         MesocycleContentView(container: container)
+                    case .history:
+                        WorkoutHistoryContentView(container: container)
                     }
                 }
                 .navigationTitle("Workout")
@@ -103,7 +97,7 @@ struct WorkoutTabView: View {
                             showingWorkoutLogger = true
                         } label: {
                             Image(systemName: "plus.circle.fill")
-                                .font(.title2)
+                                .font(.vitalH2)
                         }
                     }
                 }
@@ -397,11 +391,11 @@ struct NutritionTabView: View {
                         )
                     } else {
                         ScrollView {
-                            VStack(spacing: 16) {
+                            VStack(spacing: Spacing.lg) {
                                 if let error = nutritionLoadError {
                                     VStack(spacing: Spacing.sm) {
                                         Image(systemName: "exclamationmark.triangle")
-                                            .font(.largeTitle)
+                                            .font(.vitalDisplayLarge)
                                             .foregroundStyle(Color.vitalWarning)
                                         Text(error)
                                             .font(.vitalBody)
@@ -409,7 +403,10 @@ struct NutritionTabView: View {
                                     }
                                     .padding()
                                 }
-                                NutritionSummaryView(dailyNutrition: dailyNutrition)
+                                NutritionSummaryView(
+                                    dailyNutrition: dailyNutrition,
+                                    nutritionRepository: container.nutritionRepository
+                                )
                             }
                             .padding()
                         }
@@ -444,6 +441,10 @@ struct NutritionTabView: View {
 // ProfileView is now implemented in Profile/ProfileView.swift
 
 // MARK: - Analytics Tab View
+
+// MARK: - Analytics Tab View (Deprecated - analytics now in-context)
+// This view is no longer used but kept for reference
+// Analytics are now integrated directly into Health, Workout, and Nutrition tabs
 
 struct AnalyticsTabView: View {
     let container: DependencyContainer

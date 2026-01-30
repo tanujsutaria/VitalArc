@@ -28,7 +28,7 @@ struct WorkoutLoggingView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(spacing: 20) {
+                VStack(spacing: Spacing.screenPadding) {
                     // Workout Info Card
                     workoutInfoCard
 
@@ -135,7 +135,7 @@ struct WorkoutLoggingView: View {
     // MARK: - Exercises List
 
     private var exercisesList: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: Spacing.lg) {
             ForEach(viewModel.selectedExercises) { exercise in
                 let sets = Binding(
                     get: { viewModel.exerciseSets[exercise.id] ?? [] },

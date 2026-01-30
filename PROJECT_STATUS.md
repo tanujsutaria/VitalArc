@@ -67,7 +67,7 @@ The app compiles and runs with core MVP requirements addressed:
 2. **Design System Gaps**: Near complete
    - ~4 minor violations (3 cornerRadius(3), 1 padding(60))
 
-3. **Testing**: ~68% preview coverage
+3. **Testing**: 310 unit tests, ~68% preview coverage
 
 ---
 
@@ -75,9 +75,10 @@ The app compiles and runs with core MVP requirements addressed:
 
 | Metric | Value |
 |--------|-------|
-| Swift files | ~165 |
-| Lines of code | ~39,500 |
+| Swift files | ~175 |
+| Lines of code | ~41,000 |
 | Views | 73 |
 | ViewModels | 11 |
 | Use cases | 19 |
-| Test files | 10 |
+| Test files | 20 |
+| Unit tests | 310 |
