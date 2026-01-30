@@ -24,8 +24,16 @@ final class DependencyContainer {
     let templateRepository: TemplateRepository
     let notificationPreferencesRepository: NotificationPreferencesRepository
 
+    // Infrastructure
+    let notificationScheduler: NotificationScheduler
+
     // Use Cases
     let calculateTDEEUseCase: CalculateTDEEUseCase
+
+    // Notification Use Cases
+    let scheduleNotificationsUseCase: ScheduleNotificationsUseCase
+    let requestNotificationPermissionUseCase: RequestNotificationPermissionUseCase
+    let checkRecoveryAndNotifyUseCase: CheckRecoveryAndNotifyUseCase
 
     init(modelContext: ModelContext) {
         self.modelContext = modelContext
@@ -40,8 +48,24 @@ final class DependencyContainer {
         self.templateRepository = SwiftDataTemplateRepository(modelContext: modelContext)
         self.notificationPreferencesRepository = SwiftDataNotificationPreferencesRepository(modelContext: modelContext)
 
+        // Initialize infrastructure
+        self.notificationScheduler = NotificationScheduler()
+
         // Initialize use cases
         self.calculateTDEEUseCase = CalculateTDEEUseCase(userRepository: self.userRepository)
+
+        // Initialize notification use cases
+        self.scheduleNotificationsUseCase = ScheduleNotificationsUseCase(
+            notificationScheduler: self.notificationScheduler,
+            preferencesRepository: self.notificationPreferencesRepository
+        )
+        self.requestNotificationPermissionUseCase = RequestNotificationPermissionUseCase(
+            notificationScheduler: self.notificationScheduler
+        )
+        self.checkRecoveryAndNotifyUseCase = CheckRecoveryAndNotifyUseCase(
+            notificationScheduler: self.notificationScheduler,
+            preferencesRepository: self.notificationPreferencesRepository
+        )
     }
 }
 
