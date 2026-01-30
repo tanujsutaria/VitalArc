@@ -47,6 +47,14 @@ enum Spacing {
     static let iconGiant: CGFloat = 60     // Hero sections
     static let iconHero: CGFloat = 64      // Large empty states
 
+    // MARK: - Illustration Sizes
+    // For hero icons, onboarding illustrations, empty states
+
+    static let illustrationSmall: CGFloat = 80     // Small empty states
+    static let illustrationMedium: CGFloat = 100   // Standard empty states
+    static let illustrationLarge: CGFloat = 120    // Hero sections
+    static let illustrationXLarge: CGFloat = 140   // Welcome/onboarding
+
     // MARK: - Avatar Sizes
 
     static let avatarSmall: CGFloat = 40   // List items, compact views

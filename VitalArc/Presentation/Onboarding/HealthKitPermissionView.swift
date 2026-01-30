@@ -23,13 +23,12 @@ struct HealthKitPermissionView: View {
             Image(systemName: "heart.text.square.fill")
                 .resizable()
                 .aspectRatio(contentMode: .fit)
-                .frame(width: 100, height: 100)
+                .frame(width: Spacing.illustrationMedium, height: Spacing.illustrationMedium)
                 .foregroundStyle(.pink.gradient)
 
             // Title
             Text("Connect to Health")
-                .font(.largeTitle)
-                .fontWeight(.bold)
+                .font(.vitalDisplayLarge)
                 .multilineTextAlignment(.center)
 
             // Description
@@ -61,7 +60,7 @@ struct HealthKitPermissionView: View {
             .padding(.horizontal)
 
             Text("VitalArc will request access to your Health data. You can change this anytime in Settings.")
-                .font(.caption)
+                .font(.vitalCaption)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal)
@@ -101,7 +100,7 @@ struct HealthKitPermissionView: View {
                     }
                 }) {
                     Text("Skip for Now")
-                        .font(.subheadline)
+                        .font(.vitalBodySmall)
                         .foregroundColor(.secondary)
                 }
 
@@ -137,17 +136,17 @@ struct PermissionRow: View {
     let description: String
 
     var body: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: Spacing.itemSpacing) {
             Image(systemName: icon)
-                .font(.title2)
+                .font(.vitalH2)
                 .foregroundStyle(.pink)
-                .frame(width: 32)
+                .frame(width: Spacing.iconXLarge)
 
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: Spacing.xxs) {
                 Text(title)
-                    .font(.headline)
+                    .font(.vitalH3)
                 Text(description)
-                    .font(.subheadline)
+                    .font(.vitalBodySmall)
                     .foregroundStyle(.secondary)
             }
         }

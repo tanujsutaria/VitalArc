@@ -1,5 +1,70 @@
 # VitalArc Development Session Log
 
+## Session 13.6 - January 29, 2026 (Night)
+
+### Session Start
+- **Time**: Night PST
+- **Platform**: macOS 🖥️
+- **Focus**: General session
+- **Branch**: dev/mac-session-13.6-2026-01-29
+- **Base**: main @ 7c72826
+
+### Environment
+- **Build Capable**: Yes
+- **Test Capable**: Yes (unit + UI)
+
+### Pre-Session Status
+- **Build**: ✅ Passed
+- **Uncommitted Changes**: None
+- **Recent Activity**: Session 13.5 - Gender-aware TRIMP, custom HR settings, 28 icon font tokens, 54 font violation fixes
+
+### Session Goals
+1. HealthKit HR data integration (highest value - score 10/10)
+2. Design system completion (~212 violations remaining)
+3. General development as directed
+
+### Work Log
+| Time | Action | Files | Notes |
+|------|--------|-------|-------|
+| Night | Session started | - | Build verified ✅ |
+| Night | Added ColorOpacity tokens | Colors.swift | veryLight, light, medium, heavy opacity values |
+| Night | Added illustration tokens | Spacing.swift | illustrationSmall/Medium/Large/XLarge sizes |
+| Night | Migrated HealthKitPermissionView | HealthKitPermissionView.swift | Full design token migration |
+| Night | Migrated WelcomeView | WelcomeView.swift | Full design token migration |
+| Night | Migrated WorkoutHistoryView | WorkoutHistoryView.swift | Full design token migration |
+| Night | Migrated WorkoutLoggingView | WorkoutLoggingView.swift | Full design token migration |
+| Night | Added gender TRIMP tests | AnalyticsTests.swift | Female k=1.67, other k=1.795 |
+| Night | Added custom HR tests | AnalyticsTests.swift | Custom HR max/resting settings |
+| Night | Added edge case tests | AnalyticsTests.swift | TRIMP edge case coverage |
+| Night | Session ended | - | Build ✅, 123 tests pass |
+
+### Session End
+- **Time**: Night PST
+- **Duration**: ~2 hours
+- **Status**: Complete
+- **Build**: ✅ Passing
+- **Tests**: ✅ 123 tests, 0 failures
+- **Commits**: Pending
+
+### Work Completed
+
+#### Design System Token Additions
+- **Colors.swift**: Added `ColorOpacity` enum with opacity tokens (veryLight: 0.1, light: 0.2, medium: 0.5, heavy: 0.8)
+- **Spacing.swift**: Added illustration size tokens (illustrationSmall: 80, illustrationMedium: 120, illustrationLarge: 150, illustrationXLarge: 200)
+
+#### Design System Migration (4 Views)
+- **HealthKitPermissionView.swift**: Migrated to design tokens (colors, spacing, typography)
+- **WelcomeView.swift**: Migrated to design tokens (colors, spacing, typography)
+- **WorkoutHistoryView.swift**: Migrated to design tokens (colors, spacing, typography)
+- **WorkoutLoggingView.swift**: Migrated to design tokens (colors, spacing, typography)
+
+#### Unit Test Coverage Additions
+- **Gender-specific TRIMP tests**: Added tests for female (k=1.67) and other (k=1.795) gender coefficients
+- **Custom HR settings tests**: Added tests for custom max HR and resting HR overrides
+- **Edge case TRIMP tests**: Added tests for edge cases in TRIMP calculation
+
+---
+
 ## Session 13.5 - January 29, 2026 (Night)
 
 ### Session Start

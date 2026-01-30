@@ -136,7 +136,7 @@ struct WorkoutHistoryView: View {
                     }
                 } header: {
                     Text(formatDate(date))
-                        .font(.headline)
+                        .font(.vitalH3)
                 }
             }
         }
@@ -192,7 +192,7 @@ struct StatisticView: View {
     var body: some View {
         VStack(spacing: Spacing.sm) {
             Image(systemName: icon)
-                .font(.title2)
+                .font(.vitalH2)
                 .foregroundStyle(Color.vitalPrimary)
 
             Text(value)
@@ -213,37 +213,37 @@ struct WorkoutRowView: View {
     let workout: Workout
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: Spacing.sm) {
             HStack {
                 Text(workout.name ?? "Workout")
-                    .font(.headline)
+                    .font(.vitalH3)
 
                 Spacer()
 
                 Text(formatTime(workout.date))
-                    .font(.caption)
+                    .font(.vitalCaption)
                     .foregroundStyle(.secondary)
             }
 
-            HStack(spacing: 16) {
+            HStack(spacing: Spacing.md) {
                 Label("\(workout.totalSets) sets", systemImage: "list.bullet")
-                    .font(.caption)
+                    .font(.vitalCaption)
                     .foregroundStyle(.secondary)
 
                 Label(String(format: "%.0f kg", workout.totalVolume), systemImage: "scalemass")
-                    .font(.caption)
+                    .font(.vitalCaption)
                     .foregroundStyle(.secondary)
 
                 if let duration = workout.duration {
                     Label(formatDuration(duration), systemImage: "timer")
-                        .font(.caption)
+                        .font(.vitalCaption)
                         .foregroundStyle(.secondary)
                 }
             }
 
             if let notes = workout.notes {
                 Text(notes)
-                    .font(.caption)
+                    .font(.vitalCaption)
                     .foregroundStyle(.tertiary)
                     .lineLimit(2)
             }

@@ -84,40 +84,40 @@ struct WorkoutLoggingView: View {
     // MARK: - Workout Info Card
 
     private var workoutInfoCard: some View {
-        VStack(spacing: 12) {
+        VStack(spacing: Spacing.itemSpacing) {
             TextField("Workout Name (optional)", text: $viewModel.workoutName)
-                .font(.headline)
+                .font(.vitalH3)
                 .textFieldStyle(.roundedBorder)
 
-            HStack(spacing: 20) {
-                VStack(alignment: .leading, spacing: 4) {
+            HStack(spacing: Spacing.screenPadding) {
+                VStack(alignment: .leading, spacing: Spacing.xs) {
                     Text("Duration")
-                        .font(.caption)
+                        .font(.vitalCaption)
                         .foregroundStyle(.secondary)
                     Text(durationString)
-                        .font(.headline)
+                        .font(.vitalH3)
                 }
 
                 Divider()
-                    .frame(height: 40)
+                    .frame(height: Spacing.avatarSmall)
 
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: Spacing.xs) {
                     Text("Sets")
-                        .font(.caption)
+                        .font(.vitalCaption)
                         .foregroundStyle(.secondary)
                     Text("\(viewModel.totalSets)")
-                        .font(.headline)
+                        .font(.vitalH3)
                 }
 
                 Divider()
-                    .frame(height: 40)
+                    .frame(height: Spacing.avatarSmall)
 
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: Spacing.xs) {
                     Text("Volume")
-                        .font(.caption)
+                        .font(.vitalCaption)
                         .foregroundStyle(.secondary)
                     Text("\(viewModel.totalVolume, specifier: "%.0f") kg")
-                        .font(.headline)
+                        .font(.vitalH3)
                 }
 
                 Spacer()
@@ -166,17 +166,17 @@ struct WorkoutLoggingView: View {
     // MARK: - Empty State
 
     private var emptyState: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: Spacing.md) {
             Image(systemName: "figure.strengthtraining.traditional")
                 .font(.vitalIconGiant)
                 .foregroundStyle(.secondary)
 
             Text("No Exercises Added")
-                .font(.headline)
+                .font(.vitalH3)
                 .foregroundStyle(.secondary)
 
             Text("Add exercises to start logging your workout")
-                .font(.subheadline)
+                .font(.vitalBodySmall)
                 .foregroundStyle(.tertiary)
                 .multilineTextAlignment(.center)
 
@@ -184,7 +184,7 @@ struct WorkoutLoggingView: View {
                 .padding(.top, Spacing.sm)
         }
         .frame(maxWidth: .infinity)
-        .padding(.vertical, 60)
+        .padding(.vertical, Spacing.iconGiant)
     }
 
     // MARK: - Add Exercise Button

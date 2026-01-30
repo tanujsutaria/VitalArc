@@ -285,6 +285,243 @@ final class AnalyticsTests: XCTestCase {
         XCTAssertEqual(StrainResult.TRIMPMethod.estimated.rawValue, "Estimated")
     }
 
+    // MARK: - Gender-Specific TRIMP Tests
+
+    func testBanisterTRIMPWithFemaleFactor() throws {
+        // Given: 30-minute workout with steady HR at 150 bpm, female factor k=1.67
+        let hrMax: Double = 190
+        let hrRest: Double = 60
+        let duration: TimeInterval = 30 * 60
+
+        let samples = (0..<30).map { i in
+            HeartRateSample(timestamp: Date().addingTimeInterval(Double(i) * 60), bpm: 150)
+        }
+
+        // When: Calculate with female factor
+        let femaleTRIMP = calculateBanisterTRIMP(
+            samples: samples,
+            duration: duration,
+            hrMax: hrMax,
+            hrRest: hrRest,
+            biologicalSex: .female
+        )
+
+        // Then: Female factor (1.67) should produce lower TRIMP than male (1.92)
+        let maleTRIMP = calculateBanisterTRIMP(
+            samples: samples,
+            duration: duration,
+            hrMax: hrMax,
+            hrRest: hrRest,
+            biologicalSex: .male
+        )
+
+        XCTAssertGreaterThan(femaleTRIMP, 0, "Female TRIMP should be positive")
+        XCTAssertLessThan(femaleTRIMP, maleTRIMP, "Female TRIMP should be lower than male due to lower exponential factor")
+    }
+
+    func testBanisterTRIMPWithOtherFactor() throws {
+        // Given: Workout data with "other" biological sex (k=1.795 average)
+        let hrMax: Double = 190
+        let hrRest: Double = 60
+        let duration: TimeInterval = 30 * 60
+
+        let samples = (0..<30).map { i in
+            HeartRateSample(timestamp: Date().addingTimeInterval(Double(i) * 60), bpm: 150)
+        }
+
+        // When: Calculate with "other" factor
+        let otherTRIMP = calculateBanisterTRIMP(
+            samples: samples,
+            duration: duration,
+            hrMax: hrMax,
+            hrRest: hrRest,
+            biologicalSex: .other
+        )
+
+        let maleTRIMP = calculateBanisterTRIMP(
+            samples: samples,
+            duration: duration,
+            hrMax: hrMax,
+            hrRest: hrRest,
+            biologicalSex: .male
+        )
+
+        let femaleTRIMP = calculateBanisterTRIMP(
+            samples: samples,
+            duration: duration,
+            hrMax: hrMax,
+            hrRest: hrRest,
+            biologicalSex: .female
+        )
+
+        // Then: "Other" should be between male and female (average of factors)
+        XCTAssertGreaterThan(otherTRIMP, femaleTRIMP, "Other TRIMP should be higher than female")
+        XCTAssertLessThan(otherTRIMP, maleTRIMP, "Other TRIMP should be lower than male")
+    }
+
+    func testBanisterTRIMPGenderFactorsAreCorrect() throws {
+        // Verify the exponential factors match expected values from Banister (1991)
+        // Male: 1.92, Female: 1.67, Other: 1.795 (average)
+        let hrMax: Double = 190
+        let hrRest: Double = 60
+        let duration: TimeInterval = 60 // 1 minute for simpler calculation
+
+        // Single sample at known HR
+        let samples = [HeartRateSample(timestamp: Date(), bpm: 150)]
+
+        let maleTRIMP = calculateBanisterTRIMP(samples: samples, duration: duration, hrMax: hrMax, hrRest: hrRest, biologicalSex: .male)
+        let femaleTRIMP = calculateBanisterTRIMP(samples: samples, duration: duration, hrMax: hrMax, hrRest: hrRest, biologicalSex: .female)
+        let otherTRIMP = calculateBanisterTRIMP(samples: samples, duration: duration, hrMax: hrMax, hrRest: hrRest, biologicalSex: .other)
+
+        // Verify ordering and non-zero values
+        XCTAssertGreaterThan(maleTRIMP, 0)
+        XCTAssertGreaterThan(femaleTRIMP, 0)
+        XCTAssertGreaterThan(otherTRIMP, 0)
+        XCTAssertGreaterThan(maleTRIMP, otherTRIMP)
+        XCTAssertGreaterThan(otherTRIMP, femaleTRIMP)
+    }
+
+    // MARK: - Custom HR Settings Tests
+
+    func testStrainWithCustomHRMax() throws {
+        // Custom HRMax should affect HR reserve calculation
+        let hrRest: Double = 60
+        let duration: TimeInterval = 30 * 60
+
+        let samples = (0..<30).map { i in
+            HeartRateSample(timestamp: Date().addingTimeInterval(Double(i) * 60), bpm: 150)
+        }
+
+        // With default HRMax (190), HRr = (150-60)/(190-60) = 0.692
+        let defaultTrimp = calculateBanisterTRIMP(
+            samples: samples,
+            duration: duration,
+            hrMax: 190,
+            hrRest: hrRest
+        )
+
+        // With custom lower HRMax (170), HRr = (150-60)/(170-60) = 0.818 (higher intensity)
+        let customTrimp = calculateBanisterTRIMP(
+            samples: samples,
+            duration: duration,
+            hrMax: 170,
+            hrRest: hrRest
+        )
+
+        // Lower HRMax means higher relative intensity, should produce higher TRIMP
+        XCTAssertGreaterThan(customTrimp, defaultTrimp, "Custom lower HRMax should produce higher TRIMP")
+    }
+
+    func testStrainWithCustomHRResting() throws {
+        // Custom HRResting should affect HR reserve calculation
+        let hrMax: Double = 190
+        let duration: TimeInterval = 30 * 60
+
+        let samples = (0..<30).map { i in
+            HeartRateSample(timestamp: Date().addingTimeInterval(Double(i) * 60), bpm: 150)
+        }
+
+        // With default HRRest (60), HRr = (150-60)/(190-60) = 0.692
+        let defaultTrimp = calculateBanisterTRIMP(
+            samples: samples,
+            duration: duration,
+            hrMax: hrMax,
+            hrRest: 60
+        )
+
+        // With custom higher HRRest (50), HRr = (150-50)/(190-50) = 0.714 (higher intensity)
+        let customTrimp = calculateBanisterTRIMP(
+            samples: samples,
+            duration: duration,
+            hrMax: hrMax,
+            hrRest: 50
+        )
+
+        // Lower HRRest means larger reserve and higher relative intensity
+        XCTAssertGreaterThan(customTrimp, defaultTrimp, "Custom lower HRResting should produce higher TRIMP")
+    }
+
+    func testStrainWithBothCustomHRSettings() throws {
+        // Both custom settings should combine correctly
+        let duration: TimeInterval = 30 * 60
+
+        let samples = (0..<30).map { i in
+            HeartRateSample(timestamp: Date().addingTimeInterval(Double(i) * 60), bpm: 150)
+        }
+
+        // Default: HRMax=190, HRRest=60
+        let defaultTrimp = calculateBanisterTRIMP(
+            samples: samples,
+            duration: duration,
+            hrMax: 190,
+            hrRest: 60
+        )
+
+        // Custom: HRMax=180, HRRest=55 (athlete with lower max and resting)
+        let customTrimp = calculateBanisterTRIMP(
+            samples: samples,
+            duration: duration,
+            hrMax: 180,
+            hrRest: 55
+        )
+
+        // Both TRIMP values should be positive and reasonable
+        XCTAssertGreaterThan(defaultTrimp, 0)
+        XCTAssertGreaterThan(customTrimp, 0)
+        // The custom values create different HR reserve so TRIMP will differ
+        XCTAssertNotEqual(defaultTrimp, customTrimp, accuracy: 0.1)
+    }
+
+    // MARK: - Additional Edge Case Tests
+
+    func testBanisterTRIMPWithHRAboveMax() throws {
+        // Edge case: HR sample above HRMax should be clamped
+        let samples = [HeartRateSample(timestamp: Date(), bpm: 200)] // Above HRMax of 190
+        let trimp = calculateBanisterTRIMP(
+            samples: samples,
+            duration: 60,
+            hrMax: 190,
+            hrRest: 60
+        )
+
+        // HRr should be clamped to 1.0 max
+        // The TRIMP should be positive and not explode
+        XCTAssertGreaterThan(trimp, 0, "HR above max should still produce positive TRIMP")
+        XCTAssertLessThan(trimp, 10, "HR above max should be clamped, not produce extreme values")
+    }
+
+    func testBanisterTRIMPWithVariableHRSamples() throws {
+        // Realistic workout with varying HR
+        let hrMax: Double = 190
+        let hrRest: Double = 60
+        let duration: TimeInterval = 10 * 60 // 10 minutes
+
+        // HR varies: warmup (100), work (160), cooldown (100)
+        let samples = [
+            HeartRateSample(timestamp: Date(), bpm: 100),
+            HeartRateSample(timestamp: Date().addingTimeInterval(60), bpm: 120),
+            HeartRateSample(timestamp: Date().addingTimeInterval(120), bpm: 140),
+            HeartRateSample(timestamp: Date().addingTimeInterval(180), bpm: 160),
+            HeartRateSample(timestamp: Date().addingTimeInterval(240), bpm: 165),
+            HeartRateSample(timestamp: Date().addingTimeInterval(300), bpm: 160),
+            HeartRateSample(timestamp: Date().addingTimeInterval(360), bpm: 155),
+            HeartRateSample(timestamp: Date().addingTimeInterval(420), bpm: 140),
+            HeartRateSample(timestamp: Date().addingTimeInterval(480), bpm: 120),
+            HeartRateSample(timestamp: Date().addingTimeInterval(540), bpm: 100),
+        ]
+
+        let trimp = calculateBanisterTRIMP(
+            samples: samples,
+            duration: duration,
+            hrMax: hrMax,
+            hrRest: hrRest
+        )
+
+        // Should produce reasonable TRIMP for 10-min variable workout
+        XCTAssertGreaterThan(trimp, 5, "Variable HR workout should produce meaningful TRIMP")
+        XCTAssertLessThan(trimp, 50, "10-min workout shouldn't produce extremely high TRIMP")
+    }
+
     // MARK: - Recovery Score Calculation Tests
 
     func testHRVScoreAboveBaseline() throws {
@@ -454,11 +691,22 @@ final class AnalyticsTests: XCTestCase {
         samples: [HeartRateSample],
         duration: TimeInterval,
         hrMax: Double,
-        hrRest: Double
+        hrRest: Double,
+        biologicalSex: BiologicalSex = .male
     ) -> Double {
         guard !samples.isEmpty else { return 0 }
 
-        let exponentialFactor = 1.92 // Male default
+        // Exponential factor based on biological sex (Banister 1991)
+        let exponentialFactor: Double
+        switch biologicalSex {
+        case .male:
+            exponentialFactor = 1.92
+        case .female:
+            exponentialFactor = 1.67
+        case .other:
+            exponentialFactor = 1.795 // Average of male/female
+        }
+
         let hrReserve = hrMax - hrRest
         guard hrReserve > 0 else { return 0 }
 
