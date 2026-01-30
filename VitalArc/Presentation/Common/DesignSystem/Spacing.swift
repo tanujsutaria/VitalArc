@@ -59,6 +59,7 @@ enum Spacing {
 
     static let avatarSmall: CGFloat = 40   // List items, compact views
     static let avatarMedium: CGFloat = 48  // Cards, stat items
+    static let avatarLargish: CGFloat = 56 // Header icons in sheets
     static let avatarLarge: CGFloat = 64   // Profile headers (compact)
     static let avatarXLarge: CGFloat = 100 // Profile avatar inner
     static let avatarXLargeBorder: CGFloat = 108  // Profile avatar border

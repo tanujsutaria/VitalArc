@@ -81,7 +81,7 @@ struct MacroDetailSheet: View {
                 ZStack {
                     Circle()
                         .fill(.white.opacity(0.2))
-                        .frame(width: 56, height: 56)
+                        .frame(width: Spacing.avatarLargish, height: Spacing.avatarLargish)
 
                     Image(systemName: macroType.icon)
                         .font(.vitalIconLargeSemibold)
@@ -264,7 +264,7 @@ struct MacroDetailSheet: View {
                             .animation(.vitalSpring, value: progress)
                     }
                 }
-                .frame(height: 12)
+                .frame(height: Spacing.itemSpacing)
 
                 HStack {
                     if remaining > 0 {

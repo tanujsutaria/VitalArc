@@ -102,7 +102,7 @@ struct WorkoutHistoryContentView: View {
                         ZStack {
                             Circle()
                                 .fill(Color.vitalInfo.opacity(0.15))
-                                .frame(width: 80, height: 80)
+                                .frame(width: Spacing.illustrationSmall, height: Spacing.illustrationSmall)
 
                             Image(systemName: "figure.strengthtraining.traditional")
                                 .font(.vitalIcon2XLarge)

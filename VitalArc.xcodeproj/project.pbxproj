@@ -302,7 +302,7 @@
 		65F79ECB56A1F6A14F3F58B1 /* TrainingHeatmapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingHeatmapView.swift; sourceTree = "<group>"; };
 		66B1095291E179B95FEBA497 /* FoodEntryModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodEntryModel.swift; sourceTree = "<group>"; };
 		69BDF4D1E5D56DA3098829C2 /* ChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartView.swift; sourceTree = "<group>"; };
-		6C9A710FC402E0306BDB6F7A /* MacroType.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = MacroType.swift; path = VitalArc/Domain/Common/MacroType.swift; sourceTree = "<group>"; };
+		6C9A710FC402E0306BDB6F7A /* MacroType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacroType.swift; sourceTree = "<group>"; };
 		6E27EDBF36C46FD360854511 /* VitalArc.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = VitalArc.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6E7C07C5C1878E7EF254E2D0 /* NotificationPreferences.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = NotificationPreferences.swift; path = Notifications/NotificationPreferences.swift; sourceTree = "<group>"; };
 		701A4C1043DF93164302F5CE /* PersonalRecordModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonalRecordModel.swift; sourceTree = "<group>"; };
@@ -416,7 +416,7 @@
 		F4FE670BE8FB4DECC930C78C /* MesocycleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MesocycleTests.swift; sourceTree = "<group>"; };
 		F5B15CB72047BACC53338408 /* SearchFoodUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchFoodUseCase.swift; sourceTree = "<group>"; };
 		F647355BA6D6DB6ABA236775 /* ExerciseSetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseSetView.swift; sourceTree = "<group>"; };
-		F6E215B1E678537B78C4D479 /* HealthMetricType.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = HealthMetricType.swift; path = VitalArc/Domain/Common/HealthMetricType.swift; sourceTree = "<group>"; };
+		F6E215B1E678537B78C4D479 /* HealthMetricType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthMetricType.swift; sourceTree = "<group>"; };
 		F8884D90D84861BB481EF0F3 /* FoodLoggingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodLoggingViewModel.swift; sourceTree = "<group>"; };
 		FB1E474D17E03C8C73B3D3D2 /* GetExercisesUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetExercisesUseCase.swift; sourceTree = "<group>"; };
 		FD147BDBA0726382A62490D0 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
@@ -611,6 +611,7 @@
 				DEE535C7BE91EB857C96324E /* FeedbackView.swift */,
 				7D3A4A07ABFC5ABF906A6CB4 /* Components */,
 				E3FDB81B8C9E498406341864 /* DesignSystem */,
+				5B8313731148D8F8D07749DA /* Models */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -692,13 +693,13 @@
 			path = Health;
 			sourceTree = "<group>";
 		};
-		5B8313731148D8F8D07749DA /* Common */ = {
+		5B8313731148D8F8D07749DA /* Models */ = {
 			isa = PBXGroup;
 			children = (
 				F6E215B1E678537B78C4D479 /* HealthMetricType.swift */,
 				6C9A710FC402E0306BDB6F7A /* MacroType.swift */,
 			);
-			name = Common;
+			path = Models;
 			sourceTree = "<group>";
 		};
 		6533C4548A51FB361D8019AC /* User */ = {
@@ -1063,7 +1064,6 @@
 		B59787E7BC62F13DDFF498F1 /* Domain */ = {
 			isa = PBXGroup;
 			children = (
-				5B8313731148D8F8D07749DA /* Common */,
 			);
 			name = Domain;
 			sourceTree = "<group>";

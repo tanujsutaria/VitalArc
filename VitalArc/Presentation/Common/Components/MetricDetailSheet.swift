@@ -101,7 +101,7 @@ struct MetricDetailSheet: View {
                 ZStack {
                     Circle()
                         .fill(.white.opacity(0.2))
-                        .frame(width: 56, height: 56)
+                        .frame(width: Spacing.avatarLargish, height: Spacing.avatarLargish)
 
                     Image(systemName: metricType.icon)
                         .font(.vitalIconLargeSemibold)
