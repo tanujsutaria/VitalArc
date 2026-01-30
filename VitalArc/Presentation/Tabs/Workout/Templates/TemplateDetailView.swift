@@ -17,7 +17,7 @@ struct TemplateDetailView: View {
 
     var body: some View {
         ScrollView {
-            VStack(spacing: 24) {
+            VStack(spacing: Spacing.xl) {
                 // Header
                 VStack(spacing: Spacing.md) {
                     Image(systemName: template.category.icon)
@@ -171,7 +171,7 @@ struct StatColumn: View {
     var body: some View {
         VStack(spacing: Spacing.sm) {
             Image(systemName: icon)
-                .font(.title3)
+                .font(.vitalH3)
                 .foregroundStyle(Color.vitalPrimary)
 
             Text(value)

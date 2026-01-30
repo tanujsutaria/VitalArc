@@ -14,7 +14,7 @@ struct WelcomeView: View {
         ZStack {
             // Gradient background
             LinearGradient(
-                colors: [Color.vitalPrimary.opacity(0.1), Color.vitalAccent.opacity(0.1)],
+                colors: [Color.vitalPrimary.vitalVeryLight(), Color.vitalAccent.vitalVeryLight()],
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
             )
@@ -27,13 +27,13 @@ struct WelcomeView: View {
                 ZStack {
                     Circle()
                         .fill(Color.vitalPrimaryGradient)
-                        .frame(width: 140, height: 140)
+                        .frame(width: Spacing.illustrationXLarge, height: Spacing.illustrationXLarge)
                         .blur(radius: 20)
 
                     Image(systemName: "heart.circle.fill")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
-                        .frame(width: 120, height: 120)
+                        .frame(width: Spacing.illustrationLarge, height: Spacing.illustrationLarge)
                         .foregroundStyle(Color.vitalPrimaryGradient)
                 }
 
@@ -110,8 +110,8 @@ struct FeatureRow: View {
         HStack(spacing: Spacing.md) {
             ZStack {
                 Circle()
-                    .fill(color.opacity(0.15))
-                    .frame(width: 48, height: 48)
+                    .fill(color.vitalLight())
+                    .frame(width: Spacing.avatarMedium, height: Spacing.avatarMedium)
 
                 Image(systemName: icon)
                     .font(.vitalIconMediumSemibold)

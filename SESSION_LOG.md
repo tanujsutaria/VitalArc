@@ -1,5 +1,113 @@
 # VitalArc Development Session Log
 
+## Session 13.6 - January 29, 2026 (Night)
+
+### Session Start
+- **Time**: Night PST
+- **Platform**: macOS 🖥️
+- **Focus**: Test coverage + Design system fixes
+- **Branch**: dev/mac-session-13.6-2026-01-29
+- **Base**: main @ 95e2628
+
+### Environment
+- **Build Capable**: Yes
+- **Test Capable**: Yes (unit + UI)
+
+### Pre-Session Status
+- **Build**: ✅ Passed
+- **Uncommitted Changes**: None
+- **Recent Activity**: Session 13.5 - Gender-aware TRIMP, custom HR settings, 28 icon font tokens, 54 font violation fixes
+
+### Session Goals
+1. Implement test coverage plan (~80 new tests targeting 35% coverage)
+2. Design system completion
+3. General development as directed
+
+### Work Log
+| Time | Action | Files | Notes |
+|------|--------|-------|-------|
+| Night | Session started | - | Build verified ✅ |
+| Night | Created MockNutritionRepository | MockNutritionRepository.swift | Mock for food/nutrition tests |
+| Night | Created MockWorkoutRepository | MockWorkoutRepository.swift | Mock for workout tests |
+| Night | Created CreateWorkoutUseCaseTests | CreateWorkoutUseCaseTests.swift | 14 tests for workout creation |
+| Night | Created LogFoodUseCaseTests | LogFoodUseCaseTests.swift | 12 tests for food logging |
+| Night | Created CalculateNutritionUseCaseTests | CalculateNutritionUseCaseTests.swift | 20 tests for nutrition calc |
+| Night | Created CalculateVolumeUseCaseTests | CalculateVolumeUseCaseTests.swift | 15 tests for volume calc |
+| Night | Created SearchMultiSourceFoodUseCaseTests | SearchMultiSourceFoodUseCaseTests.swift | 6 tests for food search |
+| Night | Created WorkoutLoggingViewModelTests | WorkoutLoggingViewModelTests.swift | 29 tests for workout VM |
+| Night | Created FoodLoggingViewModelTests | FoodLoggingViewModelTests.swift | 30 tests for food VM |
+| Night | Created MetricDetailViewModelTests | MetricDetailViewModelTests.swift | 27 tests for metric detail VM |
+| Night | Updated project.pbxproj | project.pbxproj | Added all new test files |
+| Night | Design system audit | 12 files | Found 30 violations |
+| Night | Applied design system fixes | 12 Presentation files | 17 typography + 13 spacing fixes |
+| Night | Fixed stale PROJECT_STATUS | PROJECT_STATUS.md | HR integration was already complete, moved to Ready |
+| Night | Code review fixes | MetricCard.swift, NutritionSummaryView.swift | Removed hardcoded frame sizes (80, 150), used design tokens |
+| Night | Architecture fix | Domain/Common → Presentation/Common/Models | Moved DateRange.swift, SelectedMetric.swift to fix Clean Architecture violation |
+| Night | Build verified | - | Build ✅ passing |
+| Night | Session ended | - | All code review feedback addressed |
+
+### Session End
+- **Time**: Night PST
+- **Duration**: ~3 hours
+- **Status**: Complete
+- **Build**: ✅ Passing
+- **Tests**: ✅ 310 tests, 0 failures
+- **Commits**: Pending
+
+### Work Completed
+
+#### Test Coverage Implementation (~120 new tests)
+
+**New Mock Infrastructure:**
+- `MockNutritionRepository.swift` - Comprehensive mock with error simulation
+- `MockWorkoutRepository.swift` - Full workout repository mock
+
+**Use Case Tests (6 files, 67 tests):**
+- `CreateWorkoutUseCaseTests.swift` - 14 tests
+- `LogFoodUseCaseTests.swift` - 12 tests
+- `CalculateNutritionUseCaseTests.swift` - 20 tests
+- `CalculateVolumeUseCaseTests.swift` - 15 tests
+- `SearchMultiSourceFoodUseCaseTests.swift` - 6 tests
+
+**ViewModel Tests (3 files, 86 tests):**
+- `WorkoutLoggingViewModelTests.swift` - 29 tests
+- `FoodLoggingViewModelTests.swift` - 30 tests
+- `MetricDetailViewModelTests.swift` - 27 tests
+
+#### Design System Fixes (30 violations fixed)
+
+**Typography Fixes (17):**
+- MainTabView.swift, ProfileView.swift, FoodLoggingView.swift
+- ExerciseSetView.swift, SetRowView.swift, WorkoutTemplatesView.swift
+- TemplateExercisePickerView.swift, TemplateDetailView.swift, PersonalRecordsView.swift
+
+**Spacing Fixes (13):**
+- MainTabView.swift, HealthDashboardView.swift, ExerciseSetView.swift
+- WorkoutLoggingView.swift, SetRowView.swift, WorkoutHistoryView.swift
+- TemplateDetailView.swift
+
+**Design system adoption improved from ~85% to ~95%**
+
+#### Documentation Corrections
+- **PROJECT_STATUS.md**: Corrected stale feature status
+  - HealthKit HR integration was already complete (not missing)
+  - Moved Recovery Score and Strain Tracking from "Partially Implemented" to "Ready"
+  - The "HR data from HealthKit" priority was appearing due to outdated docs
+
+#### Code Review Fixes
+
+**Hardcoded Frame Sizes Removed:**
+- `MetricCard.swift`: Removed `.frame(width: 80)` - now uses dynamic sizing
+- `NutritionSummaryView.swift`: Removed `.frame(width: 150)` - now uses design tokens
+
+**Architecture Violation Fixed:**
+- Moved `Domain/Common/DateRange.swift` → `Presentation/Common/Models/DateRange.swift`
+- Moved `Domain/Common/SelectedMetric.swift` → `Presentation/Common/Models/SelectedMetric.swift`
+- These were presentation-layer concerns (view state) incorrectly placed in Domain layer
+- Domain layer should contain only pure business logic entities
+
+---
+
 ## Session 13.5 - January 29, 2026 (Night)
 
 ### Session Start

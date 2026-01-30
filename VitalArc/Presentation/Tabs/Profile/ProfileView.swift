@@ -196,7 +196,7 @@ struct ProfileView: View {
                             HStack(spacing: Spacing.sm) {
                                 Image(systemName: "heart.fill")
                                     .foregroundStyle(Color.vitalDanger)
-                                    .font(.caption)
+                                    .font(.vitalCaption)
                                 Text("Synced with Apple Health")
                                     .font(.vitalCaption)
                                     .foregroundStyle(Color.vitalAdaptiveTextSecondary)
@@ -205,7 +205,7 @@ struct ProfileView: View {
                                     Task { await viewModel.syncFromHealthKit() }
                                 } label: {
                                     Image(systemName: "arrow.clockwise")
-                                        .font(.caption)
+                                        .font(.vitalCaption)
                                         .foregroundStyle(Color.vitalPrimary)
                                 }
                             }

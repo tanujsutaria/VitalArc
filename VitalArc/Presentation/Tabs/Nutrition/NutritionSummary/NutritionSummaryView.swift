@@ -9,44 +9,70 @@ import SwiftUI
 
 struct NutritionSummaryView: View {
     let dailyNutrition: DailyNutrition?
+    let nutritionRepository: NutritionRepository?
+    @State private var selectedMacro: MacroType?
+
+    init(dailyNutrition: DailyNutrition?, nutritionRepository: NutritionRepository? = nil) {
+        self.dailyNutrition = dailyNutrition
+        self.nutritionRepository = nutritionRepository
+    }
 
     var body: some View {
         VitalCard {
             VStack(spacing: Spacing.lg) {
                 if let nutrition = dailyNutrition {
+                    // Tappable instructions hint
+                    if nutritionRepository != nil {
+                        Text("Tap a ring to view details")
+                            .font(.vitalCaptionSmall)
+                            .foregroundStyle(Color.vitalAdaptiveTextSecondary)
+                    }
+
                     // Macro rings
                     HStack(spacing: Spacing.md) {
-                        MacroRingView(
+                        TappableMacroRing(
                             name: "Calories",
                             consumed: nutrition.caloriesConsumed,
                             goal: nutrition.calorieGoal,
                             color: .vitalWarning,
-                            unit: "kcal"
-                        )
+                            unit: "kcal",
+                            isEnabled: nutritionRepository != nil
+                        ) {
+                            selectedMacro = .calories
+                        }
 
-                        MacroRingView(
+                        TappableMacroRing(
                             name: "Protein",
                             consumed: nutrition.proteinConsumed,
                             goal: nutrition.proteinGoal,
                             color: .vitalDanger,
-                            unit: "g"
-                        )
+                            unit: "g",
+                            isEnabled: nutritionRepository != nil
+                        ) {
+                            selectedMacro = .protein
+                        }
 
-                        MacroRingView(
+                        TappableMacroRing(
                             name: "Carbs",
                             consumed: nutrition.carbsConsumed,
                             goal: nutrition.carbsGoal,
                             color: .vitalInfo,
-                            unit: "g"
-                        )
+                            unit: "g",
+                            isEnabled: nutritionRepository != nil
+                        ) {
+                            selectedMacro = .carbs
+                        }
 
-                        MacroRingView(
+                        TappableMacroRing(
                             name: "Fat",
                             consumed: nutrition.fatConsumed,
                             goal: nutrition.fatGoal,
                             color: .vitalWarning,
-                            unit: "g"
-                        )
+                            unit: "g",
+                            isEnabled: nutritionRepository != nil
+                        ) {
+                            selectedMacro = .fat
+                        }
                     }
 
                     // Calorie progress bar
@@ -61,6 +87,76 @@ struct NutritionSummaryView: View {
                     EmptyNutritionView()
                 }
             }
+        }
+        .sheet(item: $selectedMacro) { macro in
+            if let nutrition = dailyNutrition, let repository = nutritionRepository {
+                MacroDetailSheet(
+                    macroType: macro,
+                    currentValue: getCurrentValue(for: macro, nutrition: nutrition),
+                    goalValue: getGoalValue(for: macro, nutrition: nutrition),
+                    nutritionRepository: repository
+                )
+                .presentationDetents([.medium, .large])
+                .presentationDragIndicator(.visible)
+            }
+        }
+    }
+
+    // MARK: - Helpers
+
+    private func getCurrentValue(for macro: MacroType, nutrition: DailyNutrition) -> Double {
+        switch macro {
+        case .calories: return nutrition.caloriesConsumed
+        case .protein: return nutrition.proteinConsumed
+        case .carbs: return nutrition.carbsConsumed
+        case .fat: return nutrition.fatConsumed
+        }
+    }
+
+    private func getGoalValue(for macro: MacroType, nutrition: DailyNutrition) -> Double? {
+        switch macro {
+        case .calories: return nutrition.calorieGoal
+        case .protein: return nutrition.proteinGoal
+        case .carbs: return nutrition.carbsGoal
+        case .fat: return nutrition.fatGoal
+        }
+    }
+}
+
+// MARK: - Tappable Macro Ring
+
+private struct TappableMacroRing: View {
+    let name: String
+    let consumed: Double
+    let goal: Double?
+    let color: Color
+    let unit: String
+    let isEnabled: Bool
+    let onTap: () -> Void
+
+    var body: some View {
+        if isEnabled {
+            Button(action: {
+                HapticFeedback.light()
+                onTap()
+            }) {
+                MacroRingView(
+                    name: name,
+                    consumed: consumed,
+                    goal: goal,
+                    color: color,
+                    unit: unit
+                )
+            }
+            .buttonStyle(.plain)
+        } else {
+            MacroRingView(
+                name: name,
+                consumed: consumed,
+                goal: goal,
+                color: color,
+                unit: unit
+            )
         }
     }
 }

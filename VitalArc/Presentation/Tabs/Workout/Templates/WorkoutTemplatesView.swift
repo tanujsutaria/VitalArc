@@ -172,7 +172,7 @@ struct TemplateRow: View {
         HStack(spacing: Spacing.md) {
             // Category icon
             Image(systemName: template.category.icon)
-                .font(.title2)
+                .font(.vitalH2)
                 .foregroundStyle(Color.vitalPrimary)
                 .frame(width: 40)
 

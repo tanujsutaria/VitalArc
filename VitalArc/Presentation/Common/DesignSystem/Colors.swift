@@ -114,6 +114,12 @@ extension Color {
         endPoint: .bottomTrailing
     )
 
+    static let vitalInfoGradient = LinearGradient(
+        colors: [vitalInfo, Color(hex: "#0284C7")],
+        startPoint: .topLeading,
+        endPoint: .bottomTrailing
+    )
+
     // MARK: - Hex Color Initializer
 
     init(hex: String) {
@@ -140,4 +146,35 @@ extension Color {
             opacity: Double(a) / 255
         )
     }
+
+    // MARK: - Opacity Convenience Methods
+
+    /// Apply very light opacity (0.1) - subtle backgrounds
+    func vitalVeryLight() -> Color { self.opacity(ColorOpacity.veryLight) }
+
+    /// Apply light opacity (0.15) - icon backgrounds, badges
+    func vitalLight() -> Color { self.opacity(ColorOpacity.light) }
+
+    /// Apply medium opacity (0.3) - overlays, disabled states
+    func vitalMedium() -> Color { self.opacity(ColorOpacity.medium) }
+
+    /// Apply heavy opacity (0.5) - semi-transparent overlays
+    func vitalHeavy() -> Color { self.opacity(ColorOpacity.heavy) }
+}
+
+// MARK: - Opacity Tokens
+
+/// Semantic opacity values for consistent transparency across the app
+enum ColorOpacity {
+    /// Very subtle backgrounds (0.1)
+    static let veryLight: Double = 0.1
+
+    /// Icon backgrounds, badges, subtle highlights (0.15)
+    static let light: Double = 0.15
+
+    /// Overlays, disabled states (0.3)
+    static let medium: Double = 0.3
+
+    /// Semi-transparent overlays (0.5)
+    static let heavy: Double = 0.5
 }

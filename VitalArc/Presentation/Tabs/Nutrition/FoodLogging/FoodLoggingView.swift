@@ -125,7 +125,7 @@ private struct DateSelectorView: View {
                 onPrevious()
             } label: {
                 Image(systemName: "chevron.left")
-                    .font(.title3)
+                    .font(.vitalH3)
             }
             .buttonStyle(.bordered)
 
@@ -144,7 +144,7 @@ private struct DateSelectorView: View {
                 onNext()
             } label: {
                 Image(systemName: "chevron.right")
-                    .font(.title3)
+                    .font(.vitalH3)
             }
             .buttonStyle(.bordered)
         }

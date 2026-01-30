@@ -16,21 +16,21 @@ struct ExerciseSetView: View {
     let onRemoveExercise: () -> Void
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: Spacing.md) {
             // Exercise Header
             HStack {
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: Spacing.xs) {
                     Text(exercise.name)
-                        .font(.headline)
+                        .font(.vitalH4)
 
-                    HStack(spacing: 8) {
+                    HStack(spacing: Spacing.sm) {
                         Label(exercise.equipment.rawValue, systemImage: "dumbbell.fill")
-                            .font(.caption)
+                            .font(.vitalCaption)
                             .foregroundStyle(.secondary)
 
                         if let muscle = exercise.primaryMuscles.first {
                             Text(muscle.rawValue)
-                                .font(.caption)
+                                .font(.vitalCaption)
                                 .foregroundStyle(.secondary)
                         }
                     }
@@ -40,14 +40,14 @@ struct ExerciseSetView: View {
 
                 Button(role: .destructive, action: onRemoveExercise) {
                     Image(systemName: "xmark.circle.fill")
-                        .font(.title3)
+                        .font(.vitalH3)
                         .foregroundStyle(.secondary)
                 }
                 .buttonStyle(.plain)
             }
 
             // Sets List
-            VStack(spacing: 8) {
+            VStack(spacing: Spacing.sm) {
                 ForEach(sets.indices, id: \.self) { index in
                     SetRowView(
                         setData: Binding(

@@ -31,7 +31,9 @@ The app compiles and runs with core MVP requirements addressed:
 | Exercise Library | Ready | 960+ exercises |
 | Templates System | Ready | Day-by-day editor |
 | Mesocycle System | Ready | - |
-| Analytics Dashboard | Ready | TRIMP integrated |
+| Analytics Dashboard | Ready | TRIMP integrated, gender-aware |
+| Recovery Score | Ready | HRV + HealthKit HR integration |
+| Strain Tracking | Ready | TRIMP + HealthKit HR, custom settings |
 | Nutrition Tracking | Ready | **API keys not configured** |
 | Design System | Ready | ~99% adoption |
 | Profile/Settings | Ready | - |
@@ -40,8 +42,6 @@ The app compiles and runs with core MVP requirements addressed:
 
 | Feature | Done | Missing |
 |---------|------|---------|
-| Recovery Score | HRV algorithm, unit tests, recovery alerts | HR data from HealthKit |
-| Strain Tracking | TRIMP calculation, UI display, unit tests | HR data from HealthKit |
 | Sleep Analysis | Basic score | Sleep stage analysis |
 | Nutrition Algorithm | Daily totals, TDEE estimation, **TDEE UI integration** | Macro tracking refinement |
 | Notifications | UI, ViewModel, Repository, **nutrition reminders toggle** | Scheduling, actual delivery |
@@ -67,7 +67,7 @@ The app compiles and runs with core MVP requirements addressed:
 2. **Design System Gaps**: Near complete
    - ~4 minor violations (3 cornerRadius(3), 1 padding(60))
 
-3. **Testing**: ~68% preview coverage
+3. **Testing**: 310 unit tests, ~68% preview coverage
 
 ---
 
@@ -75,9 +75,10 @@ The app compiles and runs with core MVP requirements addressed:
 
 | Metric | Value |
 |--------|-------|
-| Swift files | ~165 |
-| Lines of code | ~39,500 |
+| Swift files | ~175 |
+| Lines of code | ~41,000 |
 | Views | 73 |
 | ViewModels | 11 |
 | Use cases | 19 |
-| Test files | 10 |
+| Test files | 20 |
+| Unit tests | 310 |
