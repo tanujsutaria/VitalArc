@@ -38,9 +38,14 @@ final class NotificationSettingsViewModel {
 
     // MARK: - Computed Properties
 
-    /// Notifications are enabled when user wants them AND system has authorized
+    /// Whether system authorization allows notifications (.authorized or .provisional)
+    private var isSystemAuthorized: Bool {
+        authorizationStatus == .authorized || authorizationStatus == .provisional
+    }
+
+    /// Notifications are enabled when user wants them AND system has authorized (including provisional)
     var notificationsEnabled: Bool {
-        get { userWantsNotifications && authorizationStatus == .authorized }
+        get { userWantsNotifications && isSystemAuthorized }
         set {
             userWantsNotifications = newValue
             // Actual permission/scheduling handled by .onChange in View
@@ -159,7 +164,7 @@ final class NotificationSettingsViewModel {
 
     func requestNotificationPermissions() async {
         // Guard: Skip if already authorized to prevent re-triggering from .onChange
-        guard authorizationStatus != .authorized else {
+        guard !isSystemAuthorized else {
             userWantsNotifications = true
             return
         }
@@ -231,8 +236,8 @@ final class NotificationSettingsViewModel {
         }
 
         // Sync userWantsNotifications with actual authorization on initial check
-        // If authorized, assume user wants notifications (can be overridden by toggle)
-        if authorizationStatus == .authorized {
+        // If authorized (or provisional), assume user wants notifications (can be overridden by toggle)
+        if isSystemAuthorized {
             userWantsNotifications = true
         }
     }
