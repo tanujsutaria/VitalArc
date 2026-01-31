@@ -84,11 +84,11 @@ jobs:
 
             const truncatedDiff = diff.substring(0, 10000);
 
-            const systemPrompt = `You are an expert iOS code reviewer specializing in SwiftUI and SwiftData applications.
+            const userPrompt = `You are an expert iOS code reviewer specializing in SwiftUI and SwiftData applications.
             Perform deep analysis of the code changes with thorough reasoning about potential issues, architectural implications, and best practices.
-            Be meticulous and consider edge cases, thread safety, memory management, and Swift-specific patterns.`;
+            Be meticulous and consider edge cases, thread safety, memory management, and Swift-specific patterns.
 
-            const userPrompt = `You are reviewing a Pull Request for VitalArc, an iOS fitness app built with SwiftUI and SwiftData.
+            You are reviewing a Pull Request for VitalArc, an iOS fitness app built with SwiftUI and SwiftData.
 
             PR Title: ${context.payload.pull_request.title}
             PR Description: ${context.payload.pull_request.body || 'No description provided'}
@@ -113,21 +113,19 @@ jobs:
             Keep your review concise and actionable. Focus on significant issues, not style nitpicks.
             Format your response as markdown suitable for a GitHub PR comment.`;
 
-            // Call OpenAI Codex API (uses completions endpoint, not chat)
-            const fullPrompt = `${systemPrompt}\n\n${userPrompt}\n\nReview:`;
-
+            // Call OpenAI Responses API with GPT-5.2-Codex
             const requestData = JSON.stringify({
               model: 'gpt-5.2-codex',
-              prompt: fullPrompt,
-              max_tokens: 4096,
-              temperature: 0.2,
-              stop: ['---END---']
+              input: userPrompt,
+              reasoning: {
+                effort: 'high'
+              }
             });
 
             const options = {
               hostname: 'api.openai.com',
               port: 443,
-              path: '/v1/completions',
+              path: '/v1/responses',
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
@@ -152,14 +150,14 @@ jobs:
               req.end();
             });
 
-            const reviewContent = response.choices[0].text;
+            const reviewContent = response.output_text;
 
             // Post review as comment
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.payload.pull_request.number,
-              body: `## GPT-5.2-Codex Code Review\n\n${reviewContent}\n\n---\n*Automated review by GPT-5.2-Codex with extra high reasoning. This is advisory - always verify suggestions.*`
+              body: `## GPT-5.2-Codex Code Review\n\n${reviewContent}\n\n---\n*Automated review by GPT-5.2-Codex with high reasoning effort. This is advisory - always verify suggestions.*`
             });
 
             console.log('Review posted successfully');
