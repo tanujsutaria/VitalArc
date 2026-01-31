@@ -156,7 +156,39 @@ jobs:
               req.end();
             });
 
-            const reviewContent = response.output_text;
+            // Debug: log response structure
+            console.log('Response keys:', Object.keys(response));
+            console.log('Full response:', JSON.stringify(response, null, 2).substring(0, 2000));
+
+            // Extract text from Responses API format
+            // Structure: { output: [{ type: "message", content: [{ type: "output_text", text: "..." }] }] }
+            let reviewContent = '';
+            if (response.output_text) {
+              reviewContent = response.output_text;
+            } else if (response.output && Array.isArray(response.output)) {
+              for (const item of response.output) {
+                if (item.content && Array.isArray(item.content)) {
+                  for (const contentItem of item.content) {
+                    if (contentItem.type === 'output_text' && contentItem.text) {
+                      reviewContent += contentItem.text;
+                    } else if (contentItem.text) {
+                      reviewContent += contentItem.text;
+                    }
+                  }
+                } else if (item.text) {
+                  reviewContent += item.text;
+                }
+              }
+            } else if (response.choices && response.choices[0]) {
+              // Fallback for chat completions format
+              reviewContent = response.choices[0].message?.content || response.choices[0].text || '';
+            }
+
+            if (!reviewContent) {
+              console.log('Could not extract review content from response');
+              console.log('Response structure:', JSON.stringify(response, null, 2));
+              return;
+            }
 
             // Post review as comment
             await github.rest.issues.createComment({
