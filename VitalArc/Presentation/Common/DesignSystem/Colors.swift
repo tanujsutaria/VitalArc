@@ -178,3 +178,200 @@ enum ColorOpacity {
     /// Semi-transparent overlays (0.5)
     static let heavy: Double = 0.5
 }
+
+// MARK: - V2 Premium Design System Colors
+
+extension Color {
+    // MARK: - V2 Primary Palette (WHOOP-inspired)
+
+    /// Strain Red - Primary action color for V2 design
+    static let vitalPrimaryV2 = Color(hex: "#E63946")
+
+    /// Deep Navy - Secondary color for V2 design
+    static let vitalSecondaryV2 = Color(hex: "#1E3A5F")
+
+    /// Cyan - Accent color for highlights and data emphasis
+    static let vitalAccentV2 = Color(hex: "#00D4FF")
+
+    // MARK: - V2 Functional Colors
+
+    /// Recovery Green - Success states
+    static let vitalSuccessV2 = Color(hex: "#00C853")
+
+    /// Warning amber (unchanged from V1)
+    static let vitalWarningV2 = Color(hex: "#F59E0B")
+
+    /// Danger red (slightly different from primary for clarity)
+    static let vitalDangerV2 = Color(hex: "#FF3B30")
+
+    /// Info blue - Informational highlights
+    static let vitalInfoV2 = Color(hex: "#0A84FF")
+
+    // MARK: - V2 Neutral Palette (Deep Black Theme)
+
+    /// Deep Black - Primary background
+    static let vitalBackgroundV2 = Color(hex: "#0A0A0C")
+
+    /// Elevated Black - Card/surface background
+    static let vitalSurfaceV2 = Color(hex: "#141418")
+
+    /// Raised surface level
+    static let vitalSurfaceRaisedV2 = Color(hex: "#1C1C22")
+
+    /// Elevated surface level
+    static let vitalSurfaceElevatedV2 = Color(hex: "#242428")
+
+    /// Border color for V2 dark theme
+    static let vitalBorderV2 = Color(hex: "#2A2A30")
+
+    /// Subtle border/divider
+    static let vitalBorderSubtleV2 = Color(hex: "#1E1E24")
+
+    // MARK: - V2 Text Colors (Dark Theme)
+
+    /// Primary text on dark backgrounds
+    static let vitalTextPrimaryV2 = Color(hex: "#FFFFFF")
+
+    /// Secondary text on dark backgrounds
+    static let vitalTextSecondaryV2 = Color(hex: "#A0A0A8")
+
+    /// Tertiary/muted text
+    static let vitalTextTertiaryV2 = Color(hex: "#6E6E78")
+
+    /// Placeholder text
+    static let vitalTextPlaceholderV2 = Color(hex: "#4A4A52")
+
+    // MARK: - V2 Light Mode Palette
+
+    /// Light mode background
+    static let vitalBackgroundLightV2 = Color(hex: "#F5F5F7")
+
+    /// Light mode surface
+    static let vitalSurfaceLightV2 = Color.white
+
+    /// Light mode border
+    static let vitalBorderLightV2 = Color(hex: "#E0E0E5")
+
+    /// Light mode primary text
+    static let vitalTextPrimaryLightV2 = Color(hex: "#0A0A0C")
+
+    /// Light mode secondary text
+    static let vitalTextSecondaryLightV2 = Color(hex: "#6E6E78")
+
+    // MARK: - V2 Adaptive Colors
+
+    static var vitalAdaptiveBackgroundV2: Color {
+        Color(UIColor { traitCollection in
+            traitCollection.userInterfaceStyle == .dark
+                ? UIColor(Color.vitalBackgroundV2)
+                : UIColor(Color.vitalBackgroundLightV2)
+        })
+    }
+
+    static var vitalAdaptiveSurfaceV2: Color {
+        Color(UIColor { traitCollection in
+            traitCollection.userInterfaceStyle == .dark
+                ? UIColor(Color.vitalSurfaceV2)
+                : UIColor(Color.vitalSurfaceLightV2)
+        })
+    }
+
+    static var vitalAdaptiveSurfaceRaisedV2: Color {
+        Color(UIColor { traitCollection in
+            traitCollection.userInterfaceStyle == .dark
+                ? UIColor(Color.vitalSurfaceRaisedV2)
+                : UIColor(Color.white)
+        })
+    }
+
+    static var vitalAdaptiveSurfaceElevatedV2: Color {
+        Color(UIColor { traitCollection in
+            traitCollection.userInterfaceStyle == .dark
+                ? UIColor(Color.vitalSurfaceElevatedV2)
+                : UIColor(Color.white)
+        })
+    }
+
+    static var vitalAdaptiveBorderV2: Color {
+        Color(UIColor { traitCollection in
+            traitCollection.userInterfaceStyle == .dark
+                ? UIColor(Color.vitalBorderV2)
+                : UIColor(Color.vitalBorderLightV2)
+        })
+    }
+
+    static var vitalAdaptiveTextPrimaryV2: Color {
+        Color(UIColor { traitCollection in
+            traitCollection.userInterfaceStyle == .dark
+                ? UIColor(Color.vitalTextPrimaryV2)
+                : UIColor(Color.vitalTextPrimaryLightV2)
+        })
+    }
+
+    static var vitalAdaptiveTextSecondaryV2: Color {
+        Color(UIColor { traitCollection in
+            traitCollection.userInterfaceStyle == .dark
+                ? UIColor(Color.vitalTextSecondaryV2)
+                : UIColor(Color.vitalTextSecondaryLightV2)
+        })
+    }
+
+    static var vitalAdaptiveTextTertiaryV2: Color {
+        Color(UIColor { traitCollection in
+            traitCollection.userInterfaceStyle == .dark
+                ? UIColor(Color.vitalTextTertiaryV2)
+                : UIColor(Color(hex: "#9CA3AF"))
+        })
+    }
+
+    // MARK: - V2 Gradients
+
+    /// Primary gradient (Strain Red to Coral)
+    static let vitalPrimaryGradientV2 = LinearGradient(
+        colors: [Color(hex: "#E63946"), Color(hex: "#FF6B6B")],
+        startPoint: .topLeading,
+        endPoint: .bottomTrailing
+    )
+
+    /// Accent gradient (Cyan to Blue)
+    static let vitalAccentGradientV2 = LinearGradient(
+        colors: [Color(hex: "#00D4FF"), Color(hex: "#0A84FF")],
+        startPoint: .topLeading,
+        endPoint: .bottomTrailing
+    )
+
+    /// Success gradient (Recovery Green variations)
+    static let vitalSuccessGradientV2 = LinearGradient(
+        colors: [Color(hex: "#00C853"), Color(hex: "#00E676")],
+        startPoint: .topLeading,
+        endPoint: .bottomTrailing
+    )
+
+    /// Dark surface gradient (subtle depth)
+    static let vitalSurfaceGradientV2 = LinearGradient(
+        colors: [Color(hex: "#141418"), Color(hex: "#1C1C22")],
+        startPoint: .top,
+        endPoint: .bottom
+    )
+
+    /// Premium gradient (deep blue to purple)
+    static let vitalPremiumGradientV2 = LinearGradient(
+        colors: [Color(hex: "#1E3A5F"), Color(hex: "#4A2C7A")],
+        startPoint: .topLeading,
+        endPoint: .bottomTrailing
+    )
+
+    // MARK: - V2 Glow Colors (for dark mode effects)
+
+    /// Primary glow color
+    static let vitalPrimaryGlowV2 = Color(hex: "#E63946").opacity(0.4)
+
+    /// Accent glow color
+    static let vitalAccentGlowV2 = Color(hex: "#00D4FF").opacity(0.4)
+
+    /// Success glow color
+    static let vitalSuccessGlowV2 = Color(hex: "#00C853").opacity(0.4)
+
+    /// Inner glow for cards (subtle white highlight)
+    static let vitalInnerGlowV2 = Color.white.opacity(0.05)
+}

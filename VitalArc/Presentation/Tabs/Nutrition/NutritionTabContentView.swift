@@ -1,0 +1,409 @@
+//
+//  NutritionTabContentView.swift
+//  VitalArc
+//
+//  Main content view for the Nutrition tab - Unified log + summary view
+//
+
+import SwiftUI
+
+struct NutritionTabContentView: View {
+    @Environment(\.dependencyContainer) private var container
+    @State private var viewModel: NutritionTabViewModel?
+
+    var body: some View {
+        if let container = container {
+            NavigationStack {
+                Group {
+                    if let viewModel = viewModel {
+                        NutritionUnifiedView(viewModel: viewModel, container: container)
+                    } else {
+                        ProgressView()
+                    }
+                }
+                .navigationTitle("Nutrition")
+                .task {
+                    viewModel = NutritionTabViewModel(
+                        nutritionRepository: container.nutritionRepository
+                    )
+                    await viewModel?.loadData()
+                }
+            }
+        } else {
+            ProgressView()
+        }
+    }
+}
+
+// MARK: - Unified Nutrition View
+
+private struct NutritionUnifiedView: View {
+    @Bindable var viewModel: NutritionTabViewModel
+    let container: DependencyContainer
+    @State private var showingFoodSearch = false
+    @State private var selectedMeal: MealType = .breakfast
+    @State private var selectedFood: Food?
+    @State private var showingQuantitySheet = false
+
+    var body: some View {
+        ScrollView {
+            VStack(spacing: Spacing.sectionSpacing) {
+                // Date Selector
+                DateSelectorView(
+                    selectedDate: $viewModel.selectedDate,
+                    onPrevious: { viewModel.previousDay() },
+                    onNext: { viewModel.nextDay() },
+                    onToday: { viewModel.goToToday() }
+                )
+
+                // Always-visible Macro Summary
+                if let nutrition = viewModel.dailyNutrition {
+                    CompactMacroSummaryView(nutrition: nutrition)
+                } else if viewModel.isLoading {
+                    MacroSummarySkeletonView()
+                }
+
+                // Meal Sections
+                ForEach(MealType.allCases, id: \.self) { meal in
+                    let entries = viewModel.foodEntries.filter { $0.meal == meal }
+                    let totals = viewModel.mealTotals(for: meal)
+
+                    MealSectionView(
+                        meal: meal,
+                        entries: entries,
+                        totals: totals,
+                        onAddFood: {
+                            selectedMeal = meal
+                            showingFoodSearch = true
+                        },
+                        onDeleteEntry: { entry in
+                            Task {
+                                await viewModel.deleteEntry(entry)
+                            }
+                        }
+                    )
+                }
+            }
+            .padding(Spacing.screenPadding)
+        }
+        .background(Color.vitalAdaptiveBackground)
+        .onChange(of: viewModel.selectedDate) {
+            Task {
+                await viewModel.loadData()
+            }
+        }
+        .sheet(isPresented: $showingFoodSearch) {
+            FoodSearchView(
+                searchFoodUseCase: SearchFoodUseCase(
+                    repository: container.nutritionRepository,
+                    api: USDAFoodAPI()
+                ),
+                onFoodSelected: { food in
+                    selectedFood = food
+                    showingQuantitySheet = true
+                }
+            )
+        }
+        .sheet(isPresented: $showingQuantitySheet) {
+            if let food = selectedFood {
+                QuantityInputView(
+                    food: food,
+                    meal: selectedMeal,
+                    onLog: { quantity in
+                        Task {
+                            await viewModel.logFood(food, quantity: quantity, meal: selectedMeal)
+                        }
+                        showingQuantitySheet = false
+                        selectedFood = nil
+                    }
+                )
+            }
+        }
+    }
+}
+
+// MARK: - Compact Macro Summary
+
+private struct CompactMacroSummaryView: View {
+    let nutrition: DailyNutrition
+
+    var body: some View {
+        VitalCard {
+            VStack(spacing: Spacing.md) {
+                // Calorie Progress
+                HStack {
+                    VStack(alignment: .leading, spacing: Spacing.xxs) {
+                        Text("Calories")
+                            .font(.vitalCaption)
+                            .foregroundStyle(Color.vitalAdaptiveTextSecondary)
+                        HStack(alignment: .firstTextBaseline, spacing: Spacing.xs) {
+                            Text("\(Int(nutrition.caloriesConsumed))")
+                                .font(.vitalH2)
+                                .fontWeight(.bold)
+                                .foregroundStyle(Color.vitalAdaptiveTextPrimary)
+                            if let goal = nutrition.calorieGoal {
+                                Text("/ \(Int(goal))")
+                                    .font(.vitalBody)
+                                    .foregroundStyle(Color.vitalAdaptiveTextSecondary)
+                            }
+                        }
+                    }
+
+                    Spacer()
+
+                    if let goal = nutrition.calorieGoal, goal > 0 {
+                        let progress = min(nutrition.caloriesConsumed / goal, 1.0)
+                        CalorieCircleView(
+                            progress: progress,
+                            color: progress > 1.0 ? Color.vitalDanger : Color.vitalPrimary,
+                            lineWidth: 6
+                        )
+                        .frame(width: 50, height: 50)
+                    }
+                }
+
+                Divider()
+                    .background(Color.vitalAdaptiveBorder)
+
+                // Macro bars
+                HStack(spacing: Spacing.lg) {
+                    MacroBarView(
+                        name: "Protein",
+                        consumed: nutrition.proteinConsumed,
+                        goal: nutrition.proteinGoal,
+                        color: .vitalDanger,
+                        unit: "g"
+                    )
+
+                    MacroBarView(
+                        name: "Carbs",
+                        consumed: nutrition.carbsConsumed,
+                        goal: nutrition.carbsGoal,
+                        color: .vitalInfo,
+                        unit: "g"
+                    )
+
+                    MacroBarView(
+                        name: "Fat",
+                        consumed: nutrition.fatConsumed,
+                        goal: nutrition.fatGoal,
+                        color: .vitalWarning,
+                        unit: "g"
+                    )
+                }
+            }
+        }
+    }
+}
+
+// MARK: - Macro Bar View
+
+private struct MacroBarView: View {
+    let name: String
+    let consumed: Double
+    let goal: Double?
+    let color: Color
+    let unit: String
+
+    private var progress: Double {
+        guard let goal = goal, goal > 0 else { return 0 }
+        return min(consumed / goal, 1.0)
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: Spacing.xs) {
+            Text(name)
+                .font(.vitalCaptionSmall)
+                .foregroundStyle(Color.vitalAdaptiveTextSecondary)
+
+            GeometryReader { geometry in
+                ZStack(alignment: .leading) {
+                    Rectangle()
+                        .fill(Color.vitalAdaptiveBorder)
+                        .cornerRadius(Spacing.radiusSmall)
+
+                    Rectangle()
+                        .fill(color)
+                        .cornerRadius(Spacing.radiusSmall)
+                        .frame(width: geometry.size.width * progress)
+                }
+            }
+            .frame(height: 6)
+
+            HStack(spacing: 2) {
+                Text("\(Int(consumed))")
+                    .font(.vitalCaptionSmall)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(Color.vitalAdaptiveTextPrimary)
+                if let goal = goal {
+                    Text("/\(Int(goal))\(unit)")
+                        .font(.vitalCaptionSmall)
+                        .foregroundStyle(Color.vitalAdaptiveTextSecondary)
+                }
+            }
+        }
+        .frame(maxWidth: .infinity)
+    }
+}
+
+// MARK: - Calorie Circle View
+
+private struct CalorieCircleView: View {
+    let progress: Double
+    let color: Color
+    let lineWidth: CGFloat
+
+    var body: some View {
+        ZStack {
+            Circle()
+                .stroke(Color.vitalAdaptiveBorder, lineWidth: lineWidth)
+
+            Circle()
+                .trim(from: 0, to: progress)
+                .stroke(color, style: StrokeStyle(lineWidth: lineWidth, lineCap: .round))
+                .rotationEffect(.degrees(-90))
+
+            Text("\(Int(progress * 100))%")
+                .font(.vitalCaptionSmall)
+                .fontWeight(.semibold)
+                .foregroundStyle(Color.vitalAdaptiveTextPrimary)
+        }
+    }
+}
+
+// MARK: - Macro Summary Skeleton
+
+private struct MacroSummarySkeletonView: View {
+    var body: some View {
+        VitalCard {
+            VStack(spacing: Spacing.md) {
+                HStack {
+                    VStack(alignment: .leading, spacing: Spacing.xs) {
+                        Rectangle()
+                            .fill(Color.vitalAdaptiveBorder)
+                            .frame(width: 60, height: 12)
+                            .cornerRadius(Spacing.radiusSmall)
+                        Rectangle()
+                            .fill(Color.vitalAdaptiveBorder)
+                            .frame(width: 100, height: 24)
+                            .cornerRadius(Spacing.radiusSmall)
+                    }
+                    Spacer()
+                    Circle()
+                        .fill(Color.vitalAdaptiveBorder)
+                        .frame(width: 50, height: 50)
+                }
+
+                Divider()
+                    .background(Color.vitalAdaptiveBorder)
+
+                HStack(spacing: Spacing.lg) {
+                    ForEach(0..<3, id: \.self) { _ in
+                        VStack(alignment: .leading, spacing: Spacing.xs) {
+                            Rectangle()
+                                .fill(Color.vitalAdaptiveBorder)
+                                .frame(width: 40, height: 10)
+                                .cornerRadius(Spacing.radiusSmall)
+                            Rectangle()
+                                .fill(Color.vitalAdaptiveBorder)
+                                .frame(height: 6)
+                                .cornerRadius(Spacing.radiusSmall)
+                            Rectangle()
+                                .fill(Color.vitalAdaptiveBorder)
+                                .frame(width: 50, height: 10)
+                                .cornerRadius(Spacing.radiusSmall)
+                        }
+                        .frame(maxWidth: .infinity)
+                    }
+                }
+            }
+        }
+        .shimmer()
+    }
+}
+
+// MARK: - View Model
+
+@MainActor
+@Observable
+final class NutritionTabViewModel {
+    private let nutritionRepository: NutritionRepository
+
+    var selectedDate: Date = Date()
+    var foodEntries: [FoodEntry] = []
+    var dailyNutrition: DailyNutrition?
+    var isLoading = false
+    var error: Error?
+
+    init(nutritionRepository: NutritionRepository) {
+        self.nutritionRepository = nutritionRepository
+    }
+
+    func loadData() async {
+        isLoading = true
+        defer { isLoading = false }
+
+        do {
+            // Load food entries for selected date
+            let calendar = Calendar.current
+            let startOfDay = calendar.startOfDay(for: selectedDate)
+            let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay)!
+
+            foodEntries = try await nutritionRepository.getFoodEntries(from: startOfDay, to: endOfDay)
+
+            // Calculate daily nutrition
+            let calculateUseCase = CalculateNutritionUseCase(repository: nutritionRepository)
+            dailyNutrition = try await calculateUseCase.execute(for: selectedDate)
+        } catch {
+            self.error = error
+            Log.error("Failed to load nutrition data", error: error, category: .nutrition)
+        }
+    }
+
+    func logFood(_ food: Food, quantity: Double, meal: MealType) async {
+        do {
+            let logUseCase = LogFoodUseCase(repository: nutritionRepository)
+            try await logUseCase.execute(food: food, quantity: quantity, meal: meal, date: selectedDate)
+            await loadData()
+        } catch {
+            self.error = error
+            Log.error("Failed to log food", error: error, category: .nutrition)
+        }
+    }
+
+    func deleteEntry(_ entry: FoodEntry) async {
+        do {
+            try await nutritionRepository.deleteFoodEntry(id: entry.id)
+            await loadData()
+        } catch {
+            self.error = error
+            Log.error("Failed to delete entry", error: error, category: .nutrition)
+        }
+    }
+
+    func mealTotals(for meal: MealType) -> (calories: Double, protein: Double, carbs: Double, fat: Double) {
+        let entries = foodEntries.filter { $0.meal == meal }
+        return (
+            calories: entries.reduce(0) { $0 + $1.calories },
+            protein: entries.reduce(0) { $0 + $1.protein },
+            carbs: entries.reduce(0) { $0 + $1.carbs },
+            fat: entries.reduce(0) { $0 + $1.fat }
+        )
+    }
+
+    func previousDay() {
+        selectedDate = Calendar.current.date(byAdding: .day, value: -1, to: selectedDate) ?? selectedDate
+    }
+
+    func nextDay() {
+        selectedDate = Calendar.current.date(byAdding: .day, value: 1, to: selectedDate) ?? selectedDate
+    }
+
+    func goToToday() {
+        selectedDate = Date()
+    }
+}
+
+#Preview {
+    NutritionTabContentView()
+}

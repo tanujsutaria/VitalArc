@@ -254,6 +254,51 @@ struct ProfileView: View {
                         .padding(.horizontal, Spacing.screenPadding)
                     }
 
+                    // Training Programs Section
+                    VStack(alignment: .leading, spacing: Spacing.md) {
+                        Text("Training")
+                            .font(.vitalH2)
+                            .foregroundStyle(Color.vitalAdaptiveTextPrimary)
+                            .padding(.horizontal, Spacing.screenPadding)
+
+                        NavigationLink {
+                            MesocycleListView()
+                        } label: {
+                            HStack(spacing: Spacing.md) {
+                                ZStack {
+                                    Circle()
+                                        .fill(Color.vitalSuccess.opacity(0.15))
+                                        .frame(width: Spacing.avatarSmall, height: Spacing.avatarSmall)
+
+                                    Image(systemName: "calendar.badge.clock")
+                                        .font(.vitalIconMediumSemibold)
+                                        .foregroundStyle(Color.vitalSuccess)
+                                }
+
+                                VStack(alignment: .leading, spacing: Spacing.xxs) {
+                                    Text("Training Programs")
+                                        .font(.vitalLabel)
+                                        .foregroundStyle(Color.vitalAdaptiveTextPrimary)
+                                    Text("Mesocycles & periodization")
+                                        .font(.vitalCaption)
+                                        .foregroundStyle(Color.vitalAdaptiveTextSecondary)
+                                }
+
+                                Spacer()
+
+                                Image(systemName: "chevron.right")
+                                    .font(.vitalIconXSmallSemibold)
+                                    .foregroundStyle(Color.vitalAdaptiveTextSecondary)
+                            }
+                            .padding(Spacing.md)
+                            .background(Color.vitalAdaptiveSurface)
+                            .cornerRadius(Spacing.radiusMedium)
+                            .vitalCardShadow()
+                        }
+                        .buttonStyle(.plain)
+                    }
+                    .padding(.horizontal, Spacing.screenPadding)
+
                     // Settings Section
                     VStack(spacing: Spacing.md) {
                         Button(action: {

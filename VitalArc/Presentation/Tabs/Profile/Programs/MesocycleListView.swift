@@ -8,75 +8,87 @@
 import SwiftUI
 
 struct MesocycleListView: View {
-    @State private var viewModel: MesocycleViewModel
+    @Environment(\.dependencyContainer) private var container
+    @State private var viewModel: MesocycleViewModel?
     @State private var showingCreateSheet = false
     @State private var selectedStatus: MesocycleStatus = .active
 
-    init(mesocycleRepository: MesocycleRepository, workoutRepository: WorkoutRepository) {
-        _viewModel = State(initialValue: MesocycleViewModel(
-            mesocycleRepository: mesocycleRepository,
-            workoutRepository: workoutRepository
-        ))
+    var body: some View {
+        Group {
+            if let viewModel = viewModel {
+                mesocycleContent(viewModel: viewModel)
+            } else {
+                ProgressView("Loading...")
+                    .onAppear { setupViewModel() }
+            }
+        }
     }
 
-    var body: some View {
-        NavigationStack {
-            VStack(spacing: 0) {
-                // Status Filter
-                Picker("Status", selection: $selectedStatus) {
-                    ForEach(MesocycleStatus.allCases, id: \.self) { status in
-                        Text(status.rawValue).tag(status)
-                    }
+    private func setupViewModel() {
+        guard let container = container else { return }
+        viewModel = MesocycleViewModel(
+            mesocycleRepository: container.mesocycleRepository,
+            workoutRepository: container.workoutRepository
+        )
+        Task {
+            await viewModel?.loadMesocycles()
+        }
+    }
+
+    @ViewBuilder
+    private func mesocycleContent(viewModel: MesocycleViewModel) -> some View {
+        VStack(spacing: 0) {
+            // Status Filter
+            Picker("Status", selection: $selectedStatus) {
+                ForEach(MesocycleStatus.allCases, id: \.self) { status in
+                    Text(status.rawValue).tag(status)
                 }
-                .pickerStyle(.segmented)
-                .padding(Spacing.md)
+            }
+            .pickerStyle(.segmented)
+            .padding(Spacing.md)
 
-                // Mesocycle List
-                if viewModel.isLoading {
-                    VitalLoadingState(message: "Loading programs...")
-                        .frame(maxHeight: .infinity)
-                } else {
-                    ScrollView {
-                        LazyVStack(spacing: Spacing.itemSpacing) {
-                            let filteredMesocycles = viewModel.getMesocyclesByStatus(selectedStatus)
+            // Mesocycle List
+            if viewModel.isLoading {
+                VitalLoadingState(message: "Loading programs...")
+                    .frame(maxHeight: .infinity)
+            } else {
+                ScrollView {
+                    LazyVStack(spacing: Spacing.itemSpacing) {
+                        let filteredMesocycles = viewModel.getMesocyclesByStatus(selectedStatus)
 
-                            if filteredMesocycles.isEmpty {
-                                emptyStateView
-                            } else {
-                                ForEach(filteredMesocycles) { mesocycle in
-                                    NavigationLink(destination: MesocycleDetailView(
-                                        mesocycle: mesocycle,
-                                        viewModel: viewModel
-                                    )) {
-                                        MesocycleCardView(mesocycle: mesocycle, viewModel: viewModel)
-                                    }
-                                    .buttonStyle(.plain)
+                        if filteredMesocycles.isEmpty {
+                            emptyStateView
+                        } else {
+                            ForEach(filteredMesocycles) { mesocycle in
+                                NavigationLink(destination: MesocycleDetailView(
+                                    mesocycle: mesocycle,
+                                    viewModel: viewModel
+                                )) {
+                                    MesocycleCardView(mesocycle: mesocycle, viewModel: viewModel)
                                 }
+                                .buttonStyle(.plain)
                             }
                         }
-                        .padding(Spacing.md)
                     }
-                    .background(Color.vitalAdaptiveBackground)
+                    .padding(Spacing.md)
+                }
+                .background(Color.vitalAdaptiveBackground)
+            }
+        }
+        .navigationTitle("Training Programs")
+        .toolbar {
+            ToolbarItem(placement: .primaryAction) {
+                Button {
+                    showingCreateSheet = true
+                } label: {
+                    Image(systemName: "plus.circle.fill")
+                        .font(.vitalH2)
+                        .foregroundStyle(Color.vitalPrimary)
                 }
             }
-            .navigationTitle("Training Programs")
-            .toolbar {
-                ToolbarItem(placement: .primaryAction) {
-                    Button {
-                        showingCreateSheet = true
-                    } label: {
-                        Image(systemName: "plus.circle.fill")
-                            .font(.vitalH2)
-                            .foregroundStyle(Color.vitalPrimary)
-                    }
-                }
-            }
-            .sheet(isPresented: $showingCreateSheet) {
-                CreateMesocycleView(viewModel: viewModel)
-            }
-            .task {
-                await viewModel.loadMesocycles()
-            }
+        }
+        .sheet(isPresented: $showingCreateSheet) {
+            CreateMesocycleView(viewModel: viewModel)
         }
     }
 
@@ -257,35 +269,5 @@ struct MesocycleCardView: View {
 }
 
 #Preview {
-    MesocycleListView(
-        mesocycleRepository: PreviewMesocycleRepository(),
-        workoutRepository: PreviewWorkoutRepository()
-    )
-}
-
-// Preview Repository
-class PreviewMesocycleRepository: MesocycleRepository {
-    func getMesocycles() async throws -> [Mesocycle] { [] }
-    func getMesocycle(id: UUID) async throws -> Mesocycle? { nil }
-    func getActiveMesocycle() async throws -> Mesocycle? { nil }
-    func saveMesocycle(_ mesocycle: Mesocycle) async throws {}
-    func updateMesocycle(_ mesocycle: Mesocycle) async throws {}
-    func deleteMesocycle(id: UUID) async throws {}
-    func activateMesocycle(id: UUID) async throws {}
-    func completeMesocycle(id: UUID) async throws {}
-    func getMesocyclesByStatus(_ status: MesocycleStatus) async throws -> [Mesocycle] { [] }
-    func getMesocycleForDate(_ date: Date) async throws -> Mesocycle? { nil }
-}
-
-class PreviewWorkoutRepository: WorkoutRepository {
-    func getExercises() async throws -> [Exercise] { [] }
-    func getExercise(id: UUID) async throws -> Exercise? { nil }
-    func searchExercises(query: String) async throws -> [Exercise] { [] }
-    func saveExercise(_ exercise: Exercise) async throws {}
-    func getWorkouts() async throws -> [Workout] { [] }
-    func getWorkout(id: UUID) async throws -> Workout? { nil }
-    func getWorkouts(from startDate: Date, to endDate: Date) async throws -> [Workout] { [] }
-    func saveWorkout(_ workout: Workout) async throws {}
-    func deleteWorkout(id: UUID) async throws {}
-    func getLastWorkoutForExercise(_ exerciseId: UUID) async throws -> Workout? { nil }
+    MesocycleListView()
 }

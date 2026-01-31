@@ -126,3 +126,137 @@ extension View {
         )
     }
 }
+
+// MARK: - V2 Premium Spacing System
+
+extension Spacing {
+    // MARK: - V2 Corner Radius (Sharper, more technical)
+
+    static let radiusTinyV2: CGFloat = 2
+    static let radiusSmallV2: CGFloat = 4
+    static let radiusMediumV2: CGFloat = 6
+    static let radiusLargeV2: CGFloat = 8
+    static let radiusXLargeV2: CGFloat = 12
+    static let radiusRoundV2: CGFloat = 9999  // Pill shape
+}
+
+// MARK: - V2 Shadow System (Multi-layer with glow)
+
+enum ShadowStyleV2 {
+    /// Flat - No shadow, base surface level
+    static let flat = (color: Color.clear, radius: 0.0, x: 0.0, y: 0.0)
+
+    /// Raised - Subtle lift for interactive elements
+    static let raised = (color: Color.black.opacity(0.12), radius: 4.0, x: 0.0, y: 1.0)
+
+    /// Elevated - Standard card elevation
+    static let elevated = (color: Color.black.opacity(0.16), radius: 8.0, x: 0.0, y: 2.0)
+
+    /// Floating - High elevation for modals, popovers
+    static let floating = (color: Color.black.opacity(0.24), radius: 16.0, x: 0.0, y: 4.0)
+
+    /// Hero - Maximum elevation for featured content
+    static let hero = (color: Color.black.opacity(0.32), radius: 24.0, x: 0.0, y: 8.0)
+}
+
+// MARK: - V2 Glow Effects (for dark mode)
+
+enum GlowStyle {
+    /// Subtle inner glow for cards
+    static let innerGlow = (color: Color.white.opacity(0.05), radius: 1.0, x: 0.0, y: 0.0)
+
+    /// Primary color glow
+    static func primaryGlow(intensity: Double = 0.4) -> (color: Color, radius: CGFloat, x: CGFloat, y: CGFloat) {
+        (color: Color.vitalPrimaryV2.opacity(intensity), radius: 12.0, x: 0.0, y: 0.0)
+    }
+
+    /// Accent color glow
+    static func accentGlow(intensity: Double = 0.4) -> (color: Color, radius: CGFloat, x: CGFloat, y: CGFloat) {
+        (color: Color.vitalAccentV2.opacity(intensity), radius: 12.0, x: 0.0, y: 0.0)
+    }
+
+    /// Success color glow
+    static func successGlow(intensity: Double = 0.4) -> (color: Color, radius: CGFloat, x: CGFloat, y: CGFloat) {
+        (color: Color.vitalSuccessV2.opacity(intensity), radius: 12.0, x: 0.0, y: 0.0)
+    }
+}
+
+// MARK: - V2 Shadow View Extensions
+
+extension View {
+    /// V2 raised shadow - subtle lift
+    func vitalRaisedShadowV2() -> some View {
+        self.shadow(
+            color: ShadowStyleV2.raised.color,
+            radius: ShadowStyleV2.raised.radius,
+            x: ShadowStyleV2.raised.x,
+            y: ShadowStyleV2.raised.y
+        )
+    }
+
+    /// V2 elevated shadow - standard card
+    func vitalElevatedShadowV2() -> some View {
+        self.shadow(
+            color: ShadowStyleV2.elevated.color,
+            radius: ShadowStyleV2.elevated.radius,
+            x: ShadowStyleV2.elevated.x,
+            y: ShadowStyleV2.elevated.y
+        )
+    }
+
+    /// V2 floating shadow - modals, popovers
+    func vitalFloatingShadowV2() -> some View {
+        self.shadow(
+            color: ShadowStyleV2.floating.color,
+            radius: ShadowStyleV2.floating.radius,
+            x: ShadowStyleV2.floating.x,
+            y: ShadowStyleV2.floating.y
+        )
+    }
+
+    /// V2 hero shadow - featured content
+    func vitalHeroShadowV2() -> some View {
+        self.shadow(
+            color: ShadowStyleV2.hero.color,
+            radius: ShadowStyleV2.hero.radius,
+            x: ShadowStyleV2.hero.x,
+            y: ShadowStyleV2.hero.y
+        )
+    }
+
+    /// V2 glow effect with custom color
+    func vitalGlow(color: Color, radius: CGFloat = 12, intensity: Double = 0.4) -> some View {
+        self.shadow(color: color.opacity(intensity), radius: radius, x: 0, y: 0)
+    }
+
+    /// V2 primary glow effect
+    func vitalPrimaryGlow(intensity: Double = 0.4) -> some View {
+        self.shadow(color: Color.vitalPrimaryV2.opacity(intensity), radius: 12, x: 0, y: 0)
+    }
+
+    /// V2 accent glow effect
+    func vitalAccentGlow(intensity: Double = 0.4) -> some View {
+        self.shadow(color: Color.vitalAccentV2.opacity(intensity), radius: 12, x: 0, y: 0)
+    }
+
+    /// V2 success glow effect
+    func vitalSuccessGlow(intensity: Double = 0.4) -> some View {
+        self.shadow(color: Color.vitalSuccessV2.opacity(intensity), radius: 12, x: 0, y: 0)
+    }
+
+    /// Multi-layer shadow for depth (dark mode optimized)
+    func vitalMultiLayerShadow() -> some View {
+        self
+            .shadow(color: Color.black.opacity(0.08), radius: 2, x: 0, y: 1)
+            .shadow(color: Color.black.opacity(0.12), radius: 8, x: 0, y: 4)
+            .shadow(color: Color.black.opacity(0.04), radius: 16, x: 0, y: 8)
+    }
+
+    /// Inner glow overlay for cards (1px white at 5% opacity)
+    func vitalInnerGlow() -> some View {
+        self.overlay(
+            RoundedRectangle(cornerRadius: Spacing.radiusMediumV2)
+                .stroke(Color.white.opacity(0.05), lineWidth: 1)
+        )
+    }
+}
