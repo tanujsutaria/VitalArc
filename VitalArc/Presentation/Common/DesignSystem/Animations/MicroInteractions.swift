@@ -220,6 +220,7 @@ struct TypingTextView: View {
     let speed: Double
     @State private var displayedText = ""
     @State private var currentIndex = 0
+    @State private var animationWorkItem: DispatchWorkItem?
 
     init(_ text: String, speed: Double = 0.05) {
         self.text = text
@@ -231,6 +232,9 @@ struct TypingTextView: View {
             .onAppear {
                 animateText()
             }
+            .onDisappear {
+                animationWorkItem?.cancel()
+            }
     }
 
     private func animateText() {
@@ -240,9 +244,11 @@ struct TypingTextView: View {
         displayedText += String(text[index])
         currentIndex += 1
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + speed) {
+        let workItem = DispatchWorkItem { [self] in
             animateText()
         }
+        animationWorkItem = workItem
+        DispatchQueue.main.asyncAfter(deadline: .now() + speed, execute: workItem)
     }
 }
 

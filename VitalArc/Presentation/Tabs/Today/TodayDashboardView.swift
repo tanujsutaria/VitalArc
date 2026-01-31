@@ -399,18 +399,18 @@ struct TodayDashboardView: View {
 
         guard let container = container else { return }
 
-        // Load health metrics
+        // Load health metrics using use case
         do {
-            healthMetrics = try await container.healthRepository.getHealthMetrics(for: selectedDate)
+            let getHealthMetricsUseCase = GetHealthMetricsUseCase(repository: container.healthRepository)
+            healthMetrics = try await getHealthMetricsUseCase.execute(for: selectedDate)
         } catch {
             Log.error("Failed to load health metrics", error: error, category: .healthKit)
         }
 
-        // Load today's workout
+        // Load today's workout using use case
         do {
-            let startOfDay = Calendar.current.startOfDay(for: selectedDate)
-            let endOfDay = Calendar.current.date(byAdding: .day, value: 1, to: startOfDay) ?? selectedDate
-            let workouts = try await container.workoutRepository.getWorkouts(from: startOfDay, to: endOfDay)
+            let getTodayWorkoutsUseCase = GetTodayWorkoutsUseCase(repository: container.workoutRepository)
+            let workouts = try await getTodayWorkoutsUseCase.execute(for: selectedDate)
             todaysWorkout = workouts.first
         } catch {
             Log.error("Failed to load workouts", error: error, category: .workout)

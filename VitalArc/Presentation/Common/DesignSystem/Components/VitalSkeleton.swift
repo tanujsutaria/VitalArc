@@ -236,6 +236,7 @@ struct VitalChartSkeleton: View {
     var height: CGFloat = 150
 
     @State private var appear = false
+    @State private var barHeights: [CGFloat] = []
 
     var body: some View {
         VitalCardV2(padding: 0, elevation: .flat) {
@@ -248,11 +249,11 @@ struct VitalChartSkeleton: View {
                 .padding(.horizontal, Spacing.md)
                 .padding(.top, Spacing.md)
 
-                // Bar chart skeleton
+                // Bar chart skeleton with stable heights
                 HStack(alignment: .bottom, spacing: Spacing.sm) {
                     ForEach(0..<7, id: \.self) { index in
                         VitalSkeleton(
-                            height: CGFloat.random(in: 40...height * 0.8),
+                            height: barHeights.indices.contains(index) ? barHeights[index] : 40,
                             cornerRadius: Spacing.radiusTinyV2
                         )
                     }
@@ -264,6 +265,11 @@ struct VitalChartSkeleton: View {
         }
         .opacity(appear ? 1 : 0)
         .onAppear {
+            if barHeights.isEmpty {
+                barHeights = (0..<7).map { _ in
+                    CGFloat.random(in: 40...height * 0.8)
+                }
+            }
             withAnimation(.vitalSpring.delay(0.2)) {
                 appear = true
             }

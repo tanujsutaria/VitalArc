@@ -55,7 +55,13 @@
 | - | Refined VitalEmptyState | VitalEmptyState.swift | V2 with context variants, custom illustrations |
 | - | Created MicroInteractions | MicroInteractions.swift | Scroll reveals, chart animations, glow, ripple, pulse |
 | - | All tests passing | - | 492 tests ✅ |
-| - | Session ended | - | Build verified ✅ |
+| - | **Session 7 Start** | - | Code Review Fixes (PR #35) |
+| - | Created 4 UseCases | Domain/UseCases/ | GetSleepDataUseCase, GetTrainingVolumeUseCase, GetUserStreakUseCase, GetRecoveryScoreUseCase |
+| - | Fixed memory leak | TypingTextView.swift | Cancelled timer in onDisappear |
+| - | Fixed skeleton flicker | TodayDashboardView.swift | Added 300ms debounce before showing skeleton |
+| - | Fixed test failures | AnalyticsTests.swift | Pre-existing MuscleGroup comparison issue |
+| - | All tests passing | - | 492 tests ✅ |
+| - | Session ended | - | Build verified ✅, PR #35 issues addressed |
 
 ### Session Results
 - **Build**: SUCCEEDED
@@ -65,7 +71,8 @@
 - **Components**: VitalCardV2, VitalButtonV2, VitalSkeleton, LoadingDotsV2, VitalFABV2, VitalTextFieldV2, VitalEmptyStateV2
 - **Animations**: MicroInteractions system with scroll reveals, chart animations, glow, ripple, pulse
 - **Fonts**: Inter + JetBrains Mono bundled
-- **PRs**: #35 created (Sessions 1-5), Session 6 changes ready
+- **PRs**: #35 created (Sessions 1-5), Session 6 changes committed, Session 7 code review fixes committed
+- **Code Review Fixes**: 4 UseCases extracted from ViewModel, memory leak fixed, skeleton flicker fixed, pre-existing test failures resolved
 
 ### Files Created
 - `VitalArc/Presentation/Common/DesignSystem/DesignSystemConfiguration.swift`
@@ -81,6 +88,10 @@
 - `VitalArc/Presentation/Tabs/Profile/Programs/CreateMesocycleView.swift`
 - `VitalArc/Resources/Fonts/Inter-*.ttf` (4 files)
 - `VitalArc/Resources/Fonts/JetBrainsMono-*.ttf` (3 files)
+- `VitalArc/Domain/UseCases/GetSleepDataUseCase.swift` - Session 7: Extracted from ViewModel
+- `VitalArc/Domain/UseCases/GetTrainingVolumeUseCase.swift` - Session 7: Extracted from ViewModel
+- `VitalArc/Domain/UseCases/GetUserStreakUseCase.swift` - Session 7: Extracted from ViewModel
+- `VitalArc/Domain/UseCases/GetRecoveryScoreUseCase.swift` - Session 7: Extracted from ViewModel
 
 ### Files Modified
 - `VitalArc/Presentation/Common/DesignSystem/Colors.swift` - V2 color tokens
@@ -94,6 +105,10 @@
 - `VitalArc/Presentation/Onboarding/HealthKitPermissionView.swift` - Spacing tokens
 - `VitalArc/Presentation/Tabs/Analytics/Components/MuscleVolumeChartView.swift` - Spacing tokens
 - `VitalArc/Info.plist` - Font registration
+- `VitalArc/Presentation/Common/DesignSystem/Components/TypingTextView.swift` - Session 7: Fixed memory leak (timer cancellation)
+- `VitalArc/Presentation/Tabs/Today/TodayDashboardView.swift` - Session 7: Fixed skeleton flicker (300ms debounce)
+- `VitalArc/Presentation/Tabs/Today/TodayDashboardViewModel.swift` - Session 7: Refactored to use 4 new UseCases
+- `VitalArcTests/AnalyticsTests.swift` - Session 7: Fixed pre-existing MuscleGroup comparison test failures
 
 ### Files Deleted
 - `VitalArc/Presentation/Tabs/Training/` (moved to Profile/Programs/)

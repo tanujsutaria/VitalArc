@@ -328,6 +328,8 @@ private struct MacroSummarySkeletonView: View {
 @Observable
 final class NutritionTabViewModel {
     private let nutritionRepository: NutritionRepository
+    private let getFoodEntriesUseCase: GetFoodEntriesUseCase
+    private let deleteFoodEntryUseCase: DeleteFoodEntryUseCase
 
     var selectedDate: Date = Date()
     var foodEntries: [FoodEntry] = []
@@ -337,6 +339,8 @@ final class NutritionTabViewModel {
 
     init(nutritionRepository: NutritionRepository) {
         self.nutritionRepository = nutritionRepository
+        self.getFoodEntriesUseCase = GetFoodEntriesUseCase(repository: nutritionRepository)
+        self.deleteFoodEntryUseCase = DeleteFoodEntryUseCase(repository: nutritionRepository)
     }
 
     func loadData() async {
@@ -344,12 +348,8 @@ final class NutritionTabViewModel {
         defer { isLoading = false }
 
         do {
-            // Load food entries for selected date
-            let calendar = Calendar.current
-            let startOfDay = calendar.startOfDay(for: selectedDate)
-            let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay)!
-
-            foodEntries = try await nutritionRepository.getFoodEntries(from: startOfDay, to: endOfDay)
+            // Load food entries for selected date using use case
+            foodEntries = try await getFoodEntriesUseCase.execute(for: selectedDate)
 
             // Calculate daily nutrition
             let calculateUseCase = CalculateNutritionUseCase(repository: nutritionRepository)
@@ -373,7 +373,7 @@ final class NutritionTabViewModel {
 
     func deleteEntry(_ entry: FoodEntry) async {
         do {
-            try await nutritionRepository.deleteFoodEntry(id: entry.id)
+            try await deleteFoodEntryUseCase.execute(id: entry.id)
             await loadData()
         } catch {
             self.error = error

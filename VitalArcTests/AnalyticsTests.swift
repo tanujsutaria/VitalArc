@@ -280,9 +280,9 @@ final class AnalyticsTests: XCTestCase {
 
     func testStrainResultMethodSelection() throws {
         // Banister method should be selected when HR samples available
-        XCTAssertEqual(StrainResult.TRIMPMethod.banister.rawValue, "Banister TRIMP")
-        XCTAssertEqual(StrainResult.TRIMPMethod.edwards.rawValue, "Edwards TRIMP")
-        XCTAssertEqual(StrainResult.TRIMPMethod.estimated.rawValue, "Estimated")
+        XCTAssertEqual(StrainResult.TRIMPMethod.banister.rawValue, "Banister (Exponential)")
+        XCTAssertEqual(StrainResult.TRIMPMethod.edwards.rawValue, "Edwards (Zone-Based)")
+        XCTAssertEqual(StrainResult.TRIMPMethod.estimated.rawValue, "Estimated (No HR Data)")
     }
 
     // MARK: - Gender-Specific TRIMP Tests
@@ -605,14 +605,14 @@ final class AnalyticsTests: XCTestCase {
         // Sleep meeting target should score 100
         let score = calculateSleepScore(todaySleep: 8.0, baseline: 8.0)
 
-        XCTAssertEqual(score, 100, accuracy: 1)
+        XCTAssertEqual(score!, 100, accuracy: 1)
     }
 
     func testSleepScoreExceedsTarget() throws {
         // Sleep exceeding target should still score 100
         let score = calculateSleepScore(todaySleep: 9.0, baseline: 8.0)
 
-        XCTAssertEqual(score, 100, accuracy: 1)
+        XCTAssertEqual(score!, 100, accuracy: 1)
     }
 
     func testSleepScore75PercentOfTarget() throws {
