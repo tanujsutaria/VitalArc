@@ -333,7 +333,7 @@ Automated workflows are configured in `.github/workflows/`:
 |----------|---------|
 | `ci.yml` | Build verification, tests, SwiftLint on PRs and main |
 | `pr-automation.yml` | Auto-labeling, PR size tracking, welcome messages |
-| `claude-review.yml` | AI-powered code review (requires `ANTHROPIC_API_KEY` secret) |
+| `openai-review.yml` | AI-powered code review with GPT-5.2-Codex (requires `OPENAI_API_KEY` secret) |
 
 **PR Requirements:**
 - Title must follow conventional commits format
