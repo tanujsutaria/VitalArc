@@ -35,7 +35,26 @@
 | - | Session started | - | Build verified ✅, Design system 100% |
 | - | Wired notification use cases | NotificationSettingsViewModel.swift, NotificationSettingsView.swift | Completed notifications feature wiring |
 | - | Integrated TDEE into Nutrition tab | NutritionTabContentView.swift | TDEE UI integration complete |
-| - | Session ended | - | Notifications + TDEE integration ✅ |
+| - | Fixed OpenAI review workflow | openai-review.yml | Response parsing for GPT-5.2-Codex Responses API |
+| - | PR #37 review iteration (4 rounds) | NotificationSettingsView.swift, NotificationSettingsViewModel.swift, NutritionTabContentView.swift | Fixed ViewModel lifecycle, debouncing, task cancellation, provisional auth |
+| - | Session ended | - | OpenAI review working ✅, PR feedback addressed ✅ |
+
+### Session Results
+- **Build**: SUCCEEDED ✅
+- **PR**: #37 - 4 rounds of AI code review feedback addressed
+- **Commits**: 10 commits pushed
+
+### Key Accomplishments
+1. **Fixed OpenAI Code Review Workflow** - GPT-5.2-Codex Responses API parsing now works correctly
+2. **ViewModel Lifecycle Improvements**:
+   - Guard against re-creation on view reappear
+   - Debounced saveAndReschedule (300ms) to prevent race conditions
+   - Task cancellation for loadData on rapid date changes
+3. **Notification Toggle UX**:
+   - Added `userWantsNotifications` to track user intent separately from system authorization
+   - Support for `.provisional` authorization status
+   - Centralized scheduling in ViewModel setters (removed duplicate View handlers)
+4. **TDEE Integration Protection** - Only applies TDEE goals on initial load, not date changes
 
 ---
 

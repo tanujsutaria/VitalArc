@@ -17,25 +17,30 @@ VitalArc integrates workout tracking, nutrition logging, and health analytics in
 | Nutrition Tracking | ✅ Ready |
 | Food Search (API) | ⚠️ API keys not configured |
 | Analytics Dashboard | ✅ Ready |
-| Design System | ✅ ~90% adoption |
-| Recovery Score | ⚠️ HRV algorithm done, fine-tuning needed |
+| Design System | ✅ ~99% adoption |
+| Recovery Score | ✅ HRV algorithm + HealthKit integration |
+| Notifications | ✅ Complete architecture |
 
 See `PROJECT_STATUS.md` for detailed status.
 
 ## Roadmap
 
+### Completed
+| Feature | Status |
+|---------|--------|
+| Recovery Score | ✅ HRV algorithm + HealthKit integration |
+| Strain Tracking | ✅ TRIMP calculation + custom settings |
+| Nutrition Algorithm | ✅ TDEE estimation + UI integration |
+| Notifications | ✅ UI, ViewModel, use cases, infrastructure |
+
 ### In Progress
 | Feature | Status | Remaining |
 |---------|--------|-----------|
-| Recovery Score | HRV algorithm done | Fine-tuning |
-| Strain Tracking | UI complete | TRIMP calculation |
 | Sleep Analysis | Basic score | Sleep stage analysis |
-| Nutrition Algorithm | Daily totals | Adaptive TDEE estimation |
 
 ### Planned
 | Feature | Priority | Description |
 |---------|----------|-------------|
-| Notifications | High | Workout reminders, recovery alerts |
 | Apple Watch | Medium | Companion app for workout tracking |
 | Widgets | Medium | Home screen glanceables |
 | CloudKit Sync | Medium | Cross-device data sync |
@@ -135,11 +140,11 @@ xcodebuild -scheme VitalArc -destination 'platform=iOS Simulator,name=iPhone 17 
 
 | Metric | Value |
 |--------|-------|
-| Swift files | ~153 |
-| Lines of code | ~35,000 |
-| Views | 70 |
-| ViewModels | 10 |
-| Use cases | 16 |
+| Swift files | ~191 |
+| Lines of code | ~45,000 |
+| Views | 73 |
+| ViewModels | 12 |
+| Use cases | 25 |
 | Exercises | 960+ |
 
 ## Author

@@ -1,6 +1,6 @@
 # VitalArc Project Status
 
-**Last Updated**: January 31, 2026 (Session 15.1)
+**Last Updated**: January 31, 2026 (Session 15.1 - Complete)
 **Build**: Passing ✅ (Workstation verified)
 **Tests**: 291 passing ✅
 **Stage**: MVP-Ready
@@ -22,6 +22,8 @@ The app compiles and runs with core MVP requirements addressed:
 - NotificationSchedulerProtocol enables DI/testability (Session 14)
 - Notification use cases wired into ViewModel (Session 15.1)
 - TDEE integrated into Nutrition tab UI (Session 15.1)
+- OpenAI GPT-5.2-Codex code review workflow fixed (Session 15.1)
+- ViewModel lifecycle improvements: debouncing, task cancellation, provisional auth (Session 15.1)
 
 **Ready for beta testing.**
 
@@ -49,7 +51,7 @@ The app compiles and runs with core MVP requirements addressed:
 |---------|------|---------|
 | Sleep Analysis | Basic score | Sleep stage analysis |
 | Nutrition Algorithm | Daily totals, TDEE estimation, TDEE UI integration | Macro tracking refinement |
-| Notifications | UI, ViewModel, Repository, Use Cases (wired), Infrastructure, Protocol | - |
+| Notifications | UI, ViewModel, Repository, Use Cases (wired), Infrastructure, Protocol | Ready ✅ |
 
 ### Not Implemented
 
@@ -83,8 +85,8 @@ The app compiles and runs with core MVP requirements addressed:
 
 | Metric | Value |
 |--------|-------|
-| Swift files | ~190 |
-| Lines of code | ~44,000 |
+| Swift files | ~191 |
+| Lines of code | ~45,400 |
 | Views | 73 |
 | ViewModels | 12 |
 | Use cases | 25 |
