@@ -15,6 +15,8 @@ final class NotificationSettingsViewModel {
 
     var preferences: NotificationPreferences
     var authorizationStatus: UNAuthorizationStatus = .notDetermined
+    /// User's intent to enable notifications (separate from system authorization)
+    var userWantsNotifications = false
     var isLoading = false
     var errorMessage: String?
     var pendingNotificationCount: Int = 0
@@ -36,11 +38,12 @@ final class NotificationSettingsViewModel {
 
     // MARK: - Computed Properties
 
+    /// Notifications are enabled when user wants them AND system has authorized
     var notificationsEnabled: Bool {
-        get { authorizationStatus == .authorized }
+        get { userWantsNotifications && authorizationStatus == .authorized }
         set {
-            // Setting is handled via requestNotificationPermissions/cancelAllNotifications
-            // This setter exists to support SwiftUI binding
+            userWantsNotifications = newValue
+            // Actual permission/scheduling handled by .onChange in View
         }
     }
 
@@ -165,7 +168,8 @@ final class NotificationSettingsViewModel {
                 authorizationStatus = result.status
 
                 if !result.granted {
-                    // Explicitly ensure toggle reflects denial - disable all notification preferences
+                    // Revert user intent and disable all notification preferences
+                    userWantsNotifications = false
                     preferences.workoutRemindersEnabled = false
                     preferences.recoveryAlertsEnabled = false
                     preferences.nutritionRemindersEnabled = false
@@ -175,7 +179,8 @@ final class NotificationSettingsViewModel {
                         ? "Notification permissions were denied. You can enable them in Settings."
                         : nil
                 } else {
-                    // Schedule notifications with current preferences
+                    // User successfully enabled - save preference and schedule
+                    userWantsNotifications = true
                     await saveAndReschedule()
                 }
             } else {
@@ -184,7 +189,8 @@ final class NotificationSettingsViewModel {
                 authorizationStatus = granted ? .authorized : .denied
 
                 if !granted {
-                    // Explicitly ensure toggle reflects denial - disable all notification preferences
+                    // Revert user intent and disable all notification preferences
+                    userWantsNotifications = false
                     preferences.workoutRemindersEnabled = false
                     preferences.recoveryAlertsEnabled = false
                     preferences.nutritionRemindersEnabled = false
@@ -192,11 +198,14 @@ final class NotificationSettingsViewModel {
 
                     errorMessage = "Notification permissions were denied. You can enable them in Settings."
                 } else {
+                    // User successfully enabled - save preference and schedule
+                    userWantsNotifications = true
                     await saveAndReschedule()
                 }
             }
         } catch {
             authorizationStatus = .denied
+            userWantsNotifications = false
             // Explicitly reset preferences on error
             preferences.workoutRemindersEnabled = false
             preferences.recoveryAlertsEnabled = false
@@ -213,6 +222,12 @@ final class NotificationSettingsViewModel {
             authorizationStatus = await useCase.checkCurrentStatus()
         } else {
             authorizationStatus = await scheduler.checkAuthorizationStatus()
+        }
+
+        // Sync userWantsNotifications with actual authorization on initial check
+        // If authorized, assume user wants notifications (can be overridden by toggle)
+        if authorizationStatus == .authorized {
+            userWantsNotifications = true
         }
     }
 
