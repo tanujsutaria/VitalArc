@@ -1,7 +1,9 @@
 ---
 name: commit-formatter
 description: Generate properly formatted conventional commit messages for VitalArc. Use automatically when preparing to commit changes, or when the user asks to commit. Analyzes staged changes and produces commit messages following project conventions.
-maps-to-agent: general-purpose
+context: fork
+agent: general-purpose
+disable-model-invocation: true
 allowed-tools: Read, Bash, Grep, Glob
 ---
 
@@ -9,9 +11,12 @@ allowed-tools: Read, Bash, Grep, Glob
 
 Generates conventional commit messages following VitalArc's established patterns.
 
+**Execution**: Runs in forked context with general-purpose agent.
+**Invocation**: User-triggered only (has side effects via git).
+
 ## When to Use
 
-Auto-invoke when:
+User invokes when:
 - User says "commit", "save changes", or "push"
 - Preparing to run `git commit`
 - Significant work block completed and ready to save

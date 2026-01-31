@@ -1,13 +1,18 @@
 ---
 name: design-system-auditor
 description: Audit VitalArc SwiftUI views for design system compliance. Use automatically before commits, during code review, or when the user asks to check design consistency. Finds hardcoded colors, spacing, and fonts that should use design tokens.
-maps-to-agent: Explore
-allowed-tools: Read, Grep, Glob, Edit
+context: fork
+agent: Explore
+allowed-tools: Read, Grep, Glob
 ---
 
 # Design System Auditor Agent
 
-Audits SwiftUI views for design system violations and can auto-fix them.
+Audits SwiftUI views for design system violations. Combines scanning with detailed reporting.
+
+**Execution**: Runs in forked context with Explore agent for read-only analysis.
+
+**Note**: This is a comprehensive auditor that combines the capabilities of design-system-scanner with deeper analysis. For quick scans, use design-system-scanner. For fixes, use design-system-fixer.
 
 ## When to Use
 
@@ -142,45 +147,6 @@ grep -rn "\.font(.system(size:" Presentation/
 - ChartView.swift:23 - Dynamic calculation
 ```
 
-### 4. Auto-Fix (if enabled)
-
-When user confirms, apply fixes:
-
-```swift
-// Before
-.foregroundColor(.blue)
-.padding(16)
-.font(.title)
-
-// After
-.foregroundColor(Color.vitalPrimary)
-.padding(Spacing.lg)
-.font(.vitalH1)
-```
-
-## Output Modes
-
-### Audit Only (default)
-```
-/design-system-auditor
-
-→ Reports violations, no changes
-```
-
-### Audit + Fix
-```
-/design-system-auditor fix
-
-→ Reports violations and applies auto-fixes
-```
-
-### Single File
-```
-/design-system-auditor FeatureView.swift
-
-→ Audits specific file only
-```
-
 ## Integration
 
 This agent is part of the **Pre-Commit Quality Gate** swarm:
@@ -230,6 +196,6 @@ Files: 12 | Violations: 5 | Auto-fixable: 5
    Color.vitalAdaptiveSurface
    ```
 
-### Fix Command
-Apply all fixes? (y/n)
+### Next Steps
+Run `/design-system-fixer` to apply fixes (workstation only).
 ```

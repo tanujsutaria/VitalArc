@@ -1,7 +1,8 @@
 ---
 name: design-system-scanner
 description: Audit VitalArc views for design system compliance. Read-only scanning - finds violations but does NOT fix them. Works on both cloud and workstation. For fixes, use design-system-fixer.
-maps-to-agent: Explore
+context: fork
+agent: Explore
 allowed-tools: Read, Glob, Grep
 argument-hint: [--path=specific/path] [--verbose]
 ---
@@ -9,6 +10,8 @@ argument-hint: [--path=specific/path] [--verbose]
 # Design System Scanner
 
 Read-only audit agent that finds design token violations without modifying files.
+
+**Execution**: Runs in forked context with Explore agent for read-only analysis.
 
 ## Responsibility Split
 
@@ -21,13 +24,13 @@ Read-only audit agent that finds design token violations without modifying files
 
 ### Colors
 ```swift
-// ❌ Violations
+// Violations
 Color.red
 Color(.systemBlue)
 Color(red: 0.5, green: 0.5, blue: 0.5)
 UIColor.red
 
-// ✅ Correct
+// Correct
 Color.vitalPrimary
 Color.vitalDanger
 Color.vitalAdaptiveTextPrimary
@@ -35,13 +38,13 @@ Color.vitalAdaptiveTextPrimary
 
 ### Spacing
 ```swift
-// ❌ Violations
+// Violations
 .padding(16)
 .padding(.horizontal, 20)
 .frame(width: 48)
 .cornerRadius(12)
 
-// ✅ Correct
+// Correct
 .padding(Spacing.md)
 .padding(.horizontal, Spacing.screenPadding)
 .frame(width: Spacing.iconHuge)
@@ -50,12 +53,12 @@ Color.vitalAdaptiveTextPrimary
 
 ### Typography
 ```swift
-// ❌ Violations
+// Violations
 .font(.system(size: 14))
 .font(.title)
 .font(.headline)
 
-// ✅ Correct
+// Correct
 .font(.vitalBody)
 .font(.vitalH1)
 .font(.vitalLabel)
@@ -63,11 +66,11 @@ Color.vitalAdaptiveTextPrimary
 
 ### Icon Sizes
 ```swift
-// ❌ Violations
+// Violations
 .font(.system(size: 24, weight: .bold))
 Image(systemName: "star").font(.system(size: 20))
 
-// ✅ Correct
+// Correct
 .font(.system(size: Spacing.iconLarge, weight: .bold))
 Image(systemName: "star").font(.system(size: Spacing.iconMedium))
 ```
@@ -170,7 +173,7 @@ With `--verbose`, include code context:
 // Line 43-47
 ZStack {
     Circle()
-        .fill(Color.red)  // ❌ Use Color.vitalDanger
+        .fill(Color.red)  // Use Color.vitalDanger
         .frame(width: 48, height: 48)
 }
 ```
@@ -224,7 +227,7 @@ ZStack {
 ```markdown
 ## Design System Scan Results
 
-✅ **No violations found!**
+No violations found!
 
 Scanned 70 files in VitalArc/Presentation/
 All views comply with design system tokens.
@@ -233,7 +236,7 @@ All views comply with design system tokens.
 ### Scan Errors
 
 ```markdown
-## ⚠️ Scan Incomplete
+## Scan Incomplete
 
 Some files could not be scanned:
 - VitalArc/Presentation/SomeView.swift: Permission denied

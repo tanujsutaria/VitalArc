@@ -1,14 +1,14 @@
 ---
 name: feature-planner
-description: Orchestrator for planning new feature architecture. Coordinates domain-modeler, swiftui-architect, dependency-wirer, and test-scaffolder in sequence.
-maps-to-agent: Plan
-allowed-tools: Read, Glob, Grep
+description: Orchestrator for planning new feature architecture. Coordinates domain-modeler, swiftui-architect, dependency-wirer, and test-scaffolder using task dependency graphs.
+disable-model-invocation: true
+allowed-tools: Read, Glob, Grep, Task, TaskCreate, TaskUpdate, TaskList
 argument-hint: <feature-name> [--skip-tests] [--domain-only] [--ui-only]
 ---
 
 # Feature Planner
 
-Orchestrator that coordinates architecture design for new features. Follows VitalArc's Clean Architecture patterns.
+Orchestrator that coordinates architecture design for new features using **task dependency graphs** for automatic sequencing.
 
 ## When to Use
 
@@ -16,112 +16,220 @@ Orchestrator that coordinates architecture design for new features. Follows Vita
 - Major enhancement to existing feature
 - User asks to "plan", "design", or "architect" something new
 
-## Orchestration Flow
+## Task Dependency Graph
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                      FEATURE PLANNING PIPELINE                       │
+│                    FEATURE PLANNING PIPELINE                         │
 ├─────────────────────────────────────────────────────────────────────┤
-│  PHASE 1 - Analysis:                                                │
-│    └── Analyze existing codebase patterns                           │
 │                                                                      │
-│  PHASE 2 - Domain Design (Sequential):                              │
-│    └── domain-modeler                                               │
-│        ├── Design entities                                          │
-│        ├── Design repository protocols                              │
-│        └── Design use cases                                         │
+│  ┌──────────────┐                                                   │
+│  │   Analysis   │  ← Phase 1: Analyze existing patterns             │
+│  └──────┬───────┘                                                   │
+│         │                                                           │
+│         ▼                                                           │
+│  ┌──────────────┐                                                   │
+│  │    Domain    │  ← Phase 2: Design entities, repos, use cases     │
+│  └──────┬───────┘    (blockedBy: analysis)                          │
+│         │                                                           │
+│         ▼                                                           │
+│  ┌──────────────┐                                                   │
+│  │      UI      │  ← Phase 3: Design views, ViewModels              │
+│  └──────┬───────┘    (blockedBy: domain)                            │
+│         │                                                           │
+│         ▼                                                           │
+│  ┌──────────────┐                                                   │
+│  │   Wiring     │  ← Phase 4: Update DependencyContainer            │
+│  └──────┬───────┘    (blockedBy: domain + ui)                       │
+│         │                                                           │
+│         ▼                                                           │
+│  ┌──────────────┐                                                   │
+│  │    Tests     │  ← Phase 5: Generate test scaffolds               │
+│  └──────────────┘    (blockedBy: wiring)                            │
 │                                                                      │
-│  PHASE 3 - UI Design (Sequential, after domain):                    │
-│    └── swiftui-architect                                            │
-│        ├── Design view hierarchy                                    │
-│        ├── Design ViewModels                                        │
-│        └── Design navigation flow                                   │
-│                                                                      │
-│  PHASE 4 - Integration (Sequential, after UI):                      │
-│    └── dependency-wirer                                             │
-│        ├── Update DependencyContainer                               │
-│        └── Wire repositories and use cases                          │
-│                                                                      │
-│  PHASE 5 - Test Planning (Sequential, after integration):           │
-│    └── test-scaffolder                                              │
-│        ├── Generate domain tests                                    │
-│        ├── Generate ViewModel tests                                 │
-│        └── Generate UI tests                                        │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
 ## Options
 
-| Option | Description |
-|--------|-------------|
-| `--skip-tests` | Skip test scaffolding phase |
-| `--domain-only` | Only design domain layer (no UI) |
-| `--ui-only` | Only design UI (assumes domain exists) |
+| Option | Description | Effect on Graph |
+|--------|-------------|-----------------|
+| `--skip-tests` | Skip test scaffolding phase | Removes Phase 5 from graph |
+| `--domain-only` | Only design domain layer | Only Phases 1-2 |
+| `--ui-only` | Only design UI (assumes domain exists) | Only Phases 1, 3 |
 
 ## Implementation
 
-### Phase 1: Codebase Analysis
+### Step 1: Create Complete Task Graph
 
-Before designing, analyze existing patterns:
+Create ALL tasks upfront with proper dependencies. This allows the system to automatically sequence and parallelize where possible.
 
-```markdown
-**Read these files to understand patterns:**
-- VitalArc/Domain/Entities/ - Entity patterns
-- VitalArc/Domain/Repositories/ - Repository protocol patterns
-- VitalArc/Domain/UseCases/ - Use case patterns
-- VitalArc/Presentation/Tabs/ - View organization
-- VitalArc/Infrastructure/DependencyContainer.swift - DI setup
+```javascript
+// FEATURE: $ARGUMENTS
+
+// ═══════════════════════════════════════════════════════════════
+// PHASE 1: Analysis (no dependencies - runs immediately)
+// ═══════════════════════════════════════════════════════════════
+
+TaskCreate({
+  subject: "Analyze codebase patterns for $ARGUMENTS",
+  description: `Analyze existing VitalArc patterns for $ARGUMENTS feature:
+
+  1. Read Domain/Entities/ - understand entity patterns
+  2. Read Domain/Repositories/ - understand repository protocols
+  3. Read Domain/UseCases/ - understand use case patterns
+  4. Read Presentation/Tabs/ - understand view organization
+  5. Read Infrastructure/DependencyContainer.swift - understand DI setup
+
+  Output: Summary of relevant patterns to follow`,
+  activeForm: "Analyzing codebase patterns"
+})
+// Returns: task-analysis-id
+
+// ═══════════════════════════════════════════════════════════════
+// PHASE 2: Domain Design (blocked by analysis)
+// ═══════════════════════════════════════════════════════════════
+
+TaskCreate({
+  subject: "Design domain layer for $ARGUMENTS",
+  description: `Design domain layer for $ARGUMENTS feature:
+
+  Following patterns from analysis, design:
+  1. **Entities**: Define structs with Identifiable, Codable, Hashable
+  2. **Repository Protocol**: Define async throwing methods
+  3. **Use Cases**: Single-responsibility classes with execute()
+
+  Output format:
+  - Entity definitions with properties
+  - Repository protocol with methods
+  - Use case classes with signatures`,
+  activeForm: "Designing domain layer",
+  addBlockedBy: ["task-analysis-id"]
+})
+// Returns: task-domain-id
+
+// ═══════════════════════════════════════════════════════════════
+// PHASE 3: UI Design (blocked by domain)
+// ═══════════════════════════════════════════════════════════════
+
+TaskCreate({
+  subject: "Design UI layer for $ARGUMENTS",
+  description: `Design UI layer for $ARGUMENTS feature:
+
+  Using domain entities from previous phase, design:
+  1. **View Hierarchy**: Main view, subviews, components
+  2. **ViewModel**: @Observable class with state and actions
+  3. **Navigation**: Entry points, sheets, navigation flow
+
+  Use VitalArc design system:
+  - VitalCard, VitalButton, VitalEmptyState
+  - Color.vitalPrimary, Color.vitalAdaptive*
+  - Spacing.*, Typography.*
+
+  Output format:
+  - View hierarchy diagram
+  - ViewModel class with properties and methods
+  - Navigation flow`,
+  activeForm: "Designing UI layer",
+  addBlockedBy: ["task-domain-id"]
+})
+// Returns: task-ui-id
+
+// ═══════════════════════════════════════════════════════════════
+// PHASE 4: Dependency Wiring (blocked by domain AND ui)
+// ═══════════════════════════════════════════════════════════════
+
+TaskCreate({
+  subject: "Plan dependency wiring for $ARGUMENTS",
+  description: `Plan DependencyContainer updates for $ARGUMENTS:
+
+  Based on domain and UI designs:
+  1. **Repository Implementation**: SwiftData repository class
+  2. **DependencyContainer Updates**: Properties and init changes
+  3. **SwiftData Model**: @Model class with converters
+
+  Output format:
+  - Repository implementation plan
+  - DependencyContainer code additions
+  - SwiftData model with fromDomain/toDomain`,
+  activeForm: "Planning dependency wiring",
+  addBlockedBy: ["task-domain-id", "task-ui-id"]
+})
+// Returns: task-wiring-id
+
+// ═══════════════════════════════════════════════════════════════
+// PHASE 5: Test Scaffolding (blocked by wiring)
+// ═══════════════════════════════════════════════════════════════
+
+TaskCreate({
+  subject: "Generate test scaffolds for $ARGUMENTS",
+  description: `Generate test scaffolds for $ARGUMENTS:
+
+  Based on all previous phases:
+  1. **Domain Tests**: Entity validation, use case logic
+  2. **ViewModel Tests**: State management, async operations
+  3. **Mock Classes**: Mock repositories for testing
+
+  Output format:
+  - Test file structure
+  - Test case signatures
+  - Mock class definitions`,
+  activeForm: "Generating test scaffolds",
+  addBlockedBy: ["task-wiring-id"]
+})
+// Returns: task-tests-id
 ```
 
-### Phase 2: Domain Design
+### Step 2: Monitor Progress
 
-```markdown
-**Task: domain-modeler**
-Prompt: "Design domain layer for [FEATURE]. Include:
-1. Entity definitions with properties and relationships
-2. Repository protocol with required methods
-3. Use case classes with execute() methods
+Use TaskList to see graph status:
 
-Follow patterns from existing VitalArc domain layer.
-Feature context: [FEATURE_DESCRIPTION]"
+```javascript
+TaskList()
+// Shows all tasks with blockedBy relationships
+// Completed tasks auto-unblock dependent tasks
 ```
 
-### Phase 3: UI Design
+### Step 3: Aggregate Results
 
-```markdown
-**Task: swiftui-architect**
-Prompt: "Design UI layer for [FEATURE]. Include:
-1. View hierarchy (main view, subviews, components)
-2. ViewModel with @Observable pattern
-3. Navigation flow and state management
+After all tasks complete, compile the feature plan:
 
-Use VitalArc design system (VitalCard, VitalButton, etc.)
-Domain entities: [OUTPUT_FROM_DOMAIN_MODELER]"
-```
+```javascript
+TaskCreate({
+  subject: "Compile feature plan document for $ARGUMENTS",
+  description: `Compile all phase outputs into a single feature plan document:
 
-### Phase 4: Integration
+  ## Feature Plan: $ARGUMENTS
 
-```markdown
-**Task: dependency-wirer**
-Prompt: "Wire [FEATURE] into VitalArc. Update:
-1. DependencyContainer with repository and use case
-2. Add @Model for SwiftData persistence
-3. Environment injection in views
+  ### Overview
+  [Brief description]
 
-Domain design: [OUTPUT_FROM_DOMAIN_MODELER]
-UI design: [OUTPUT_FROM_SWIFTUI_ARCHITECT]"
-```
+  ### Domain Layer
+  [From Phase 2]
 
-### Phase 5: Test Planning
+  ### Presentation Layer
+  [From Phase 3]
 
-```markdown
-**Task: test-scaffolder**
-Prompt: "Generate test scaffolds for [FEATURE]. Include:
-1. Domain tests (entity validation, use case logic)
-2. ViewModel tests (state management, async operations)
-3. UI test stubs (navigation, user interactions)
+  ### Integration
+  [From Phase 4]
 
-Feature design: [COMBINED_OUTPUT]"
+  ### Test Plan
+  [From Phase 5]
+
+  ### Implementation Checklist
+  - [ ] Create domain entities
+  - [ ] Create repository protocol
+  - [ ] Create SwiftData @Model
+  - [ ] Implement repository
+  - [ ] Create use cases
+  - [ ] Create ViewModel
+  - [ ] Create views
+  - [ ] Update DependencyContainer
+  - [ ] Add navigation entry
+  - [ ] Write tests`,
+  activeForm: "Compiling feature plan",
+  addBlockedBy: ["task-tests-id"]  // or task-wiring-id if --skip-tests
+})
 ```
 
 ## Output Format
@@ -247,16 +355,18 @@ Please provide more details about the feature:
 Example: `/feature-planner notifications --description "Push notifications for workout reminders and recovery alerts"`
 ```
 
-### Conflicting Patterns
+### Task Failure
+
+If any task in the graph fails:
 
 ```markdown
-## ⚠️ Pattern Conflict Detected
+## ⚠️ Pipeline Interrupted
 
-The proposed design conflicts with existing patterns:
+Task failed: [task subject]
+Error: [error message]
 
-**Existing**: Repositories return domain entities directly
-**Proposed**: Repository returns DTOs
+Downstream tasks blocked:
+- [list of blocked tasks]
 
-**Recommendation**: Follow existing pattern for consistency.
-Adjusted design uses domain entities.
+Fix the error and re-run the failed task to continue.
 ```

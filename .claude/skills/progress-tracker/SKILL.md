@@ -1,13 +1,16 @@
 ---
 name: progress-tracker
 description: Track and update the SESSION_LOG.md Work Log table during development. Use automatically when significant work is completed, files are modified, or milestones are reached. Keeps the session log current without manual intervention.
-maps-to-agent: general-purpose
+context: fork
+agent: general-purpose
 allowed-tools: Read, Edit, Grep, Glob
 ---
 
 # Progress Tracker Agent
 
 Maintains the SESSION_LOG.md Work Log table in real-time during development sessions.
+
+**Execution**: Runs in forked context with general-purpose agent for file edits.
 
 ## When to Use
 

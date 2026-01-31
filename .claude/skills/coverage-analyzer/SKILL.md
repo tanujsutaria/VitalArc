@@ -1,7 +1,8 @@
 ---
 name: coverage-analyzer
 description: Identify untested code and suggest test priorities. Analyzes source files vs test files to find coverage gaps.
-maps-to-agent: Explore
+context: fork
+agent: Explore
 allowed-tools: Read, Glob, Grep
 argument-hint: [--layer=domain|presentation|all] [--verbose]
 ---
@@ -9,6 +10,8 @@ argument-hint: [--layer=domain|presentation|all] [--verbose]
 # Coverage Analyzer
 
 Analyzes test coverage by comparing source files with corresponding test files.
+
+**Execution**: Runs in forked context with Explore agent for read-only analysis.
 
 ## Analysis Approach
 
@@ -78,16 +81,16 @@ For each source file, look for corresponding test:
 
 | Priority | File | Layer | Why |
 |----------|------|-------|-----|
-| 🔴 10 | CreateWorkoutUseCase.swift | UseCases | Core workout logic |
-| 🔴 10 | CalculateRecoveryScoreUseCase.swift | UseCases | Critical calculation |
-| 🔴 10 | LogFoodUseCase.swift | UseCases | Nutrition tracking |
-| 🟠 8 | Workout.swift | Entities | Complex validation |
-| 🟠 8 | WorkoutViewModel.swift | ViewModels | State management |
-| 🟠 8 | NutritionViewModel.swift | ViewModels | Async operations |
-| 🟡 6 | SwiftDataWorkoutRepository.swift | Repositories | Data persistence |
-| 🟡 6 | HealthKitManager.swift | Infrastructure | HealthKit integration |
-| 🟢 3 | ProfileView.swift | Views | UI (preview exists) |
-| 🟢 2 | DateFormatters.swift | Utilities | Simple helpers |
+| 10 | CreateWorkoutUseCase.swift | UseCases | Core workout logic |
+| 10 | CalculateRecoveryScoreUseCase.swift | UseCases | Critical calculation |
+| 10 | LogFoodUseCase.swift | UseCases | Nutrition tracking |
+| 8 | Workout.swift | Entities | Complex validation |
+| 8 | WorkoutViewModel.swift | ViewModels | State management |
+| 8 | NutritionViewModel.swift | ViewModels | Async operations |
+| 6 | SwiftDataWorkoutRepository.swift | Repositories | Data persistence |
+| 6 | HealthKitManager.swift | Infrastructure | HealthKit integration |
+| 3 | ProfileView.swift | Views | UI (preview exists) |
+| 2 | DateFormatters.swift | Utilities | Simple helpers |
 
 ### Existing Tests
 
@@ -104,7 +107,7 @@ For each source file, look for corresponding test:
 ### Untested Critical Paths
 
 ```markdown
-### ⚠️ Critical Untested Code
+### Critical Untested Code
 
 These code paths handle important logic and have no test coverage:
 
@@ -143,19 +146,19 @@ These code paths handle important logic and have no test coverage:
 ### Use Cases (16 files, 4 tested)
 | File | Status | Priority |
 |------|--------|----------|
-| CreateWorkoutUseCase.swift | ❌ Untested | 🔴 High |
-| GetWorkoutsUseCase.swift | ❌ Untested | 🟠 Medium |
-| CalculateRecoveryScoreUseCase.swift | ✅ Tested | - |
-| LogFoodUseCase.swift | ❌ Untested | 🔴 High |
+| CreateWorkoutUseCase.swift | Untested | High |
+| GetWorkoutsUseCase.swift | Untested | Medium |
+| CalculateRecoveryScoreUseCase.swift | Tested | - |
+| LogFoodUseCase.swift | Untested | High |
 ...
 
 ### Entities (12 files, 2 tested)
 | File | Status | Priority |
 |------|--------|----------|
-| Workout.swift | ✅ Tested | - |
-| Food.swift | ✅ Tested | - |
-| Exercise.swift | ❌ Untested | 🟠 Medium |
-| UserProfile.swift | ✅ Tested | - |
+| Workout.swift | Tested | - |
+| Food.swift | Tested | - |
+| Exercise.swift | Untested | Medium |
+| UserProfile.swift | Tested | - |
 ...
 ```
 
@@ -167,10 +170,10 @@ These code paths handle important logic and have no test coverage:
 ### ViewModels (10 files, 3 tested)
 | File | Status | Has Preview |
 |------|--------|-------------|
-| WorkoutViewModel.swift | ❌ Untested | Yes |
-| ProfileViewModel.swift | ❌ Untested | Yes |
-| HealthDashboardViewModel.swift | ✅ Tested | Yes |
-| NutritionViewModel.swift | ❌ Untested | Yes |
+| WorkoutViewModel.swift | Untested | Yes |
+| ProfileViewModel.swift | Untested | Yes |
+| HealthDashboardViewModel.swift | Tested | Yes |
+| NutritionViewModel.swift | Untested | Yes |
 ...
 
 ### Views (70 files)
@@ -207,7 +210,7 @@ Week 3: Critical infrastructure (5 files)
 ### No Test Directory
 
 ```markdown
-## ⚠️ Test Directory Not Found
+## Test Directory Not Found
 
 No test files found in expected locations:
 - VitalArcTests/

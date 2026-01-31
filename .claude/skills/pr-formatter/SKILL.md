@@ -1,7 +1,9 @@
 ---
 name: pr-formatter
 description: Generate PR title and body following conventional commits format. Includes testing checklist and session metadata. Workstation only.
-maps-to-agent: general-purpose
+context: fork
+agent: general-purpose
+disable-model-invocation: true
 allowed-tools: Read, Bash, Grep
 argument-hint: [--draft] [--no-checklist]
 ---
@@ -9,6 +11,9 @@ argument-hint: [--draft] [--no-checklist]
 # PR Formatter
 
 Generates pull request title and body following VitalArc conventions.
+
+**Execution**: Runs in forked context with general-purpose agent.
+**Invocation**: User-triggered only (creates PRs).
 
 ## When to Use
 
@@ -59,7 +64,7 @@ Follow conventional commits: `<type>(<scope>): <description>`
 ---
 Session: [N] | Platform: macOS | Build: Verified
 
-🤖 Generated with [Claude Code](https://claude.ai/code)
+Generated with [Claude Code](https://claude.ai/code)
 ```
 
 ## Implementation
@@ -147,7 +152,7 @@ feat(notifications): add notification settings and TRIMP calculation
 ---
 Session: 12.3 | Platform: macOS | Build: Verified
 
-🤖 Generated with [Claude Code](https://claude.ai/code)
+Generated with [Claude Code](https://claude.ai/code)
 ```
 
 ### Create Command
@@ -180,7 +185,7 @@ gh pr create --draft --title "..." --body "..."
 ### No Changes
 
 ```markdown
-## ⚠️ No Changes to PR
+## No Changes to PR
 
 No commits found between main and current branch.
 
@@ -192,7 +197,7 @@ Make sure you have:
 ### Cannot Determine Type
 
 ```markdown
-## ⚠️ Cannot Auto-Detect PR Type
+## Cannot Auto-Detect PR Type
 
 Changes span multiple areas. Please specify:
 
@@ -207,7 +212,7 @@ Which would you like to use?
 ### GitHub CLI Not Available
 
 ```markdown
-## ⚠️ GitHub CLI Not Found
+## GitHub CLI Not Found
 
 `gh` command not available. Install with:
 ```bash

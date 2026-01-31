@@ -1,5 +1,54 @@
 # VitalArc Development Session Log
 
+## Session 15.2 - January 31, 2026 (Evening)
+
+### Session Start
+- **Time**: Evening PST
+- **Platform**: macOS 🖥️
+- **Focus**: Skill architecture refactoring
+- **Branch**: dev/mac-session-15.2-2026-01-31
+- **Base**: main @ a797a33
+
+### Environment
+- **Build Capable**: Yes
+- **Test Capable**: Yes (unit + UI)
+
+### Pre-Session Status
+- **Build**: SUCCEEDED (verified)
+- **Uncommitted Changes**: None
+- **Design Violations**: 18 minor (existing, not introduced this session)
+
+### Session Goals
+1. Complete skill audit and refactoring
+2. Implement task dependency graphs for orchestrators
+3. Add native frontmatter (context: fork, agent:) to all skills
+
+### Work Log
+| Time | Action | Files | Notes |
+|------|--------|-------|-------|
+| - | Session started | - | Build verified ✅ |
+| - | Audited all 21 skills | .claude/skills/**/*.md | Identified refactoring needs |
+| - | Refactored session orchestrators | vitalarc-start-*, vitalarc-end-* | Added TaskCreate dependency graphs |
+| - | Refactored feature-planner | feature-planner/SKILL.md | 5-phase pipeline with blockedBy |
+| - | Added context: fork to workers | 16 skill files | Native subagent execution |
+| - | Added disable-model-invocation | commit-formatter, design-system-fixer, pr-formatter | Side-effect protection |
+| - | Updated CLAUDE.md | CLAUDE.md | Replaced maps-to-agent docs |
+| - | Session ended | - | All skills refactored ✅ |
+
+### Session Results
+- **Build**: SUCCEEDED ✅
+- **Files Modified**: 21 files
+- **Design Violations**: No new violations introduced
+
+### Key Accomplishments
+1. **Refactored 21 skills** to use native Claude Code patterns
+2. **Session orchestrators** now use task dependency graphs for parallelization
+3. **Worker skills** use `context: fork` + `agent:` frontmatter
+4. **Side-effect skills** protected with `disable-model-invocation: true`
+5. **CLAUDE.md updated** with new architecture documentation
+
+---
+
 ## Session 15.1 - January 31, 2026 (Morning)
 
 ### Session Start

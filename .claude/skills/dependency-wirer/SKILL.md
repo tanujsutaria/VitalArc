@@ -1,7 +1,8 @@
 ---
 name: dependency-wirer
 description: Update DependencyContainer.swift to wire new repositories, use cases, and ViewModels. Follows VitalArc's dependency injection patterns.
-maps-to-agent: Plan
+context: fork
+agent: Plan
 allowed-tools: Read, Edit, Grep, Glob
 argument-hint: <feature-name> [--entity=Name] [--repository=Name] [--usecase=Name]
 ---
@@ -9,6 +10,8 @@ argument-hint: <feature-name> [--entity=Name] [--repository=Name] [--usecase=Nam
 # Dependency Wirer
 
 Wires new components into VitalArc's dependency injection system.
+
+**Execution**: Runs in forked context with Plan agent for isolated analysis and targeted edits.
 
 ## What It Does
 
