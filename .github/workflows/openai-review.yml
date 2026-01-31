@@ -14,6 +14,7 @@ jobs:
   openai-review:
     name: AI Code Review
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     if: github.event.pull_request.draft == false
 
     steps:
@@ -130,7 +131,8 @@ jobs:
               headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`
-              }
+              },
+              timeout: 600000  // 10 minute timeout for high reasoning effort
             };
 
             const response = await new Promise((resolve, reject) => {
@@ -144,6 +146,10 @@ jobs:
                     reject(new Error(`API error: ${res.statusCode} - ${data}`));
                   }
                 });
+              });
+              req.setTimeout(600000, () => {
+                req.destroy();
+                reject(new Error('Request timed out after 10 minutes'));
               });
               req.on('error', reject);
               req.write(requestData);
