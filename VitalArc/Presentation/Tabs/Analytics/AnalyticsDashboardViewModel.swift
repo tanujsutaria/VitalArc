@@ -75,6 +75,11 @@ final class AnalyticsDashboardViewModel {
     var carbsTarget: Double = 250
     var fatsTarget: Double = 70
 
+    // Task handles for cancellation
+    private var recoveryScoreTask: Task<Void, Never>?
+    private var strainScoreTask: Task<Void, Never>?
+    var isCalculatingScores = false
+
     // MARK: - Initialization
 
     init(
@@ -318,10 +323,18 @@ final class AnalyticsDashboardViewModel {
     }
 
     private func calculateScores() {
+        // Cancel any previous score calculations to avoid race conditions
+        recoveryScoreTask?.cancel()
+        strainScoreTask?.cancel()
+        isCalculatingScores = true
+
         // Calculate Recovery Score using the dedicated use case
-        Task {
+        recoveryScoreTask = Task {
             do {
+                guard !Task.isCancelled else { return }
                 let result = try await calculateRecoveryScoreUseCase.execute()
+                guard !Task.isCancelled else { return }
+
                 recoveryResult = result
                 recoveryScore = Double(result.score)
 
@@ -337,22 +350,28 @@ final class AnalyticsDashboardViewModel {
                     )
                 }
             } catch {
+                guard !Task.isCancelled else { return }
                 // Fallback to demo score if calculation fails
                 recoveryScore = Double.random(in: 65...95)
             }
+            checkScoresComplete()
         }
 
         // Calculate Strain Score using TRIMP calculation
-        Task {
+        strainScoreTask = Task {
             do {
+                guard !Task.isCancelled else { return }
                 if let result = try await calculateStrainScoreUseCase.execute(for: Date()) {
+                    guard !Task.isCancelled else { return }
                     strainResult = result
                     strainScore = result.strainScore
                 } else {
+                    guard !Task.isCancelled else { return }
                     // No workout data for today
                     strainScore = 0
                 }
             } catch {
+                guard !Task.isCancelled else { return }
                 // Fallback to estimated strain if calculation fails
                 if let report = currentReport {
                     strainScore = min(report.workoutConsistency / 100 * 21, 21)
@@ -360,14 +379,22 @@ final class AnalyticsDashboardViewModel {
                     strainScore = 0
                 }
             }
+            checkScoresComplete()
         }
 
-        // Sleep Score (based on duration and consistency)
+        // Sleep Score (based on duration and consistency) - synchronous, no task needed
         if !sleepTrend.isEmpty {
             let avgSleep = sleepTrend.map { $0.totalHours }.reduce(0, +) / Double(sleepTrend.count)
             sleepScore = min(max((avgSleep / sleepTargetHours) * 100, 0), 100)
         } else {
             sleepScore = Double.random(in: 60...90)
+        }
+    }
+
+    private func checkScoresComplete() {
+        // Check if both tasks are done
+        if recoveryScoreTask?.isCancelled == false && strainScoreTask?.isCancelled == false {
+            isCalculatingScores = false
         }
     }
 

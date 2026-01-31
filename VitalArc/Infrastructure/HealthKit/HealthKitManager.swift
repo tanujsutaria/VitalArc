@@ -331,6 +331,72 @@ final class HealthKitManager {
         }
     }
 
+    /// Fetch sleep stage breakdown
+    func fetchSleepStages(start: Date, end: Date) async throws -> SleepStages? {
+        guard let sleepType = HKCategoryType.categoryType(forIdentifier: .sleepAnalysis) else {
+            throw HealthKitError.queryFailed
+        }
+
+        return try await withCheckedThrowingContinuation { continuation in
+            let query = HealthKitQuery.sampleQuery(
+                for: sleepType,
+                start: start,
+                end: end
+            ) { samples, error in
+                if let error = error {
+                    continuation.resume(throwing: error)
+                    return
+                }
+
+                guard let sleepSamples = samples as? [HKCategorySample], !sleepSamples.isEmpty else {
+                    continuation.resume(returning: nil)
+                    return
+                }
+
+                // Calculate duration for each sleep stage
+                var deepSleep: Double = 0
+                var remSleep: Double = 0
+                var coreSleep: Double = 0
+                var awake: Double = 0
+
+                for sample in sleepSamples {
+                    let duration = sample.endDate.timeIntervalSince(sample.startDate) / 3600 // hours
+
+                    switch sample.value {
+                    case HKCategoryValueSleepAnalysis.asleepDeep.rawValue:
+                        deepSleep += duration
+                    case HKCategoryValueSleepAnalysis.asleepREM.rawValue:
+                        remSleep += duration
+                    case HKCategoryValueSleepAnalysis.asleepCore.rawValue:
+                        coreSleep += duration
+                    case HKCategoryValueSleepAnalysis.asleepUnspecified.rawValue:
+                        // Unspecified counts as core/light sleep
+                        coreSleep += duration
+                    case HKCategoryValueSleepAnalysis.awake.rawValue:
+                        awake += duration
+                    default:
+                        break
+                    }
+                }
+
+                // Only return stages if we have any sleep data
+                if deepSleep + remSleep + coreSleep > 0 {
+                    let stages = SleepStages(
+                        deepSleep: deepSleep,
+                        remSleep: remSleep,
+                        coreSleep: coreSleep,
+                        awake: awake
+                    )
+                    continuation.resume(returning: stages)
+                } else {
+                    continuation.resume(returning: nil)
+                }
+            }
+
+            healthStore.execute(query)
+        }
+    }
+
     /// Fetch body weight
     private func fetchWeight(start: Date, end: Date) async throws -> Double? {
         guard let weightType = HKQuantityType.quantityType(forIdentifier: .bodyMass) else {

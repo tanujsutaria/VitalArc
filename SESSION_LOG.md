@@ -1,5 +1,64 @@
 # VitalArc Development Session Log
 
+## Session 15.3 - January 31, 2026 (Evening)
+
+### Session Start
+- **Time**: Evening PST
+- **Platform**: macOS 🖥️
+- **Focus**: Awaiting direction
+- **Branch**: dev/mac-session-15.3-2026-01-31
+- **Base**: main @ fd3329f
+
+### Environment
+- **Build Capable**: Yes
+- **Test Capable**: Yes (unit + UI)
+
+### Pre-Session Status
+- **Build**: SUCCEEDED ✅
+- **Design Violations**: 18 minor (existing, in 15 files)
+- **Uncommitted Changes**: None
+
+### Suggested Focus Areas
+1. **Fix & Re-integrate Cloud Test Files** (Score: 13) - Double test coverage
+2. **Configure & Test Food API Keys** (Score: 12) - Unblock nutrition testing
+3. **Complete Sleep Analysis & Macro Tracking** (Score: 11) - Polish features
+
+### Session Goals
+1. Complete Sleep Analysis & Macro Tracking (Focus Area 3)
+2. Fix ViewModel data loading and race condition bugs
+3. Ensure all tests pass
+
+### Work Log
+| Time | Action | Files | Notes |
+|------|--------|-------|-------|
+| - | Session started | - | Build verified ✅ |
+| - | Fixed ProgressTabView data loading | ProgressTabViewModel.swift | ViewModel not loading data on appear |
+| - | Fixed analytics race conditions | AnalyticsDashboardViewModel.swift | Resolved async state race conditions |
+| - | Fixed search debouncing | ExerciseLibraryViewModel.swift | Debounce logic not working correctly |
+| - | Fixed loading state | FoodLoggingViewModel.swift | Loading state not updating properly |
+| - | Added sleep stage breakdown | SleepDetailSheet.swift | New UI for sleep stage visualization |
+| - | Added macro goal editing | MacroGoalEditSheet.swift | New UI for editing macro goals |
+| - | Verified all tests pass | - | 535 tests passing ✅ |
+| - | Session ended | - | Focus Area 3 complete ✅ |
+
+### Session Results
+- **Build**: SUCCEEDED ✅
+- **Tests**: 535 passing ✅
+- **Design Violations**: No new violations introduced
+
+### Key Accomplishments
+1. **Completed Focus Area 3**: Sleep Analysis & Macro Tracking features
+   - Added sleep stage breakdown UI (SleepDetailSheet.swift)
+   - Added macro goal editing UI (MacroGoalEditSheet.swift)
+2. **Fixed ViewModel Bugs**:
+   - ProgressTabViewModel data loading on appear
+   - AnalyticsDashboardViewModel race conditions
+   - ExerciseLibraryViewModel search debouncing
+   - FoodLoggingViewModel loading state
+3. **All 535 tests passing** - No regressions introduced
+
+---
+
 ## Session 15.2 - January 31, 2026 (Evening)
 
 ### Session Start

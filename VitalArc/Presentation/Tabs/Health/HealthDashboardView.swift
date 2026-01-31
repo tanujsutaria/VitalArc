@@ -71,13 +71,32 @@ struct HealthDashboardView: View {
                 Text("Please grant access to HealthKit in Settings to view your health data.")
             }
             .sheet(item: $selectedMetric) { metric in
-                MetricDetailSheet(
-                    metricType: metric,
-                    currentValue: getCurrentValue(for: metric),
-                    healthRepository: healthRepository
-                )
-                .presentationDetents([.medium, .large])
-                .presentationDragIndicator(.visible)
+                if metric == .sleep {
+                    SleepDetailSheet(
+                        sleepHours: viewModel.todayMetrics?.sleepHours ?? 0,
+                        sleepStages: viewModel.todayMetrics?.sleepStages,
+                        sleepTrend: viewModel.weekMetrics.compactMap { metrics in
+                            guard let sleep = metrics.sleepHours else { return nil }
+                            return SleepTrendData(
+                                date: metrics.date,
+                                totalHours: sleep,
+                                deepSleepHours: metrics.sleepStages?.deepSleep,
+                                remSleepHours: metrics.sleepStages?.remSleep,
+                                lightSleepHours: metrics.sleepStages?.coreSleep
+                            )
+                        }
+                    )
+                    .presentationDetents([.medium, .large])
+                    .presentationDragIndicator(.visible)
+                } else {
+                    MetricDetailSheet(
+                        metricType: metric,
+                        currentValue: getCurrentValue(for: metric),
+                        healthRepository: healthRepository
+                    )
+                    .presentationDetents([.medium, .large])
+                    .presentationDragIndicator(.visible)
+                }
             }
         }
     }
