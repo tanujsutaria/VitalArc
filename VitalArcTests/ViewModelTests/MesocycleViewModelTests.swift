@@ -110,7 +110,7 @@ final class MesocycleViewModelTests: XCTestCase {
             startDate: Date(),
             durationWeeks: 4,
             goal: .hypertrophy,
-            phaseTemplate: .linear,
+            phaseTemplate: .standard,
             trainingBlocks: []
         )
 
@@ -129,7 +129,7 @@ final class MesocycleViewModelTests: XCTestCase {
             startDate: Date(),
             durationWeeks: 4,
             goal: .hypertrophy,
-            phaseTemplate: .linear,
+            phaseTemplate: .standard,
             trainingBlocks: []
         )
 
@@ -251,10 +251,17 @@ final class MesocycleViewModelTests: XCTestCase {
     // MARK: - Get Mesocycles By Status Tests
 
     func testGetMesocyclesByStatusFiltersCorrectly() async {
-        // Setup
-        let planned = MockMesocycleRepository.createSampleMesocycle(name: "Planned", status: .planned)
-        let active = MockMesocycleRepository.createSampleMesocycle(name: "Active", status: .active)
-        let completed = MockMesocycleRepository.createSampleMesocycle(name: "Completed", status: .completed)
+        // Setup - use appropriate dates to prevent auto-status changes
+        // Planned: future start date
+        // Active: past start date, future end date (within duration)
+        // Completed: past end date
+        let futureDate = Calendar.current.date(byAdding: .weekOfYear, value: 2, to: Date())!
+        let pastDate = Calendar.current.date(byAdding: .weekOfYear, value: -2, to: Date())!
+        let farPastDate = Calendar.current.date(byAdding: .weekOfYear, value: -10, to: Date())!
+
+        let planned = MockMesocycleRepository.createSampleMesocycle(name: "Planned", startDate: futureDate, status: .planned)
+        let active = MockMesocycleRepository.createSampleMesocycle(name: "Active", startDate: pastDate, status: .active)
+        let completed = MockMesocycleRepository.createSampleMesocycle(name: "Completed", startDate: farPastDate, durationWeeks: 4, status: .completed)
         mockMesocycleRepository.mockMesocycles = [planned, active, completed]
         await viewModel.loadMesocycles()
 
@@ -273,8 +280,9 @@ final class MesocycleViewModelTests: XCTestCase {
     }
 
     func testGetMesocyclesByStatusReturnsEmptyForNoMatches() async {
-        // Setup
-        let planned = MockMesocycleRepository.createSampleMesocycle(status: .planned)
+        // Setup - use future date to keep it planned
+        let futureDate = Calendar.current.date(byAdding: .weekOfYear, value: 2, to: Date())!
+        let planned = MockMesocycleRepository.createSampleMesocycle(startDate: futureDate, status: .planned)
         mockMesocycleRepository.mockMesocycles = [planned]
         await viewModel.loadMesocycles()
 

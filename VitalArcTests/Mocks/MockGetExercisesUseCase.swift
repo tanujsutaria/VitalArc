@@ -69,42 +69,42 @@ final class MockGetExercisesUseCase {
         [
             Exercise(
                 name: "Bench Press",
-                category: .chest,
-                equipment: .barbell,
+                category: .push,
                 primaryMuscles: [.chest],
                 secondaryMuscles: [.triceps, .shoulders],
+                equipment: .barbell,
                 instructions: "Lie on bench, lower bar to chest, press up"
             ),
             Exercise(
                 name: "Squat",
                 category: .legs,
-                equipment: .barbell,
                 primaryMuscles: [.quadriceps],
                 secondaryMuscles: [.glutes, .hamstrings],
+                equipment: .barbell,
                 instructions: "Stand with bar on back, squat down, stand up"
             ),
             Exercise(
                 name: "Deadlift",
-                category: .back,
-                equipment: .barbell,
+                category: .pull,
                 primaryMuscles: [.back],
                 secondaryMuscles: [.hamstrings, .glutes],
+                equipment: .barbell,
                 instructions: "Lift bar from floor to standing"
             ),
             Exercise(
                 name: "Pull Up",
-                category: .back,
-                equipment: .bodyweight,
+                category: .pull,
                 primaryMuscles: [.back],
                 secondaryMuscles: [.biceps],
+                equipment: .bodyweight,
                 instructions: "Hang from bar, pull up until chin over bar"
             ),
             Exercise(
                 name: "Overhead Press",
-                category: .shoulders,
-                equipment: .barbell,
+                category: .push,
                 primaryMuscles: [.shoulders],
                 secondaryMuscles: [.triceps],
+                equipment: .barbell,
                 instructions: "Press bar overhead from shoulders"
             )
         ]

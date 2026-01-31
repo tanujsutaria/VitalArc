@@ -88,17 +88,17 @@ final class ExerciseLibraryViewModelTests: XCTestCase {
         mockRepository.mockExercises = createSampleExercises()
 
         // Execute
-        await viewModel.selectCategory(.chest)
+        await viewModel.selectCategory(.push)
 
         // Verify
-        XCTAssertEqual(viewModel.selectedCategory, .chest)
-        XCTAssertTrue(viewModel.exercises.allSatisfy { $0.category == .chest })
+        XCTAssertEqual(viewModel.selectedCategory, .push)
+        XCTAssertTrue(viewModel.exercises.allSatisfy { $0.category == .push })
     }
 
     func testSelectNilCategoryClearsFilter() async {
         // Setup
         mockRepository.mockExercises = createSampleExercises()
-        viewModel.selectedCategory = .chest
+        viewModel.selectedCategory = .push
 
         // Execute
         await viewModel.selectCategory(nil)
@@ -113,14 +113,14 @@ final class ExerciseLibraryViewModelTests: XCTestCase {
         mockRepository.mockExercises = createSampleExercises()
 
         // Execute multiple category changes
-        await viewModel.selectCategory(.back)
-        let backExercises = viewModel.exercises
+        await viewModel.selectCategory(.pull)
+        let pullExercises = viewModel.exercises
 
         await viewModel.selectCategory(.legs)
         let legExercises = viewModel.exercises
 
         // Verify different results
-        XCTAssertNotEqual(backExercises.map { $0.id }, legExercises.map { $0.id })
+        XCTAssertNotEqual(pullExercises.map { $0.id }, legExercises.map { $0.id })
     }
 
     // MARK: - Search Tests
@@ -155,14 +155,14 @@ final class ExerciseLibraryViewModelTests: XCTestCase {
         mockRepository.mockExercises = createSampleExercises()
 
         // Execute
-        await viewModel.selectCategory(.back)
+        await viewModel.selectCategory(.pull)
         await viewModel.updateSearch("Pull")
 
-        // Verify - should find "Pull Up" which is in back category
-        XCTAssertEqual(viewModel.selectedCategory, .back)
+        // Verify - should find "Pull Up" which is in pull category
+        XCTAssertEqual(viewModel.selectedCategory, .pull)
         XCTAssertEqual(viewModel.searchText, "Pull")
         XCTAssertTrue(viewModel.exercises.allSatisfy {
-            $0.category == .back && $0.name.lowercased().contains("pull")
+            $0.category == .pull && $0.name.lowercased().contains("pull")
         })
     }
 
@@ -172,34 +172,34 @@ final class ExerciseLibraryViewModelTests: XCTestCase {
         [
             Exercise(
                 name: "Bench Press",
-                category: .chest,
-                equipment: .barbell,
+                category: .push,
                 primaryMuscles: [.chest],
                 secondaryMuscles: [.triceps],
+                equipment: .barbell,
                 instructions: "Press"
             ),
             Exercise(
                 name: "Squat",
                 category: .legs,
-                equipment: .barbell,
                 primaryMuscles: [.quadriceps],
                 secondaryMuscles: [.glutes],
+                equipment: .barbell,
                 instructions: "Squat"
             ),
             Exercise(
                 name: "Deadlift",
-                category: .back,
-                equipment: .barbell,
+                category: .pull,
                 primaryMuscles: [.back],
                 secondaryMuscles: [.hamstrings],
+                equipment: .barbell,
                 instructions: "Lift"
             ),
             Exercise(
                 name: "Pull Up",
-                category: .back,
-                equipment: .bodyweight,
+                category: .pull,
                 primaryMuscles: [.back],
                 secondaryMuscles: [.biceps],
+                equipment: .bodyweight,
                 instructions: "Pull"
             )
         ]

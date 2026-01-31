@@ -311,7 +311,7 @@ struct AnalyticsDashboardView: View {
 
                 ForEach(viewModel.personalRecords.prefix(3)) { record in
                     HStack {
-                        VStack(alignment: .leading, spacing: 2) {
+                        VStack(alignment: .leading, spacing: Spacing.xxs) {
                             Text(record.exerciseName)
                                 .font(.vitalLabel)
                                 .foregroundStyle(Color.vitalAdaptiveTextPrimary)
@@ -322,7 +322,7 @@ struct AnalyticsDashboardView: View {
 
                         Spacer()
 
-                        VStack(alignment: .trailing, spacing: 2) {
+                        VStack(alignment: .trailing, spacing: Spacing.xxs) {
                             Text(record.displayValue)
                                 .font(.vitalLabel)
                                 .foregroundStyle(Color.vitalPrimary)

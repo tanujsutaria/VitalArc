@@ -1,5 +1,72 @@
 # VitalArc Development Session Log
 
+## Session 14.2 - January 30, 2026 (Evening)
+
+### Session Start
+- **Time**: Evening PST
+- **Platform**: macOS 🖥️
+- **Focus**: Comprehensive test fixes, notification wiring, design system
+- **Branch**: dev/mac-session-14.2-2026-01-30
+- **Base**: main @ 7ed37b9
+
+### Environment
+- **Build Capable**: Yes
+- **Test Capable**: Yes (unit + UI)
+
+### Pre-Session Status
+- **Build**: SUCCEEDED
+- **Uncommitted Changes**: None
+- **Design Violations**: 107 across 56 files
+- **Recent Activity**: Session 14.1 - NotificationSchedulerProtocol integration
+
+### Session Goals
+1. Fix ~15 broken cloud test files (MockAnalyticsRepository, MockAnalyticsUseCases, etc.)
+2. Wire notification use cases into NotificationSettingsViewModel
+3. Complete AnalyticsDashboardViewModelTests
+4. Address design system violations
+
+### Work Log
+| Time | Action | Files | Notes |
+|------|--------|-------|-------|
+| - | Session started | - | Build verified |
+| - | Fixed MockMesocycleRepository | MockMesocycleRepository.swift | TrainingBlock param order, Mesocycle init |
+| - | Fixed MockGetExercisesUseCase | MockGetExercisesUseCase.swift | Exercise param order (primaryMuscles before equipment) |
+| - | Fixed MockHealthRepository | MockHealthRepository.swift | Complex map expression type-checking |
+| - | Fixed ExerciseLibraryViewModelTests | ExerciseLibraryViewModelTests.swift | Category enums (.push/.pull), Exercise init |
+| - | Fixed HealthDashboardViewModelTests | HealthDashboardViewModelTests.swift | Complex map expression type-checking |
+| - | Fixed WorkoutHistoryViewModelTests | WorkoutHistoryViewModelTests.swift | Workout/WorkoutSet param order |
+| - | Fixed MesocycleViewModelTests | MesocycleViewModelTests.swift | phaseTemplate param, date-based status |
+| - | Fixed AnalyticsDashboardViewModelTests | AnalyticsDashboardViewModelTests.swift | setupMockData() call order for sleep test |
+| - | Removed duplicate mocks | ProfileTests.swift, HealthKitTests.swift, MesocycleTests.swift | Eliminated ambiguous type errors |
+| - | Fixed NotificationSettingsViewModelTests | NotificationSettingsViewModelTests.swift | Default preferences expectations |
+| - | **All 492 tests passing** | - | ✅ 0 failures |
+| - | Design system: fonts | SetRowView.swift, FoodCard.swift | 4 `.font(.caption2)` → `.vitalCaptionSmall`, 1 `.system(size:)` → `.vitalIconMediumSemibold` |
+| - | Design system: spacing | 7 files | 11 `spacing: 2` → `Spacing.xxs`, 1 `spacing: 30` → `Spacing.xl` |
+| - | Design system: frame widths | SetRowView.swift | 1 `frame(width: 80)` → `Spacing.illustrationSmall` |
+| - | Build & tests verified | - | ✅ 492 tests passing |
+
+### Session Results
+- **Tests**: 492 passing (was 291 before cloud files fixed)
+- **Build**: SUCCEEDED
+- **Mock files fixed**: 18 files added to Xcode project + fixes
+- **Entity alignment**: Exercise, Workout, WorkoutSet, Mesocycle, TrainingBlock, HealthMetrics
+
+### Files Modified
+- `VitalArcTests/Mocks/MockMesocycleRepository.swift` - Fixed TrainingBlock init, Mesocycle params
+- `VitalArcTests/Mocks/MockGetExercisesUseCase.swift` - Fixed Exercise init order
+- `VitalArcTests/Mocks/MockHealthRepository.swift` - Fixed map expression
+- `VitalArcTests/ViewModelTests/ExerciseLibraryViewModelTests.swift` - Fixed categories & Exercise init
+- `VitalArcTests/ViewModelTests/HealthDashboardViewModelTests.swift` - Fixed map expression
+- `VitalArcTests/ViewModelTests/WorkoutHistoryViewModelTests.swift` - Fixed Workout/Set params
+- `VitalArcTests/ViewModelTests/MesocycleViewModelTests.swift` - Fixed phaseTemplate & dates
+- `VitalArcTests/ViewModelTests/AnalyticsDashboardViewModelTests.swift` - Fixed setupMockData order
+- `VitalArcTests/ViewModelTests/NotificationSettingsViewModelTests.swift` - Fixed default expectations
+- `VitalArcTests/ProfileTests.swift` - Removed duplicate MockUserRepository
+- `VitalArcTests/HealthKitTests.swift` - Removed duplicate MockHealthRepository
+- `VitalArcTests/MesocycleTests.swift` - Removed duplicate MockMesocycleRepository
+
+---
+
 ## Session 14.1 - January 30, 2026
 
 > **Traceability**: Combines cloud (PR #32) and workstation integration.

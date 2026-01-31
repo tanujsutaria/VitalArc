@@ -321,33 +321,4 @@ final class HealthKitTests: XCTestCase {
     }
 }
 
-// MARK: - Mock Health Repository
-
-class MockHealthRepository: HealthRepository {
-    var mockTodayMetrics: HealthMetrics?
-    var mockWeekMetrics: [HealthMetrics] = []
-    var mockAuthorizationSuccess = false
-    var authorizationRequested = false
-    var syncRequested = false
-
-    func getHealthMetrics(for date: Date) async throws -> HealthMetrics? {
-        return mockTodayMetrics
-    }
-
-    func getHealthMetrics(from startDate: Date, to endDate: Date) async throws -> [HealthMetrics] {
-        return mockWeekMetrics
-    }
-
-    func saveHealthMetrics(_ metrics: HealthMetrics) async throws {
-        // Mock implementation
-    }
-
-    func syncFromHealthKit() async throws {
-        syncRequested = true
-    }
-
-    func requestHealthKitAuthorization() async throws -> Bool {
-        authorizationRequested = true
-        return mockAuthorizationSuccess
-    }
-}
+// Note: MockHealthRepository is defined in VitalArcTests/Mocks/MockHealthRepository.swift

@@ -147,7 +147,7 @@ private struct MacroText: View {
     let color: Color
 
     var body: some View {
-        HStack(spacing: 2) {
+        HStack(spacing: Spacing.xxs) {
             Text("\(value)")
                 .fontWeight(.semibold)
             Text(unit)

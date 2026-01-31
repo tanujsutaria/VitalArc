@@ -234,33 +234,4 @@ final class ProfileTests: XCTestCase {
     }
 }
 
-// MARK: - Mock Repository
-
-class MockUserRepository: UserRepository {
-    var savedProfile: UserProfile?
-    var onboardingCompleted: Bool = false
-
-    func getUserProfile() async throws -> UserProfile? {
-        return savedProfile
-    }
-
-    func saveUserProfile(_ profile: UserProfile) async throws {
-        savedProfile = profile
-    }
-
-    func updateUserProfile(_ profile: UserProfile) async throws {
-        savedProfile = profile
-    }
-
-    func deleteUserProfile() async throws {
-        savedProfile = nil
-    }
-
-    func hasCompletedOnboarding() async -> Bool {
-        return onboardingCompleted
-    }
-
-    func setOnboardingCompleted(_ completed: Bool) async {
-        onboardingCompleted = completed
-    }
-}
+// Note: MockUserRepository is defined in VitalArcTests/Mocks/MockUserRepository.swift

@@ -173,7 +173,7 @@ struct StrengthProgressionChartView: View {
         let percentChange = (change / first.estimatedOneRM) * 100
 
         return HStack(spacing: Spacing.lg) {
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: Spacing.xxs) {
                 Text("Starting 1RM")
                     .font(.vitalCaptionSmall)
                     .foregroundStyle(Color.vitalAdaptiveTextSecondary)
@@ -185,7 +185,7 @@ struct StrengthProgressionChartView: View {
             Image(systemName: "arrow.right")
                 .foregroundStyle(Color.vitalAdaptiveTextSecondary)
 
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: Spacing.xxs) {
                 Text("Current 1RM")
                     .font(.vitalCaptionSmall)
                     .foregroundStyle(Color.vitalAdaptiveTextSecondary)
@@ -196,11 +196,11 @@ struct StrengthProgressionChartView: View {
 
             Spacer()
 
-            VStack(alignment: .trailing, spacing: 2) {
+            VStack(alignment: .trailing, spacing: Spacing.xxs) {
                 Text("Progress")
                     .font(.vitalCaptionSmall)
                     .foregroundStyle(Color.vitalAdaptiveTextSecondary)
-                HStack(spacing: 4) {
+                HStack(spacing: Spacing.xs) {
                     Image(systemName: change >= 0 ? "arrow.up.right" : "arrow.down.right")
                         .font(.vitalCaptionSmall)
                     Text(String(format: "%+.1f%%", percentChange))
