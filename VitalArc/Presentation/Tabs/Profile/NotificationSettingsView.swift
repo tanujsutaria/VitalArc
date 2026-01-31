@@ -21,6 +21,9 @@ struct NotificationSettingsView: View {
             }
         }
         .task {
+            // Guard against re-creating ViewModel on every view appearance
+            guard viewModel == nil else { return }
+
             if let container = container {
                 viewModel = NotificationSettingsViewModel(
                     scheduler: container.notificationScheduler,

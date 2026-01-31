@@ -27,6 +27,13 @@ final class NotificationSettingsViewModel {
     private let scheduleNotificationsUseCase: ScheduleNotificationsUseCaseProtocol?
     private let checkRecoveryUseCase: CheckRecoveryAndNotifyUseCaseProtocol?
 
+    // MARK: - Debouncing
+
+    /// Task handle for debounced saveAndReschedule - cancelled on new changes
+    private var saveTask: Task<Void, Never>?
+    /// Debounce interval in nanoseconds (300ms)
+    private let debounceInterval: UInt64 = 300_000_000
+
     // MARK: - Computed Properties
 
     var notificationsEnabled: Bool {
@@ -62,21 +69,6 @@ final class NotificationSettingsViewModel {
     }
 
     var workoutReminderTime: Date {
-        get {
-            let calendar = Calendar.current
-            let hour = preferences.workoutReminderTime.hour ?? 18
-            let minute = preferences.workoutReminderTime.minute ?? 0
-            return calendar.date(bySettingHour: hour, minute: minute, second: 0, of: Date()) ?? Date()
-        }
-        set {
-            let calendar = Calendar.current
-            let components = calendar.dateComponents([.hour, .minute], from: newValue)
-            preferences.workoutReminderTime = components
-            Task { await saveAndReschedule() }
-        }
-    }
-
-    var workoutReminderTimeAsDate: Date {
         get {
             let calendar = Calendar.current
             let hour = preferences.workoutReminderTime.hour ?? 18
@@ -173,6 +165,12 @@ final class NotificationSettingsViewModel {
                 authorizationStatus = result.status
 
                 if !result.granted {
+                    // Explicitly ensure toggle reflects denial - disable all notification preferences
+                    preferences.workoutRemindersEnabled = false
+                    preferences.recoveryAlertsEnabled = false
+                    preferences.nutritionRemindersEnabled = false
+                    await savePreferences()
+
                     errorMessage = result.shouldShowSettings
                         ? "Notification permissions were denied. You can enable them in Settings."
                         : nil
@@ -186,6 +184,12 @@ final class NotificationSettingsViewModel {
                 authorizationStatus = granted ? .authorized : .denied
 
                 if !granted {
+                    // Explicitly ensure toggle reflects denial - disable all notification preferences
+                    preferences.workoutRemindersEnabled = false
+                    preferences.recoveryAlertsEnabled = false
+                    preferences.nutritionRemindersEnabled = false
+                    await savePreferences()
+
                     errorMessage = "Notification permissions were denied. You can enable them in Settings."
                 } else {
                     await saveAndReschedule()
@@ -193,6 +197,12 @@ final class NotificationSettingsViewModel {
             }
         } catch {
             authorizationStatus = .denied
+            // Explicitly reset preferences on error
+            preferences.workoutRemindersEnabled = false
+            preferences.recoveryAlertsEnabled = false
+            preferences.nutritionRemindersEnabled = false
+            await savePreferences()
+
             errorMessage = "Failed to request notification permissions."
         }
     }
@@ -339,9 +349,35 @@ final class NotificationSettingsViewModel {
         }
     }
 
+    /// Debounced save and reschedule - cancels previous pending task to avoid race conditions
     private func saveAndReschedule() async {
         guard authorizationStatus == .authorized else { return }
 
+        // Cancel any pending save task to prevent race conditions
+        saveTask?.cancel()
+
+        // Create new debounced task
+        saveTask = Task {
+            // Wait for debounce interval
+            do {
+                try await Task.sleep(nanoseconds: debounceInterval)
+            } catch {
+                // Task was cancelled - another change came in
+                return
+            }
+
+            // Check if task was cancelled during sleep
+            guard !Task.isCancelled else { return }
+
+            await performSaveAndReschedule()
+        }
+
+        // Wait for the task to complete (or be cancelled)
+        await saveTask?.value
+    }
+
+    /// Actual save and reschedule implementation
+    private func performSaveAndReschedule() async {
         await savePreferences()
 
         do {

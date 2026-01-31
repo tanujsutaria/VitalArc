@@ -23,6 +23,9 @@ struct NutritionTabContentView: View {
                 }
                 .navigationTitle("Nutrition")
                 .task {
+                    // Guard against re-creating ViewModel on every view appearance
+                    guard viewModel == nil else { return }
+
                     viewModel = NutritionTabViewModel(
                         nutritionRepository: container.nutritionRepository,
                         calculateTDEEUseCase: container.calculateTDEEUseCase,
@@ -342,6 +345,9 @@ final class NutritionTabViewModel {
     var isLoading = false
     var error: Error?
 
+    /// Tracks whether TDEE-based goals have been loaded to avoid overwriting on date changes
+    private var hasLoadedTDEEGoals = false
+
     init(
         nutritionRepository: NutritionRepository,
         calculateTDEEUseCase: CalculateTDEEUseCase? = nil,
@@ -367,9 +373,11 @@ final class NutritionTabViewModel {
             var nutrition = try await calculateUseCase.execute(for: selectedDate)
 
             // If TDEE use case is available, calculate TDEE-based goals
-            if let tdeeUseCase = calculateTDEEUseCase {
+            // Only apply TDEE goals on initial load to avoid overwriting user's manual settings on date change
+            if let tdeeUseCase = calculateTDEEUseCase, !hasLoadedTDEEGoals {
                 if let result = try await tdeeUseCase.execute() {
                     tdeeResult = result
+                    hasLoadedTDEEGoals = true
 
                     // If nutrition goals are not set, use TDEE-derived goals
                     if nutrition.calorieGoal == nil || nutrition.proteinGoal == nil {
