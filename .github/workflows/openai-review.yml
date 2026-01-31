@@ -14,6 +14,7 @@ jobs:
   openai-review:
     name: AI Code Review
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     if: github.event.pull_request.draft == false
 
     steps:
@@ -84,11 +85,11 @@ jobs:
 
             const truncatedDiff = diff.substring(0, 10000);
 
-            const systemPrompt = `You are an expert iOS code reviewer specializing in SwiftUI and SwiftData applications.
+            const userPrompt = `You are an expert iOS code reviewer specializing in SwiftUI and SwiftData applications.
             Perform deep analysis of the code changes with thorough reasoning about potential issues, architectural implications, and best practices.
-            Be meticulous and consider edge cases, thread safety, memory management, and Swift-specific patterns.`;
+            Be meticulous and consider edge cases, thread safety, memory management, and Swift-specific patterns.
 
-            const userPrompt = `You are reviewing a Pull Request for VitalArc, an iOS fitness app built with SwiftUI and SwiftData.
+            You are reviewing a Pull Request for VitalArc, an iOS fitness app built with SwiftUI and SwiftData.
 
             PR Title: ${context.payload.pull_request.title}
             PR Description: ${context.payload.pull_request.body || 'No description provided'}
@@ -113,32 +114,25 @@ jobs:
             Keep your review concise and actionable. Focus on significant issues, not style nitpicks.
             Format your response as markdown suitable for a GitHub PR comment.`;
 
-            // Call OpenAI API with GPT-5.2 and extra high reasoning
+            // Call OpenAI Responses API with GPT-5.2-Codex
             const requestData = JSON.stringify({
               model: 'gpt-5.2-codex',
-              reasoning_effort: 'xhigh',
-              max_completion_tokens: 4096,
-              messages: [
-                {
-                  role: 'system',
-                  content: systemPrompt
-                },
-                {
-                  role: 'user',
-                  content: userPrompt
-                }
-              ]
+              input: userPrompt,
+              reasoning: {
+                effort: 'medium'
+              }
             });
 
             const options = {
               hostname: 'api.openai.com',
               port: 443,
-              path: '/v1/chat/completions',
+              path: '/v1/responses',
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`
-              }
+              },
+              timeout: 600000  // 10 minute timeout for high reasoning effort
             };
 
             const response = await new Promise((resolve, reject) => {
@@ -153,19 +147,55 @@ jobs:
                   }
                 });
               });
+              req.setTimeout(600000, () => {
+                req.destroy();
+                reject(new Error('Request timed out after 10 minutes'));
+              });
               req.on('error', reject);
               req.write(requestData);
               req.end();
             });
 
-            const reviewContent = response.choices[0].message.content;
+            // Debug: log response structure
+            console.log('Response keys:', Object.keys(response));
+            console.log('Full response:', JSON.stringify(response, null, 2).substring(0, 2000));
+
+            // Extract text from Responses API format
+            // Structure: { output: [{ type: "message", content: [{ type: "output_text", text: "..." }] }] }
+            let reviewContent = '';
+            if (response.output_text) {
+              reviewContent = response.output_text;
+            } else if (response.output && Array.isArray(response.output)) {
+              for (const item of response.output) {
+                if (item.content && Array.isArray(item.content)) {
+                  for (const contentItem of item.content) {
+                    if (contentItem.type === 'output_text' && contentItem.text) {
+                      reviewContent += contentItem.text;
+                    } else if (contentItem.text) {
+                      reviewContent += contentItem.text;
+                    }
+                  }
+                } else if (item.text) {
+                  reviewContent += item.text;
+                }
+              }
+            } else if (response.choices && response.choices[0]) {
+              // Fallback for chat completions format
+              reviewContent = response.choices[0].message?.content || response.choices[0].text || '';
+            }
+
+            if (!reviewContent) {
+              console.log('Could not extract review content from response');
+              console.log('Response structure:', JSON.stringify(response, null, 2));
+              return;
+            }
 
             // Post review as comment
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.payload.pull_request.number,
-              body: `## GPT-5.2-Codex Code Review\n\n${reviewContent}\n\n---\n*Automated review by GPT-5.2-Codex with extra high reasoning. This is advisory - always verify suggestions.*`
+              body: `## GPT-5.2-Codex Code Review\n\n${reviewContent}\n\n---\n*Automated review by GPT-5.2-Codex. This is advisory - always verify suggestions.*`
             });
 
             console.log('Review posted successfully');

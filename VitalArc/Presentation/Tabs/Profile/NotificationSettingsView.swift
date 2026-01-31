@@ -8,8 +8,41 @@
 import SwiftUI
 
 struct NotificationSettingsView: View {
-    @State private var viewModel = NotificationSettingsViewModel()
+    @Environment(\.dependencyContainer) private var container
+    @State private var viewModel: NotificationSettingsViewModel?
     @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        Group {
+            if let viewModel = viewModel {
+                NotificationSettingsFormView(viewModel: viewModel)
+            } else {
+                ProgressView()
+            }
+        }
+        .task {
+            // Guard against re-creating ViewModel on every view appearance
+            guard viewModel == nil else { return }
+
+            if let container = container {
+                viewModel = NotificationSettingsViewModel(
+                    scheduler: container.notificationScheduler,
+                    repository: container.notificationPreferencesRepository,
+                    requestPermissionUseCase: container.requestNotificationPermissionUseCase,
+                    scheduleNotificationsUseCase: container.scheduleNotificationsUseCase,
+                    checkRecoveryUseCase: container.checkRecoveryAndNotifyUseCase
+                )
+            } else {
+                viewModel = NotificationSettingsViewModel()
+            }
+        }
+    }
+}
+
+// MARK: - Form View (with Bindable ViewModel)
+
+private struct NotificationSettingsFormView: View {
+    @Bindable var viewModel: NotificationSettingsViewModel
 
     var body: some View {
         Form {
@@ -38,20 +71,15 @@ struct NotificationSettingsView: View {
             if viewModel.notificationsEnabled {
                 Section {
                     // Workout Reminders Toggle
+                    // Note: Scheduling is handled by ViewModel setter via saveAndReschedule()
                     Toggle("Workout Reminders", isOn: $viewModel.workoutRemindersEnabled)
                         .tint(Color.vitalPrimary)
-                        .onChange(of: viewModel.workoutRemindersEnabled) { _, newValue in
+                        .onChange(of: viewModel.workoutRemindersEnabled) { _, _ in
                             HapticFeedback.selection()
-                            Task {
-                                if newValue {
-                                    await viewModel.scheduleWorkoutReminder()
-                                } else {
-                                    await viewModel.cancelWorkoutReminder()
-                                }
-                            }
                         }
 
                     // Time Picker (only if workout reminders enabled)
+                    // Note: Scheduling is handled by ViewModel setter via saveAndReschedule()
                     if viewModel.workoutRemindersEnabled {
                         DatePicker(
                             "Reminder Time",
@@ -59,28 +87,18 @@ struct NotificationSettingsView: View {
                             displayedComponents: .hourAndMinute
                         )
                         .tint(Color.vitalPrimary)
-                        .onChange(of: viewModel.workoutReminderTime) { _, _ in
-                            Task {
-                                await viewModel.scheduleWorkoutReminder()
-                            }
-                        }
                     }
 
                     // Recovery Alerts Toggle
+                    // Note: Scheduling is handled by ViewModel setter via saveAndReschedule()
                     Toggle("Recovery Alerts", isOn: $viewModel.recoveryAlertsEnabled)
                         .tint(Color.vitalPrimary)
-                        .onChange(of: viewModel.recoveryAlertsEnabled) { _, newValue in
+                        .onChange(of: viewModel.recoveryAlertsEnabled) { _, _ in
                             HapticFeedback.selection()
-                            Task {
-                                if newValue {
-                                    await viewModel.scheduleRecoveryAlerts()
-                                } else {
-                                    await viewModel.cancelRecoveryAlerts()
-                                }
-                            }
                         }
 
                     // Nutrition Reminders Toggle
+                    // Note: Scheduling is handled by ViewModel setter via saveAndReschedule()
                     Toggle("Nutrition Reminders", isOn: $viewModel.nutritionRemindersEnabled)
                         .tint(Color.vitalPrimary)
                         .onChange(of: viewModel.nutritionRemindersEnabled) { _, _ in

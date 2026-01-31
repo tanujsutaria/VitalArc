@@ -15,6 +15,8 @@ final class NotificationSettingsViewModel {
 
     var preferences: NotificationPreferences
     var authorizationStatus: UNAuthorizationStatus = .notDetermined
+    /// User's intent to enable notifications (separate from system authorization)
+    var userWantsNotifications = false
     var isLoading = false
     var errorMessage: String?
     var pendingNotificationCount: Int = 0
@@ -23,14 +25,30 @@ final class NotificationSettingsViewModel {
 
     private let scheduler: NotificationSchedulerProtocol
     private let repository: NotificationPreferencesRepository?
+    private let requestPermissionUseCase: RequestNotificationPermissionUseCaseProtocol?
+    private let scheduleNotificationsUseCase: ScheduleNotificationsUseCaseProtocol?
+    private let checkRecoveryUseCase: CheckRecoveryAndNotifyUseCaseProtocol?
+
+    // MARK: - Debouncing
+
+    /// Task handle for debounced saveAndReschedule - cancelled on new changes
+    private var saveTask: Task<Void, Never>?
+    /// Debounce interval in nanoseconds (300ms)
+    private let debounceInterval: UInt64 = 300_000_000
 
     // MARK: - Computed Properties
 
+    /// Whether system authorization allows notifications (.authorized or .provisional)
+    private var isSystemAuthorized: Bool {
+        authorizationStatus == .authorized || authorizationStatus == .provisional
+    }
+
+    /// Notifications are enabled when user wants them AND system has authorized (including provisional)
     var notificationsEnabled: Bool {
-        get { authorizationStatus == .authorized }
+        get { userWantsNotifications && isSystemAuthorized }
         set {
-            // Setting is handled via requestNotificationPermissions/cancelAllNotifications
-            // This setter exists to support SwiftUI binding
+            userWantsNotifications = newValue
+            // Actual permission/scheduling handled by .onChange in View
         }
     }
 
@@ -59,21 +77,6 @@ final class NotificationSettingsViewModel {
     }
 
     var workoutReminderTime: Date {
-        get {
-            let calendar = Calendar.current
-            let hour = preferences.workoutReminderTime.hour ?? 18
-            let minute = preferences.workoutReminderTime.minute ?? 0
-            return calendar.date(bySettingHour: hour, minute: minute, second: 0, of: Date()) ?? Date()
-        }
-        set {
-            let calendar = Calendar.current
-            let components = calendar.dateComponents([.hour, .minute], from: newValue)
-            preferences.workoutReminderTime = components
-            Task { await saveAndReschedule() }
-        }
-    }
-
-    var workoutReminderTimeAsDate: Date {
         get {
             let calendar = Calendar.current
             let hour = preferences.workoutReminderTime.hour ?? 18
@@ -136,9 +139,18 @@ final class NotificationSettingsViewModel {
 
     // MARK: - Initialization
 
-    init(scheduler: NotificationSchedulerProtocol? = nil, repository: NotificationPreferencesRepository? = nil) {
+    init(
+        scheduler: NotificationSchedulerProtocol? = nil,
+        repository: NotificationPreferencesRepository? = nil,
+        requestPermissionUseCase: RequestNotificationPermissionUseCaseProtocol? = nil,
+        scheduleNotificationsUseCase: ScheduleNotificationsUseCaseProtocol? = nil,
+        checkRecoveryUseCase: CheckRecoveryAndNotifyUseCaseProtocol? = nil
+    ) {
         self.scheduler = scheduler ?? NotificationScheduler()
         self.repository = repository
+        self.requestPermissionUseCase = requestPermissionUseCase
+        self.scheduleNotificationsUseCase = scheduleNotificationsUseCase
+        self.checkRecoveryUseCase = checkRecoveryUseCase
         self.preferences = .default
 
         Task {
@@ -151,27 +163,83 @@ final class NotificationSettingsViewModel {
     // MARK: - Notification Permissions
 
     func requestNotificationPermissions() async {
+        // Guard: Skip if already authorized to prevent re-triggering from .onChange
+        guard !isSystemAuthorized else {
+            userWantsNotifications = true
+            return
+        }
+
         isLoading = true
         defer { isLoading = false }
 
         do {
-            let granted = try await scheduler.requestAuthorization()
-            authorizationStatus = granted ? .authorized : .denied
+            // Use the use case if available, otherwise fall back to scheduler
+            if let useCase = requestPermissionUseCase {
+                let result = try await useCase.execute()
+                authorizationStatus = result.status
 
-            if !granted {
-                errorMessage = "Notification permissions were denied. You can enable them in Settings."
+                if !result.granted {
+                    // Revert user intent and disable all notification preferences
+                    userWantsNotifications = false
+                    preferences.workoutRemindersEnabled = false
+                    preferences.recoveryAlertsEnabled = false
+                    preferences.nutritionRemindersEnabled = false
+                    await savePreferences()
+
+                    errorMessage = result.shouldShowSettings
+                        ? "Notification permissions were denied. You can enable them in Settings."
+                        : nil
+                } else {
+                    // User successfully enabled - save preference and schedule
+                    userWantsNotifications = true
+                    await saveAndReschedule()
+                }
             } else {
-                // Schedule notifications with current preferences
-                await saveAndReschedule()
+                // Fallback to direct scheduler call
+                let granted = try await scheduler.requestAuthorization()
+                authorizationStatus = granted ? .authorized : .denied
+
+                if !granted {
+                    // Revert user intent and disable all notification preferences
+                    userWantsNotifications = false
+                    preferences.workoutRemindersEnabled = false
+                    preferences.recoveryAlertsEnabled = false
+                    preferences.nutritionRemindersEnabled = false
+                    await savePreferences()
+
+                    errorMessage = "Notification permissions were denied. You can enable them in Settings."
+                } else {
+                    // User successfully enabled - save preference and schedule
+                    userWantsNotifications = true
+                    await saveAndReschedule()
+                }
             }
         } catch {
             authorizationStatus = .denied
+            userWantsNotifications = false
+            // Explicitly reset preferences on error
+            preferences.workoutRemindersEnabled = false
+            preferences.recoveryAlertsEnabled = false
+            preferences.nutritionRemindersEnabled = false
+            await savePreferences()
+
             errorMessage = "Failed to request notification permissions."
         }
     }
 
     func checkAuthorizationStatus() async {
-        authorizationStatus = await scheduler.checkAuthorizationStatus()
+        // Use the use case if available, otherwise fall back to scheduler
+        if let useCase = requestPermissionUseCase {
+            authorizationStatus = await useCase.checkCurrentStatus()
+        } else {
+            authorizationStatus = await scheduler.checkAuthorizationStatus()
+        }
+
+        // Sync userWantsNotifications with actual authorization on initial check
+        // If authorized (or provisional), assume user wants notifications (can be overridden by toggle)
+        if isSystemAuthorized {
+            userWantsNotifications = true
+        }
     }
 
     // MARK: - Preference Updates
@@ -206,11 +274,16 @@ final class NotificationSettingsViewModel {
     /// Call this after calculating recovery score to conditionally schedule alert
     func checkRecoveryAndScheduleAlert(recoveryScore: Double) async {
         do {
-            try await scheduler.scheduleRecoveryAlertIfNeeded(
-                recoveryScore: recoveryScore,
-                threshold: preferences.recoveryThreshold,
-                enabled: preferences.recoveryAlertsEnabled
-            )
+            // Use the use case if available, otherwise fall back to scheduler
+            if let useCase = checkRecoveryUseCase {
+                _ = try await useCase.execute(recoveryScore: recoveryScore)
+            } else {
+                try await scheduler.scheduleRecoveryAlertIfNeeded(
+                    recoveryScore: recoveryScore,
+                    threshold: preferences.recoveryThreshold,
+                    enabled: preferences.recoveryAlertsEnabled
+                )
+            }
             await updatePendingCount()
         } catch {
             errorMessage = "Failed to schedule recovery alert."
@@ -302,13 +375,44 @@ final class NotificationSettingsViewModel {
         }
     }
 
+    /// Debounced save and reschedule - cancels previous pending task to avoid race conditions
     private func saveAndReschedule() async {
         guard authorizationStatus == .authorized else { return }
 
+        // Cancel any pending save task to prevent race conditions
+        saveTask?.cancel()
+
+        // Create new debounced task
+        saveTask = Task {
+            // Wait for debounce interval
+            do {
+                try await Task.sleep(nanoseconds: debounceInterval)
+            } catch {
+                // Task was cancelled - another change came in
+                return
+            }
+
+            // Check if task was cancelled during sleep
+            guard !Task.isCancelled else { return }
+
+            await performSaveAndReschedule()
+        }
+
+        // Wait for the task to complete (or be cancelled)
+        await saveTask?.value
+    }
+
+    /// Actual save and reschedule implementation
+    private func performSaveAndReschedule() async {
         await savePreferences()
 
         do {
-            try await scheduler.scheduleFromPreferences(preferences)
+            // Use the use case if available, otherwise fall back to scheduler
+            if let useCase = scheduleNotificationsUseCase {
+                _ = try await useCase.execute(preferences: preferences)
+            } else {
+                try await scheduler.scheduleFromPreferences(preferences)
+            }
             await updatePendingCount()
         } catch {
             errorMessage = "Failed to schedule notifications."

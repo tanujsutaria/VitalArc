@@ -1,5 +1,63 @@
 # VitalArc Development Session Log
 
+## Session 15.1 - January 31, 2026 (Morning)
+
+### Session Start
+- **Time**: Morning PST
+- **Platform**: macOS 🖥️
+- **Focus**: General development (awaiting direction)
+- **Branch**: dev/mac-session-15.1-2026-01-31
+- **Base**: main @ b43bf9d
+
+### Environment
+- **Build Capable**: Yes
+- **Test Capable**: Yes (unit + UI)
+
+### Pre-Session Status
+- **Build**: SUCCEEDED (verified - 2 warnings)
+- **Uncommitted Changes**: None
+- **Design Violations**: 0 (100% design system compliance)
+- **Recent Activity**: Session 15.0 - CI workflow updated to OpenAI GPT-5.2-Codex
+
+### Suggested Focus Areas
+1. **Wire Notification Use Cases into ViewModel** (Score: 13) - Complete notifications feature
+2. **Fix & Re-integrate Cloud Tests** (Score: 8) - Double test coverage
+3. **Complete TDEE UI Integration** (Score: 7) - Finish nutrition feature
+
+### Session Goals
+1. TBD - Awaiting user direction
+2. TBD
+3. General development as directed
+
+### Work Log
+| Time | Action | Files | Notes |
+|------|--------|-------|-------|
+| - | Session started | - | Build verified ✅, Design system 100% |
+| - | Wired notification use cases | NotificationSettingsViewModel.swift, NotificationSettingsView.swift | Completed notifications feature wiring |
+| - | Integrated TDEE into Nutrition tab | NutritionTabContentView.swift | TDEE UI integration complete |
+| - | Fixed OpenAI review workflow | openai-review.yml | Response parsing for GPT-5.2-Codex Responses API |
+| - | PR #37 review iteration (4 rounds) | NotificationSettingsView.swift, NotificationSettingsViewModel.swift, NutritionTabContentView.swift | Fixed ViewModel lifecycle, debouncing, task cancellation, provisional auth |
+| - | Session ended | - | OpenAI review working ✅, PR feedback addressed ✅ |
+
+### Session Results
+- **Build**: SUCCEEDED ✅
+- **PR**: #37 - 4 rounds of AI code review feedback addressed
+- **Commits**: 10 commits pushed
+
+### Key Accomplishments
+1. **Fixed OpenAI Code Review Workflow** - GPT-5.2-Codex Responses API parsing now works correctly
+2. **ViewModel Lifecycle Improvements**:
+   - Guard against re-creation on view reappear
+   - Debounced saveAndReschedule (300ms) to prevent race conditions
+   - Task cancellation for loadData on rapid date changes
+3. **Notification Toggle UX**:
+   - Added `userWantsNotifications` to track user intent separately from system authorization
+   - Support for `.provisional` authorization status
+   - Centralized scheduling in ViewModel setters (removed duplicate View handlers)
+4. **TDEE Integration Protection** - Only applies TDEE goals on initial load, not date changes
+
+---
+
 ## Session 15 - January 31, 2026
 
 ### Session Start

@@ -223,7 +223,7 @@ final class NotificationSettingsViewModelTests: XCTestCase {
         XCTAssertEqual(components.minute, 0)
     }
 
-    func testWorkoutReminderTimeAsDateSetter() async {
+    func testWorkoutReminderTimeSetter() async {
         // Create a date for 7:30 AM
         let calendar = Calendar.current
         guard let newTime = calendar.date(bySettingHour: 7, minute: 30, second: 0, of: Date()) else {
@@ -231,8 +231,8 @@ final class NotificationSettingsViewModelTests: XCTestCase {
             return
         }
 
-        // Execute
-        viewModel.workoutReminderTimeAsDate = newTime
+        // Execute - use workoutReminderTime (workoutReminderTimeAsDate was removed as duplicate)
+        viewModel.workoutReminderTime = newTime
         try? await Task.sleep(for: .milliseconds(100))
 
         // Verify
