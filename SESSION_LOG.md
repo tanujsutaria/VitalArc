@@ -1,5 +1,52 @@
 # VitalArc Development Session Log
 
+## Session 15 - January 31, 2026
+
+### Session Start
+- **Time**: Day PST
+- **Platform**: macOS 🖥️
+- **Focus**: CI/CD - Replace Claude review with OpenAI workflow
+- **Branch**: dev/mac-ci-15.0-2026-01-31
+- **Base**: main @ 0dc7dea
+
+### Environment
+- **Build Capable**: Yes
+- **Test Capable**: Yes
+
+### Pre-Session Status
+- **Build**: SUCCEEDED (assumed from Session 14.3)
+- **Uncommitted Changes**: Workflow file changes pending
+
+### Session Goals
+1. Replace Claude-based code review with OpenAI GPT-5.2-Codex
+2. Update reasoning effort to extra high (xhigh)
+3. Remove emoji from review output
+
+### Work Log
+| Time | Action | Files | Notes |
+|------|--------|-------|-------|
+| - | Session started | - | Focus: CI workflow update |
+| - | Updated workflow | openai-review.yml | Model: gpt-5.2-codex, reasoning: xhigh |
+| - | Removed emoji | openai-review.yml | Clean output format |
+| - | Created branch | - | dev/mac-ci-15.0-2026-01-31 |
+| - | Committed changes | 1 file | refactor(infra): replace Claude review with OpenAI |
+| - | Created PR #36 | - | OpenAI GPT-5.2-Codex workflow |
+| - | Session ended | - | Complete |
+
+### Session Results
+- **Build**: N/A (workflow file only)
+- **Tests**: N/A
+- **PR**: #36 created
+
+### Files Modified
+- `.github/workflows/claude-review.yml` → `.github/workflows/openai-review.yml` (renamed)
+  - Model changed: `gpt-5.2` → `gpt-5.2-codex`
+  - Reasoning effort: `high` → `xhigh`
+  - Removed emoji from comment header
+  - Updated footer text
+
+---
+
 ## Session 14.3 - January 30, 2026 (Night)
 
 ### Session Start
