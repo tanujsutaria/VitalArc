@@ -220,8 +220,8 @@ final class WorkoutHistoryViewModelTests: XCTestCase {
             date: date,
             name: "Test Workout",
             sets: sets.isEmpty ? [createWorkoutSet()] : sets,
-            duration: duration,
-            notes: nil
+            notes: nil,
+            duration: duration
         )
     }
 
@@ -231,12 +231,10 @@ final class WorkoutHistoryViewModelTests: XCTestCase {
     ) -> WorkoutSet {
         WorkoutSet(
             exerciseId: UUID(),
-            exerciseName: "Test Exercise",
-            setNumber: 1,
             weight: weight,
             reps: reps,
             rpe: nil,
-            isWarmup: false
+            setNumber: 1
         )
     }
 

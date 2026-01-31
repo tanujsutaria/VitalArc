@@ -197,7 +197,7 @@ struct FoodSearchResultRow: View {
                         .frame(width: 40, height: 40)
 
                     Image(systemName: "fork.knife")
-                        .font(.system(size: Spacing.lg, weight: .semibold))
+                        .font(.vitalIconMediumSemibold)
                         .foregroundStyle(Color.vitalWarning)
                 }
 

@@ -112,7 +112,7 @@ struct TrainingHeatmapView: View {
                     Spacer()
 
                     // Summary
-                    VStack(alignment: .trailing, spacing: 2) {
+                    VStack(alignment: .trailing, spacing: Spacing.xxs) {
                         Text("\(totalWorkouts)")
                             .font(.vitalLabel)
                             .foregroundStyle(Color.vitalAdaptiveTextPrimary)

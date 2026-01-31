@@ -603,7 +603,7 @@ struct MacroGoalItem: View {
 
     var body: some View {
         VStack(spacing: Spacing.xs) {
-            HStack(spacing: 2) {
+            HStack(spacing: Spacing.xxs) {
                 Text(String(format: "%.0f", value))
                     .font(.vitalLabel)
                     .foregroundStyle(color)
@@ -682,7 +682,7 @@ struct StatCardWithSource: View {
                     .foregroundStyle(Color.vitalAdaptiveTextSecondary)
 
                 // Source indicator
-                HStack(spacing: 2) {
+                HStack(spacing: Spacing.xxs) {
                     if source.contains("Apple Health") {
                         Image(systemName: "heart.fill")
                             .font(.vitalIconTiny)

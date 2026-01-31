@@ -16,7 +16,7 @@ struct HealthKitPermissionView: View {
     @State private var healthKitManager = HealthKitManager()
 
     var body: some View {
-        VStack(spacing: 30) {
+        VStack(spacing: Spacing.xl) {
             Spacer()
 
             // Icon

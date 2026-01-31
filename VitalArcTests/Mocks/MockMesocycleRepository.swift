@@ -113,21 +113,7 @@ final class MockMesocycleRepository: MesocycleRepository {
         activatedMesocycleIds.append(id)
         if let index = mockMesocycles.firstIndex(where: { $0.id == id }) {
             var updated = mockMesocycles[index]
-            updated = Mesocycle(
-                id: updated.id,
-                name: updated.name,
-                startDate: updated.startDate,
-                endDate: updated.endDate,
-                durationWeeks: updated.durationWeeks,
-                goal: updated.goal,
-                status: .active,
-                phaseTemplate: updated.phaseTemplate,
-                currentWeek: updated.currentWeek,
-                trainingBlocks: updated.trainingBlocks,
-                notes: updated.notes,
-                createdAt: updated.createdAt,
-                updatedAt: Date()
-            )
+            updated.status = .active
             mockMesocycles[index] = updated
             mockActiveMesocycle = updated
         }
@@ -141,21 +127,7 @@ final class MockMesocycleRepository: MesocycleRepository {
         completedMesocycleIds.append(id)
         if let index = mockMesocycles.firstIndex(where: { $0.id == id }) {
             var updated = mockMesocycles[index]
-            updated = Mesocycle(
-                id: updated.id,
-                name: updated.name,
-                startDate: updated.startDate,
-                endDate: updated.endDate,
-                durationWeeks: updated.durationWeeks,
-                goal: updated.goal,
-                status: .completed,
-                phaseTemplate: updated.phaseTemplate,
-                currentWeek: updated.currentWeek,
-                trainingBlocks: updated.trainingBlocks,
-                notes: updated.notes,
-                createdAt: updated.createdAt,
-                updatedAt: Date()
-            )
+            updated.status = .completed
             mockMesocycles[index] = updated
             if mockActiveMesocycle?.id == id {
                 mockActiveMesocycle = nil
@@ -231,27 +203,25 @@ final class MockMesocycleRepository: MesocycleRepository {
             name: name,
             startDate: startDate,
             endDate: endDate,
-            durationWeeks: durationWeeks,
+            phases: [],
+            trainingBlocks: [],
             goal: goal,
             status: status,
-            phaseTemplate: .linear,
-            currentWeek: 1,
-            trainingBlocks: [],
-            notes: nil,
             createdAt: Date(),
             updatedAt: Date()
         )
     }
 
     static func createSampleTrainingBlock(
-        dayOfWeek: Int = 1,
-        name: String = "Push Day"
+        name: String = "Push Day",
+        dayOfWeek: Int = 2, // Monday
+        mesocycleId: UUID = UUID()
     ) -> TrainingBlock {
         TrainingBlock(
-            dayOfWeek: dayOfWeek,
             name: name,
+            dayOfWeek: dayOfWeek,
             exercises: [],
-            notes: nil
+            mesocycleId: mesocycleId
         )
     }
 }

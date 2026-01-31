@@ -51,13 +51,16 @@ final class NotificationSettingsViewModelTests: XCTestCase {
     // MARK: - Preference Toggles Tests
 
     func testWorkoutRemindersEnabledSetter() async {
-        // Setup
+        // Setup - default is true, so toggle to false then back to true
+        XCTAssertTrue(viewModel.preferences.workoutRemindersEnabled)
+
+        // Execute - toggle off
+        viewModel.workoutRemindersEnabled = false
+        try? await Task.sleep(for: .milliseconds(100))
         XCTAssertFalse(viewModel.preferences.workoutRemindersEnabled)
 
-        // Execute
+        // Execute - toggle back on
         viewModel.workoutRemindersEnabled = true
-
-        // Allow async save to complete
         try? await Task.sleep(for: .milliseconds(100))
 
         // Verify
@@ -65,13 +68,16 @@ final class NotificationSettingsViewModelTests: XCTestCase {
     }
 
     func testRecoveryAlertsEnabledSetter() async {
-        // Setup
+        // Setup - default is true, so toggle to false then back to true
+        XCTAssertTrue(viewModel.preferences.recoveryAlertsEnabled)
+
+        // Execute - toggle off
+        viewModel.recoveryAlertsEnabled = false
+        try? await Task.sleep(for: .milliseconds(100))
         XCTAssertFalse(viewModel.preferences.recoveryAlertsEnabled)
 
-        // Execute
+        // Execute - toggle back on
         viewModel.recoveryAlertsEnabled = true
-
-        // Allow async save to complete
         try? await Task.sleep(for: .milliseconds(100))
 
         // Verify

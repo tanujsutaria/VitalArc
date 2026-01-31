@@ -20,33 +20,33 @@ struct SetRowView: View {
                 .frame(width: 30)
 
             // Weight Input
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: Spacing.xxs) {
                 Text("Weight")
-                    .font(.caption2)
+                    .font(.vitalCaptionSmall)
                     .foregroundStyle(.secondary)
 
                 TextField("kg", value: $setData.weight, format: .number)
                     .keyboardType(.decimalPad)
                     .textFieldStyle(.roundedBorder)
-                    .frame(width: 80)
+                    .frame(width: Spacing.illustrationSmall)
             }
 
             // Reps Input
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: Spacing.xxs) {
                 Text("Reps")
-                    .font(.caption2)
+                    .font(.vitalCaptionSmall)
                     .foregroundStyle(.secondary)
 
                 TextField("reps", value: $setData.reps, format: .number)
                     .keyboardType(.numberPad)
                     .textFieldStyle(.roundedBorder)
-                    .frame(width: 60)
+                    .frame(width: Spacing.iconGiant)
             }
 
             // RIR Input (Optional)
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: Spacing.xxs) {
                 Text("RIR")
-                    .font(.caption2)
+                    .font(.vitalCaptionSmall)
                     .foregroundStyle(.secondary)
 
                 TextField("0", value: $setData.rir, format: .number)

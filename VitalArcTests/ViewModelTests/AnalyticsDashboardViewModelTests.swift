@@ -329,19 +329,20 @@ final class AnalyticsDashboardViewModelTests: XCTestCase {
     }
 
     func testSleepScoreWithInsufficientSleep() async {
-        // Setup sleep data with only 5 hours average
-        let healthMetrics = (0..<7).map { day in
-            MockHealthRepository.createSampleMetrics(
-                date: Calendar.current.date(byAdding: .day, value: -day, to: Date()) ?? Date(),
+        // Setup minimum mock data first, then override with custom sleep data
+        setupMockData()
+        let healthMetrics = (0..<7).map { day -> HealthMetrics in
+            let metricsDate = Calendar.current.date(byAdding: .day, value: -day, to: Date()) ?? Date()
+            return MockHealthRepository.createSampleMetrics(
+                date: metricsDate,
                 sleep: 5.0
             )
         }
         mockHealthRepository.mockWeekMetrics = healthMetrics
-        setupMockData()
 
         await viewModel.loadData()
 
-        // Sleep score should be lower
+        // Sleep score should be lower (5 hours / 8 target = 62.5%)
         XCTAssertLessThan(viewModel.sleepScore, 80)
     }
 

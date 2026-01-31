@@ -96,7 +96,7 @@ final class HealthDashboardViewModelTests: XCTestCase {
 
     func testLoadWeekMetricsError() async {
         // Setup
-        mockRepository.shouldThrowOnGetRange = true
+        mockRepository.shouldThrowOnGetMetrics = true
 
         // Execute
         await viewModel.loadWeekMetrics()
@@ -328,14 +328,20 @@ final class HealthDashboardViewModelTests: XCTestCase {
     }
 
     private func createWeekMetrics() -> [HealthMetrics] {
-        (0..<7).map { day in
-            HealthMetrics(
-                date: Date().addingTimeInterval(Double(-day * 86400)),
-                heartRateVariability: Double(70 + day),
-                restingHeartRate: Double(60 + day),
-                activeEnergy: Double(400 + day * 50),
-                steps: 10000 + day * 1000,
-                sleepHours: 7.0 + Double(day) * 0.2,
+        (0..<7).map { day -> HealthMetrics in
+            let metricsDate = Date().addingTimeInterval(Double(-day * 86400))
+            let hrv = 70.0 + Double(day)
+            let rhr = 60.0 + Double(day)
+            let energy = 400.0 + Double(day) * 50.0
+            let stepsCount = 10000 + day * 1000
+            let sleep = 7.0 + Double(day) * 0.2
+            return HealthMetrics(
+                date: metricsDate,
+                heartRateVariability: hrv,
+                restingHeartRate: rhr,
+                activeEnergy: energy,
+                steps: stepsCount,
+                sleepHours: sleep,
                 weight: nil
             )
         }

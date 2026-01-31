@@ -134,14 +134,20 @@ class MockHealthRepository: HealthRepository {
 
     /// Generate a week of sample metrics
     static func createWeekMetrics(startingFrom date: Date = Date()) -> [HealthMetrics] {
-        return (0..<7).map { day in
-            HealthMetrics(
-                date: Calendar.current.date(byAdding: .day, value: -day, to: date) ?? date,
-                heartRateVariability: Double(70 + day),
-                restingHeartRate: Double(60 + day),
-                activeEnergy: Double(400 + day * 50),
-                steps: 8000 + day * 500,
-                sleepHours: 7.0 + Double(day) * 0.1,
+        return (0..<7).map { day -> HealthMetrics in
+            let metricsDate = Calendar.current.date(byAdding: .day, value: -day, to: date) ?? date
+            let hrv = 70.0 + Double(day)
+            let rhr = 60.0 + Double(day)
+            let energy = 400.0 + Double(day) * 50.0
+            let stepsCount = 8000 + day * 500
+            let sleep = 7.0 + Double(day) * 0.1
+            return HealthMetrics(
+                date: metricsDate,
+                heartRateVariability: hrv,
+                restingHeartRate: rhr,
+                activeEnergy: energy,
+                steps: stepsCount,
+                sleepHours: sleep,
                 weight: 75.0
             )
         }

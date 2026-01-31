@@ -47,7 +47,7 @@ struct MacroRingView: View {
                     .animation(.vitalSpring, value: progress)
 
                 // Center text
-                VStack(spacing: 2) {
+                VStack(spacing: Spacing.xxs) {
                     Text("\(Int(consumed))")
                         .font(.vitalNumberSmall)
                         .foregroundStyle(color)
