@@ -1,4 +1,4 @@
-name: Claude Code Review
+name: OpenAI Code Review
 
 on:
   pull_request:
@@ -11,7 +11,7 @@ permissions:
   pull-requests: write
 
 jobs:
-  claude-review:
+  openai-review:
     name: AI Code Review
     runs-on: ubuntu-latest
     if: github.event.pull_request.draft == false
@@ -29,11 +29,11 @@ jobs:
           files: |
             **/*.swift
 
-      - name: Review with Claude
+      - name: Review with GPT-5.2-Codex
         if: steps.changed-files.outputs.any_changed == 'true'
         uses: actions/github-script@v8
         env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         with:
           script: |
             const changedFiles = '${{ steps.changed-files.outputs.all_changed_files }}'.split(' ').filter(f => f);
@@ -44,8 +44,8 @@ jobs:
             }
 
             // Skip if no API key configured
-            if (!process.env.ANTHROPIC_API_KEY) {
-              console.log('ANTHROPIC_API_KEY not configured - skipping AI review');
+            if (!process.env.OPENAI_API_KEY) {
+              console.log('OPENAI_API_KEY not configured - skipping AI review');
               return;
             }
 
@@ -84,7 +84,11 @@ jobs:
 
             const truncatedDiff = diff.substring(0, 10000);
 
-            const prompt = `You are reviewing a Pull Request for VitalArc, an iOS fitness app built with SwiftUI and SwiftData.
+            const systemPrompt = `You are an expert iOS code reviewer specializing in SwiftUI and SwiftData applications.
+            Perform deep analysis of the code changes with thorough reasoning about potential issues, architectural implications, and best practices.
+            Be meticulous and consider edge cases, thread safety, memory management, and Swift-specific patterns.`;
+
+            const userPrompt = `You are reviewing a Pull Request for VitalArc, an iOS fitness app built with SwiftUI and SwiftData.
 
             PR Title: ${context.payload.pull_request.title}
             PR Description: ${context.payload.pull_request.body || 'No description provided'}
@@ -109,25 +113,31 @@ jobs:
             Keep your review concise and actionable. Focus on significant issues, not style nitpicks.
             Format your response as markdown suitable for a GitHub PR comment.`;
 
-            // Call Claude API
+            // Call OpenAI API with GPT-5.2 and extra high reasoning
             const requestData = JSON.stringify({
-              model: 'claude-opus-4-5-20251101',
-              max_tokens: 2048,
-              messages: [{
-                role: 'user',
-                content: prompt
-              }]
+              model: 'gpt-5.2-codex',
+              reasoning_effort: 'xhigh',
+              max_completion_tokens: 4096,
+              messages: [
+                {
+                  role: 'system',
+                  content: systemPrompt
+                },
+                {
+                  role: 'user',
+                  content: userPrompt
+                }
+              ]
             });
 
             const options = {
-              hostname: 'api.anthropic.com',
+              hostname: 'api.openai.com',
               port: 443,
-              path: '/v1/messages',
+              path: '/v1/chat/completions',
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
-                'x-api-key': process.env.ANTHROPIC_API_KEY,
-                'anthropic-version': '2023-06-01'
+                'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`
               }
             };
 
@@ -148,14 +158,14 @@ jobs:
               req.end();
             });
 
-            const reviewContent = response.content[0].text;
+            const reviewContent = response.choices[0].message.content;
 
             // Post review as comment
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.payload.pull_request.number,
-              body: `## Claude Code Review\n\n${reviewContent}\n\n---\n*Automated review by Claude. This is advisory - always verify suggestions.*`
+              body: `## GPT-5.2-Codex Code Review\n\n${reviewContent}\n\n---\n*Automated review by GPT-5.2-Codex with extra high reasoning. This is advisory - always verify suggestions.*`
             });
 
             console.log('Review posted successfully');
