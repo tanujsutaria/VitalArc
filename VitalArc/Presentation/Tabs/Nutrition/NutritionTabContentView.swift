@@ -24,7 +24,9 @@ struct NutritionTabContentView: View {
                 .navigationTitle("Nutrition")
                 .task {
                     viewModel = NutritionTabViewModel(
-                        nutritionRepository: container.nutritionRepository
+                        nutritionRepository: container.nutritionRepository,
+                        calculateTDEEUseCase: container.calculateTDEEUseCase,
+                        userRepository: container.userRepository
                     )
                     await viewModel?.loadData()
                 }
@@ -330,17 +332,26 @@ final class NutritionTabViewModel {
     private let nutritionRepository: NutritionRepository
     private let getFoodEntriesUseCase: GetFoodEntriesUseCase
     private let deleteFoodEntryUseCase: DeleteFoodEntryUseCase
+    private let calculateTDEEUseCase: CalculateTDEEUseCase?
+    private let userRepository: UserRepository?
 
     var selectedDate: Date = Date()
     var foodEntries: [FoodEntry] = []
     var dailyNutrition: DailyNutrition?
+    var tdeeResult: TDEEResult?
     var isLoading = false
     var error: Error?
 
-    init(nutritionRepository: NutritionRepository) {
+    init(
+        nutritionRepository: NutritionRepository,
+        calculateTDEEUseCase: CalculateTDEEUseCase? = nil,
+        userRepository: UserRepository? = nil
+    ) {
         self.nutritionRepository = nutritionRepository
         self.getFoodEntriesUseCase = GetFoodEntriesUseCase(repository: nutritionRepository)
         self.deleteFoodEntryUseCase = DeleteFoodEntryUseCase(repository: nutritionRepository)
+        self.calculateTDEEUseCase = calculateTDEEUseCase
+        self.userRepository = userRepository
     }
 
     func loadData() async {
@@ -353,7 +364,32 @@ final class NutritionTabViewModel {
 
             // Calculate daily nutrition
             let calculateUseCase = CalculateNutritionUseCase(repository: nutritionRepository)
-            dailyNutrition = try await calculateUseCase.execute(for: selectedDate)
+            var nutrition = try await calculateUseCase.execute(for: selectedDate)
+
+            // If TDEE use case is available, calculate TDEE-based goals
+            if let tdeeUseCase = calculateTDEEUseCase {
+                if let result = try await tdeeUseCase.execute() {
+                    tdeeResult = result
+
+                    // If nutrition goals are not set, use TDEE-derived goals
+                    if nutrition.calorieGoal == nil || nutrition.proteinGoal == nil {
+                        nutrition = DailyNutrition(
+                            id: nutrition.id,
+                            date: nutrition.date,
+                            caloriesConsumed: nutrition.caloriesConsumed,
+                            proteinConsumed: nutrition.proteinConsumed,
+                            carbsConsumed: nutrition.carbsConsumed,
+                            fatConsumed: nutrition.fatConsumed,
+                            calorieGoal: nutrition.calorieGoal ?? result.adjustedCalories,
+                            proteinGoal: nutrition.proteinGoal ?? result.proteinGoal,
+                            carbsGoal: nutrition.carbsGoal ?? result.carbGoal,
+                            fatGoal: nutrition.fatGoal ?? result.fatGoal
+                        )
+                    }
+                }
+            }
+
+            dailyNutrition = nutrition
         } catch {
             self.error = error
             Log.error("Failed to load nutrition data", error: error, category: .nutrition)

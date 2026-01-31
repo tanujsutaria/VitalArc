@@ -8,8 +8,38 @@
 import SwiftUI
 
 struct NotificationSettingsView: View {
-    @State private var viewModel = NotificationSettingsViewModel()
+    @Environment(\.dependencyContainer) private var container
+    @State private var viewModel: NotificationSettingsViewModel?
     @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        Group {
+            if let viewModel = viewModel {
+                NotificationSettingsFormView(viewModel: viewModel)
+            } else {
+                ProgressView()
+            }
+        }
+        .task {
+            if let container = container {
+                viewModel = NotificationSettingsViewModel(
+                    scheduler: container.notificationScheduler,
+                    repository: container.notificationPreferencesRepository,
+                    requestPermissionUseCase: container.requestNotificationPermissionUseCase,
+                    scheduleNotificationsUseCase: container.scheduleNotificationsUseCase,
+                    checkRecoveryUseCase: container.checkRecoveryAndNotifyUseCase
+                )
+            } else {
+                viewModel = NotificationSettingsViewModel()
+            }
+        }
+    }
+}
+
+// MARK: - Form View (with Bindable ViewModel)
+
+private struct NotificationSettingsFormView: View {
+    @Bindable var viewModel: NotificationSettingsViewModel
 
     var body: some View {
         Form {

@@ -1,6 +1,6 @@
 # VitalArc Project Status
 
-**Last Updated**: January 31, 2026 (Session 15)
+**Last Updated**: January 31, 2026 (Session 15.1)
 **Build**: Passing ✅ (Workstation verified)
 **Tests**: 291 passing ✅
 **Stage**: MVP-Ready
@@ -20,6 +20,8 @@ The app compiles and runs with core MVP requirements addressed:
 - TRIMP/Strain calculation implemented
 - Notification system architecture complete (Session 14)
 - NotificationSchedulerProtocol enables DI/testability (Session 14)
+- Notification use cases wired into ViewModel (Session 15.1)
+- TDEE integrated into Nutrition tab UI (Session 15.1)
 
 **Ready for beta testing.**
 
@@ -46,8 +48,8 @@ The app compiles and runs with core MVP requirements addressed:
 | Feature | Done | Missing |
 |---------|------|---------|
 | Sleep Analysis | Basic score | Sleep stage analysis |
-| Nutrition Algorithm | Daily totals, TDEE estimation, **TDEE UI integration** | Macro tracking refinement |
-| Notifications | UI, ViewModel, Repository, Use Cases, Infrastructure, Protocol | Wire use cases into ViewModel |
+| Nutrition Algorithm | Daily totals, TDEE estimation, TDEE UI integration | Macro tracking refinement |
+| Notifications | UI, ViewModel, Repository, Use Cases (wired), Infrastructure, Protocol | - |
 
 ### Not Implemented
 

@@ -1,5 +1,44 @@
 # VitalArc Development Session Log
 
+## Session 15.1 - January 31, 2026 (Morning)
+
+### Session Start
+- **Time**: Morning PST
+- **Platform**: macOS 🖥️
+- **Focus**: General development (awaiting direction)
+- **Branch**: dev/mac-session-15.1-2026-01-31
+- **Base**: main @ b43bf9d
+
+### Environment
+- **Build Capable**: Yes
+- **Test Capable**: Yes (unit + UI)
+
+### Pre-Session Status
+- **Build**: SUCCEEDED (verified - 2 warnings)
+- **Uncommitted Changes**: None
+- **Design Violations**: 0 (100% design system compliance)
+- **Recent Activity**: Session 15.0 - CI workflow updated to OpenAI GPT-5.2-Codex
+
+### Suggested Focus Areas
+1. **Wire Notification Use Cases into ViewModel** (Score: 13) - Complete notifications feature
+2. **Fix & Re-integrate Cloud Tests** (Score: 8) - Double test coverage
+3. **Complete TDEE UI Integration** (Score: 7) - Finish nutrition feature
+
+### Session Goals
+1. TBD - Awaiting user direction
+2. TBD
+3. General development as directed
+
+### Work Log
+| Time | Action | Files | Notes |
+|------|--------|-------|-------|
+| - | Session started | - | Build verified ✅, Design system 100% |
+| - | Wired notification use cases | NotificationSettingsViewModel.swift, NotificationSettingsView.swift | Completed notifications feature wiring |
+| - | Integrated TDEE into Nutrition tab | NutritionTabContentView.swift | TDEE UI integration complete |
+| - | Session ended | - | Notifications + TDEE integration ✅ |
+
+---
+
 ## Session 15 - January 31, 2026
 
 ### Session Start

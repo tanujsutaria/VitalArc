@@ -23,6 +23,9 @@ final class NotificationSettingsViewModel {
 
     private let scheduler: NotificationSchedulerProtocol
     private let repository: NotificationPreferencesRepository?
+    private let requestPermissionUseCase: RequestNotificationPermissionUseCaseProtocol?
+    private let scheduleNotificationsUseCase: ScheduleNotificationsUseCaseProtocol?
+    private let checkRecoveryUseCase: CheckRecoveryAndNotifyUseCaseProtocol?
 
     // MARK: - Computed Properties
 
@@ -136,9 +139,18 @@ final class NotificationSettingsViewModel {
 
     // MARK: - Initialization
 
-    init(scheduler: NotificationSchedulerProtocol? = nil, repository: NotificationPreferencesRepository? = nil) {
+    init(
+        scheduler: NotificationSchedulerProtocol? = nil,
+        repository: NotificationPreferencesRepository? = nil,
+        requestPermissionUseCase: RequestNotificationPermissionUseCaseProtocol? = nil,
+        scheduleNotificationsUseCase: ScheduleNotificationsUseCaseProtocol? = nil,
+        checkRecoveryUseCase: CheckRecoveryAndNotifyUseCaseProtocol? = nil
+    ) {
         self.scheduler = scheduler ?? NotificationScheduler()
         self.repository = repository
+        self.requestPermissionUseCase = requestPermissionUseCase
+        self.scheduleNotificationsUseCase = scheduleNotificationsUseCase
+        self.checkRecoveryUseCase = checkRecoveryUseCase
         self.preferences = .default
 
         Task {
@@ -155,14 +167,29 @@ final class NotificationSettingsViewModel {
         defer { isLoading = false }
 
         do {
-            let granted = try await scheduler.requestAuthorization()
-            authorizationStatus = granted ? .authorized : .denied
+            // Use the use case if available, otherwise fall back to scheduler
+            if let useCase = requestPermissionUseCase {
+                let result = try await useCase.execute()
+                authorizationStatus = result.status
 
-            if !granted {
-                errorMessage = "Notification permissions were denied. You can enable them in Settings."
+                if !result.granted {
+                    errorMessage = result.shouldShowSettings
+                        ? "Notification permissions were denied. You can enable them in Settings."
+                        : nil
+                } else {
+                    // Schedule notifications with current preferences
+                    await saveAndReschedule()
+                }
             } else {
-                // Schedule notifications with current preferences
-                await saveAndReschedule()
+                // Fallback to direct scheduler call
+                let granted = try await scheduler.requestAuthorization()
+                authorizationStatus = granted ? .authorized : .denied
+
+                if !granted {
+                    errorMessage = "Notification permissions were denied. You can enable them in Settings."
+                } else {
+                    await saveAndReschedule()
+                }
             }
         } catch {
             authorizationStatus = .denied
@@ -171,7 +198,12 @@ final class NotificationSettingsViewModel {
     }
 
     func checkAuthorizationStatus() async {
-        authorizationStatus = await scheduler.checkAuthorizationStatus()
+        // Use the use case if available, otherwise fall back to scheduler
+        if let useCase = requestPermissionUseCase {
+            authorizationStatus = await useCase.checkCurrentStatus()
+        } else {
+            authorizationStatus = await scheduler.checkAuthorizationStatus()
+        }
     }
 
     // MARK: - Preference Updates
@@ -206,11 +238,16 @@ final class NotificationSettingsViewModel {
     /// Call this after calculating recovery score to conditionally schedule alert
     func checkRecoveryAndScheduleAlert(recoveryScore: Double) async {
         do {
-            try await scheduler.scheduleRecoveryAlertIfNeeded(
-                recoveryScore: recoveryScore,
-                threshold: preferences.recoveryThreshold,
-                enabled: preferences.recoveryAlertsEnabled
-            )
+            // Use the use case if available, otherwise fall back to scheduler
+            if let useCase = checkRecoveryUseCase {
+                _ = try await useCase.execute(recoveryScore: recoveryScore)
+            } else {
+                try await scheduler.scheduleRecoveryAlertIfNeeded(
+                    recoveryScore: recoveryScore,
+                    threshold: preferences.recoveryThreshold,
+                    enabled: preferences.recoveryAlertsEnabled
+                )
+            }
             await updatePendingCount()
         } catch {
             errorMessage = "Failed to schedule recovery alert."
@@ -308,7 +345,12 @@ final class NotificationSettingsViewModel {
         await savePreferences()
 
         do {
-            try await scheduler.scheduleFromPreferences(preferences)
+            // Use the use case if available, otherwise fall back to scheduler
+            if let useCase = scheduleNotificationsUseCase {
+                _ = try await useCase.execute(preferences: preferences)
+            } else {
+                try await scheduler.scheduleFromPreferences(preferences)
+            }
             await updatePendingCount()
         } catch {
             errorMessage = "Failed to schedule notifications."
