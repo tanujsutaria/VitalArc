@@ -99,7 +99,7 @@ struct FoodLoggingView: View {
 
 // MARK: - Date Selector
 
-private struct DateSelectorView: View {
+struct DateSelectorView: View {
     @Binding var selectedDate: Date
     let onPrevious: () -> Void
     let onNext: () -> Void
@@ -154,7 +154,7 @@ private struct DateSelectorView: View {
 
 // MARK: - Quantity Input
 
-private struct QuantityInputView: View {
+struct QuantityInputView: View {
     let food: Food
     let meal: MealType
     let onLog: (Double) -> Void

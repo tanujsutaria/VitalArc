@@ -167,6 +167,285 @@ struct VitalIconButton: View {
     }
 }
 
+// MARK: - V2 Premium Button
+
+struct VitalButtonV2: View {
+    enum Style {
+        case primary
+        case secondary
+        case accent
+        case outline
+        case ghost
+        case danger
+        case success
+
+        var backgroundColor: Color {
+            switch self {
+            case .primary: return .vitalPrimaryV2
+            case .secondary: return .vitalSecondaryV2
+            case .accent: return .vitalAccentV2
+            case .outline, .ghost: return .clear
+            case .danger: return .vitalDangerV2
+            case .success: return .vitalSuccessV2
+            }
+        }
+
+        var foregroundColor: Color {
+            switch self {
+            case .primary, .secondary, .danger, .success: return .white
+            case .accent: return .vitalBackgroundV2
+            case .outline: return .vitalPrimaryV2
+            case .ghost: return .vitalAdaptiveTextPrimaryV2
+            }
+        }
+
+        var borderColor: Color? {
+            switch self {
+            case .outline: return .vitalPrimaryV2
+            default: return nil
+            }
+        }
+
+        var glowColor: Color {
+            switch self {
+            case .primary, .danger: return .vitalPrimaryV2
+            case .secondary: return .vitalSecondaryV2
+            case .accent: return .vitalAccentV2
+            case .success: return .vitalSuccessV2
+            case .outline, .ghost: return .clear
+            }
+        }
+
+        var gradient: LinearGradient? {
+            switch self {
+            case .primary: return Color.vitalPrimaryGradientV2
+            case .accent: return Color.vitalAccentGradientV2
+            case .success: return Color.vitalSuccessGradientV2
+            default: return nil
+            }
+        }
+    }
+
+    enum Size {
+        case small
+        case medium
+        case large
+
+        var fontSize: Font {
+            switch self {
+            case .small: return .vitalLabelSmallV2
+            case .medium: return .vitalLabelV2
+            case .large: return .vitalH4V2
+            }
+        }
+
+        var padding: EdgeInsets {
+            switch self {
+            case .small: return EdgeInsets(top: 8, leading: 14, bottom: 8, trailing: 14)
+            case .medium: return EdgeInsets(top: 12, leading: 20, bottom: 12, trailing: 20)
+            case .large: return EdgeInsets(top: 16, leading: 28, bottom: 16, trailing: 28)
+            }
+        }
+
+        var cornerRadius: CGFloat {
+            switch self {
+            case .small: return Spacing.radiusSmallV2
+            case .medium: return Spacing.radiusMediumV2
+            case .large: return Spacing.radiusLargeV2
+            }
+        }
+    }
+
+    let title: String
+    var style: Style = .primary
+    var size: Size = .medium
+    var icon: String? = nil
+    var iconPosition: IconPosition = .leading
+    var fullWidth: Bool = false
+    var isLoading: Bool = false
+    var isDisabled: Bool = false
+    var showGlow: Bool = true
+    let action: () -> Void
+
+    enum IconPosition {
+        case leading
+        case trailing
+    }
+
+    @State private var isPressed = false
+
+    var body: some View {
+        Button(action: {
+            HapticFeedback.medium()
+            action()
+        }) {
+            HStack(spacing: Spacing.sm) {
+                if isLoading {
+                    LoadingDotsV2()
+                } else {
+                    if let icon = icon, iconPosition == .leading {
+                        Image(systemName: icon)
+                            .font(size.fontSize)
+                    }
+                    Text(title)
+                        .font(size.fontSize)
+                        .fontWeight(.semibold)
+                    if let icon = icon, iconPosition == .trailing {
+                        Image(systemName: icon)
+                            .font(size.fontSize)
+                    }
+                }
+            }
+            .foregroundStyle(style.foregroundColor)
+            .padding(size.padding)
+            .frame(maxWidth: fullWidth ? .infinity : nil)
+            .background(buttonBackground)
+            .clipShape(RoundedRectangle(cornerRadius: size.cornerRadius))
+            .overlay(borderOverlay)
+            .opacity(isDisabled ? 0.5 : 1.0)
+        }
+        .disabled(isDisabled || isLoading)
+        .buttonStyle(PremiumButtonStyle(
+            glowColor: showGlow ? style.glowColor : .clear,
+            glowIntensity: isPressed ? 0.5 : 0.3
+        ))
+    }
+
+    @ViewBuilder
+    private var buttonBackground: some View {
+        if let gradient = style.gradient {
+            gradient
+        } else {
+            style.backgroundColor
+        }
+    }
+
+    @ViewBuilder
+    private var borderOverlay: some View {
+        if let borderColor = style.borderColor {
+            RoundedRectangle(cornerRadius: size.cornerRadius)
+                .stroke(borderColor, lineWidth: Spacing.borderMedium)
+        }
+    }
+}
+
+// MARK: - Premium Button Style (Glow + Scale)
+
+private struct PremiumButtonStyle: ButtonStyle {
+    let glowColor: Color
+    let glowIntensity: Double
+
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .scaleEffect(configuration.isPressed ? 0.96 : 1.0)
+            .shadow(
+                color: configuration.isPressed
+                    ? glowColor.opacity(glowIntensity + 0.2)
+                    : glowColor.opacity(glowIntensity),
+                radius: configuration.isPressed ? 16 : 12,
+                x: 0,
+                y: configuration.isPressed ? 2 : 4
+            )
+            .animation(.vitalSpring, value: configuration.isPressed)
+    }
+}
+
+// MARK: - Animated Loading Dots
+
+struct LoadingDotsV2: View {
+    @State private var animatingDot = 0
+
+    var body: some View {
+        HStack(spacing: Spacing.xs) {
+            ForEach(0..<3) { index in
+                Circle()
+                    .fill(Color.white)
+                    .frame(width: 6, height: 6)
+                    .scaleEffect(animatingDot == index ? 1.2 : 0.8)
+                    .opacity(animatingDot == index ? 1.0 : 0.5)
+            }
+        }
+        .onAppear {
+            startAnimation()
+        }
+    }
+
+    private func startAnimation() {
+        Timer.scheduledTimer(withTimeInterval: 0.3, repeats: true) { _ in
+            withAnimation(.vitalSpring) {
+                animatingDot = (animatingDot + 1) % 3
+            }
+        }
+    }
+}
+
+// MARK: - V2 Icon Button
+
+struct VitalIconButtonV2: View {
+    let icon: String
+    var style: VitalButtonV2.Style = .primary
+    var size: CGFloat = 44
+    var showGlow: Bool = true
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: {
+            HapticFeedback.medium()
+            action()
+        }) {
+            Image(systemName: icon)
+                .font(.system(size: size * 0.4, weight: .semibold))
+                .foregroundStyle(style.foregroundColor)
+                .frame(width: size, height: size)
+                .background(style.backgroundColor)
+                .clipShape(Circle())
+        }
+        .buttonStyle(PremiumButtonStyle(
+            glowColor: showGlow ? style.glowColor : .clear,
+            glowIntensity: 0.3
+        ))
+    }
+}
+
+// MARK: - V2 Floating Action Button
+
+struct VitalFABV2: View {
+    let icon: String
+    var size: CGFloat = 56
+    var backgroundColor: Color = .vitalPrimaryV2
+    var foregroundColor: Color = .white
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: {
+            HapticFeedback.medium()
+            action()
+        }) {
+            Image(systemName: icon)
+                .font(.system(size: size * 0.4, weight: .bold))
+                .foregroundStyle(foregroundColor)
+                .frame(width: size, height: size)
+                .background(
+                    LinearGradient(
+                        colors: [backgroundColor, backgroundColor.opacity(0.8)],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                )
+                .clipShape(Circle())
+                .overlay(
+                    Circle()
+                        .stroke(Color.white.opacity(0.2), lineWidth: 1)
+                )
+        }
+        .buttonStyle(PremiumButtonStyle(
+            glowColor: backgroundColor,
+            glowIntensity: 0.4
+        ))
+        .vitalHeroShadowV2()
+    }
+}
+
 // MARK: - Preview
 
 #Preview {

@@ -71,7 +71,7 @@ struct MuscleVolumeChartView: View {
                                 )
                             )
                             .cornerRadius(Spacing.radiusSmall)
-                            .annotation(position: .trailing, alignment: .leading, spacing: 4) {
+                            .annotation(position: .trailing, alignment: .leading, spacing: Spacing.xs) {
                                 if hasAppeared {
                                     Text(formatVolume(item.volume))
                                         .font(.vitalCaptionSmall)

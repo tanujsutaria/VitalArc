@@ -32,7 +32,7 @@ struct HealthKitPermissionView: View {
                 .multilineTextAlignment(.center)
 
             // Description
-            VStack(alignment: .leading, spacing: 16) {
+            VStack(alignment: .leading, spacing: Spacing.md) {
                 PermissionRow(
                     icon: "figure.walk",
                     title: "Activity Data",
@@ -68,7 +68,7 @@ struct HealthKitPermissionView: View {
             Spacer()
 
             // Action Buttons
-            VStack(spacing: 12) {
+            VStack(spacing: Spacing.itemSpacing) {
                 Button(action: {
                     Task {
                         isRequesting = true
