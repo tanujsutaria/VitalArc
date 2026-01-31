@@ -1,7 +1,8 @@
 ---
 name: vitalarc-start-workstation
 description: Initialize a VitalArc workstation development session. Use when starting work on Mac for feature development, UI changes, large refactors, or any work requiring Xcode builds and simulator testing.
-allowed-tools: Read, Grep, Glob, Bash, Write, Edit, Task
+disable-model-invocation: true
+allowed-tools: Read, Grep, Glob, Bash, Write, Edit, Task, TaskCreate, TaskUpdate, TaskList
 argument-hint: [focus-area]
 ---
 
@@ -9,23 +10,45 @@ argument-hint: [focus-area]
 
 Start a full development session on Mac with Xcode builds and simulator access.
 
-## Steps
+## Task Dependency Graph
 
-### 1. Sync with main
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                    SESSION INITIALIZATION PIPELINE                   │
+├─────────────────────────────────────────────────────────────────────┤
+│  PHASE 1 - Git Sync (Sequential):                                   │
+│    └── Task: sync-with-main                                         │
+│                                                                      │
+│  PHASE 2 - Parallel Initialization (Fan-Out):                       │
+│    ├── Task: focus-analysis      ─┐                                 │
+│    ├── Task: build-validation     ├── All run in parallel           │
+│    └── Task: design-system-scan  ─┘                                 │
+│                                                                      │
+│  PHASE 3 - Session Setup (Blocked by Phase 2):                      │
+│    └── Task: create-session-log (blockedBy: phase-2-tasks)          │
+└─────────────────────────────────────────────────────────────────────┘
+```
 
-Stash any uncommitted changes, fetch and checkout main:
+## Implementation
+
+### Phase 1: Git Sync (Sequential)
+
+Execute these git commands before spawning any tasks:
+
 ```bash
+# Stash any uncommitted changes
 [ -n "$(git status --porcelain)" ] && git stash push -m "Auto-stash $(date +%Y-%m-%d-%H%M)"
+
+# Sync with main
 git fetch origin && git checkout main && git pull origin main --ff-only
 ```
 
-### 2. Determine session number
+### Phase 2: Determine Session Number
 
 **Session numbering rules:**
 - **Major number** increments when the DATE changes (e.g., Session 12.x → Session 13.0)
 - **Minor version** increments for same-day sessions (e.g., 13.0 → 13.1 → 13.2)
 - **Always include minor version** in format (e.g., 13.0, not just 13)
-- Minor versions are determined by counting SESSION_LOG.md entries for that major number + date
 
 ```bash
 TODAY=$(date +%Y-%m-%d)
@@ -44,7 +67,7 @@ fi
 FULL_SESSION="${SESSION}.${MINOR}"
 ```
 
-### 3. Create branch
+### Phase 3: Create Branch
 
 Format: `dev/mac-<focus>-<session>.<minor>-YYYY-MM-DD`
 
@@ -54,47 +77,81 @@ BRANCH="dev/mac-${FOCUS}-${FULL_SESSION}-${TODAY}"
 git checkout -b "$BRANCH"
 ```
 
-### 4. Restore stash
+### Phase 4: Restore Stash
 
 ```bash
 git stash list | grep -q "Auto-stash $(date +%Y-%m-%d)" && git stash pop
 ```
 
-### 5. Parallel Session Initialization
+### Phase 5: Parallel Task Initialization
 
-Launch these Task agents IN PARALLEL (single message, multiple tool calls):
+**CRITICAL: Launch all three tasks in a SINGLE message with multiple TaskCreate calls.**
 
-**Focus Analysis** (if no focus specified):
-```
-Read: .claude/skills/focus-suggester/SKILL.md
-Agent type: Explore (from maps-to-agent metadata)
-Task prompt: "Follow the focus-suggester instructions. Analyze PROJECT_STATUS.md and SESSION_LOG.md. Return top 3 focus recommendations with scores."
+This enables true parallel execution where all tasks run simultaneously:
+
+```javascript
+// In a SINGLE message, create all three tasks:
+
+TaskCreate({
+  subject: "Analyze focus areas for session",
+  description: `Run focus-suggester analysis:
+    1. Read PROJECT_STATUS.md and SESSION_LOG.md
+    2. Score potential focus areas using priority rubric
+    3. Return top 3 recommendations with scores
+    Platform: workstation (all work types available)`,
+  activeForm: "Analyzing focus areas"
+})
+// Returns: task-focus-id
+
+TaskCreate({
+  subject: "Validate Xcode build",
+  description: `Run build validation:
+    1. Execute: xcodebuild -scheme VitalArc -destination 'platform=iOS Simulator,name=iPhone 17 Pro' build 2>&1 | grep -E "(error:|warning:|BUILD SUCCEEDED|BUILD FAILED)"
+    2. Report: SUCCEEDED or FAILED with error count
+    3. If FAILED, list top 3 errors`,
+  activeForm: "Validating build"
+})
+// Returns: task-build-id
+
+TaskCreate({
+  subject: "Scan design system compliance",
+  description: `Run design-system-scanner:
+    1. Scan VitalArc/Presentation/ for design token violations
+    2. Report summary: X color, Y spacing, Z typography violations
+    3. List top 5 files by violation count`,
+  activeForm: "Scanning design system"
+})
+// Returns: task-scan-id
 ```
 
-**Build Validation**:
-```
-Read: .claude/skills/build-validator/SKILL.md
-Agent type: Bash (from maps-to-agent metadata)
-Task prompt: "Run xcodebuild for VitalArc. Report build status (SUCCEEDED/FAILED) and any errors."
+### Phase 6: Create Session Log (Blocked by Phase 5)
+
+After all parallel tasks complete, create the session log entry:
+
+```javascript
+TaskCreate({
+  subject: "Create SESSION_LOG.md entry",
+  description: `Create session entry with results from parallel tasks:
+    - Session: ${FULL_SESSION}
+    - Branch: ${BRANCH}
+    - Build status: [from build task]
+    - Focus: [from focus task or user-specified]
+    - Design violations: [from scan task]
+
+    Use workstation template format.`,
+  activeForm: "Creating session log",
+  addBlockedBy: ["task-focus-id", "task-build-id", "task-scan-id"]
+})
 ```
 
-**Design System Scan** (optional, for awareness):
-```
-Read: .claude/skills/design-system-scanner/SKILL.md
-Agent type: Explore (from maps-to-agent metadata)
-Task prompt: "Scan VitalArc/Presentation/ for design token violations. Report count only."
-```
-
-### 6. Create SESSION_LOG.md entry
-
-Add a new session entry following the workstation template:
+### Session Log Template
 
 ```markdown
 ## Session [FULL_SESSION] - [Month Day, Year] ([Time])
 
 ### Session Start
 - **Time**: [Time] PST
-- **Platform**: macOS 🖥️
+- **Platform**: macOS
 - **Focus**: [FOCUS or suggested focus]
 - **Branch**: [BRANCH]
 - **Base**: main @ [latest commit]
@@ -104,9 +161,9 @@ Add a new session entry following the workstation template:
 - **Test Capable**: Yes (unit + UI)
 
 ### Pre-Session Status
-- **Build**: [from build-validator]
+- **Build**: [from build-validator task]
+- **Design Violations**: [from design-system-scanner task]
 - **Uncommitted Changes**: None
-- **Recent Activity**: [from SESSION_LOG previous session]
 
 ### Session Goals
 1. [Based on focus area]
@@ -116,10 +173,10 @@ Add a new session entry following the workstation template:
 ### Work Log
 | Time | Action | Files | Notes |
 |------|--------|-------|-------|
-| [Time] | Session started | - | Build verified ✅ |
+| [Time] | Session started | - | Build verified |
 ```
 
-### 7. Output summary
+### Phase 7: Output Summary
 
 ```
 ═══════════════════════════════════════════════════════════════
@@ -127,9 +184,32 @@ Add a new session entry following the workstation template:
 ═══════════════════════════════════════════════════════════════
 Branch:   [branch]
 Session:  [FULL_SESSION]
-Build:    [status]
+Build:    [status from task]
 Focus:    [focus]
+Violations: [count from scan task]
 ───────────────────────────────────────────────────────────────
 Full builds, simulator, and testing available
 ═══════════════════════════════════════════════════════════════
 ```
+
+## Error Handling
+
+### Build Failed on Init
+
+If build-validation task reports FAILED:
+
+```
+═══════════════════════════════════════════════════════════════
+       ⚠️ SESSION STARTED WITH BUILD ERRORS
+═══════════════════════════════════════════════════════════════
+Branch:   [branch]
+Session:  [FULL_SESSION]
+Build:    FAILED ([N] errors)
+───────────────────────────────────────────────────────────────
+Priority: Fix build before starting new work
+═══════════════════════════════════════════════════════════════
+```
+
+### Task Timeout
+
+If any parallel task doesn't complete within 2 minutes, proceed with available results and note the timeout in the session log.

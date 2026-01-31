@@ -120,30 +120,52 @@ Both workstreams use an enhanced session log with a **Work Log table** for track
 
 ## Agent Swarms
 
-Skills in `.claude/skills/` serve as **prompt templates** for specialized tasks. They can be:
-1. **Invoked directly** via `/skill-name` (e.g., `/focus-suggester`)
-2. **Spawned as Task agents** by reading the SKILL.md and using the `maps-to-agent` type
+Skills in `.claude/skills/` serve as **prompt templates** for specialized tasks. They use native Claude Code frontmatter for execution control.
 
-### How Parallel Execution Works
+### Skill Frontmatter
 
-Skills are NOT custom agent types. To run skills in parallel during session workflows:
+| Field | Purpose | Example |
+|-------|---------|---------|
+| `context: fork` | Run in isolated subagent context | All worker skills |
+| `agent:` | Specify agent type for execution | `Explore`, `Plan`, `Bash`, `general-purpose` |
+| `disable-model-invocation: true` | User-triggered only (has side effects) | Session starters, commit-formatter, design-system-fixer |
+| `allowed-tools:` | Tools available to the skill | `Read, Grep, Glob, Bash` |
 
-1. Read the worker SKILL.md file
-2. Check `maps-to-agent` metadata for the correct Task agent type
-3. Spawn Task agents with built-in types (`Explore`, `Plan`, `Bash`, `general-purpose`)
-4. Launch multiple Task calls in a single message for parallel execution
+### Skill Categories
 
-### Agent Type Mappings
+**Orchestrators** (coordinate other tasks):
+- Session starters/enders - Use TaskCreate with `addBlockedBy` for dependency graphs
+- `feature-planner` - Pipeline: Analysis → Domain → UI → Wiring → Tests
 
-Each skill has a `maps-to-agent` field indicating which Task agent type to use:
+**Workers** (run in forked context with `context: fork`):
 
-| maps-to-agent | Use For | Skills |
-|---------------|---------|--------|
+| Agent Type | Use For | Skills |
+|------------|---------|--------|
 | `Explore` | Read-only analysis | focus-suggester, design-system-scanner, design-system-auditor, coverage-analyzer, config-validator |
-| `Plan` | Architecture design | domain-modeler, swiftui-architect, feature-planner, dependency-wirer |
+| `Plan` | Architecture design | domain-modeler, swiftui-architect, dependency-wirer |
 | `Bash` | Command execution | build-validator |
 | `general-purpose` | Read-write operations | commit-formatter, test-scaffolder, progress-tracker, design-system-fixer, pr-formatter |
 | `feature-dev:code-reviewer` | Code review | pr-reviewer |
+
+### Parallel Execution
+
+To run skills in parallel, launch multiple TaskCreate calls in a **single message**:
+
+```javascript
+// All three run simultaneously
+TaskCreate({ subject: "Analyze focus areas", ... })
+TaskCreate({ subject: "Validate build", ... })
+TaskCreate({ subject: "Scan design system", ... })
+```
+
+For sequential dependencies, use `addBlockedBy`:
+
+```javascript
+TaskCreate({
+  subject: "Create session log",
+  addBlockedBy: ["task-focus-id", "task-build-id", "task-scan-id"]
+})
+```
 
 ### Available Skills
 

@@ -1,7 +1,9 @@
 ---
 name: design-system-fixer
 description: Auto-fix design system violations found by design-system-scanner. Workstation only - requires build verification after fixes. Takes scanner report as input.
-maps-to-agent: general-purpose
+context: fork
+agent: general-purpose
+disable-model-invocation: true
 allowed-tools: Read, Edit, Bash
 argument-hint: [--file=specific/file.swift] [--dry-run] [--all]
 ---
@@ -9,6 +11,9 @@ argument-hint: [--file=specific/file.swift] [--dry-run] [--all]
 # Design System Fixer
 
 Applies automatic fixes for design token violations. **Workstation only** - requires build capability to verify fixes.
+
+**Execution**: Runs in forked context with general-purpose agent.
+**Invocation**: User-triggered only (modifies files).
 
 ## Prerequisites
 
@@ -157,7 +162,7 @@ design-system-fixer --all
 ### Summary
 | Files | Violations Fixed | Build Status |
 |-------|-----------------|--------------|
-| 5 | 12 | ✅ Passing |
+| 5 | 12 | Passing |
 
 ### Fixes by File
 
@@ -174,7 +179,7 @@ design-system-fixer --all
 | 23 | `.cornerRadius(12)` | `.cornerRadius(Spacing.radiusMedium)` |
 
 ### Build Verification
-✅ BUILD SUCCEEDED after fixes
+BUILD SUCCEEDED after fixes
 
 ### Remaining Manual Fixes
 Some violations require manual review:
@@ -198,7 +203,7 @@ After applying fixes:
 2. If build fails, **revert changes** and report
 
 ```markdown
-## ⚠️ Fix Failed
+## Fix Failed
 
 Build failed after applying fixes to ProfileView.swift.
 
@@ -217,7 +222,7 @@ error: Cannot find 'Spacing' in scope
 When a fix is ambiguous:
 
 ```markdown
-## ⚠️ Manual Review Required
+## Manual Review Required
 
 ### ExerciseView.swift:67
 ```swift
@@ -234,7 +239,7 @@ Please review and fix manually.
 ### Build Failure After Fix
 
 ```markdown
-## ❌ Build Failed After Fixes
+## Build Failed After Fixes
 
 Fixes applied but build failed. Rolling back...
 

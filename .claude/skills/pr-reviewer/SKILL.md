@@ -1,7 +1,8 @@
 ---
 name: pr-reviewer
 description: Analyze pull requests and suggest improvements. Read-only analysis of PR changes, comments, and CI status. Works on both platforms.
-maps-to-agent: feature-dev:code-reviewer
+context: fork
+agent: feature-dev:code-reviewer
 allowed-tools: Read, Bash, Grep, Glob, WebFetch
 argument-hint: <pr-number-or-url>
 ---
@@ -9,6 +10,8 @@ argument-hint: <pr-number-or-url>
 # PR Reviewer
 
 Analyzes pull requests and provides improvement suggestions.
+
+**Execution**: Runs in forked context with code-reviewer agent (specialized for PR analysis).
 
 ## What It Reviews
 
@@ -47,10 +50,10 @@ For each changed file:
 ### 3. Generate Review
 
 Categorize findings by severity:
-- 🔴 **Critical**: Must fix before merge
-- 🟠 **Important**: Should fix
-- 🟡 **Suggestion**: Nice to have
-- 🟢 **Positive**: Good practices observed
+- **Critical**: Must fix before merge
+- **Important**: Should fix
+- **Suggestion**: Nice to have
+- **Positive**: Good practices observed
 
 ## Review Categories
 
@@ -59,14 +62,14 @@ Categorize findings by severity:
 ```markdown
 ### Code Quality Review
 
-#### 🔴 Critical
+#### Critical
 - **ProfileView.swift:45** - Force unwrap could crash
   ```swift
   let user = users.first!  // Could crash if empty
   ```
   **Fix**: Use optional binding or guard
 
-#### 🟠 Important
+#### Important
 - **WorkoutViewModel.swift:123** - Missing error handling
   ```swift
   Task { await loadWorkouts() }  // Errors silently ignored
@@ -79,12 +82,12 @@ Categorize findings by severity:
 ```markdown
 ### Architecture Review
 
-#### 🟠 Important
+#### Important
 - **NotificationManager.swift** - Direct UIApplication access in Domain
   - Domain layer should not import UIKit
   - Move to Infrastructure layer
 
-#### 🟢 Positive
+#### Positive
 - Clean separation between ViewModel and View
 - Use cases follow single responsibility
 ```
@@ -94,13 +97,13 @@ Categorize findings by severity:
 ```markdown
 ### Design System Review
 
-#### 🟡 Suggestion
+#### Suggestion
 - **NewFeatureView.swift:67** - Hardcoded padding
   ```swift
   .padding(16)  // Use Spacing.md
   ```
 
-#### 🟢 Positive
+#### Positive
 - Correct use of VitalCard component
 - Typography tokens used consistently
 ```
@@ -110,12 +113,12 @@ Categorize findings by severity:
 ```markdown
 ### Testing Review
 
-#### 🟠 Important
+#### Important
 - **New files without tests:**
   - CalculateStrainScoreUseCase.swift (business logic)
   - NotificationSettingsViewModel.swift (state management)
 
-#### 🟡 Suggestion
+#### Suggestion
 - Add edge case tests for TRIMP calculation:
   - Zero duration workout
   - Maximum heart rate scenarios
@@ -133,7 +136,7 @@ Categorize findings by severity:
 **Author**: @tanujsutaria
 **Branch**: dev/mac-session-12.3-2026-01-28 → main
 **Files**: 37 changed (+2971, -74)
-**CI Status**: ✅ Passing
+**CI Status**: Passing
 
 ### Review Summary
 | Category | Critical | Important | Suggestions |
@@ -144,7 +147,7 @@ Categorize findings by severity:
 | Testing | 0 | 2 | 1 |
 | **Total** | **0** | **5** | **6** |
 
-### Verdict: ✅ APPROVE (with suggestions)
+### Verdict: APPROVE (with suggestions)
 
 No critical issues. Address important items before merge.
 
@@ -184,10 +187,10 @@ For quick checks:
 ```markdown
 ## PR #22 Quick Review
 
-✅ **Ready to merge** with minor suggestions
+**Ready to merge** with minor suggestions
 
 **Stats**: 37 files, +2971/-74 lines
-**CI**: ✅ Passing
+**CI**: Passing
 **Issues**: 0 critical, 5 important, 6 suggestions
 
 **Top 3 items:**
@@ -212,7 +215,7 @@ For quick checks:
 ### PR Not Found
 
 ```markdown
-## ❌ PR Not Found
+## PR Not Found
 
 Could not find PR #999
 
@@ -225,7 +228,7 @@ Check:
 ### No Access
 
 ```markdown
-## ❌ Authentication Required
+## Authentication Required
 
 Cannot access PR. Run:
 ```bash
@@ -236,12 +239,12 @@ gh auth login
 ### Large PR Warning
 
 ```markdown
-## ⚠️ Large PR Detected
+## Large PR Detected
 
 This PR has 100+ files changed. Full review may be slow.
 
 **Options:**
 1. Run `--quick` for summary only
 2. Run `--focus=testing` for specific category
-3. Continue with full review (may take longer)
+3. Continue with full review
 ```

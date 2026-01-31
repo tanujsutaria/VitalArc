@@ -1,13 +1,16 @@
 ---
 name: test-scaffolder
 description: Generate test stubs and test cases for VitalArc code. Use when new features are implemented and need test coverage, or when the user asks to add tests. Creates XCTest files following project patterns.
-maps-to-agent: general-purpose
+context: fork
+agent: general-purpose
 allowed-tools: Read, Grep, Glob, Write, Edit, Bash
 ---
 
 # Test Scaffolder Agent
 
 Generates XCTest files and test cases for VitalArc Swift code.
+
+**Execution**: Runs in forked context with general-purpose agent for file creation.
 
 ## When to Use
 
@@ -282,94 +285,4 @@ private enum TestError: Error {
 - [ ] @MainActor added where needed
 - [ ] Mocks reset in tearDown
 - [ ] File added to VitalArcTests target
-```
-
-## Example: Notification Use Case Tests
-
-```swift
-import XCTest
-@testable import VitalArc
-
-final class ScheduleNotificationUseCaseTests: XCTestCase {
-
-    private var sut: ScheduleNotificationUseCase!
-    private var mockRepository: MockNotificationRepository!
-    private var mockNotificationCenter: MockNotificationCenter!
-
-    override func setUp() {
-        super.setUp()
-        mockRepository = MockNotificationRepository()
-        mockNotificationCenter = MockNotificationCenter()
-        sut = ScheduleNotificationUseCase(
-            repository: mockRepository,
-            notificationCenter: mockNotificationCenter
-        )
-    }
-
-    override func tearDown() {
-        sut = nil
-        mockRepository = nil
-        mockNotificationCenter = nil
-        super.tearDown()
-    }
-
-    // MARK: - Happy Path
-
-    @MainActor
-    func testSchedule_validNotification_savesAndSchedules() async throws {
-        // Given
-        let notification = ScheduledNotification(
-            type: .workoutReminder,
-            scheduledTime: Date().addingTimeInterval(3600),
-            title: "Workout Time",
-            body: "Time for your push day!"
-        )
-
-        // When
-        try await sut.execute(notification)
-
-        // Then
-        XCTAssertTrue(mockRepository.saveCalled)
-        XCTAssertTrue(mockNotificationCenter.addCalled)
-        XCTAssertEqual(mockRepository.savedNotification?.id, notification.id)
-    }
-
-    // MARK: - Edge Cases
-
-    @MainActor
-    func testSchedule_pastTime_throwsError() async {
-        // Given
-        let notification = ScheduledNotification(
-            type: .workoutReminder,
-            scheduledTime: Date().addingTimeInterval(-3600), // Past
-            title: "Test",
-            body: "Test"
-        )
-
-        // When/Then
-        do {
-            try await sut.execute(notification)
-            XCTFail("Expected error for past time")
-        } catch {
-            XCTAssertTrue(error is NotificationError)
-        }
-    }
-
-    // MARK: - Error Handling
-
-    @MainActor
-    func testSchedule_repositoryFails_propagatesError() async {
-        // Given
-        mockRepository.errorToThrow = TestError.mock
-        let notification = ScheduledNotification.mock()
-
-        // When/Then
-        do {
-            try await sut.execute(notification)
-            XCTFail("Expected error")
-        } catch {
-            XCTAssertFalse(mockNotificationCenter.addCalled)
-        }
-    }
-}
 ```

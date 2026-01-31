@@ -1,13 +1,16 @@
 ---
 name: swiftui-architect
 description: Design SwiftUI view hierarchies and state management for VitalArc features. Use when planning new screens, complex UI components, or navigation flows. Produces view structures following VitalArc's design system and MVVM patterns.
-maps-to-agent: Plan
-allowed-tools: Read, Grep, Glob, Write, Edit
+context: fork
+agent: Plan
+allowed-tools: Read, Grep, Glob
 ---
 
 # SwiftUI Architect Agent
 
 Designs SwiftUI view hierarchies, state management, and navigation for VitalArc features.
+
+**Execution**: Runs in forked context with Plan agent for isolated analysis.
 
 ## When to Use
 

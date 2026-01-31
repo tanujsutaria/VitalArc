@@ -1,7 +1,8 @@
 ---
 name: vitalarc-start-cloud
 description: Initialize a VitalArc cloud development session. Use when starting work from phone or browser, or for bug fixes, documentation, and small targeted changes that don't require Xcode builds.
-allowed-tools: Read, Grep, Glob, Bash, Write, Edit, Task
+disable-model-invocation: true
+allowed-tools: Read, Grep, Glob, Bash, Write, Edit, Task, TaskCreate, TaskUpdate, TaskList
 argument-hint: [focus-area]
 ---
 
@@ -9,23 +10,44 @@ argument-hint: [focus-area]
 
 Start a cloud session optimized for phone/browser access. No Xcode builds available.
 
-## Steps
+## Task Dependency Graph
 
-### 1. Sync with main
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                    CLOUD SESSION INITIALIZATION                      │
+├─────────────────────────────────────────────────────────────────────┤
+│  PHASE 1 - Git Sync (Sequential):                                   │
+│    └── Sync with main, create/use branch                            │
+│                                                                      │
+│  PHASE 2 - Parallel Analysis (Fan-Out):                             │
+│    ├── Task: focus-analysis (cloud-filtered) ─┐                     │
+│    └── Task: design-system-scan (report only) ─┘ Parallel           │
+│                                                                      │
+│  PHASE 3 - Session Setup (Blocked by Phase 2):                      │
+│    └── Task: create-session-log                                     │
+└─────────────────────────────────────────────────────────────────────┘
+```
 
-Stash any uncommitted changes, fetch and checkout main:
+**Note**: Build validation skipped (no Xcode on cloud).
+
+## Implementation
+
+### Phase 1: Git Sync (Sequential)
+
 ```bash
+# Stash any uncommitted changes
 [ -n "$(git status --porcelain)" ] && git stash push -m "Auto-stash $(date +%Y-%m-%d-%H%M)"
+
+# Sync with main
 git fetch origin && git checkout main && git pull origin main --ff-only
 ```
 
-### 2. Determine session number
+### Phase 2: Determine Session Number
 
 **Session numbering rules:**
-- **Major number** increments when the DATE changes (e.g., Session 12.x → Session 13.0)
-- **Minor version** increments for same-day sessions (e.g., 13.0 → 13.1 → 13.2)
-- **Always include minor version** in format (e.g., 13.0, not just 13)
-- Minor versions are determined by counting SESSION_LOG.md entries for that major number + date
+- **Major number** increments when the DATE changes
+- **Minor version** increments for same-day sessions
+- **Always include minor version** in format
 
 ```bash
 TODAY=$(date +%Y-%m-%d)
@@ -44,46 +66,75 @@ fi
 FULL_SESSION="${SESSION}.${MINOR}"
 ```
 
-### 3. Use platform-provided branch
+### Phase 3: Use Platform-Provided Branch
 
 > **Note**: Claude Code platform controls the branch name (format: `claude/vitalarc-start-cloud-<sessionID>`). Use the branch provided in the system instructions.
 
-### 4. Restore stash
+### Phase 4: Restore Stash
 
 ```bash
 git stash list | grep -q "Auto-stash $(date +%Y-%m-%d)" && git stash pop
 ```
 
-### 5. Parallel Session Initialization
+### Phase 5: Parallel Task Initialization
 
-Launch these Task agents IN PARALLEL (single message, multiple tool calls):
+**CRITICAL: Launch BOTH tasks in a SINGLE message for true parallel execution.**
 
-**Focus Analysis** (if no focus specified):
+```javascript
+// In a SINGLE message, create both tasks:
+
+TaskCreate({
+  subject: "Analyze focus areas (cloud-appropriate)",
+  description: `Run focus-suggester analysis with cloud filter:
+    1. Read PROJECT_STATUS.md and SESSION_LOG.md
+    2. Score potential focus areas
+    3. FILTER: Only recommend cloud-appropriate work:
+       - Bug fixes (logic, not UI)
+       - Documentation updates
+       - Code review
+       - Small, targeted changes
+       - NO UI work, NO builds required
+    4. Return top 3 recommendations with scores`,
+  activeForm: "Analyzing focus areas"
+})
+// Returns: task-focus-id
+
+TaskCreate({
+  subject: "Scan design system (report only)",
+  description: `Run design-system-scanner in report-only mode:
+    1. Scan VitalArc/Presentation/ for violations
+    2. Report summary counts only
+    3. NOTE: Cloud session - report for awareness, no fixing`,
+  activeForm: "Scanning design system"
+})
+// Returns: task-scan-id
 ```
-Read: .claude/skills/focus-suggester/SKILL.md
-Agent type: Explore (from maps-to-agent metadata)
-Task prompt: "Follow the focus-suggester instructions. Analyze PROJECT_STATUS.md and SESSION_LOG.md. Return top 3 focus recommendations with scores. Filter for cloud-appropriate work (no UI, no builds)."
+
+### Phase 6: Create Session Log (Blocked by Phase 5)
+
+```javascript
+TaskCreate({
+  subject: "Create SESSION_LOG.md entry",
+  description: `Create cloud session entry:
+    - Session: ${FULL_SESSION}
+    - Platform: cloud
+    - Focus: [from focus task, cloud-filtered]
+    - Build: Skipped (cloud)
+
+    Use cloud template format.`,
+  activeForm: "Creating session log",
+  addBlockedBy: ["task-focus-id", "task-scan-id"]
+})
 ```
 
-**Design System Scan** (optional, for awareness):
-```
-Read: .claude/skills/design-system-scanner/SKILL.md
-Agent type: Explore (from maps-to-agent metadata)
-Task prompt: "Scan VitalArc/Presentation/ for design token violations. Report count only. Note: Cloud session - report only, no fixing."
-```
-
-**Note**: Build validation skipped (no Xcode on cloud).
-
-### 6. Create SESSION_LOG.md entry
-
-Add a new session entry following the cloud template:
+### Session Log Template
 
 ```markdown
 ## Session [FULL_SESSION] - [Month Day, Year] ([Time])
 
 ### Session Start
 - **Time**: [Time] UTC
-- **Platform**: cloud ☁️
+- **Platform**: cloud
 - **Focus**: [FOCUS or suggested focus]
 - **Branch**: [BRANCH]
 - **Base**: main @ [latest commit]
@@ -93,12 +144,12 @@ Add a new session entry following the cloud template:
 - **Test Capable**: No
 
 ### Pre-Session Status
-- **Build**: ⏭️ Skipped (cloud)
+- **Build**: Skipped (cloud)
+- **Design Violations**: [count from scan, for awareness]
 - **Uncommitted Changes**: None
-- **Recent Activity**: [from SESSION_LOG previous session]
 
 ### Session Goals
-1. [Based on focus area]
+1. [Based on focus area - cloud appropriate]
 2. [Secondary goal if applicable]
 
 ### Work Log
@@ -107,7 +158,7 @@ Add a new session entry following the cloud template:
 | [Time] | Session started | - | Cloud session |
 ```
 
-### 7. Output summary
+### Phase 7: Output Summary
 
 ```
 ═══════════════════════════════════════════════════════════════
