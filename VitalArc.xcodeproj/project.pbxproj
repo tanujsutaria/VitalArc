@@ -194,6 +194,7 @@
 		BC0DB9EDAB403D598EE1D86F /* MesocycleListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 762E2960FC3752A3E47FBBE0 /* MesocycleListView.swift */; };
 		BE17AB4A27203E51D63452B0 /* NotificationScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = D89CD173F511A3E01C4A0F39 /* NotificationScheduler.swift */; };
 		C0D25567F8148E11D68DFB46 /* VolumeMetricsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5164B380EEB69EEAACB123E8 /* VolumeMetricsModel.swift */; };
+		C0FE79B08EF8C59F131F7ECD /* MicroInteractions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1930B9D89D169E0B4A813535 /* MicroInteractions.swift */; };
 		C219290E6BA57C98EC864DF8 /* LogFoodUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1034C88D39144AEA34D5B71 /* LogFoodUseCaseTests.swift */; };
 		C22C25B32D91917094C1F0A0 /* NotificationResponseHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AE75276A548AF685C98068E /* NotificationResponseHandler.swift */; };
 		C24E59A43FAF95B0FFB2E295 /* PersonalRecordsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF74FFF9844AEB6B9B959AB5 /* PersonalRecordsView.swift */; };
@@ -280,6 +281,7 @@
 		168B4FFDBAB0E898338155BC /* ExerciseRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseRowView.swift; sourceTree = "<group>"; };
 		18547D5100E844205BA8F7DB /* HealthKitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitTests.swift; sourceTree = "<group>"; };
 		18A7B9DD6D81924C0258E6FA /* FoodLoggingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodLoggingView.swift; sourceTree = "<group>"; };
+		1930B9D89D169E0B4A813535 /* MicroInteractions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MicroInteractions.swift; sourceTree = "<group>"; };
 		1A549F3A257247635B5773B3 /* BarcodeScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeScannerView.swift; sourceTree = "<group>"; };
 		1ACCC0BC5A5FAE8B2A5E0DA0 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		1C4F4956B058214D3B74464A /* GenerateProgressReportUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerateProgressReportUseCase.swift; sourceTree = "<group>"; };
@@ -795,6 +797,7 @@
 			isa = PBXGroup;
 			children = (
 				85BB62F676B47186D6ABDEF5 /* SpringAnimations.swift */,
+				1930B9D89D169E0B4A813535 /* MicroInteractions.swift */,
 			);
 			path = Animations;
 			sourceTree = "<group>";
@@ -1727,6 +1730,7 @@
 				BC0DB9EDAB403D598EE1D86F /* MesocycleListView.swift in Sources */,
 				0469DC83FDC76AD5B74CD40E /* MesocycleViewModel.swift in Sources */,
 				C2C95139FF3FBE8CAE68A1B2 /* PreviewRepositories.swift in Sources */,
+				C0FE79B08EF8C59F131F7ECD /* MicroInteractions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
