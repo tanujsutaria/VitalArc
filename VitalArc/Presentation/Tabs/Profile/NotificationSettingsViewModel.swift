@@ -158,6 +158,12 @@ final class NotificationSettingsViewModel {
     // MARK: - Notification Permissions
 
     func requestNotificationPermissions() async {
+        // Guard: Skip if already authorized to prevent re-triggering from .onChange
+        guard authorizationStatus != .authorized else {
+            userWantsNotifications = true
+            return
+        }
+
         isLoading = true
         defer { isLoading = false }
 

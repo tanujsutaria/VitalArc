@@ -348,6 +348,9 @@ final class NutritionTabViewModel {
     /// Tracks whether TDEE-based goals have been loaded to avoid overwriting on date changes
     private var hasLoadedTDEEGoals = false
 
+    /// Task handle for cancelling in-flight loadData calls
+    private var loadTask: Task<Void, Never>?
+
     init(
         nutritionRepository: NutritionRepository,
         calculateTDEEUseCase: CalculateTDEEUseCase? = nil,
@@ -361,47 +364,65 @@ final class NutritionTabViewModel {
     }
 
     func loadData() async {
-        isLoading = true
-        defer { isLoading = false }
+        // Cancel any in-flight load to prevent race conditions from rapid date changes
+        loadTask?.cancel()
 
-        do {
-            // Load food entries for selected date using use case
-            foodEntries = try await getFoodEntriesUseCase.execute(for: selectedDate)
+        loadTask = Task {
+            isLoading = true
+            defer { isLoading = false }
 
-            // Calculate daily nutrition
-            let calculateUseCase = CalculateNutritionUseCase(repository: nutritionRepository)
-            var nutrition = try await calculateUseCase.execute(for: selectedDate)
+            do {
+                // Load food entries for selected date using use case
+                let entries = try await getFoodEntriesUseCase.execute(for: selectedDate)
 
-            // If TDEE use case is available, calculate TDEE-based goals
-            // Only apply TDEE goals on initial load to avoid overwriting user's manual settings on date change
-            if let tdeeUseCase = calculateTDEEUseCase, !hasLoadedTDEEGoals {
-                if let result = try await tdeeUseCase.execute() {
-                    tdeeResult = result
-                    hasLoadedTDEEGoals = true
+                // Check for cancellation before updating state
+                guard !Task.isCancelled else { return }
+                foodEntries = entries
 
-                    // If nutrition goals are not set, use TDEE-derived goals
-                    if nutrition.calorieGoal == nil || nutrition.proteinGoal == nil {
-                        nutrition = DailyNutrition(
-                            id: nutrition.id,
-                            date: nutrition.date,
-                            caloriesConsumed: nutrition.caloriesConsumed,
-                            proteinConsumed: nutrition.proteinConsumed,
-                            carbsConsumed: nutrition.carbsConsumed,
-                            fatConsumed: nutrition.fatConsumed,
-                            calorieGoal: nutrition.calorieGoal ?? result.adjustedCalories,
-                            proteinGoal: nutrition.proteinGoal ?? result.proteinGoal,
-                            carbsGoal: nutrition.carbsGoal ?? result.carbGoal,
-                            fatGoal: nutrition.fatGoal ?? result.fatGoal
-                        )
+                // Calculate daily nutrition
+                let calculateUseCase = CalculateNutritionUseCase(repository: nutritionRepository)
+                var nutrition = try await calculateUseCase.execute(for: selectedDate)
+
+                // Check for cancellation before updating state
+                guard !Task.isCancelled else { return }
+
+                // If TDEE use case is available, calculate TDEE-based goals
+                // Only apply TDEE goals on initial load to avoid overwriting user's manual settings on date change
+                if let tdeeUseCase = calculateTDEEUseCase, !hasLoadedTDEEGoals {
+                    if let result = try await tdeeUseCase.execute() {
+                        guard !Task.isCancelled else { return }
+                        tdeeResult = result
+                        hasLoadedTDEEGoals = true
+
+                        // If nutrition goals are not set, use TDEE-derived goals
+                        if nutrition.calorieGoal == nil || nutrition.proteinGoal == nil {
+                            nutrition = DailyNutrition(
+                                id: nutrition.id,
+                                date: nutrition.date,
+                                caloriesConsumed: nutrition.caloriesConsumed,
+                                proteinConsumed: nutrition.proteinConsumed,
+                                carbsConsumed: nutrition.carbsConsumed,
+                                fatConsumed: nutrition.fatConsumed,
+                                calorieGoal: nutrition.calorieGoal ?? result.adjustedCalories,
+                                proteinGoal: nutrition.proteinGoal ?? result.proteinGoal,
+                                carbsGoal: nutrition.carbsGoal ?? result.carbGoal,
+                                fatGoal: nutrition.fatGoal ?? result.fatGoal
+                            )
+                        }
                     }
                 }
-            }
 
-            dailyNutrition = nutrition
-        } catch {
-            self.error = error
-            Log.error("Failed to load nutrition data", error: error, category: .nutrition)
+                guard !Task.isCancelled else { return }
+                dailyNutrition = nutrition
+            } catch {
+                guard !Task.isCancelled else { return }
+                self.error = error
+                Log.error("Failed to load nutrition data", error: error, category: .nutrition)
+            }
         }
+
+        // Wait for task to complete
+        await loadTask?.value
     }
 
     func logFood(_ food: Food, quantity: Double, meal: MealType) async {
