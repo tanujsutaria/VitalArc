@@ -113,27 +113,21 @@ jobs:
             Keep your review concise and actionable. Focus on significant issues, not style nitpicks.
             Format your response as markdown suitable for a GitHub PR comment.`;
 
-            // Call OpenAI API with GPT-5.2 and extra high reasoning
+            // Call OpenAI Codex API (uses completions endpoint, not chat)
+            const fullPrompt = `${systemPrompt}\n\n${userPrompt}\n\nReview:`;
+
             const requestData = JSON.stringify({
               model: 'gpt-5.2-codex',
-              reasoning_effort: 'xhigh',
-              max_completion_tokens: 4096,
-              messages: [
-                {
-                  role: 'system',
-                  content: systemPrompt
-                },
-                {
-                  role: 'user',
-                  content: userPrompt
-                }
-              ]
+              prompt: fullPrompt,
+              max_tokens: 4096,
+              temperature: 0.2,
+              stop: ['---END---']
             });
 
             const options = {
               hostname: 'api.openai.com',
               port: 443,
-              path: '/v1/chat/completions',
+              path: '/v1/completions',
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
@@ -158,7 +152,7 @@ jobs:
               req.end();
             });
 
-            const reviewContent = response.choices[0].message.content;
+            const reviewContent = response.choices[0].text;
 
             // Post review as comment
             await github.rest.issues.createComment({
