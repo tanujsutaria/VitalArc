@@ -1,5 +1,84 @@
 # VitalArc Development Session Log
 
+## Session 15.3 - January 31, 2026 (Evening)
+
+### Session Start
+- **Time**: Evening PST
+- **Platform**: macOS 🖥️
+- **Focus**: Awaiting direction
+- **Branch**: dev/mac-session-15.3-2026-01-31
+- **Base**: main @ fd3329f
+
+### Environment
+- **Build Capable**: Yes
+- **Test Capable**: Yes (unit + UI)
+
+### Pre-Session Status
+- **Build**: SUCCEEDED ✅
+- **Design Violations**: 18 minor (existing, in 15 files)
+- **Uncommitted Changes**: None
+
+### Suggested Focus Areas
+1. **Fix & Re-integrate Cloud Test Files** (Score: 13) - Double test coverage
+2. **Configure & Test Food API Keys** (Score: 12) - Unblock nutrition testing
+3. **Complete Sleep Analysis & Macro Tracking** (Score: 11) - Polish features
+
+### Session Goals
+1. Complete Sleep Analysis & Macro Tracking (Focus Area 3)
+2. Fix ViewModel data loading and race condition bugs
+3. Ensure all tests pass
+
+### Work Log
+| Time | Action | Files | Notes |
+|------|--------|-------|-------|
+| - | Session started | - | Build verified ✅ |
+| - | Fixed ProgressTabView data loading | ProgressTabView.swift | ViewModel not loading data on appear |
+| - | Fixed analytics race conditions | AnalyticsDashboardViewModel.swift | Added task cancellation, isCalculatingScores |
+| - | Fixed search debouncing | ExerciseLibraryViewModel.swift | Made updateSearch/selectCategory async |
+| - | Fixed loading state | FoodLoggingViewModel.swift | Added isLoggingFood, isDeletingEntry guards |
+| - | Added sleep stages domain | HealthMetrics.swift, HealthMetricsModel.swift | SleepStages struct, storage fields |
+| - | Added sleep stages fetch | HealthKitManager.swift | fetchSleepStages method |
+| - | Added sleep stage breakdown UI | SleepDetailSheet.swift | Stage visualization, quality score, 7-day trends |
+| - | Added macro goal editing | MacroGoalEditSheet.swift | Edit goals with TDEE recommendations |
+| - | Wired macro editing to UI | NutritionTabContentView.swift | Edit button, sheet presentation |
+| - | Wired sleep sheet to Health | HealthDashboardView.swift | Show SleepDetailSheet on sleep tap |
+| - | PR #39 created | - | All CI checks passed |
+| - | Fixed AI review issues | 4 files | Sleep stages now populated in fetchHealthMetrics |
+| - | Session ended | - | Focus Area 3 complete ✅ |
+
+### Session Results
+- **Build**: SUCCEEDED ✅
+- **Tests**: 535 passing ✅
+- **PR**: #39 created, all checks passed
+- **Design Violations**: No new violations introduced (95% compliance)
+
+### Key Accomplishments
+1. **Completed Focus Area 3**: Sleep Analysis & Macro Tracking features
+   - Sleep stage breakdown UI with deep/REM/light/awake distribution
+   - Quality score algorithm (0-100) based on stage composition
+   - 7-day sleep trend chart with target line
+   - Sleep insights based on stage percentages
+   - Macro goal editing with TDEE-based recommendations
+2. **Fixed ViewModel Bugs** (4 files):
+   - ProgressTabView: Data loading on appear
+   - AnalyticsDashboardViewModel: Race conditions with task cancellation
+   - ExerciseLibraryViewModel: Search debouncing with proper async/await
+   - FoodLoggingViewModel: Loading state protection
+3. **AI Review Fixes**:
+   - fetchSleepStages now called in fetchHealthMetrics
+   - awakeHours included in toDomain guard
+   - Added totalWithAwake property for UI consistency
+   - SleepDetailSheet uses actualSleepTime for ring/quality
+4. **All 535 tests passing** - No regressions
+
+### Remaining Gaps (for future sessions)
+1. **Sleep duration label inconsistency**: UI shows sleepHours but ring uses actualSleepTime
+2. **Macro goal TextField parsing**: Locale decimals could parse incorrectly
+3. **FoodLoggingViewModel concurrent calls**: Could add task cancellation pattern
+4. **Cloud test files**: ~15 files still need fixes before integration
+
+---
+
 ## Session 15.2 - January 31, 2026 (Evening)
 
 ### Session Start

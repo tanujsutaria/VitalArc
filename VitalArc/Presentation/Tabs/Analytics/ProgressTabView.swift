@@ -46,11 +46,14 @@ struct ProgressTabContentView: View {
 
     @MainActor
     private func initializeViewModel() async {
+        // Guard against re-initialization if already loaded
+        guard viewModel == nil else { return }
+
         let calculateVolumeUseCase = CalculateVolumeUseCase(
             workoutRepository: container.workoutRepository
         )
 
-        viewModel = AnalyticsDashboardViewModel(
+        let vm = AnalyticsDashboardViewModel(
             calculateVolumeUseCase: calculateVolumeUseCase,
             trackProgressiveOverloadUseCase: TrackProgressiveOverloadUseCase(
                 workoutRepository: container.workoutRepository
@@ -73,6 +76,9 @@ struct ProgressTabContentView: View {
             healthRepository: container.healthRepository,
             nutritionRepository: container.nutritionRepository
         )
+
+        viewModel = vm
+        await vm.loadData()
     }
 }
 

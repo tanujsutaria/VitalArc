@@ -17,6 +17,8 @@ final class FoodLoggingViewModel {
     var errorMessage: String?
     var showingFoodSearch = false
     var selectedMeal: MealType = .breakfast
+    var isLoggingFood = false
+    var isDeletingEntry = false
 
     private let logFoodUseCase: LogFoodUseCaseProtocol
     let repository: NutritionRepository
@@ -42,6 +44,10 @@ final class FoodLoggingViewModel {
 
     /// Log a food entry
     func logFood(_ food: Food, quantity: Double, meal: MealType) async {
+        // Prevent duplicate submissions
+        guard !isLoggingFood else { return }
+        isLoggingFood = true
+
         do {
             _ = try await logFoodUseCase.execute(
                 food: food,
@@ -53,16 +59,24 @@ final class FoodLoggingViewModel {
         } catch {
             errorMessage = UserFacingError.message(for: error, context: .saving)
         }
+
+        isLoggingFood = false
     }
 
     /// Delete a food entry
     func deleteEntry(_ entry: FoodEntry) async {
+        // Prevent duplicate deletions
+        guard !isDeletingEntry else { return }
+        isDeletingEntry = true
+
         do {
             try await repository.deleteFoodEntry(id: entry.id)
             await loadEntries()
         } catch {
             errorMessage = UserFacingError.message(for: error, context: .deleting)
         }
+
+        isDeletingEntry = false
     }
 
     /// Get entries grouped by meal

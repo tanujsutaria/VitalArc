@@ -46,10 +46,11 @@ final class HealthKitManager {
         async let activeEnergy = fetchActiveEnergy(start: dateRange.start, end: dateRange.end)
         async let steps = fetchSteps(start: dateRange.start, end: dateRange.end)
         async let sleep = fetchSleepHours(start: dateRange.start, end: dateRange.end)
+        async let sleepStages = fetchSleepStages(start: dateRange.start, end: dateRange.end)
         async let weight = fetchWeight(start: dateRange.start, end: dateRange.end)
 
-        let (hrvValue, hrValue, energyValue, stepsValue, sleepValue, weightValue) =
-            await (try? hrv, try? heartRate, try? activeEnergy, try? steps, try? sleep, try? weight)
+        let (hrvValue, hrValue, energyValue, stepsValue, sleepValue, sleepStagesValue, weightValue) =
+            await (try? hrv, try? heartRate, try? activeEnergy, try? steps, try? sleep, try? sleepStages, try? weight)
 
         return HealthMetrics(
             date: date,
@@ -58,6 +59,7 @@ final class HealthKitManager {
             activeEnergy: energyValue,
             steps: stepsValue,
             sleepHours: sleepValue,
+            sleepStages: sleepStagesValue,
             weight: weightValue
         )
     }
@@ -325,6 +327,72 @@ final class HealthKitManager {
 
                 let totalHours = HealthKitMapper.calculateTotalSleepHours(from: sleepSamples)
                 continuation.resume(returning: totalHours)
+            }
+
+            healthStore.execute(query)
+        }
+    }
+
+    /// Fetch sleep stage breakdown
+    func fetchSleepStages(start: Date, end: Date) async throws -> SleepStages? {
+        guard let sleepType = HKCategoryType.categoryType(forIdentifier: .sleepAnalysis) else {
+            throw HealthKitError.queryFailed
+        }
+
+        return try await withCheckedThrowingContinuation { continuation in
+            let query = HealthKitQuery.sampleQuery(
+                for: sleepType,
+                start: start,
+                end: end
+            ) { samples, error in
+                if let error = error {
+                    continuation.resume(throwing: error)
+                    return
+                }
+
+                guard let sleepSamples = samples as? [HKCategorySample], !sleepSamples.isEmpty else {
+                    continuation.resume(returning: nil)
+                    return
+                }
+
+                // Calculate duration for each sleep stage
+                var deepSleep: Double = 0
+                var remSleep: Double = 0
+                var coreSleep: Double = 0
+                var awake: Double = 0
+
+                for sample in sleepSamples {
+                    let duration = sample.endDate.timeIntervalSince(sample.startDate) / 3600 // hours
+
+                    switch sample.value {
+                    case HKCategoryValueSleepAnalysis.asleepDeep.rawValue:
+                        deepSleep += duration
+                    case HKCategoryValueSleepAnalysis.asleepREM.rawValue:
+                        remSleep += duration
+                    case HKCategoryValueSleepAnalysis.asleepCore.rawValue:
+                        coreSleep += duration
+                    case HKCategoryValueSleepAnalysis.asleepUnspecified.rawValue:
+                        // Unspecified counts as core/light sleep
+                        coreSleep += duration
+                    case HKCategoryValueSleepAnalysis.awake.rawValue:
+                        awake += duration
+                    default:
+                        break
+                    }
+                }
+
+                // Only return stages if we have any sleep data
+                if deepSleep + remSleep + coreSleep > 0 {
+                    let stages = SleepStages(
+                        deepSleep: deepSleep,
+                        remSleep: remSleep,
+                        coreSleep: coreSleep,
+                        awake: awake
+                    )
+                    continuation.resume(returning: stages)
+                } else {
+                    continuation.resume(returning: nil)
+                }
             }
 
             healthStore.execute(query)

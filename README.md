@@ -17,8 +17,10 @@ VitalArc integrates workout tracking, nutrition logging, and health analytics in
 | Nutrition Tracking | ✅ Ready |
 | Food Search (API) | ⚠️ API keys not configured |
 | Analytics Dashboard | ✅ Ready |
-| Design System | ✅ ~99% adoption |
+| Design System | ✅ ~95% adoption |
 | Recovery Score | ✅ HRV algorithm + HealthKit integration |
+| Sleep Analysis | ✅ Stage breakdown + quality scoring |
+| Macro Goal Editing | ✅ TDEE-based recommendations |
 | Notifications | ✅ Complete architecture |
 
 See `PROJECT_STATUS.md` for detailed status.
@@ -30,13 +32,14 @@ See `PROJECT_STATUS.md` for detailed status.
 |---------|--------|
 | Recovery Score | ✅ HRV algorithm + HealthKit integration |
 | Strain Tracking | ✅ TRIMP calculation + custom settings |
-| Nutrition Algorithm | ✅ TDEE estimation + UI integration |
+| Nutrition Algorithm | ✅ TDEE estimation + UI integration + macro goal editing |
 | Notifications | ✅ UI, ViewModel, use cases, infrastructure |
+| Sleep Analysis | ✅ Stage breakdown, quality scoring, 7-day trends |
 
 ### In Progress
 | Feature | Status | Remaining |
 |---------|--------|-----------|
-| Sleep Analysis | Basic score | Sleep stage analysis |
+| Workout History & Trends | Basic history | Charts, PR tracking improvements |
 
 ### Planned
 | Feature | Priority | Description |
@@ -64,7 +67,8 @@ See `PROJECT_STATUS.md` for detailed status.
 
 ### Health Analytics
 - Recovery score based on HRV trends
-- Sleep quality analysis
+- Sleep stage analysis (deep/REM/light/awake) with quality scoring
+- 7-day sleep trend visualization
 - Weight and body metrics tracking
 - PDF/CSV export for analytics data
 
@@ -140,11 +144,12 @@ xcodebuild -scheme VitalArc -destination 'platform=iOS Simulator,name=iPhone 17 
 
 | Metric | Value |
 |--------|-------|
-| Swift files | ~191 |
-| Lines of code | ~45,000 |
-| Views | 73 |
+| Swift files | ~193 |
+| Lines of code | ~46,500 |
+| Views | 75 |
 | ViewModels | 12 |
 | Use cases | 25 |
+| Unit tests | 535 |
 | Exercises | 960+ |
 
 ## Author

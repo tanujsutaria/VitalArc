@@ -49,6 +49,7 @@ private struct NutritionUnifiedView: View {
     @State private var selectedMeal: MealType = .breakfast
     @State private var selectedFood: Food?
     @State private var showingQuantitySheet = false
+    @State private var showingGoalEditSheet = false
 
     var body: some View {
         ScrollView {
@@ -63,7 +64,10 @@ private struct NutritionUnifiedView: View {
 
                 // Always-visible Macro Summary
                 if let nutrition = viewModel.dailyNutrition {
-                    CompactMacroSummaryView(nutrition: nutrition)
+                    CompactMacroSummaryView(
+                        nutrition: nutrition,
+                        onEditGoals: { showingGoalEditSheet = true }
+                    )
                 } else if viewModel.isLoading {
                     MacroSummarySkeletonView()
                 }
@@ -124,6 +128,23 @@ private struct NutritionUnifiedView: View {
                 )
             }
         }
+        .sheet(isPresented: $showingGoalEditSheet) {
+            MacroGoalEditSheet(
+                currentCalories: viewModel.dailyNutrition?.calorieGoal,
+                currentProtein: viewModel.dailyNutrition?.proteinGoal,
+                currentCarbs: viewModel.dailyNutrition?.carbsGoal,
+                currentFat: viewModel.dailyNutrition?.fatGoal,
+                tdeeResult: viewModel.tdeeResult,
+                onSave: { calories, protein, carbs, fat in
+                    await viewModel.updateGoals(
+                        calories: calories,
+                        protein: protein,
+                        carbs: carbs,
+                        fat: fat
+                    )
+                }
+            )
+        }
     }
 }
 
@@ -131,11 +152,12 @@ private struct NutritionUnifiedView: View {
 
 private struct CompactMacroSummaryView: View {
     let nutrition: DailyNutrition
+    let onEditGoals: () -> Void
 
     var body: some View {
         VitalCard {
             VStack(spacing: Spacing.md) {
-                // Calorie Progress
+                // Calorie Progress with Edit Button
                 HStack {
                     VStack(alignment: .leading, spacing: Spacing.xxs) {
                         Text("Calories")
@@ -155,6 +177,16 @@ private struct CompactMacroSummaryView: View {
                     }
 
                     Spacer()
+
+                    // Edit goals button
+                    Button {
+                        onEditGoals()
+                    } label: {
+                        Image(systemName: "slider.horizontal.3")
+                            .font(.vitalIconMedium)
+                            .foregroundStyle(Color.vitalPrimary)
+                    }
+                    .buttonStyle(.plain)
 
                     if let goal = nutrition.calorieGoal, goal > 0 {
                         let progress = min(nutrition.caloriesConsumed / goal, 1.0)
@@ -466,6 +498,41 @@ final class NutritionTabViewModel {
 
     func goToToday() {
         selectedDate = Date()
+    }
+
+    /// Update macro goals for the current date
+    func updateGoals(calories: Double?, protein: Double?, carbs: Double?, fat: Double?) async {
+        guard let currentNutrition = dailyNutrition else { return }
+
+        let updatedNutrition = DailyNutrition(
+            id: currentNutrition.id,
+            date: currentNutrition.date,
+            caloriesConsumed: currentNutrition.caloriesConsumed,
+            proteinConsumed: currentNutrition.proteinConsumed,
+            carbsConsumed: currentNutrition.carbsConsumed,
+            fatConsumed: currentNutrition.fatConsumed,
+            calorieGoal: calories ?? currentNutrition.calorieGoal,
+            proteinGoal: protein ?? currentNutrition.proteinGoal,
+            carbsGoal: carbs ?? currentNutrition.carbsGoal,
+            fatGoal: fat ?? currentNutrition.fatGoal
+        )
+
+        do {
+            // Save the updated nutrition with new goals
+            let calculateUseCase = CalculateNutritionUseCase(repository: nutritionRepository)
+            try await calculateUseCase.updateGoals(
+                for: selectedDate,
+                calorieGoal: calories,
+                proteinGoal: protein,
+                carbsGoal: carbs,
+                fatGoal: fat
+            )
+
+            dailyNutrition = updatedNutrition
+        } catch {
+            self.error = error
+            Log.error("Failed to update goals", error: error, category: .nutrition)
+        }
     }
 }
 

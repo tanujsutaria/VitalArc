@@ -2,7 +2,7 @@
 //  ExerciseLibraryViewModel.swift
 //  VitalArc
 //
-//  ViewModel for Exercise Library
+//  ViewModel for Exercise Library with debounced search
 //
 
 import Foundation
@@ -12,6 +12,7 @@ import Observation
 @Observable
 final class ExerciseLibraryViewModel {
     private let getExercisesUseCase: GetExercisesUseCase
+    private var searchTask: Task<Void, Never>?
 
     var exercises: [Exercise] = []
     var searchText: String = ""
@@ -41,11 +42,40 @@ final class ExerciseLibraryViewModel {
 
     func selectCategory(_ category: ExerciseCategory?) async {
         selectedCategory = category
+        // Cancel any pending search and load immediately for category changes
+        searchTask?.cancel()
         await loadExercises()
     }
 
     func updateSearch(_ text: String) async {
         searchText = text
-        await loadExercises()
+
+        // Cancel previous search task
+        searchTask?.cancel()
+
+        // Debounce: wait 300ms before searching
+        searchTask = Task {
+            do {
+                try await Task.sleep(for: .milliseconds(300))
+
+                // Check if task was cancelled
+                guard !Task.isCancelled else { return }
+
+                await loadExercises()
+            } catch {
+                // Task was cancelled, ignore
+            }
+        }
+
+        // Wait for the debounced task to complete
+        await searchTask?.value
+    }
+
+    func clearSearch() {
+        searchText = ""
+        searchTask?.cancel()
+        searchTask = Task {
+            await loadExercises()
+        }
     }
 }
