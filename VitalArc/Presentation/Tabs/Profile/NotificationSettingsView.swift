@@ -180,6 +180,10 @@ private struct NotificationSettingsFormView: View {
         }
         .navigationTitle("Notifications")
         .navigationBarTitleDisplayMode(.inline)
+        .task {
+            // Ensure preferences are loaded when view appears
+            await viewModel.checkAuthorizationStatus()
+        }
         .alert("Error", isPresented: .constant(viewModel.errorMessage != nil)) {
             Button("OK") {
                 viewModel.errorMessage = nil

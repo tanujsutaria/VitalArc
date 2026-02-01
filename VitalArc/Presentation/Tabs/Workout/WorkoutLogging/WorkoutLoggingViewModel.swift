@@ -40,9 +40,13 @@ final class WorkoutLoggingViewModel {
 
         selectedExercises.append(exercise)
 
-        // Silent failure acceptable - progression calculation has sensible fallback of 20.0
-        // User can always adjust the suggested weight manually
-        let suggestedWeight = (try? await calculateProgressionUseCase.execute(exerciseId: exercise.id)) ?? 20.0
+        // Calculate suggested weight from progression, with fallback to default
+        var suggestedWeight: Double = 20.0
+        do {
+            suggestedWeight = try await calculateProgressionUseCase.execute(exerciseId: exercise.id)
+        } catch {
+            Log.warning("Failed to calculate progression for exercise '\(exercise.name)', using default 20.0 kg: \(error.localizedDescription)", category: .workout)
+        }
 
         // Initialize with one empty set
         exerciseSets[exercise.id] = [

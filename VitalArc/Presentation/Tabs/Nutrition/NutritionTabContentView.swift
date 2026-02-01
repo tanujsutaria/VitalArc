@@ -113,6 +113,12 @@ private struct NutritionUnifiedView: View {
                 }
             )
         }
+        .onChange(of: showingFoodSearch) { _, isShowing in
+            // Reset selected food when search sheet closes without selection
+            if !isShowing && !showingQuantitySheet {
+                selectedFood = nil
+            }
+        }
         .sheet(isPresented: $showingQuantitySheet) {
             if let food = selectedFood {
                 QuantityInputView(
@@ -126,6 +132,15 @@ private struct NutritionUnifiedView: View {
                         selectedFood = nil
                     }
                 )
+            }
+        }
+        .onChange(of: showingQuantitySheet) { _, isShowing in
+            // Reset selected food when quantity sheet closes and reload data
+            if !isShowing {
+                selectedFood = nil
+                Task {
+                    await viewModel.loadData()
+                }
             }
         }
         .sheet(isPresented: $showingGoalEditSheet) {
@@ -144,6 +159,14 @@ private struct NutritionUnifiedView: View {
                     )
                 }
             )
+        }
+        .onChange(of: showingGoalEditSheet) { _, isShowing in
+            // Reload data when goal edit sheet closes to reflect updated goals
+            if !isShowing {
+                Task {
+                    await viewModel.loadData()
+                }
+            }
         }
     }
 }

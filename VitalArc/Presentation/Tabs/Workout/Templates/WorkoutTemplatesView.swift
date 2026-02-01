@@ -327,6 +327,7 @@ final class WorkoutTemplatesViewModel {
     var mostUsedTemplates: [WorkoutTemplate] = []
     var isLoading = false
     var errorMessage: String?
+    var createdWorkout: Workout?
 
     init(
         loadTemplateUseCase: LoadWorkoutTemplateUseCase,
@@ -368,7 +369,8 @@ final class WorkoutTemplatesViewModel {
 
     func startWorkout(from template: WorkoutTemplate) async {
         do {
-            _ = try await loadTemplateUseCase.createWorkoutFromTemplate(template)
+            let workout = try await loadTemplateUseCase.createWorkoutFromTemplate(template)
+            createdWorkout = workout
             await loadTemplates() // Reload to update usage stats
         } catch {
             errorMessage = UserFacingError.message(for: error, context: .saving)
