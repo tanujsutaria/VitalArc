@@ -78,6 +78,12 @@ struct FoodLoggingView: View {
                     }
                 )
             }
+            .onChange(of: viewModel.showingFoodSearch) { _, isShowing in
+                // Reset selected food when search sheet closes without selection
+                if !isShowing && !showingQuantitySheet {
+                    selectedFood = nil
+                }
+            }
             .sheet(isPresented: $showingQuantitySheet) {
                 if let food = selectedFood {
                     QuantityInputView(
@@ -91,6 +97,15 @@ struct FoodLoggingView: View {
                             selectedFood = nil
                         }
                     )
+                }
+            }
+            .onChange(of: showingQuantitySheet) { _, isShowing in
+                // Reset selected food and reload data when quantity sheet closes
+                if !isShowing {
+                    selectedFood = nil
+                    Task {
+                        await viewModel.loadEntries()
+                    }
                 }
             }
         }

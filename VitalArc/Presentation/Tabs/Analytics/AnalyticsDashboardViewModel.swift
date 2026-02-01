@@ -343,11 +343,15 @@ final class AnalyticsDashboardViewModel {
                 let recoveryThreshold = UserDefaults.standard.integer(forKey: "recoveryThreshold")
                 if recoveryAlertsEnabled && result.score <= recoveryThreshold {
                     let scheduler = NotificationScheduler()
-                    try? await scheduler.scheduleRecoveryAlertIfNeeded(
-                        recoveryScore: Double(result.score),
-                        threshold: recoveryThreshold,
-                        enabled: recoveryAlertsEnabled
-                    )
+                    do {
+                        try await scheduler.scheduleRecoveryAlertIfNeeded(
+                            recoveryScore: Double(result.score),
+                            threshold: recoveryThreshold,
+                            enabled: recoveryAlertsEnabled
+                        )
+                    } catch {
+                        Log.error("Failed to schedule recovery alert", error: error, category: .app)
+                    }
                 }
             } catch {
                 guard !Task.isCancelled else { return }

@@ -14,6 +14,7 @@ struct WorkoutTabContentView: View {
     @State private var recentWorkouts: [Workout] = []
     @State private var templates: [WorkoutTemplate] = []
     @State private var isLoading = true
+    @State private var loadTask: Task<Void, Never>?
 
     var body: some View {
         if let container = container {
@@ -72,8 +73,17 @@ struct WorkoutTabContentView: View {
                     }
                 }
                 .task {
-                    try? await ExerciseSeeds.seedIfNeeded(repository: container.workoutRepository)
-                    await loadData(container: container)
+                    // Cancel any previous load task to prevent race conditions on rapid navigation
+                    loadTask?.cancel()
+                    loadTask = Task {
+                        try? await ExerciseSeeds.seedIfNeeded(repository: container.workoutRepository)
+                        guard !Task.isCancelled else { return }
+                        await loadData(container: container)
+                    }
+                    await loadTask?.value
+                }
+                .onDisappear {
+                    loadTask?.cancel()
                 }
             }
         } else {
@@ -219,18 +229,25 @@ struct WorkoutTabContentView: View {
         // Load recent workouts
         do {
             let allWorkouts = try await container.workoutRepository.getWorkouts()
+            // Check for cancellation before updating state
+            guard !Task.isCancelled else { return }
             recentWorkouts = allWorkouts
                 .sorted { $0.date > $1.date }
                 .prefix(5)
                 .map { $0 }
         } catch {
+            guard !Task.isCancelled else { return }
             Log.error("Failed to load workouts", error: error, category: .workout)
         }
 
         // Load templates
         do {
-            templates = try await container.templateRepository.getTemplates()
+            let loadedTemplates = try await container.templateRepository.getTemplates()
+            // Check for cancellation before updating state
+            guard !Task.isCancelled else { return }
+            templates = loadedTemplates
         } catch {
+            guard !Task.isCancelled else { return }
             Log.error("Failed to load templates", error: error, category: .workout)
         }
     }
