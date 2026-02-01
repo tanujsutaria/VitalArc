@@ -351,3 +351,78 @@ extension View {
     }
 }
 #endif
+
+// MARK: - Locale-Aware Parsing
+
+/// Utilities for parsing and formatting numbers respecting the user's locale.
+/// Handles both comma (EU) and period (US) decimal separators.
+enum LocaleAwareParsing {
+    /// NumberFormatter configured for the current locale
+    private static var localeFormatter: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.locale = Locale.current
+        return formatter
+    }()
+
+    /// NumberFormatter with US locale for fallback parsing
+    private static var usFormatter: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.locale = Locale(identifier: "en_US")
+        return formatter
+    }()
+
+    /// Parse a string to Double using locale-aware parsing.
+    /// Tries the current locale first, then falls back to US locale.
+    /// - Parameter string: The string to parse (e.g., "123.45" or "123,45")
+    /// - Returns: The parsed Double, or nil if parsing fails
+    static func parseDouble(from string: String) -> Double? {
+        let trimmed = string.trimmingCharacters(in: .whitespaces)
+        guard !trimmed.isEmpty else { return nil }
+
+        // Try current locale first (handles both "123,45" for EU and "123.45" for US)
+        if let number = localeFormatter.number(from: trimmed) {
+            return number.doubleValue
+        }
+
+        // Fallback: try US locale for period-based decimals
+        if let number = usFormatter.number(from: trimmed) {
+            return number.doubleValue
+        }
+
+        // Final fallback: try Swift's Double initializer
+        return Double(trimmed)
+    }
+
+    /// Format a Double for display using the current locale.
+    /// - Parameters:
+    ///   - value: The Double value to format
+    ///   - fractionDigits: Maximum fraction digits (default: 2)
+    /// - Returns: The formatted string
+    static func formatDouble(_ value: Double, fractionDigits: Int = 2) -> String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.locale = Locale.current
+        formatter.maximumFractionDigits = fractionDigits
+        formatter.minimumFractionDigits = 0
+        return formatter.string(from: NSNumber(value: value)) ?? String(format: "%.\(fractionDigits)f", value)
+    }
+
+    /// Format a Double as an integer (no decimal places).
+    /// - Parameter value: The Double value to format
+    /// - Returns: The formatted string without decimals
+    static func formatAsInteger(_ value: Double) -> String {
+        return String(Int(value.rounded()))
+    }
+
+    /// Parse a string and validate it's a positive number.
+    /// - Parameter string: The string to parse
+    /// - Returns: The parsed positive Double, or nil if invalid or non-positive
+    static func parsePositiveDouble(from string: String) -> Double? {
+        guard let value = parseDouble(from: string), value > 0 else {
+            return nil
+        }
+        return value
+    }
+}

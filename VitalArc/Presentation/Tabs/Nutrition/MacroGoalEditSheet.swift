@@ -163,7 +163,7 @@ struct MacroGoalEditSheet: View {
 
             HStack(spacing: Spacing.xs) {
                 TextField("0", text: value)
-                    .keyboardType(.numberPad)
+                    .keyboardType(.decimalPad)
                     .multilineTextAlignment(.trailing)
                     .frame(width: 80)
                     .font(.vitalBody).fontWeight(.semibold)
@@ -179,10 +179,10 @@ struct MacroGoalEditSheet: View {
     // MARK: - Helpers
 
     private var isValid: Bool {
-        !calorieGoal.isEmpty &&
-        !proteinGoal.isEmpty &&
-        !carbsGoal.isEmpty &&
-        !fatGoal.isEmpty
+        LocaleAwareParsing.parsePositiveDouble(from: calorieGoal) != nil &&
+        LocaleAwareParsing.parsePositiveDouble(from: proteinGoal) != nil &&
+        LocaleAwareParsing.parsePositiveDouble(from: carbsGoal) != nil &&
+        LocaleAwareParsing.parsePositiveDouble(from: fatGoal) != nil
     }
 
     private func populateCurrentGoals() {
@@ -201,10 +201,10 @@ struct MacroGoalEditSheet: View {
     }
 
     private func saveGoals() async {
-        guard let calories = Double(calorieGoal),
-              let protein = Double(proteinGoal),
-              let carbs = Double(carbsGoal),
-              let fat = Double(fatGoal) else { return }
+        guard let calories = LocaleAwareParsing.parsePositiveDouble(from: calorieGoal),
+              let protein = LocaleAwareParsing.parsePositiveDouble(from: proteinGoal),
+              let carbs = LocaleAwareParsing.parsePositiveDouble(from: carbsGoal),
+              let fat = LocaleAwareParsing.parsePositiveDouble(from: fatGoal) else { return }
 
         isSaving = true
         await onSave(calories, protein, carbs, fat)
