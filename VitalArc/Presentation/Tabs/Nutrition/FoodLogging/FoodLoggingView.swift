@@ -178,7 +178,7 @@ struct QuantityInputView: View {
     @Environment(\.dismiss) private var dismiss
 
     private var quantityValue: Double {
-        Double(quantity) ?? 100
+        LocaleAwareParsing.parsePositiveDouble(from: quantity) ?? 100
     }
 
     private var scaledFood: Food {
