@@ -3,7 +3,7 @@ name: test-scaffolder
 description: Generate test stubs and test cases for VitalArc code. Use when new features are implemented and need test coverage, or when the user asks to add tests. Creates XCTest files following project patterns.
 context: fork
 agent: general-purpose
-allowed-tools: Read, Grep, Glob, Write, Edit, Bash
+allowed-tools: Read, Grep, Glob, Write, Edit, Bash, TaskCreate, TaskUpdate, TaskList
 ---
 
 # Test Scaffolder Agent
@@ -103,6 +103,33 @@ final class WorkoutViewModelTests: XCTestCase {
     }
 }
 ```
+
+## Task Tracking
+
+When generating tests for multiple targets, create tasks to track progress:
+
+```javascript
+// Create task for each test file being generated
+test_targets.forEach(target => {
+  TaskCreate({
+    subject: `Generate tests for ${target.name}`,
+    description: `Create test file for ${target.type}:
+      - Analyze dependencies and create mocks
+      - Generate happy path tests
+      - Generate edge case tests
+      - Generate error handling tests`,
+    activeForm: `Generating ${target.name} tests`
+  })
+})
+
+// Update task status as each test file is created
+TaskUpdate({
+  taskId: task.id,
+  status: "completed"
+})
+```
+
+This provides visibility when scaffolding tests for large features.
 
 ## Analysis Process
 

@@ -3,7 +3,7 @@ name: dependency-wirer
 description: Update DependencyContainer.swift to wire new repositories, use cases, and ViewModels. Follows VitalArc's dependency injection patterns.
 context: fork
 agent: Plan
-allowed-tools: Read, Edit, Grep, Glob
+allowed-tools: Read, Edit, Grep, Glob, TaskCreate, TaskUpdate, TaskList
 argument-hint: <feature-name> [--entity=Name] [--repository=Name] [--usecase=Name]
 ---
 
@@ -45,6 +45,32 @@ final class DependencyContainer: ObservableObject {
     }
 }
 ```
+
+## Task Tracking
+
+When wiring multiple components, create tasks to track progress:
+
+```javascript
+// Create task for each component being wired
+components.forEach(component => {
+  TaskCreate({
+    subject: `Wire ${component.type}: ${component.name}`,
+    description: `Add ${component.name} to DependencyContainer:
+      - Add property declaration
+      - Add initialization in init()
+      - Verify dependencies are available`,
+    activeForm: `Wiring ${component.name}`
+  })
+})
+
+// Update task status as each component is wired
+TaskUpdate({
+  taskId: task.id,
+  status: "completed"
+})
+```
+
+This provides visibility when wiring complex features with multiple components.
 
 ## Implementation
 

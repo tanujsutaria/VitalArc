@@ -3,7 +3,7 @@ name: pr-reviewer
 description: Analyze pull requests and suggest improvements. Read-only analysis of PR changes, comments, and CI status. Works on both platforms.
 context: fork
 agent: feature-dev:code-reviewer
-allowed-tools: Read, Bash, Grep, Glob, WebFetch
+allowed-tools: Read, Bash, Grep, Glob, WebFetch, TaskCreate, TaskUpdate, TaskList
 argument-hint: <pr-number-or-url>
 ---
 
@@ -24,6 +24,34 @@ Analyzes pull requests and provides improvement suggestions.
 | Documentation | Comments, docstrings, PR description |
 | Security | Hardcoded secrets, injection risks |
 | Performance | Inefficient patterns, memory leaks |
+
+## Task Tracking
+
+For comprehensive reviews, create tasks to track review categories:
+
+```javascript
+// Create task for each review category
+const categories = ["Code Quality", "Architecture", "Design System", "Testing", "Security"];
+
+categories.forEach(category => {
+  TaskCreate({
+    subject: `Review ${category} for PR #${PR_NUMBER}`,
+    description: `Analyze PR changes for ${category} issues:
+      - Check all changed files
+      - Identify issues by severity (critical/important/suggestion)
+      - Document findings with file:line references`,
+    activeForm: `Reviewing ${category}`
+  })
+})
+
+// Update task status as each category is reviewed
+TaskUpdate({
+  taskId: task.id,
+  status: "completed"
+})
+```
+
+This provides visibility during comprehensive PR reviews.
 
 ## Implementation
 
@@ -209,6 +237,58 @@ For quick checks:
 | `--quick` | Summary only |
 | `--focus=category` | Focus on specific category |
 | `--auto-comment` | Post review as PR comment |
+| `--worktree` | Create worktree to test PR locally |
+
+### Worktree Mode (`--worktree`)
+
+When reviewing a PR that requires local testing, use `--worktree` to create an isolated worktree:
+
+```bash
+PR_NUMBER="$1"
+BASE_DIR=$(dirname "$(pwd)")
+WORKTREE_PATH="$BASE_DIR/VitalArc-review-PR$PR_NUMBER"
+
+# Create worktree for PR review
+git worktree add "$WORKTREE_PATH" -b "review/pr-$PR_NUMBER" main
+
+# Checkout the PR in the worktree
+cd "$WORKTREE_PATH"
+gh pr checkout $PR_NUMBER
+
+echo "PR #$PR_NUMBER checked out in: $WORKTREE_PATH"
+echo ""
+echo "To test locally:"
+echo "  cd $WORKTREE_PATH"
+echo "  xcodebuild -scheme VitalArc ..."
+echo ""
+echo "When done reviewing:"
+echo "  /worktree-manager remove review-PR$PR_NUMBER"
+```
+
+**Worktree Review Output**:
+
+```markdown
+## PR Review Environment Created
+
+**PR**: #123 - feat(nutrition): add meal planning
+**Worktree**: /Users/user/Development/VitalArc-review-PR123
+**Branch**: review/pr-123
+
+### Testing Checklist
+- [ ] Build passes locally
+- [ ] Run tests: `xcodebuild test -scheme VitalArc ...`
+- [ ] Manual testing of new feature
+- [ ] Check design system compliance
+
+### After Review
+```bash
+# Return to main worktree
+cd /Users/user/Development/VitalArc
+
+# Clean up review worktree
+/worktree-manager remove review-PR123
+```
+```
 
 ## Error Handling
 

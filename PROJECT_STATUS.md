@@ -80,9 +80,12 @@ The app compiles and runs with core MVP requirements addressed:
    - ~126 frame dimension violations (acceptable for charts)
    - ~4 minor violations (cornerRadius, padding)
 
-3. **Cloud Session Test Files**: ~15 files on disk need fixes before integration
-   - Wrong entity constructors, duplicate mocks, enum mismatches
-   - See SESSION_LOG.md Session 14 for details
+---
+
+## Recent Resolutions (Session 16.3)
+
+- **Cloud Session Test Files**: RESOLVED - All 535 tests passing, 0 failures. Test files properly integrated.
+- **Design System Violations**: RESOLVED - 0 violations in application code (only design primitives in DesignSystem folder)
 
 ---
 

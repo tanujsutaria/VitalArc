@@ -4,7 +4,7 @@ description: Auto-fix design system violations found by design-system-scanner. W
 context: fork
 agent: general-purpose
 disable-model-invocation: true
-allowed-tools: Read, Edit, Bash
+allowed-tools: Read, Edit, Bash, TaskCreate, TaskUpdate, TaskList
 argument-hint: [--file=specific/file.swift] [--dry-run] [--all]
 ---
 
@@ -80,6 +80,32 @@ Applies automatic fixes for design token violations. **Workstation only** - requ
 | `.font(.body)` | `.font(.vitalBody)` |
 | `.font(.caption)` | `.font(.vitalCaption)` |
 | `.font(.caption2)` | `.font(.vitalCaptionSmall)` |
+
+## Task Tracking
+
+When fixing multiple files, create tasks to track progress:
+
+```javascript
+// Create task for each file being fixed
+files_to_fix.forEach(file => {
+  TaskCreate({
+    subject: `Fix design tokens in ${basename(file)}`,
+    description: `Apply design system fixes to ${file}:
+      - Replace hardcoded colors with vitalColor tokens
+      - Replace hardcoded spacing with Spacing tokens
+      - Replace system fonts with Typography tokens`,
+    activeForm: `Fixing ${basename(file)}`
+  })
+})
+
+// Update task status as each file is processed
+TaskUpdate({
+  taskId: task.id,
+  status: "completed"
+})
+```
+
+This provides visibility into progress during multi-file fixing operations.
 
 ## Implementation
 
