@@ -46,10 +46,11 @@ final class HealthKitManager {
         async let activeEnergy = fetchActiveEnergy(start: dateRange.start, end: dateRange.end)
         async let steps = fetchSteps(start: dateRange.start, end: dateRange.end)
         async let sleep = fetchSleepHours(start: dateRange.start, end: dateRange.end)
+        async let sleepStages = fetchSleepStages(start: dateRange.start, end: dateRange.end)
         async let weight = fetchWeight(start: dateRange.start, end: dateRange.end)
 
-        let (hrvValue, hrValue, energyValue, stepsValue, sleepValue, weightValue) =
-            await (try? hrv, try? heartRate, try? activeEnergy, try? steps, try? sleep, try? weight)
+        let (hrvValue, hrValue, energyValue, stepsValue, sleepValue, sleepStagesValue, weightValue) =
+            await (try? hrv, try? heartRate, try? activeEnergy, try? steps, try? sleep, try? sleepStages, try? weight)
 
         return HealthMetrics(
             date: date,
@@ -58,6 +59,7 @@ final class HealthKitManager {
             activeEnergy: energyValue,
             steps: stepsValue,
             sleepHours: sleepValue,
+            sleepStages: sleepStagesValue,
             weight: weightValue
         )
     }

@@ -14,8 +14,16 @@ struct SleepStages: Equatable {
     let coreSleep: Double // hours (light sleep)
     let awake: Double // hours
 
+    /// Total actual sleep time (excludes awake periods)
+    /// Use this for sleep quality calculations
     var total: Double {
         deepSleep + remSleep + coreSleep
+    }
+
+    /// Total time in bed (includes awake periods)
+    /// Use this when comparing to HealthKit's sleepHours which may include awake time
+    var totalWithAwake: Double {
+        deepSleep + remSleep + coreSleep + awake
     }
 
     var deepPercent: Double {

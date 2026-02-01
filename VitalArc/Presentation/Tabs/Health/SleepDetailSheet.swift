@@ -18,6 +18,12 @@ struct SleepDetailSheet: View {
 
     private let targetHours: Double = 8.0
 
+    /// Actual sleep time (from stages if available, otherwise sleepHours)
+    /// Uses stages.total to exclude awake time for accurate quality assessment
+    private var actualSleepTime: Double {
+        sleepStages?.total ?? sleepHours
+    }
+
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -116,7 +122,7 @@ struct SleepDetailSheet: View {
     }
 
     private var sleepProgressRing: some View {
-        let progress = min(sleepHours / targetHours, 1.0)
+        let progress = min(actualSleepTime / targetHours, 1.0)
 
         return ZStack {
             Circle()
@@ -138,11 +144,11 @@ struct SleepDetailSheet: View {
     }
 
     private var sleepQualityLabel: String {
-        if sleepHours >= 7 && sleepHours <= 9 {
+        if actualSleepTime >= 7 && actualSleepTime <= 9 {
             return "Optimal sleep duration"
-        } else if sleepHours >= 6 && sleepHours < 7 {
+        } else if actualSleepTime >= 6 && actualSleepTime < 7 {
             return "Slightly below target"
-        } else if sleepHours < 6 {
+        } else if actualSleepTime < 6 {
             return "Below recommended"
         } else {
             return "Above typical range"
@@ -402,9 +408,9 @@ struct SleepDetailSheet: View {
     }
 
     private var durationInsight: String {
-        if sleepHours >= 7 && sleepHours <= 9 {
+        if actualSleepTime >= 7 && actualSleepTime <= 9 {
             return "Sleep duration is in the recommended 7-9 hour range."
-        } else if sleepHours < 7 {
+        } else if actualSleepTime < 7 {
             return "Below recommended duration. Aim for 7-9 hours."
         } else {
             return "Above typical range. Monitor daytime energy levels."

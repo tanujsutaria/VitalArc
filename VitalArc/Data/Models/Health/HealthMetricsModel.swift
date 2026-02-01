@@ -55,9 +55,9 @@ final class HealthMetricsModel {
 
     /// Convert to domain entity
     func toDomain() -> HealthMetrics {
-        // Build sleep stages if we have any stage data
+        // Build sleep stages if we have any stage data (including awake-only)
         let sleepStages: SleepStages? = {
-            guard deepSleepHours != nil || remSleepHours != nil || coreSleepHours != nil else {
+            guard deepSleepHours != nil || remSleepHours != nil || coreSleepHours != nil || awakeHours != nil else {
                 return nil
             }
             return SleepStages(
