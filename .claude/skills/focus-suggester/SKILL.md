@@ -67,6 +67,94 @@ Provide a ranked list with rationale:
 **Why**: [Rationale]
 ```
 
+## CRITICAL: Validate Before Recommending
+
+**NEVER recommend a focus area based solely on documentation. Always verify against actual codebase state.**
+
+### Validation Step (REQUIRED)
+
+Before including any "Known Issue" in recommendations, run verification:
+
+| Issue Type | Verification Command | Valid If |
+|------------|---------------------|----------|
+| Test integration | `xcodebuild test ... 2>&1 \| grep "Executed"` | Tests fail or files missing from project |
+| Design system violations | `grep -r "Color\.(red\|blue\|green)" Presentation/Tabs/` | Matches found outside DesignSystem/ |
+| Build errors | `xcodebuild build ... 2>&1 \| grep "BUILD"` | BUILD FAILED |
+| API keys | `grep "YOUR_.*_HERE\|DEMO_KEY" Infrastructure/` | Placeholder keys found |
+| Missing tests | Compare source files to test files | Test file doesn't exist |
+
+### Validation Process
+
+```javascript
+// For each potential recommendation from Known Issues:
+async function validateIssue(issue) {
+  switch (issue.type) {
+    case "test_integration":
+      // Run tests and check result
+      const testResult = await Bash("xcodebuild test ... 2>&1 | grep 'Executed'");
+      const testsPassing = testResult.includes("0 failures");
+      if (testsPassing) {
+        return { valid: false, reason: "Tests already passing - issue resolved" };
+      }
+      break;
+
+    case "design_system":
+      // Check for actual violations in app code
+      const violations = await Grep({
+        pattern: "Color\\.(red|blue|green|gray)",
+        path: "VitalArc/Presentation/Tabs"
+      });
+      if (violations.length === 0) {
+        return { valid: false, reason: "No violations found - issue resolved" };
+      }
+      break;
+
+    case "build_errors":
+      const buildResult = await Bash("xcodebuild build ... 2>&1 | grep BUILD");
+      if (buildResult.includes("SUCCEEDED")) {
+        return { valid: false, reason: "Build passing - issue resolved" };
+      }
+      break;
+  }
+
+  return { valid: true };
+}
+```
+
+### Output Format with Validation
+
+Include validation status in recommendations:
+
+```markdown
+## Suggested Focus Areas
+
+### 1. [Recommendation] (Score: X)
+**Status**: VERIFIED - [validation result]
+**Why**: [Rationale]
+**Scope**: [What this would involve]
+
+### ~~2. [Skipped Recommendation]~~ (Score: Y)
+**Status**: INVALID - Issue already resolved
+**Evidence**: [test output / grep result showing resolution]
+```
+
+### Stale Documentation Warning
+
+If validation finds resolved issues still in documentation:
+
+```markdown
+## ⚠️ Documentation Stale
+
+The following "Known Issues" appear to be resolved but are still documented:
+
+| Issue | Documented In | Evidence of Resolution |
+|-------|---------------|----------------------|
+| Cloud test integration | PROJECT_STATUS.md | 535 tests passing |
+| Design system gaps | SESSION_LOG.md | 0 violations in app code |
+
+**Action Required**: Update PROJECT_STATUS.md and SESSION_LOG.md to remove resolved issues.
+```
+
 ## VitalArc-Specific Context
 
 Current high-value areas (update as project evolves):
@@ -75,6 +163,8 @@ Current high-value areas (update as project evolves):
 - **Recovery fine-tuning** - In Progress feature
 - **TRIMP calculation** - In Progress (Strain Tracking)
 - **Sleep stage analysis** - In Progress feature
+
+**NOTE**: Always verify these against actual codebase before recommending.
 
 ## Example Analysis
 

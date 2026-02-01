@@ -141,10 +141,10 @@ Skills in `.claude/skills/` serve as **prompt templates** for specialized tasks.
 
 | Agent Type | Use For | Skills |
 |------------|---------|--------|
-| `Explore` | Read-only analysis | focus-suggester, design-system-scanner, design-system-auditor, coverage-analyzer, config-validator |
+| `Explore` | Read-only analysis | focus-suggester, design-system-scanner, design-system-auditor, coverage-analyzer, config-validator, cloud-quality-gate, session-checkpoint |
 | `Plan` | Architecture design | domain-modeler, swiftui-architect, dependency-wirer |
-| `Bash` | Command execution | build-validator |
-| `general-purpose` | Read-write operations | commit-formatter, test-scaffolder, progress-tracker, design-system-fixer, pr-formatter |
+| `Bash` | Command execution | build-validator, lint-validator, test-runner, worktree-manager |
+| `general-purpose` | Read-write operations | commit-formatter, test-scaffolder, progress-tracker, design-system-fixer, pr-formatter, task-dashboard, review-resolver |
 | `feature-dev:code-reviewer` | Code review | pr-reviewer |
 
 ### Parallel Execution
@@ -173,24 +173,33 @@ TaskCreate({
 - `/focus-suggester` - Recommend development focus areas
 - `/progress-tracker` - Update SESSION_LOG.md Work Log
 - `/commit-formatter` - Generate conventional commit messages
+- `/session-checkpoint` - Mid-session progress verification
+- `/task-dashboard` - Real-time task progress visualization
 
 **Feature Development:**
 - `/domain-modeler` - Design domain entities, repositories, use cases
 - `/swiftui-architect` - Design view hierarchies and state management
-- `/feature-planner` - Plan full feature architecture
+- `/feature-planner` - Plan full feature architecture (with parallelized analysis)
 - `/test-scaffolder` - Generate XCTest files
 
 **Quality & Validation:**
 - `/build-validator` - Verify Xcode build passes
+- `/test-runner` - Execute tests (required gate at session end)
+- `/lint-validator` - Run SwiftLint on changed files
 - `/design-system-scanner` - Find design token violations (read-only)
 - `/design-system-fixer` - Fix design token violations (workstation only)
 - `/design-system-auditor` - Comprehensive design audit
 - `/config-validator` - Check API keys and entitlements
 - `/coverage-analyzer` - Identify untested code
+- `/cloud-quality-gate` - Validate without builds (cloud sessions)
 
 **Code Review & PR:**
 - `/pr-formatter` - Generate PR title and body
-- `/pr-reviewer` - Analyze pull requests
+- `/pr-reviewer` - Analyze pull requests (with worktree option)
+- `/review-resolver` - Track and resolve PR review findings
+
+**Worktree Management:**
+- `/worktree-manager` - Create/list/remove/switch git worktrees for parallel development
 
 ## Architecture Overview
 

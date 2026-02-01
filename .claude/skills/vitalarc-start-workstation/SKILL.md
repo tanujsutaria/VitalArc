@@ -16,22 +16,28 @@ Start a full development session on Mac with Xcode builds and simulator access.
 ┌─────────────────────────────────────────────────────────────────────┐
 │                    SESSION INITIALIZATION PIPELINE                   │
 ├─────────────────────────────────────────────────────────────────────┤
-│  PHASE 1 - Git Sync (Sequential):                                   │
-│    └── Task: sync-with-main                                         │
+│  PHASE 1 - Git Sync (Sequential - required first):                  │
+│    └── Stash changes → Fetch/pull main                              │
 │                                                                      │
-│  PHASE 2 - Parallel Initialization (Fan-Out):                       │
-│    ├── Task: focus-analysis      ─┐                                 │
-│    ├── Task: build-validation     ├── All run in parallel           │
-│    └── Task: design-system-scan  ─┘                                 │
+│  PHASE 2 - Parallel Initialization (Maximum parallelization):       │
+│    ├── Task: session-number-calc  ─┐                                │
+│    ├── Task: focus-analysis        ├── ALL run in parallel          │
+│    ├── Task: build-validation      │   (no interdependencies)       │
+│    └── Task: design-system-scan   ─┘                                │
 │                                                                      │
-│  PHASE 3 - Session Setup (Blocked by Phase 2):                      │
-│    └── Task: create-session-log (blockedBy: phase-2-tasks)          │
+│  PHASE 3 - Branch Creation (needs session number only):             │
+│    └── Create branch (blockedBy: session-number-calc)               │
+│                                                                      │
+│  PHASE 4 - Session Log (needs all Phase 2 results):                 │
+│    └── Task: create-session-log (blockedBy: ALL Phase 2 tasks)      │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
+**Optimization**: Session number calculation now runs in parallel with other tasks, reducing total init time.
+
 ## Implementation
 
-### Phase 1: Git Sync (Sequential)
+### Phase 1: Git Sync (Sequential - Required First)
 
 Execute these git commands before spawning any tasks:
 
@@ -43,55 +49,30 @@ Execute these git commands before spawning any tasks:
 git fetch origin && git checkout main && git pull origin main --ff-only
 ```
 
-### Phase 2: Determine Session Number
+### Phase 2: Parallel Task Initialization (Maximum Parallelization)
 
-**Session numbering rules:**
-- **Major number** increments when the DATE changes (e.g., Session 12.x → Session 13.0)
-- **Minor version** increments for same-day sessions (e.g., 13.0 → 13.1 → 13.2)
-- **Always include minor version** in format (e.g., 13.0, not just 13)
+**CRITICAL: Launch ALL FOUR tasks in a SINGLE message for maximum parallelization.**
 
-```bash
-TODAY=$(date +%Y-%m-%d)
-LATEST_ENTRY=$(grep -E "^## Session [0-9]+\.[0-9]+ - " SESSION_LOG.md | head -1)
-LATEST_MAJOR=$(echo "$LATEST_ENTRY" | sed -E 's/## Session ([0-9]+)\..*/\1/')
-LATEST_MAJOR=${LATEST_MAJOR:-0}
-LATEST_DATE_STR=$(echo "$LATEST_ENTRY" | grep -oE "[A-Z][a-z]+ [0-9]+, [0-9]+" | head -1)
-LATEST_DATE=$(date -j -f "%B %d, %Y" "$LATEST_DATE_STR" +%Y-%m-%d 2>/dev/null || echo "")
-if [ "$LATEST_DATE" = "$TODAY" ]; then
-    SESSION=$LATEST_MAJOR
-    MINOR=$(grep -E "^## Session ${SESSION}\.[0-9]+ - .*${LATEST_DATE_STR}" SESSION_LOG.md | wc -l | tr -d ' ')
-else
-    SESSION=$((LATEST_MAJOR + 1))
-    MINOR=0
-fi
-FULL_SESSION="${SESSION}.${MINOR}"
-```
-
-### Phase 3: Create Branch
-
-Format: `dev/mac-<focus>-<session>.<minor>-YYYY-MM-DD`
-
-```bash
-FOCUS="${ARGUMENTS:-session}"
-BRANCH="dev/mac-${FOCUS}-${FULL_SESSION}-${TODAY}"
-git checkout -b "$BRANCH"
-```
-
-### Phase 4: Restore Stash
-
-```bash
-git stash list | grep -q "Auto-stash $(date +%Y-%m-%d)" && git stash pop
-```
-
-### Phase 5: Parallel Task Initialization
-
-**CRITICAL: Launch all three tasks in a SINGLE message with multiple TaskCreate calls.**
-
-This enables true parallel execution where all tasks run simultaneously:
+This enables true parallel execution - session number calculation no longer blocks other tasks:
 
 ```javascript
-// In a SINGLE message, create all three tasks:
+// In a SINGLE message, create all four tasks:
 
+// Task 1: Calculate session number (fast, enables branch creation)
+TaskCreate({
+  subject: "Calculate session number",
+  description: `Determine next session number:
+    1. Read SESSION_LOG.md to find latest session entry
+    2. Apply rules:
+       - Major number increments when DATE changes
+       - Minor version increments for same-day sessions
+       - Always include minor version (e.g., 13.0 not 13)
+    3. Return: FULL_SESSION (e.g., "17.0") and TODAY date`,
+  activeForm: "Calculating session number"
+})
+// Returns: task-session-id
+
+// Task 2: Focus analysis (runs in parallel)
 TaskCreate({
   subject: "Analyze focus areas for session",
   description: `Run focus-suggester analysis:
@@ -103,6 +84,7 @@ TaskCreate({
 })
 // Returns: task-focus-id
 
+// Task 3: Build validation (runs in parallel)
 TaskCreate({
   subject: "Validate Xcode build",
   description: `Run build validation:
@@ -113,6 +95,7 @@ TaskCreate({
 })
 // Returns: task-build-id
 
+// Task 4: Design system scan (runs in parallel)
 TaskCreate({
   subject: "Scan design system compliance",
   description: `Run design-system-scanner:
@@ -124,23 +107,47 @@ TaskCreate({
 // Returns: task-scan-id
 ```
 
-### Phase 6: Create Session Log (Blocked by Phase 5)
+### Phase 3: Create Branch (After Session Number Ready)
+
+Once session number task completes, create the branch:
+
+```javascript
+// Blocked only by session number calculation (not by build/scan)
+TaskCreate({
+  subject: "Create development branch",
+  description: `Create branch using session number from task:
+    Format: dev/mac-<focus>-<session>.<minor>-YYYY-MM-DD
+    FOCUS: ${ARGUMENTS:-session}
+    Execute: git checkout -b "$BRANCH"`,
+  activeForm: "Creating branch",
+  addBlockedBy: ["task-session-id"]
+})
+// Returns: task-branch-id
+```
+
+### Phase 4: Restore Stash
+
+```bash
+git stash list | grep -q "Auto-stash $(date +%Y-%m-%d)" && git stash pop
+```
+
+### Phase 5: Create Session Log (After All Phase 2 Tasks)
 
 After all parallel tasks complete, create the session log entry:
 
 ```javascript
 TaskCreate({
   subject: "Create SESSION_LOG.md entry",
-  description: `Create session entry with results from parallel tasks:
-    - Session: ${FULL_SESSION}
-    - Branch: ${BRANCH}
+  description: `Create session entry with results from all parallel tasks:
+    - Session: [from session-number task]
+    - Branch: [from branch task]
     - Build status: [from build task]
     - Focus: [from focus task or user-specified]
     - Design violations: [from scan task]
 
     Use workstation template format.`,
   activeForm: "Creating session log",
-  addBlockedBy: ["task-focus-id", "task-build-id", "task-scan-id"]
+  addBlockedBy: ["task-session-id", "task-focus-id", "task-build-id", "task-scan-id", "task-branch-id"]
 })
 ```
 
@@ -213,3 +220,79 @@ Priority: Fix build before starting new work
 ### Task Timeout
 
 If any parallel task doesn't complete within 2 minutes, proceed with available results and note the timeout in the session log.
+
+## Options
+
+| Option | Description |
+|--------|-------------|
+| `--worktree` | Create isolated worktree for this session |
+| `--no-build` | Skip build validation (for quick starts) |
+
+### Worktree Mode (`--worktree`)
+
+When `--worktree` flag is provided, creates an isolated worktree before starting the session:
+
+```javascript
+// Step 0: Create worktree (before git sync)
+// This runs FIRST, before any other operations
+
+FOCUS="${ARGUMENTS:-session}"
+BASE_DIR=$(dirname "$(pwd)")
+WORKTREE_PATH="$BASE_DIR/VitalArc-$FOCUS"
+
+// Check if worktree already exists
+if [ -d "$WORKTREE_PATH" ]; then
+    echo "Worktree exists at $WORKTREE_PATH"
+    echo "Use existing worktree or choose different focus name."
+    exit 1
+fi
+
+// Calculate session number first (needed for branch name)
+TODAY=$(date +%Y-%m-%d)
+SESSION_INFO=$(determine_session_number)  // From Phase 2 logic
+BRANCH="dev/mac-$FOCUS-${SESSION_INFO.session}.${SESSION_INFO.minor}-$TODAY"
+
+// Create worktree
+git worktree add "$WORKTREE_PATH" -b "$BRANCH" main
+
+// Output worktree info
+echo "Created worktree: $WORKTREE_PATH"
+echo "Branch: $BRANCH"
+echo ""
+echo "IMPORTANT: Open a new terminal and run:"
+echo "  cd $WORKTREE_PATH"
+echo "  # Then continue session init in new location"
+```
+
+**Worktree Output Summary**:
+
+```
+═══════════════════════════════════════════════════════════════
+       VITALARC WORKTREE SESSION INITIALIZED
+═══════════════════════════════════════════════════════════════
+Worktree: /Users/user/Development/VitalArc-nutrition
+Branch:   dev/mac-nutrition-17.0-2026-02-01
+Session:  17.0
+Build:    [status]
+Focus:    nutrition
+───────────────────────────────────────────────────────────────
+NEXT STEPS:
+1. Open new terminal
+2. cd /Users/user/Development/VitalArc-nutrition
+3. Continue development in isolated worktree
+═══════════════════════════════════════════════════════════════
+```
+
+### Benefits of Worktree Mode
+
+- **Parallel Development**: Work on multiple features simultaneously
+- **No Branch Switching**: Each worktree has its own branch
+- **Isolated Changes**: Changes in one worktree don't affect others
+- **Easy Cleanup**: Remove worktree after PR merge
+
+### When to Use Worktree Mode
+
+- Starting a new feature while another is in review
+- Need to make urgent fixes while feature work is in progress
+- Want to experiment without affecting main development
+- Running parallel sessions for different focus areas

@@ -23,14 +23,18 @@ Orchestrator that coordinates architecture design for new features using **task 
 │                    FEATURE PLANNING PIPELINE                         │
 ├─────────────────────────────────────────────────────────────────────┤
 │                                                                      │
-│  ┌──────────────┐                                                   │
-│  │   Analysis   │  ← Phase 1: Analyze existing patterns             │
-│  └──────┬───────┘                                                   │
-│         │                                                           │
-│         ▼                                                           │
+│  ┌────────────────────────────────────────────┐                     │
+│  │  Phase 1: Analysis (PARALLELIZED)          │                     │
+│  │  ┌──────────┐ ┌──────────┐ ┌──────────┐   │                     │
+│  │  │ Domain   │ │ Present. │ │   DI     │   │ ← All run parallel  │
+│  │  │ Analysis │ │ Analysis │ │ Analysis │   │                     │
+│  │  └────┬─────┘ └────┬─────┘ └────┬─────┘   │                     │
+│  └───────┼────────────┼────────────┼─────────┘                     │
+│          └────────────┼────────────┘                                │
+│                       ▼                                             │
 │  ┌──────────────┐                                                   │
 │  │    Domain    │  ← Phase 2: Design entities, repos, use cases     │
-│  └──────┬───────┘    (blockedBy: analysis)                          │
+│  └──────┬───────┘    (blockedBy: all 3 analysis tasks)              │
 │         │                                                           │
 │         ▼                                                           │
 │  ┌──────────────┐                                                   │
@@ -50,6 +54,8 @@ Orchestrator that coordinates architecture design for new features using **task 
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
+**Optimization**: Phase 1 now runs 3 analysis tasks in parallel, reducing analysis time.
+
 ## Options
 
 | Option | Description | Effect on Graph |
@@ -68,33 +74,56 @@ Create ALL tasks upfront with proper dependencies. This allows the system to aut
 // FEATURE: $ARGUMENTS
 
 // ═══════════════════════════════════════════════════════════════
-// PHASE 1: Analysis (no dependencies - runs immediately)
+// PHASE 1: Analysis (PARALLELIZED - all 3 run simultaneously)
 // ═══════════════════════════════════════════════════════════════
+
+// Launch ALL THREE analysis tasks in a SINGLE message for parallel execution:
 
 TaskCreate({
-  subject: "Analyze codebase patterns for $ARGUMENTS",
-  description: `Analyze existing VitalArc patterns for $ARGUMENTS feature:
+  subject: "Analyze domain patterns for $ARGUMENTS",
+  description: `Analyze VitalArc domain layer patterns:
+  1. Read Domain/Entities/ - entity structure, protocols (Identifiable, Codable)
+  2. Read Domain/Repositories/ - repository protocol patterns
+  3. Read Domain/UseCases/ - use case structure, execute() methods
 
-  1. Read Domain/Entities/ - understand entity patterns
-  2. Read Domain/Repositories/ - understand repository protocols
-  3. Read Domain/UseCases/ - understand use case patterns
-  4. Read Presentation/Tabs/ - understand view organization
-  5. Read Infrastructure/DependencyContainer.swift - understand DI setup
-
-  Output: Summary of relevant patterns to follow`,
-  activeForm: "Analyzing codebase patterns"
+  Output: Domain pattern summary for $ARGUMENTS feature`,
+  activeForm: "Analyzing domain patterns"
 })
-// Returns: task-analysis-id
+// Returns: task-domain-analysis-id
+
+TaskCreate({
+  subject: "Analyze presentation patterns for $ARGUMENTS",
+  description: `Analyze VitalArc presentation layer patterns:
+  1. Read Presentation/Tabs/ - view organization, tab structure
+  2. Read Presentation/Common/DesignSystem/ - available components
+  3. Identify ViewModel patterns (@Observable, state management)
+
+  Output: Presentation pattern summary for $ARGUMENTS feature`,
+  activeForm: "Analyzing presentation patterns"
+})
+// Returns: task-presentation-analysis-id
+
+TaskCreate({
+  subject: "Analyze DI patterns for $ARGUMENTS",
+  description: `Analyze VitalArc dependency injection patterns:
+  1. Read Infrastructure/DependencyContainer.swift - DI setup
+  2. Read Data/Models/ - SwiftData model patterns
+  3. Understand repository-to-container wiring
+
+  Output: DI pattern summary for $ARGUMENTS feature`,
+  activeForm: "Analyzing DI patterns"
+})
+// Returns: task-di-analysis-id
 
 // ═══════════════════════════════════════════════════════════════
-// PHASE 2: Domain Design (blocked by analysis)
+// PHASE 2: Domain Design (blocked by ALL analysis tasks)
 // ═══════════════════════════════════════════════════════════════
 
 TaskCreate({
   subject: "Design domain layer for $ARGUMENTS",
   description: `Design domain layer for $ARGUMENTS feature:
 
-  Following patterns from analysis, design:
+  Following patterns from all three analysis tasks, design:
   1. **Entities**: Define structs with Identifiable, Codable, Hashable
   2. **Repository Protocol**: Define async throwing methods
   3. **Use Cases**: Single-responsibility classes with execute()
@@ -104,7 +133,7 @@ TaskCreate({
   - Repository protocol with methods
   - Use case classes with signatures`,
   activeForm: "Designing domain layer",
-  addBlockedBy: ["task-analysis-id"]
+  addBlockedBy: ["task-domain-analysis-id", "task-presentation-analysis-id", "task-di-analysis-id"]
 })
 // Returns: task-domain-id
 
