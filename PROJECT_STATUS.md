@@ -1,8 +1,8 @@
 # VitalArc Project Status
 
-**Last Updated**: January 31, 2026 (Session 15.3 - Complete)
+**Last Updated**: February 1, 2026 (Session 16.0 - Complete)
 **Build**: Passing ✅ (Workstation verified)
-**Tests**: 535 passing ✅
+**Tests**: 535+ passing ✅
 **Stage**: MVP-Ready
 
 ---
@@ -27,6 +27,8 @@ The app compiles and runs with core MVP requirements addressed:
 - Sleep stage analysis with quality scoring (Session 15.3)
 - Macro goal editing with TDEE recommendations (Session 15.3)
 - ViewModel bug fixes: race conditions, debouncing, loading states (Session 15.3)
+- Locale-aware decimal parsing for international users (Session 16.0)
+- 8 UI bug fixes: data reload, task cancellation, error logging (Session 16.0)
 
 **Ready for beta testing.**
 
@@ -53,7 +55,7 @@ The app compiles and runs with core MVP requirements addressed:
 | Feature | Done | Missing |
 |---------|------|---------|
 | Sleep Analysis | Basic score, stage breakdown, quality scoring, 7-day trends | Minor UI polish |
-| Nutrition Algorithm | Daily totals, TDEE estimation, TDEE UI, macro goal editing | TextField locale parsing |
+| Nutrition Algorithm | Daily totals, TDEE estimation, TDEE UI, macro goal editing, locale parsing | Ready ✅ |
 | Notifications | UI, ViewModel, Repository, Use Cases (wired), Infrastructure, Protocol | Ready ✅ |
 
 ### Not Implemented
