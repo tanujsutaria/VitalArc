@@ -19,13 +19,13 @@ final class FoodAPICoordinator: FoodAPICoordinatorProtocol {
     private let nutritionix: NutritionixAPIProtocol
     private let openFoodFacts: OpenFoodFactsAPIProtocol
     private let usda: USDAFoodAPIProtocol
-    private let cache: FoodCache
+    private let cache: FoodCacheProtocol
 
     init(
         nutritionix: NutritionixAPIProtocol = NutritionixAPI(),
         openFoodFacts: OpenFoodFactsAPIProtocol = OpenFoodFactsAPI(),
         usda: USDAFoodAPIProtocol = USDAFoodAPI(),
-        cache: FoodCache? = nil
+        cache: FoodCacheProtocol? = nil
     ) {
         self.nutritionix = nutritionix
         self.openFoodFacts = openFoodFacts
