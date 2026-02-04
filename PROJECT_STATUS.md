@@ -1,8 +1,8 @@
 # VitalArc Project Status
 
-**Last Updated**: February 1, 2026 (Session 16.0 - Complete)
-**Build**: Passing ✅ (Workstation verified)
-**Tests**: 535+ passing ✅
+**Last Updated**: February 2, 2026 (Session 17.0 - Complete)
+**Build**: Passing ✅ (Cloud verified via quality gate)
+**Tests**: 605+ passing ✅
 **Stage**: MVP-Ready
 
 ---
@@ -29,6 +29,9 @@ The app compiles and runs with core MVP requirements addressed:
 - ViewModel bug fixes: race conditions, debouncing, loading states (Session 15.3)
 - Locale-aware decimal parsing for international users (Session 16.0)
 - 8 UI bug fixes: data reload, task cancellation, error logging (Session 16.0)
+- Comprehensive Food API test coverage: NutritionixAPI, OpenFoodFactsAPI, USDAFoodAPI, FoodAPICoordinator (Session 17.0)
+- Protocol-based DI for FoodCache enabling testability (Session 17.0)
+- Improved error handling: NetworkError.allSourcesFailed, .notConfigured (Session 17.0)
 
 **Ready for beta testing.**
 
@@ -98,8 +101,8 @@ The app compiles and runs with core MVP requirements addressed:
 | Views | 75 |
 | ViewModels | 12 |
 | Use cases | 25 |
-| Test files | 27 (in project) |
-| Unit tests | 535 (passing) |
+| Test files | 31 (in project) |
+| Unit tests | 605+ (passing) |
 
 ### Test Coverage by ViewModel
 
@@ -118,4 +121,13 @@ The app compiles and runs with core MVP requirements addressed:
 | NotificationSettingsViewModel | Tested | 15 | In project ✅ |
 | AnalyticsDashboardViewModel | Tested | 18 | In project ✅ |
 
-**Note**: All 535 tests passing. Test files properly integrated in Xcode project.
+### Test Coverage by API Client
+
+| API Client | Status | Tests | Notes |
+|------------|--------|-------|-------|
+| NutritionixAPI | Tested | 20 | In project ✅ |
+| OpenFoodFactsAPI | Tested | 14 | In project ✅ |
+| USDAFoodAPI | Tested | 12 | In project ✅ |
+| FoodAPICoordinator | Tested | 18 | In project ✅ |
+
+**Note**: All 605+ tests passing. Test files properly integrated in Xcode project.
