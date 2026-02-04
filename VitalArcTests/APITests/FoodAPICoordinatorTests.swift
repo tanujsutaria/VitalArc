@@ -179,6 +179,49 @@ final class FoodAPICoordinatorTests: XCTestCase {
         XCTAssertEqual(results.count, 2)
     }
 
+    func testSearchCachesEmptyResultsWhenAPISucceeds() async throws {
+        // Given - APIs succeed but return empty results (legitimate "no results")
+        mockNutritionix.isConfiguredValue = false
+        mockOpenFoodFacts.mockSearchResults = [] // Success with empty results
+        mockUSDA.mockSearchResults = [] // Success with empty results
+        mockCache.mockSearchResults = nil
+
+        // When
+        let results = try await coordinator.search(query: "xyznonexistent")
+
+        // Then - empty results should be cached (legitimate "no results")
+        XCTAssertTrue(results.isEmpty)
+        XCTAssertTrue(mockCache.storedSearchQueries.contains("xyznonexistent"))
+    }
+
+    func testSearchDoesNotCacheWhenAllAPIsFail() async throws {
+        // Given - All APIs throw errors
+        mockNutritionix.isConfiguredValue = false
+        mockOpenFoodFacts.shouldThrowOnSearch = true
+        mockUSDA.shouldThrowOnSearch = true
+        mockCache.mockSearchResults = nil
+
+        // When
+        let results = try await coordinator.search(query: "food")
+
+        // Then - should not cache (transient failure)
+        XCTAssertTrue(results.isEmpty)
+        XCTAssertFalse(mockCache.storedSearchQueries.contains("food"))
+    }
+
+    func testSearchReturnsCachedEmptyResults() async throws {
+        // Given - Cache has empty results for this query (previously searched, no results found)
+        mockCache.mockSearchResults = []
+        mockUSDA.mockSearchResults = [makeTestFood(name: "Should Not Appear")]
+
+        // When
+        let results = try await coordinator.search(query: "cached-empty")
+
+        // Then - should return cached empty results, not call APIs
+        XCTAssertTrue(results.isEmpty)
+        XCTAssertTrue(mockUSDA.searchQueries.isEmpty)
+    }
+
     // MARK: - Barcode Search Tests
 
     func testSearchByBarcodeThrowsForEmptyBarcode() async {

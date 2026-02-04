@@ -30,15 +30,20 @@
 | Morning | Created NutritionixAPITests | APITests/NutritionixAPITests.swift | 17 tests for search, UPC, config |
 | Morning | Created USDAFoodAPITests | APITests/USDAFoodAPITests.swift | 12 tests for search, getFood |
 | Morning | Created OpenFoodFactsAPITests | APITests/OpenFoodFactsAPITests.swift | 14 tests for search, barcode |
-| Morning | Created FoodAPICoordinatorTests | APITests/FoodAPICoordinatorTests.swift | 14 tests for coordination logic |
+| Morning | Created FoodAPICoordinatorTests | APITests/FoodAPICoordinatorTests.swift | 18 tests for coordination logic |
 | Morning | Added FoodCacheProtocol | FoodCache.swift | Enables cache injection for tests |
 | Morning | Updated FoodAPICoordinator | FoodAPICoordinator.swift | Use protocol for cache DI |
+| Morning | Fixed DI pattern break | NutritionixAPI.swift | Added isConfigured to protocol |
+| Morning | Fixed cache behavior | FoodAPICoordinator.swift | Distinguish "no results" vs "all failed" |
 
 ### Work Completed
-- Created 4 new test files with ~57 test cases for Food API infrastructure
+- Created 4 new test files with ~61 test cases for Food API infrastructure
 - Added MockNetworkService for mocking HTTP responses in API client tests
 - Added FoodCacheProtocol to enable dependency injection for cache in tests
 - Tests cover: empty queries, validation, error handling, deduplication, caching, fallback behavior
+- Addressed GPT-5.2-Codex code review findings:
+  - Fixed DI pattern break (added `isConfigured` to NutritionixAPIProtocol)
+  - Fixed cache behavior (cache legitimate "no results", skip caching transient failures)
 
 ### Files Created
 - `VitalArcTests/Mocks/MockNetworkService.swift`
@@ -53,7 +58,7 @@
 
 ### Session End
 - **Time**: Morning PST
-- **Commits**: 2
+- **Commits**: 5
 - **Build**: Not verified (cloud session)
 - **Status**: Needs Workstation (tests need Xcode verification)
 
