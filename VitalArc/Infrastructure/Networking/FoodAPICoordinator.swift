@@ -81,14 +81,16 @@ final class FoodAPICoordinator: FoodAPICoordinatorProtocol {
             allFoods.append(contentsOf: usdaFoods)
         }
 
-        // 4. Deduplicate and rank
+        // 4. Throw if all sources failed (transient error, don't cache)
+        guard atLeastOneSourceSucceeded else {
+            throw NetworkError.allSourcesFailed
+        }
+
+        // 5. Deduplicate and rank
         let deduplicated = deduplicateFoods(allFoods)
 
-        // 5. Cache results only if at least one API succeeded
-        // This caches legitimate "no results" but not transient failures
-        if atLeastOneSourceSucceeded {
-            cache.store(query: trimmedQuery, foods: deduplicated)
-        }
+        // 6. Cache results (includes legitimate empty results)
+        cache.store(query: trimmedQuery, foods: deduplicated)
 
         return deduplicated
     }

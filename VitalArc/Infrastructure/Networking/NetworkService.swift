@@ -13,6 +13,8 @@ enum NetworkError: Error {
     case decodingError
     case invalidResponse
     case serverError(statusCode: Int)
+    case allSourcesFailed
+    case notConfigured
     case unknown(Error)
 }
 

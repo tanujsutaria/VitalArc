@@ -106,6 +106,65 @@ final class NutritionixAPITests: XCTestCase {
         XCTAssertFalse(apiWithNoCredentials.isConfigured)
     }
 
+    // MARK: - notConfigured Error Tests
+
+    func testSearchThrowsNotConfiguredWhenCredentialsEmpty() async {
+        // Given
+        let unconfiguredAPI = NutritionixAPI(
+            networkService: mockNetworkService,
+            appId: "",
+            appKey: ""
+        )
+
+        // When/Then
+        do {
+            _ = try await unconfiguredAPI.search(query: "chicken")
+            XCTFail("Expected notConfigured error")
+        } catch let error as NetworkError {
+            XCTAssertEqual(error, NetworkError.notConfigured)
+        } catch {
+            XCTFail("Unexpected error: \(error)")
+        }
+    }
+
+    func testGetNutrientsThrowsNotConfiguredWhenCredentialsEmpty() async {
+        // Given
+        let unconfiguredAPI = NutritionixAPI(
+            networkService: mockNetworkService,
+            appId: "",
+            appKey: ""
+        )
+
+        // When/Then
+        do {
+            _ = try await unconfiguredAPI.getNutrients(query: "chicken")
+            XCTFail("Expected notConfigured error")
+        } catch let error as NetworkError {
+            XCTAssertEqual(error, NetworkError.notConfigured)
+        } catch {
+            XCTFail("Unexpected error: \(error)")
+        }
+    }
+
+    func testGetByUPCThrowsNotConfiguredWhenCredentialsEmpty() async {
+        // Given
+        let unconfiguredAPI = NutritionixAPI(
+            networkService: mockNetworkService,
+            appId: "",
+            appKey: ""
+        )
+
+        // When/Then
+        do {
+            _ = try await unconfiguredAPI.getByUPC(barcode: "012345678905")
+            XCTFail("Expected notConfigured error")
+        } catch let error as NetworkError {
+            XCTAssertEqual(error, NetworkError.notConfigured)
+        } catch {
+            XCTFail("Unexpected error: \(error)")
+        }
+    }
+
     // MARK: - Search Tests
 
     func testSearchReturnsEmptyForEmptyQuery() async throws {
@@ -340,7 +399,9 @@ extension NetworkError: Equatable {
         case (.invalidURL, .invalidURL),
              (.noData, .noData),
              (.decodingError, .decodingError),
-             (.invalidResponse, .invalidResponse):
+             (.invalidResponse, .invalidResponse),
+             (.allSourcesFailed, .allSourcesFailed),
+             (.notConfigured, .notConfigured):
             return true
         case let (.serverError(lCode), .serverError(rCode)):
             return lCode == rCode

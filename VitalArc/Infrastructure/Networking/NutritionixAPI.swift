@@ -38,6 +38,10 @@ final class NutritionixAPI: NutritionixAPIProtocol {
     /// Search for foods (instant search for autocomplete)
     /// Returns both common and branded foods
     func search(query: String) async throws -> [Food] {
+        guard isConfigured else {
+            throw NetworkError.notConfigured
+        }
+
         let trimmedQuery = query.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmedQuery.isEmpty else {
             return []
@@ -80,6 +84,10 @@ final class NutritionixAPI: NutritionixAPIProtocol {
     /// Get detailed nutrition information using natural language
     /// This is useful for getting full details of common foods
     func getNutrients(query: String) async throws -> [Food] {
+        guard isConfigured else {
+            throw NetworkError.notConfigured
+        }
+
         let trimmedQuery = query.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmedQuery.isEmpty else {
             return []
@@ -105,6 +113,10 @@ final class NutritionixAPI: NutritionixAPIProtocol {
 
     /// Get food by UPC barcode
     func getByUPC(barcode: String) async throws -> Food {
+        guard isConfigured else {
+            throw NetworkError.notConfigured
+        }
+
         let trimmedBarcode = barcode.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmedBarcode.isEmpty else {
             throw NetworkError.invalidResponse

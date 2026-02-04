@@ -194,18 +194,24 @@ final class FoodAPICoordinatorTests: XCTestCase {
         XCTAssertTrue(mockCache.storedSearchQueries.contains("xyznonexistent"))
     }
 
-    func testSearchDoesNotCacheWhenAllAPIsFail() async throws {
+    func testSearchThrowsWhenAllAPIsFail() async {
         // Given - All APIs throw errors
         mockNutritionix.isConfiguredValue = false
         mockOpenFoodFacts.shouldThrowOnSearch = true
         mockUSDA.shouldThrowOnSearch = true
         mockCache.mockSearchResults = nil
 
-        // When
-        let results = try await coordinator.search(query: "food")
+        // When/Then - should throw allSourcesFailed error
+        do {
+            _ = try await coordinator.search(query: "food")
+            XCTFail("Expected error to be thrown")
+        } catch let error as NetworkError {
+            XCTAssertEqual(error, NetworkError.allSourcesFailed)
+        } catch {
+            XCTFail("Unexpected error type: \(error)")
+        }
 
-        // Then - should not cache (transient failure)
-        XCTAssertTrue(results.isEmpty)
+        // Should not cache (transient failure)
         XCTAssertFalse(mockCache.storedSearchQueries.contains("food"))
     }
 
