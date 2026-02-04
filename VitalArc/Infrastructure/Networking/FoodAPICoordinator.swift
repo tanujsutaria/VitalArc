@@ -49,8 +49,8 @@ final class FoodAPICoordinator: FoodAPICoordinatorProtocol {
         var allFoods: [Food] = []
 
         // 2. Try all sources in parallel
-        // Check Nutritionix configuration before parallel execution
-        let isNutritionixConfigured = (nutritionix as? NutritionixAPI)?.isConfigured ?? false
+        // Use protocol property directly (no type casting)
+        let isNutritionixConfigured = nutritionix.isConfigured
 
         async let nutritionixResults: [Food]? = isNutritionixConfigured
             ? try? await nutritionix.search(query: trimmedQuery)
@@ -80,8 +80,10 @@ final class FoodAPICoordinator: FoodAPICoordinatorProtocol {
         // 4. Deduplicate and rank
         let deduplicated = deduplicateFoods(allFoods)
 
-        // 5. Cache results
-        await cache.store(query: trimmedQuery, foods: deduplicated)
+        // 5. Cache results only if we got results (avoid caching transient failures)
+        if !deduplicated.isEmpty {
+            await cache.store(query: trimmedQuery, foods: deduplicated)
+        }
 
         return deduplicated
     }
@@ -99,7 +101,7 @@ final class FoodAPICoordinator: FoodAPICoordinatorProtocol {
         }
 
         // Try Nutritionix first (if configured)
-        if (nutritionix as? NutritionixAPI)?.isConfigured ?? false {
+        if nutritionix.isConfigured {
             if let food = try? await nutritionix.getByUPC(barcode: trimmedBarcode) {
                 await cache.storeBarcode(trimmedBarcode, food: food)
                 return food

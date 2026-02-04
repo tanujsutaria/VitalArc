@@ -8,6 +8,7 @@
 import Foundation
 
 protocol NutritionixAPIProtocol {
+    var isConfigured: Bool { get }
     func search(query: String) async throws -> [Food]
     func getByUPC(barcode: String) async throws -> Food
     func getNutrients(query: String) async throws -> [Food]
