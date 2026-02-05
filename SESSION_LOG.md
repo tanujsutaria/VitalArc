@@ -1,5 +1,84 @@
 # VitalArc Development Session Log
 
+## Session 17.0 - February 2, 2026 (Morning)
+
+### Session Start
+- **Time**: Morning PST
+- **Platform**: cloud
+- **Focus**: API Configuration & Setup Guide
+- **Branch**: claude/vitalarc-start-cloud-9h1Bn
+- **Base**: main @ 813a381
+
+### Environment
+- **Build Capable**: No
+- **Test Capable**: No
+
+### Pre-Session Status
+- **Build**: Skipped (cloud)
+- **Design Violations**: 311 (90 frame, 169 opacity, 52 line width - for awareness)
+- **Uncommitted Changes**: None
+
+### Session Goals
+1. Add test coverage for Food API clients (NutritionixAPI, USDAFoodAPI, OpenFoodFactsAPI)
+2. Add test coverage for FoodAPICoordinator (multi-source search coordination)
+
+### Work Log
+| Time | Action | Files | Notes |
+|------|--------|-------|-------|
+| Morning | Session started | - | Cloud session |
+| Morning | Created MockNetworkService | Mocks/MockNetworkService.swift | Enables API client testing |
+| Morning | Created NutritionixAPITests | APITests/NutritionixAPITests.swift | 17 tests for search, UPC, config |
+| Morning | Created USDAFoodAPITests | APITests/USDAFoodAPITests.swift | 12 tests for search, getFood |
+| Morning | Created OpenFoodFactsAPITests | APITests/OpenFoodFactsAPITests.swift | 14 tests for search, barcode |
+| Morning | Created FoodAPICoordinatorTests | APITests/FoodAPICoordinatorTests.swift | 18 tests for coordination logic |
+| Morning | Added FoodCacheProtocol | FoodCache.swift | Enables cache injection for tests |
+| Morning | Updated FoodAPICoordinator | FoodAPICoordinator.swift | Use protocol for cache DI |
+| Morning | Review fix #1 | NutritionixAPI.swift | Added isConfigured to protocol |
+| Morning | Review fix #2 | FoodAPICoordinator.swift | Distinguish "no results" vs "all failed" |
+| Morning | Review fix #3 | FoodAPICoordinator.swift | Removed unnecessary await on cache |
+| Morning | Review fix #4 | NetworkService.swift, NutritionixAPI.swift | Throw on all-source failure, config guards |
+
+### Work Completed
+- Created 4 new test files with ~70 test cases for Food API infrastructure
+- Added MockNetworkService for mocking HTTP responses in API client tests
+- Added FoodCacheProtocol to enable dependency injection for cache in tests
+- Tests cover: empty queries, validation, error handling, deduplication, caching, fallback behavior
+- Addressed 4 rounds of GPT-5.2-Codex code review findings:
+  1. Fixed DI pattern break (added `isConfigured` to NutritionixAPIProtocol)
+  2. Fixed cache behavior (cache legitimate "no results", skip caching transient failures)
+  3. Removed unnecessary `await` on synchronous @MainActor cache methods
+  4. Added `NetworkError.allSourcesFailed` and `.notConfigured` error cases
+  5. Added credential guards to all NutritionixAPI methods
+  6. Added NetworkError Equatable conformance for tests
+
+### Files Created
+- `VitalArcTests/Mocks/MockNetworkService.swift`
+- `VitalArcTests/APITests/NutritionixAPITests.swift`
+- `VitalArcTests/APITests/USDAFoodAPITests.swift`
+- `VitalArcTests/APITests/OpenFoodFactsAPITests.swift`
+- `VitalArcTests/APITests/FoodAPICoordinatorTests.swift`
+
+### Files Modified
+- `VitalArc/Infrastructure/Cache/FoodCache.swift` - Added FoodCacheProtocol
+- `VitalArc/Infrastructure/Networking/FoodAPICoordinator.swift` - Protocol DI, throw on failure
+- `VitalArc/Infrastructure/Networking/NutritionixAPI.swift` - isConfigured in protocol, guards
+- `VitalArc/Infrastructure/Networking/NetworkService.swift` - New error cases
+
+### Session End
+- **Time**: Morning PST
+- **Commits**: 6
+- **Build**: Not verified (cloud session)
+- **Status**: Needs Workstation (tests need Xcode verification)
+
+### Session Notes
+- Cloud session focused on test coverage for Food API infrastructure
+- Tests written but not executed - requires workstation with Xcode to verify
+- 4 rounds of code review addressed all critical bugs
+- Remaining architectural suggestions (MainActor, richer errors) noted for future
+- Next workstation session should run tests to verify all 70+ new test cases pass
+
+---
+
 ## Session 16.3 - February 1, 2026 (Evening)
 
 ### Session Start

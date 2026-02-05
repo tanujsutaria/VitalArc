@@ -19,13 +19,13 @@ final class FoodAPICoordinator: FoodAPICoordinatorProtocol {
     private let nutritionix: NutritionixAPIProtocol
     private let openFoodFacts: OpenFoodFactsAPIProtocol
     private let usda: USDAFoodAPIProtocol
-    private let cache: FoodCache
+    private let cache: FoodCacheProtocol
 
     init(
         nutritionix: NutritionixAPIProtocol = NutritionixAPI(),
         openFoodFacts: OpenFoodFactsAPIProtocol = OpenFoodFactsAPI(),
         usda: USDAFoodAPIProtocol = USDAFoodAPI(),
-        cache: FoodCache? = nil
+        cache: FoodCacheProtocol? = nil
     ) {
         self.nutritionix = nutritionix
         self.openFoodFacts = openFoodFacts
@@ -41,16 +41,17 @@ final class FoodAPICoordinator: FoodAPICoordinatorProtocol {
             return []
         }
 
-        // 1. Check cache first
-        if let cached = await cache.search(query: trimmedQuery), !cached.isEmpty {
+        // 1. Check cache first (includes legitimate empty results)
+        if let cached = cache.search(query: trimmedQuery) {
             return cached
         }
 
         var allFoods: [Food] = []
+        var atLeastOneSourceSucceeded = false
 
         // 2. Try all sources in parallel
-        // Check Nutritionix configuration before parallel execution
-        let isNutritionixConfigured = (nutritionix as? NutritionixAPI)?.isConfigured ?? false
+        // Use protocol property directly (no type casting)
+        let isNutritionixConfigured = nutritionix.isConfigured
 
         async let nutritionixResults: [Food]? = isNutritionixConfigured
             ? try? await nutritionix.search(query: trimmedQuery)
@@ -59,29 +60,37 @@ final class FoodAPICoordinator: FoodAPICoordinatorProtocol {
         async let offResults: [Food]? = try? await openFoodFacts.search(query: trimmedQuery, page: 1)
         async let usdaResults: [Food]? = try? await usda.searchFoods(query: trimmedQuery)
 
-        // 3. Combine results
+        // 3. Combine results and track success
         let (nxFoods, offFoods, usdaFoods) = await (nutritionixResults, offResults, usdaResults)
 
         // Add Nutritionix foods first (highest quality for branded foods)
         if let nxFoods = nxFoods {
+            atLeastOneSourceSucceeded = true
             allFoods.append(contentsOf: nxFoods)
         }
 
         // Add OpenFoodFacts foods (good for international products)
         if let offFoods = offFoods {
+            atLeastOneSourceSucceeded = true
             allFoods.append(contentsOf: offFoods)
         }
 
         // Add USDA foods (basic but reliable)
         if let usdaFoods = usdaFoods {
+            atLeastOneSourceSucceeded = true
             allFoods.append(contentsOf: usdaFoods)
         }
 
-        // 4. Deduplicate and rank
+        // 4. Throw if all sources failed (transient error, don't cache)
+        guard atLeastOneSourceSucceeded else {
+            throw NetworkError.allSourcesFailed
+        }
+
+        // 5. Deduplicate and rank
         let deduplicated = deduplicateFoods(allFoods)
 
-        // 5. Cache results
-        await cache.store(query: trimmedQuery, foods: deduplicated)
+        // 6. Cache results (includes legitimate empty results)
+        cache.store(query: trimmedQuery, foods: deduplicated)
 
         return deduplicated
     }
@@ -94,21 +103,21 @@ final class FoodAPICoordinator: FoodAPICoordinatorProtocol {
         }
 
         // Check cache first
-        if let cached = await cache.getByBarcode(trimmedBarcode) {
+        if let cached = cache.getByBarcode(trimmedBarcode) {
             return cached
         }
 
         // Try Nutritionix first (if configured)
-        if (nutritionix as? NutritionixAPI)?.isConfigured ?? false {
+        if nutritionix.isConfigured {
             if let food = try? await nutritionix.getByUPC(barcode: trimmedBarcode) {
-                await cache.storeBarcode(trimmedBarcode, food: food)
+                cache.storeBarcode(trimmedBarcode, food: food)
                 return food
             }
         }
 
         // Fallback to OpenFoodFacts (always available)
         let food = try await openFoodFacts.getByBarcode(barcode: trimmedBarcode)
-        await cache.storeBarcode(trimmedBarcode, food: food)
+        cache.storeBarcode(trimmedBarcode, food: food)
         return food
     }
 

@@ -7,10 +7,19 @@
 
 import Foundation
 
+/// Protocol for food caching to enable testing
+@MainActor
+protocol FoodCacheProtocol {
+    func search(query: String) -> [Food]?
+    func store(query: String, foods: [Food])
+    func getByBarcode(_ barcode: String) -> Food?
+    func storeBarcode(_ barcode: String, food: Food)
+}
+
 /// In-memory cache for food search results
 /// Reduces API calls and improves performance
 @MainActor
-final class FoodCache {
+final class FoodCache: FoodCacheProtocol {
     static let shared = FoodCache()
 
     // MARK: - Cache Storage
