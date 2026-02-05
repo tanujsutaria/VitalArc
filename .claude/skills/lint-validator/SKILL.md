@@ -13,6 +13,17 @@ Runs SwiftLint on changed files and reports violations. Integrates with the sess
 
 **Execution**: Runs in forked context with Bash agent.
 
+**IMPORTANT**: When invoked without arguments, execute immediately with default settings. Never ask for clarification - use defaults and produce results.
+
+## Default Behavior (No Arguments)
+
+When invoked without arguments:
+- **Scope**: Lint only changed files (staged + unstaged vs HEAD)
+- **Mode**: Report only (no auto-fix)
+- **Strictness**: Normal (warnings are advisory, errors are blocking)
+
+Execute the default lint check immediately. Do not ask for clarification.
+
 ## When to Use
 
 - Before committing code changes

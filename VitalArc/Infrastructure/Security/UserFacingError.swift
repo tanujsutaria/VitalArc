@@ -44,6 +44,10 @@ enum UserFacingError {
             return httpErrorMessage(for: statusCode)
         case .noData:
             return "No data received. Please check your connection."
+        case .allSourcesFailed:
+            return "Unable to find results from any source. Please try again."
+        case .notConfigured:
+            return "This feature is not yet configured. Please check settings."
         case .unknown:
             return "An unexpected error occurred. Please try again."
         }

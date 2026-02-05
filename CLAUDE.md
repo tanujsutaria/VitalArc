@@ -147,6 +147,18 @@ Skills in `.claude/skills/` serve as **prompt templates** for specialized tasks.
 | `general-purpose` | Read-write operations | commit-formatter, test-scaffolder, progress-tracker, design-system-fixer, pr-formatter, task-dashboard, review-resolver |
 | `feature-dev:code-reviewer` | Code review | pr-reviewer |
 
+### Skill Invocation Types
+
+Skills are classified by whether they can run autonomously (no arguments) or require user input:
+
+| Type | Skills | Can Auto-invoke? |
+|------|--------|-------------------|
+| **Autonomous** (no args needed) | focus-suggester, build-validator, design-system-auditor, session-checkpoint, cloud-quality-gate, progress-tracker, task-dashboard | Yes - always |
+| **Args Optional** (has defaults) | design-system-scanner, design-system-fixer, config-validator, lint-validator, test-runner, coverage-analyzer, pr-formatter, commit-formatter, test-scaffolder | Yes - uses defaults |
+| **Args Required** | dependency-wirer, worktree-manager, pr-reviewer, review-resolver, feature-planner, domain-modeler, swiftui-architect | No - needs user input |
+
+**For orchestrator skills**: When invoking "Args Optional" skills programmatically (e.g., from `vitalarc-start-workstation`), they will execute with defaults. No clarification needed.
+
 ### Parallel Execution
 
 To run skills in parallel, launch multiple TaskCreate calls in a **single message**:

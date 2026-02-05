@@ -15,6 +15,17 @@ Applies automatic fixes for design token violations. **Workstation only** - requ
 **Execution**: Runs in forked context with general-purpose agent.
 **Invocation**: User-triggered only (modifies files).
 
+**IMPORTANT**: When invoked without arguments, execute immediately with default settings. Never ask for clarification - use defaults and produce results.
+
+## Default Behavior (No Arguments)
+
+When invoked without arguments:
+- **Mode**: Dry-run first, then apply all fixes across `VitalArc/Presentation/`
+- **Scope**: All violation categories (colors, spacing, typography, icon sizes)
+- **Verification**: Run build after applying fixes
+
+Execute the full default fix workflow immediately. Do not ask for clarification.
+
 ## Prerequisites
 
 1. Run `design-system-scanner` first to identify violations

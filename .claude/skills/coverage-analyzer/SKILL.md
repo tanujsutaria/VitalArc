@@ -4,7 +4,6 @@ description: Identify untested code and suggest test priorities. Analyzes source
 context: fork
 agent: Explore
 allowed-tools: Read, Glob, Grep
-argument-hint: [--layer=domain|presentation|all] [--verbose]
 ---
 
 # Coverage Analyzer
@@ -12,6 +11,17 @@ argument-hint: [--layer=domain|presentation|all] [--verbose]
 Analyzes test coverage by comparing source files with corresponding test files.
 
 **Execution**: Runs in forked context with Explore agent for read-only analysis.
+
+**IMPORTANT**: When invoked without arguments, execute immediately with default settings. Never ask for clarification - use defaults and produce results.
+
+## Default Behavior (No Arguments)
+
+When invoked without arguments:
+- **Layer**: All layers (domain, presentation, infrastructure)
+- **Output**: Summary report with priority queue (not verbose)
+- **Scope**: Full heuristic coverage analysis
+
+Execute the full coverage analysis immediately. Do not ask for clarification.
 
 ## Analysis Approach
 

@@ -4,7 +4,6 @@ description: Check API keys, entitlements, and build settings. Reports configura
 context: fork
 agent: Explore
 allowed-tools: Read, Glob, Grep, Bash
-argument-hint: [--verbose]
 ---
 
 # Config Validator
@@ -12,6 +11,17 @@ argument-hint: [--verbose]
 Validates project configuration including API keys, entitlements, and build settings.
 
 **Execution**: Runs in forked context with Explore agent for read-only analysis.
+
+**IMPORTANT**: When invoked without arguments, execute immediately with default settings. Never ask for clarification - use defaults and produce results.
+
+## Default Behavior (No Arguments)
+
+When invoked without arguments:
+- **Scope**: Check all configurations (API keys, entitlements, build settings)
+- **Output**: Summary report (not verbose)
+- **Verbosity**: Show status table only; use `--verbose` for file locations and exact values
+
+Execute the full configuration check immediately. Do not ask for clarification.
 
 ## What It Checks
 

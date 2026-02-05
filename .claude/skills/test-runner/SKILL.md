@@ -13,6 +13,8 @@ Executes VitalArc tests as a required quality gate. **Workstation only** - requi
 
 **Execution**: Runs in forked context with Bash agent.
 
+**IMPORTANT**: When invoked without arguments, execute immediately in Full mode (run all tests). Never ask for clarification - use defaults and produce results.
+
 ## When to Use
 
 - **Required**: At session end (blocking gate after build passes)
