@@ -15,6 +15,18 @@ Generates pull request title and body following VitalArc conventions.
 **Execution**: Runs in forked context with general-purpose agent.
 **Invocation**: User-triggered only (creates PRs).
 
+**IMPORTANT**: When invoked without arguments, execute immediately with default settings. Never ask for clarification - use defaults and produce results.
+
+## Default Behavior (No Arguments)
+
+When invoked without arguments:
+- **Base branch**: `main`
+- **Mode**: Full PR (not draft)
+- **Checklist**: Include testing checklist
+- **Analysis**: Auto-detect type and scope from commits and changed files
+
+Execute the full PR generation workflow immediately. Do not ask for clarification.
+
 ## When to Use
 
 - End of workstation session (via session-orchestrator)

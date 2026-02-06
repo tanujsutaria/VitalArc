@@ -1,5 +1,53 @@
 # VitalArc Development Session Log
 
+## Session 18.1 - February 5, 2026 (Evening)
+
+### Session Start
+- **Time**: Evening PST
+- **Platform**: macOS
+- **Focus**: Session work (user-directed)
+- **Branch**: dev/mac-session-18.1-2026-02-05
+- **Base**: main @ 4971ea5
+
+### Environment
+- **Build Capable**: Yes
+- **Test Capable**: Yes (unit + UI)
+
+### Pre-Session Status
+- **Build**: FAILED (1 error - missing switch cases in UserFacingError.swift) -> Fixed at session start
+- **Design Violations**: 214 total (141 frame width, 62 frame height, 11 typography)
+- **Uncommitted Changes**: None
+
+### Session Goals
+1. Fix build error (UserFacingError.swift missing switch cases)
+2. Integrate Session 17.0 Food API tests into Xcode project
+3. General development as directed
+
+### Work Log
+| Time | Action | Files | Notes |
+|------|--------|-------|-------|
+| -- | Session started | - | Build error detected on init |
+| -- | Fixed build error | UserFacingError.swift | Added .allSourcesFailed, .notConfigured switch cases for NetworkError |
+| -- | Skill parallel execution audit | 7 skill SKILL.md files | Added Default Behavior sections and autonomy directives |
+| -- | Updated design-system-scanner | .claude/skills/design-system-scanner/SKILL.md | Default scan path, summary mode, all categories; removed argument-hint |
+| -- | Updated design-system-fixer | .claude/skills/design-system-fixer/SKILL.md | Default Behavior section with auto-fix defaults |
+| -- | Updated config-validator | .claude/skills/config-validator/SKILL.md | Default Behavior section with full validation defaults |
+| -- | Updated lint-validator | .claude/skills/lint-validator/SKILL.md | Default Behavior section with changed-files-only defaults |
+| -- | Updated coverage-analyzer | .claude/skills/coverage-analyzer/SKILL.md | Default Behavior section with full analysis defaults; removed argument-hint |
+| -- | Updated pr-formatter | .claude/skills/pr-formatter/SKILL.md | Default Behavior section with auto-detect defaults |
+| -- | Updated test-runner | .claude/skills/test-runner/SKILL.md | Added autonomy directive for Full mode default |
+| -- | Removed argument-hint | 3 skill files | design-system-scanner, coverage-analyzer, (+ applicable others) |
+| -- | Added Skill Invocation Types | CLAUDE.md | Classification table: Autonomous, Args Optional, Args Required |
+| -- | Fixed doc update pipeline | vitalarc-end-workstation/SKILL.md | Added Phase 3.5 docs-update task, removed Issue Reconciliation pseudo-code |
+| -- | Fixed stale documentation | PROJECT_STATUS.md, README.md | Corrected test count (535), date, design system % |
+| -- | Opus 4.6 best practices | CLAUDE.md | Added Verification section, subagent orchestration note, updated Parallel Execution guidance |
+| -- | Updated Co-Authored-By refs | 6 files | CLAUDE.md, vitalarc-end-workstation, vitalarc-end-cloud, vitalarc-start-cloud, vitalarc-start-workstation, commit-formatter |
+| -- | Softened skill language | Multiple skill files | Replaced aggressive CRITICAL/MUST/NEVER language per Opus 4.6 prompting best practices |
+| -- | Build verification | - | Build: SUCCEEDED, Tests: 535 passing (0 failures) |
+| -- | Session ended | SESSION_LOG.md | Opus 4.6 migration complete; Goal #2 (Food API test integration) still deferred |
+
+---
+
 ## Session 18.0 - February 5, 2026 (Afternoon)
 
 ### Session Start

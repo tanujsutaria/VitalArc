@@ -4,7 +4,6 @@ description: Audit VitalArc views for design system compliance. Read-only scanni
 context: fork
 agent: Explore
 allowed-tools: Read, Glob, Grep
-argument-hint: [--path=specific/path] [--verbose]
 ---
 
 # Design System Scanner
@@ -12,6 +11,23 @@ argument-hint: [--path=specific/path] [--verbose]
 Read-only audit agent that finds design token violations without modifying files.
 
 **Execution**: Runs in forked context with Explore agent for read-only analysis.
+
+**IMPORTANT**: When invoked without arguments, execute immediately with default settings. Never ask for clarification - use defaults and produce results.
+
+## Default Behavior (No Arguments)
+
+When invoked without arguments:
+- **Scan path**: `VitalArc/Presentation/` (full presentation layer)
+- **Output**: Summary report (not verbose)
+- **Scope**: All violation categories (colors, spacing, typography, icon sizes)
+
+Execute the full default scan immediately. Do not ask for clarification.
+
+### Optional Arguments (documented for reference)
+
+When invoked by a user with specific needs:
+- `--path=specific/path` - Scan only the specified path instead of full Presentation layer
+- `--verbose` - Include code context around each violation
 
 ## Responsibility Split
 

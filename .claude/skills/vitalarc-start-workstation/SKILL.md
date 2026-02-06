@@ -51,7 +51,7 @@ git fetch origin && git checkout main && git pull origin main --ff-only
 
 ### Phase 2: Parallel Task Initialization (Maximum Parallelization)
 
-**CRITICAL: Launch ALL FOUR tasks in a SINGLE message for maximum parallelization.**
+Launch these tasks in a single message for parallel execution.
 
 This enables true parallel execution - session number calculation no longer blocks other tasks:
 
