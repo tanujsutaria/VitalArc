@@ -9,6 +9,7 @@ import SwiftUI
 
 struct TodayDashboardView: View {
     @Environment(\.dependencyContainer) private var container
+    @Environment(\.selectedTab) private var selectedTab
     @State private var selectedDate = Date()
     @State private var healthMetrics: HealthMetrics?
     @State private var todaysWorkout: Workout?
@@ -341,28 +342,33 @@ struct TodayDashboardView: View {
                 .foregroundStyle(Color.vitalAdaptiveTextPrimaryV2)
 
             HStack(spacing: Spacing.md) {
-                quickActionButton(icon: "plus.circle.fill", label: "Log Workout", color: .vitalPrimaryV2)
-                quickActionButton(icon: "fork.knife.circle.fill", label: "Log Food", color: .vitalAccentV2)
-                quickActionButton(icon: "chart.line.uptrend.xyaxis.circle.fill", label: "View Progress", color: .vitalSuccessV2)
+                quickActionButton(icon: "plus.circle.fill", label: "Log Workout", color: .vitalPrimaryV2, tab: 1)
+                quickActionButton(icon: "fork.knife.circle.fill", label: "Log Food", color: .vitalAccentV2, tab: 2)
+                quickActionButton(icon: "chart.line.uptrend.xyaxis.circle.fill", label: "View Progress", color: .vitalSuccessV2, tab: 3)
             }
         }
     }
 
-    private func quickActionButton(icon: String, label: String, color: Color) -> some View {
-        VitalCardV2(elevation: .raised, isTappable: true) {
-            VStack(spacing: Spacing.sm) {
-                Image(systemName: icon)
-                    .font(.vitalIconLarge)
-                    .foregroundStyle(color)
-                Text(label)
-                    .font(.vitalCaptionV2)
-                    .foregroundStyle(Color.vitalAdaptiveTextSecondaryV2)
-                    .multilineTextAlignment(.center)
-                    .lineLimit(2)
+    private func quickActionButton(icon: String, label: String, color: Color, tab: Int) -> some View {
+        Button {
+            selectedTab.wrappedValue = tab
+        } label: {
+            VitalCardV2(elevation: .raised, isTappable: true) {
+                VStack(spacing: Spacing.sm) {
+                    Image(systemName: icon)
+                        .font(.vitalIconLarge)
+                        .foregroundStyle(color)
+                    Text(label)
+                        .font(.vitalCaptionV2)
+                        .foregroundStyle(Color.vitalAdaptiveTextSecondaryV2)
+                        .multilineTextAlignment(.center)
+                        .lineLimit(2)
+                }
+                .frame(maxWidth: .infinity)
+                .frame(height: 80)
             }
-            .frame(maxWidth: .infinity)
-            .frame(height: 80)
         }
+        .buttonStyle(.plain)
     }
 
     // MARK: - Helper Views
