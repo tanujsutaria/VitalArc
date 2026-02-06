@@ -13,36 +13,43 @@ struct HealthKitQuery {
 
     // MARK: - Date Range Helpers
 
+    /// Compute start of next day from a given start-of-day. DST-safe via Calendar.
+    /// Uses guard + assertionFailure for safety: returns startOfDay + 86400 as last-resort fallback.
+    private static func endOfDay(from startOfDay: Date) -> Date {
+        guard let next = Calendar.current.date(byAdding: .day, value: 1, to: startOfDay) else {
+            assertionFailure("Calendar.date(byAdding: .day) returned nil for \(startOfDay)")
+            return startOfDay.addingTimeInterval(86400)
+        }
+        return next
+    }
+
     /// Returns date range for today (start of day to end of day)
     static func dateRangeForToday() -> (start: Date, end: Date) {
         let calendar = Calendar.current
-        let now = Date()
-        let startOfDay = calendar.startOfDay(for: now)
-        let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) ?? startOfDay.addingTimeInterval(86400)
-        return (startOfDay, endOfDay)
+        let startOfDay = calendar.startOfDay(for: Date())
+        return (startOfDay, endOfDay(from: startOfDay))
     }
 
     /// Returns date range for the last N days including today
     static func dateRangeForLastDays(_ days: Int) -> (start: Date, end: Date) {
         let calendar = Calendar.current
-        let now = Date()
-        let startOfToday = calendar.startOfDay(for: now)
-        let endOfToday = calendar.date(byAdding: .day, value: 1, to: startOfToday) ?? startOfToday.addingTimeInterval(86400)
-        let startDate = calendar.date(byAdding: .day, value: -(days - 1), to: startOfToday) ?? startOfToday.addingTimeInterval(Double(-days + 1) * 86400)
-        return (startDate, endOfToday)
+        let startOfToday = calendar.startOfDay(for: Date())
+        let end = endOfDay(from: startOfToday)
+        let startDate = calendar.date(byAdding: .day, value: -(days - 1), to: startOfToday) ?? startOfToday
+        return (startDate, end)
     }
 
     /// Returns date range for a specific date
     static func dateRangeForDate(_ date: Date) -> (start: Date, end: Date) {
         let calendar = Calendar.current
         let startOfDay = calendar.startOfDay(for: date)
-        let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) ?? startOfDay.addingTimeInterval(86400)
-        return (startOfDay, endOfDay)
+        return (startOfDay, endOfDay(from: startOfDay))
     }
 
     /// Creates a predicate for date range
+    /// Uses empty options to include samples that overlap the range (important for overnight sleep)
     static func predicateForDateRange(start: Date, end: Date) -> NSPredicate {
-        return HKQuery.predicateForSamples(withStart: start, end: end, options: .strictStartDate)
+        return HKQuery.predicateForSamples(withStart: start, end: end, options: [])
     }
 
     // MARK: - Query Building

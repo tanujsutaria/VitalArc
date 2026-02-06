@@ -72,13 +72,26 @@ struct HealthKitPermissions {
         return healthStore.authorizationStatus(for: type)
     }
 
-    /// Check if all required permissions are granted
+    /// Check if HealthKit authorization has been requested.
+    ///
+    /// **Apple Privacy Limitation**: `HKHealthStore.authorizationStatus(for:)` only
+    /// reports status for **write** types. For read-only types it always returns
+    /// `.notDetermined`, even after the user grants or revokes access in
+    /// Settings → Privacy → Health. We therefore track whether the authorization
+    /// dialog was presented via UserDefaults.
+    ///
+    /// This flag can become stale if the user revokes access after granting it.
+    /// Callers that depend on actual data availability (e.g., `syncFromHealthKit`)
+    /// should handle empty results gracefully and call `clearAuthorizationFlag()`
+    /// when a sync returns no data, prompting re-authorization on next use.
     static func hasRequiredAuthorization(healthStore: HKHealthStore) -> Bool {
-        let readTypes = requiredReadTypes()
-        return readTypes.allSatisfy { type in
-            let status = healthStore.authorizationStatus(for: type)
-            return status == .sharingAuthorized
-        }
+        return UserDefaults.standard.bool(forKey: "healthKitAuthorizationRequested")
+    }
+
+    /// Clear the authorization-requested flag, forcing re-authorization on next sync.
+    /// Call this when a sync returns no data, suggesting the user may have revoked access.
+    static func clearAuthorizationFlag() {
+        UserDefaults.standard.removeObject(forKey: "healthKitAuthorizationRequested")
     }
 
     /// Check if HealthKit is available on this device
@@ -101,8 +114,8 @@ struct HealthKitPermissions {
 
         try await healthStore.requestAuthorization(toShare: writeTypes, read: readTypes)
 
-        // Note: Due to privacy, we can't definitively determine if user granted access
-        // We can only check if the request was processed
+        // Track that authorization was requested (read status is private per Apple policy)
+        UserDefaults.standard.set(true, forKey: "healthKitAuthorizationRequested")
         return true
     }
 }

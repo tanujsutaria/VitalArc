@@ -40,6 +40,7 @@ final class HealthDashboardViewModel {
     func loadTodayMetrics() async {
         isLoading = true
         error = nil
+        defer { isLoading = false }
 
         do {
             let today = Calendar.current.startOfDay(for: Date())
@@ -47,14 +48,13 @@ final class HealthDashboardViewModel {
         } catch {
             self.error = error
         }
-
-        isLoading = false
     }
 
     /// Load health metrics for the past week
     func loadWeekMetrics() async {
         isLoading = true
         error = nil
+        defer { isLoading = false }
 
         do {
             let calendar = Calendar.current
@@ -67,14 +67,26 @@ final class HealthDashboardViewModel {
         } catch {
             self.error = error
         }
-
-        isLoading = false
     }
 
     /// Load all metrics (today + week) and compute readiness score
     func loadAllMetrics() async {
-        await loadTodayMetrics()
-        await loadWeekMetrics()
+        isLoading = true
+        error = nil
+        defer { isLoading = false }
+
+        do {
+            let calendar = Calendar.current
+            let today = calendar.startOfDay(for: Date())
+            todayMetrics = try await healthRepository.getHealthMetrics(for: today)
+
+            if let weekAgo = calendar.date(byAdding: .day, value: -6, to: today) {
+                weekMetrics = try await healthRepository.getHealthMetrics(from: weekAgo, to: today)
+            }
+        } catch {
+            self.error = error
+        }
+
         updateReadinessScore()
     }
 

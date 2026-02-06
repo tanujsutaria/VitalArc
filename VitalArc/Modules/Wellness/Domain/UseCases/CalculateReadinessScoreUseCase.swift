@@ -28,16 +28,19 @@ final class CalculateReadinessScoreUseCase: CalculateReadinessScoreUseCaseProtoc
                 return 20 // neutral if no data
             }
             let ratio = todayHRV / baseline
-            return min(40, max(0, ratio * 30))
+            // Baseline (ratio=1.0) → 34/40 (85%); ratio 1.1 → 40; ratio 0.5 → 4
+            return min(40, max(0, 34 + (ratio - 1.0) * 60))
         }()
 
         // RHR contribution (25% weight) - lower relative to baseline is better
         let rhrContribution: Double = {
-            guard let todayRHR = todayMetrics.restingHeartRate, let baseline = baselineRHR, baseline > 0 else {
+            guard let todayRHR = todayMetrics.restingHeartRate, let baseline = baselineRHR,
+                  baseline > 0, todayRHR > 0 else {
                 return 12.5 // neutral if no data
             }
             let ratio = baseline / todayRHR
-            return min(25, max(0, ratio * 18))
+            // Baseline (ratio=1.0) → 21/25 (84%); ratio 1.1 → 25; ratio 0.5 → 1
+            return min(25, max(0, 21 + (ratio - 1.0) * 40))
         }()
 
         // Sleep quality contribution (20% weight) - based on stage composition score
@@ -52,8 +55,10 @@ final class CalculateReadinessScoreUseCase: CalculateReadinessScoreUseCaseProtoc
         }()
 
         // Sleep duration contribution (15% weight) - 7-9 hours optimal
+        // Prefer sleepStages.total (excludes awake time) over raw sleepHours
         let sleepDurationContribution: Double = {
-            guard let todaySleep = todayMetrics.sleepHours else {
+            let actualSleep = todayMetrics.sleepStages?.total ?? todayMetrics.sleepHours
+            guard let todaySleep = actualSleep else {
                 if let baseline = baselineSleepDuration {
                     return sleepDurationScore(baseline)
                 }
@@ -113,20 +118,22 @@ final class CalculateReadinessScoreUseCase: CalculateReadinessScoreUseCaseProtoc
         if score >= 80 {
             return "Great recovery. You're ready for high-intensity training."
         } else if score >= 60 {
-            // Find the weakest area
-            let weakest = min(
-                hrvContribution / 40,
-                rhrContribution / 25,
-                sleepQualityContribution / 20,
-                sleepDurationContribution / 15
-            )
-            if weakest == hrvContribution / 40 {
+            // Find the weakest area using explicit tracking to avoid float equality issues
+            let normalized: [(key: String, value: Double)] = [
+                ("hrv", hrvContribution / 40),
+                ("rhr", rhrContribution / 25),
+                ("sleepQuality", sleepQualityContribution / 20),
+                ("sleepDuration", sleepDurationContribution / 15)
+            ]
+            let weakestKey = normalized.min(by: { $0.value < $1.value })?.key ?? "sleepDuration"
+            switch weakestKey {
+            case "hrv":
                 return "Moderate recovery. HRV is below your baseline - consider lighter training."
-            } else if weakest == rhrContribution / 25 {
+            case "rhr":
                 return "Moderate recovery. Elevated resting heart rate - monitor for stress."
-            } else if weakest == sleepQualityContribution / 20 {
+            case "sleepQuality":
                 return "Moderate recovery. Sleep quality was low - prioritize deep sleep tonight."
-            } else {
+            default:
                 return "Moderate recovery. Sleep duration was short - aim for 7-9 hours."
             }
         } else if score >= 40 {

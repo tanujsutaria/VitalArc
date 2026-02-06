@@ -52,6 +52,7 @@ struct HealthDashboardView: View {
                             await viewModel.refresh()
                         }
                     }
+                    .accessibilityLabel("Refresh health data")
                 }
             }
             .refreshable {
@@ -103,28 +104,32 @@ struct HealthDashboardView: View {
 
     // MARK: - Helpers for Metric Values
 
+    /// Returns the current value for a metric, or -1 if no data is available
     private func getCurrentValue(for metric: HealthMetricType) -> Double {
-        guard let today = viewModel.todayMetrics else { return 0 }
+        guard let today = viewModel.todayMetrics else { return -1 }
 
         switch metric {
         case .hrv:
-            return today.heartRateVariability ?? 0
+            return today.heartRateVariability ?? -1
         case .restingHR:
-            return today.restingHeartRate ?? 0
+            return today.restingHeartRate ?? -1
         case .steps:
-            return Double(today.steps ?? 0)
+            guard let steps = today.steps else { return -1 }
+            return Double(steps)
         case .activeEnergy:
-            return today.activeEnergy ?? 0
+            return today.activeEnergy ?? -1
         case .sleep:
-            return today.sleepHours ?? 0
+            return today.sleepHours ?? -1
         case .weight:
-            return UnitConversion.kgToLbs(today.weight ?? 0)
+            guard let w = today.weight else { return -1 }
+            return UnitConversion.kgToLbs(w)
         case .bodyFat:
-            return today.bodyFatPercentage ?? 0
+            return today.bodyFatPercentage ?? -1
         case .leanBodyMass:
-            return UnitConversion.kgToLbs(today.leanBodyMass ?? 0)
+            guard let lbm = today.leanBodyMass else { return -1 }
+            return UnitConversion.kgToLbs(lbm)
         case .respiratoryRate:
-            return today.respiratoryRate ?? 0
+            return today.respiratoryRate ?? -1
         }
     }
 
@@ -732,6 +737,7 @@ struct HealthDashboardView: View {
 
 // MARK: - Preview
 
+@MainActor
 private struct PreviewHealthRepository: HealthRepository {
     func getHealthMetrics(for date: Date) async throws -> HealthMetrics? { nil }
     func getHealthMetrics(from startDate: Date, to endDate: Date) async throws -> [HealthMetrics] { [] }

@@ -22,9 +22,19 @@ struct ChartView: View {
     var body: some View {
         VitalCard {
             VStack(alignment: .leading, spacing: Spacing.md) {
-                Text(title)
-                    .font(.vitalH3)
-                    .foregroundStyle(Color.vitalAdaptiveTextPrimary)
+                HStack {
+                    Text(title)
+                        .font(.vitalH3)
+                        .foregroundStyle(Color.vitalAdaptiveTextPrimary)
+
+                    Spacer()
+
+                    if !unit.isEmpty {
+                        Text("(\(unit))")
+                            .font(.vitalCaption)
+                            .foregroundStyle(Color.vitalAdaptiveTextSecondary)
+                    }
+                }
 
                 if data.isEmpty {
                     emptyStateView
@@ -33,6 +43,9 @@ struct ChartView: View {
                 }
             }
         }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("\(title) chart")
+        .accessibilityValue(data.isEmpty ? "No data available" : "\(data.count) data points in \(unit)")
     }
 
     // MARK: - Chart

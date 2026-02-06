@@ -10,8 +10,11 @@ import HealthKit
 
 /// Manages HealthKit data access and synchronization.
 ///
-/// Note: This class is intentionally NOT @MainActor to allow background HealthKit queries.
-/// ViewModels using this class are @MainActor isolated and handle thread transitions.
+/// This class is intentionally **not** `@MainActor`-isolated so that HealthKit queries
+/// execute on background cooperative threads. When called from `@MainActor`-isolated code
+/// (e.g., `SwiftDataHealthRepository.syncFromHealthKit()`), Swift structured concurrency
+/// automatically hops off the main actor for the duration of each `await` call here,
+/// then hops back for SwiftData saves. This keeps the UI responsive during multi-day syncs.
 final class HealthKitManager {
 
     // MARK: - Properties
@@ -39,6 +42,9 @@ final class HealthKitManager {
 
     /// Fetch health metrics for a specific date
     func fetchHealthMetrics(for date: Date) async throws -> HealthMetrics? {
+        guard isHealthKitAvailable() else {
+            throw HealthKitError.notAvailable
+        }
         let dateRange = HealthKitQuery.dateRangeForDate(date)
 
         async let hrv = fetchHRV(start: dateRange.start, end: dateRange.end)
@@ -52,6 +58,9 @@ final class HealthKitManager {
         async let leanMass = fetchLeanBodyMass(start: dateRange.start, end: dateRange.end)
         async let respRate = fetchRespiratoryRate(start: dateRange.start, end: dateRange.end)
 
+        // Intentional `try?`: individual metric failures (e.g., user lacks a sensor for
+        // respiratory rate, or a specific HealthKit type is unauthorized) should not block
+        // the entire sync. We collect whatever data IS available and return nil for the rest.
         let (hrvValue, hrValue, energyValue, stepsValue, sleepValue, sleepStagesValue, weightValue,
              bodyFatValue, leanMassValue, respRateValue) =
             await (try? hrv, try? heartRate, try? activeEnergy, try? steps, try? sleep, try? sleepStages, try? weight,
@@ -461,7 +470,7 @@ final class HealthKitManager {
                     return
                 }
 
-                let value = sample.quantity.doubleValue(for: .percent()) * 100
+                let value = sample.quantity.doubleValue(for: .percent())
                 continuation.resume(returning: value)
             }
 

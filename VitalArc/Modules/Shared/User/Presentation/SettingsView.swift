@@ -234,6 +234,7 @@ private struct PreviewUserRepository: UserRepository {
     func setOnboardingCompleted(_ completed: Bool) async {}
 }
 
+@MainActor
 private struct PreviewHealthRepository: HealthRepository {
     func getHealthMetrics(for date: Date) async throws -> HealthMetrics? { nil }
     func getHealthMetrics(from startDate: Date, to endDate: Date) async throws -> [HealthMetrics] { [] }

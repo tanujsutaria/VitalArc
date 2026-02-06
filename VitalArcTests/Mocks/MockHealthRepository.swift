@@ -9,6 +9,7 @@ import Foundation
 @testable import VitalArc
 
 /// Mock HealthRepository for unit testing
+@MainActor
 class MockHealthRepository: HealthRepository {
     // MARK: - Mock Data
 

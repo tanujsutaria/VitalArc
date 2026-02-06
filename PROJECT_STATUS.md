@@ -1,8 +1,8 @@
 # VitalArc Project Status
 
-**Last Updated**: February 5, 2026 (Session 18.4)
-**Build**: Passing ✅
-**Tests**: 623 passing ✅
+**Last Updated**: February 6, 2026 (Session 19.0)
+**Build**: Not verified (cloud session — CI will validate)
+**Tests**: 623 passing (pre-session baseline)
 **Stage**: MVP-Ready
 
 ---
@@ -48,6 +48,14 @@ The app compiles and runs with core MVP requirements addressed:
   - Nutrition: Food favorites, recent/frequent foods, custom food creation, water tracking with daily goals
   - Wellness: Body composition (body fat %, lean mass), enhanced readiness score with 7-day baselines, respiratory rate
   - Today Dashboard: Quick action tab navigation, date navigation, recovery/strain score integration
+- 22 wellness module bugs fixed across all architecture layers (Session 19.0):
+  - Domain: @MainActor on HealthRepository protocol, negative readiness scores, float equality
+  - Use Cases: HRV/RHR scaling recentered, div-by-zero guards, sleep stages in duration calc
+  - Infrastructure: HealthKit sleep query options, DST-safe date ranges, body fat % scaling, auth check
+  - Data: Sleep stage fields in SwiftData update path, date range queries, deterministic fetch
+  - Presentation: Loading state management, nil metric display, chart units, accessibility labels
+  - DI: CalculateRecoveryScoreUseCase wiring in WellnessContainer
+- PR review hardening: force-unwrap elimination, stale auth flag detection, documentation (Session 19.0)
 
 **Ready for beta testing.**
 
@@ -57,13 +65,13 @@ The app compiles and runs with core MVP requirements addressed:
 
 | Feature | Status | Notes |
 |---------|--------|-------|
-| Health Dashboard | Ready | Uses lbs |
+| Health Dashboard | Ready | Uses lbs, VoiceOver accessible |
 | Workout Tracking | Ready | Minor polish needed |
 | Exercise Library | Ready | 960+ exercises |
 | Templates System | Ready | Day-by-day editor |
 | Mesocycle System | Ready | - |
 | Analytics Dashboard | Ready | TRIMP integrated, gender-aware |
-| Recovery Score | Ready | HRV + HealthKit HR integration |
+| Recovery Score | Ready | HRV + HealthKit HR integration, 22 bugs fixed (Session 19.0) |
 | Strain Tracking | Ready | TRIMP + HealthKit HR, custom settings |
 | Nutrition Tracking | Ready | **API keys not configured** |
 | Design System | Ready | ~90% adoption |
@@ -73,7 +81,7 @@ The app compiles and runs with core MVP requirements addressed:
 
 | Feature | Done | Missing |
 |---------|------|---------|
-| Sleep Analysis | Basic score, stage breakdown, quality scoring, 7-day trends | Minor UI polish |
+| Sleep Analysis | Basic score, stage breakdown, quality scoring, 7-day trends | Ready ✅ (overnight query fix, accessibility added) |
 | Nutrition Algorithm | Daily totals, TDEE estimation, TDEE UI, macro goal editing, locale parsing | Ready ✅ |
 | Notifications | UI, ViewModel, Repository, Use Cases (wired), Infrastructure, Protocol | Ready ✅ |
 
