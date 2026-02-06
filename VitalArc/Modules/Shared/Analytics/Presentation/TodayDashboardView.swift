@@ -15,6 +15,8 @@ struct TodayDashboardView: View {
     @State private var todaysWorkout: Workout?
     @State private var dailyNutrition: DailyNutrition?
     @State private var isLoading = true
+    @State private var recoveryScore: RecoveryScoreResult?
+    @State private var strainResult: StrainResult?
     @State private var showDatePicker = false
 
     var body: some View {
@@ -173,7 +175,14 @@ struct TodayDashboardView: View {
                         .foregroundStyle(Color.vitalAdaptiveTextSecondaryV2)
                 }
 
-                if let metrics = healthMetrics {
+                if let recovery = recoveryScore, recovery.score > 0 {
+                    Text("\(recovery.score)")
+                        .font(.vitalNumberLargeV2)
+                        .foregroundStyle(Color.vitalAdaptiveTextPrimaryV2)
+                    Text(recovery.readiness.rawValue)
+                        .font(.vitalCaptionV2)
+                        .foregroundStyle(Color.vitalAdaptiveTextTertiaryV2)
+                } else if let metrics = healthMetrics {
                     Text("\(Int(metrics.sleepHours ?? 7))h \(Int((metrics.sleepHours ?? 7).truncatingRemainder(dividingBy: 1) * 60))m")
                         .font(.vitalNumberLargeV2)
                         .foregroundStyle(Color.vitalAdaptiveTextPrimaryV2)
@@ -206,7 +215,14 @@ struct TodayDashboardView: View {
                         .foregroundStyle(Color.vitalAdaptiveTextSecondaryV2)
                 }
 
-                if let metrics = healthMetrics {
+                if let strain = strainResult {
+                    Text(String(format: "%.1f", strain.strainScore))
+                        .font(.vitalNumberLargeV2)
+                        .foregroundStyle(Color.vitalAdaptiveTextPrimaryV2)
+                    Text(strain.strainLevel.rawValue)
+                        .font(.vitalCaptionV2)
+                        .foregroundStyle(Color.vitalAdaptiveTextTertiaryV2)
+                } else if let metrics = healthMetrics {
                     Text("\(Int(metrics.activeEnergy ?? 0))")
                         .font(.vitalNumberLargeV2)
                         .foregroundStyle(Color.vitalAdaptiveTextPrimaryV2)
@@ -490,6 +506,25 @@ struct TodayDashboardView: View {
             dailyNutrition = try await calculateUseCase.execute(for: selectedDate)
         } catch {
             Log.error("Failed to load nutrition", error: error, category: .nutrition)
+        }
+
+        // Load recovery score
+        do {
+            let recoveryUseCase = CalculateRecoveryScoreUseCase(healthRepository: container.healthRepository)
+            recoveryScore = try await recoveryUseCase.execute()
+        } catch {
+            Log.error("Failed to load recovery score", error: error, category: .healthKit)
+        }
+
+        // Load strain score
+        do {
+            let strainUseCase = CalculateStrainScoreUseCase(
+                healthRepository: container.healthRepository,
+                userRepository: container.userRepository
+            )
+            strainResult = try await strainUseCase.execute(for: selectedDate)
+        } catch {
+            Log.error("Failed to load strain score", error: error, category: .healthKit)
         }
     }
 }
