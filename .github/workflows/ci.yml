@@ -65,8 +65,8 @@ jobs:
 
       - name: Generate Secrets file
         run: |
-          cp VitalArc/Infrastructure/Security/Secrets.template.txt \
-             VitalArc/Infrastructure/Security/Secrets.swift
+          cp VitalArc/Modules/Shared/Security/Secrets.template.txt \
+             VitalArc/Modules/Shared/Security/Secrets.swift
 
       - name: Cache DerivedData
         uses: actions/cache@v5
