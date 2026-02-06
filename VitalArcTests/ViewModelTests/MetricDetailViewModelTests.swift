@@ -69,6 +69,8 @@ final class MetricDetailViewModelTests: XCTestCase {
                 return makeTestMetrics(date: date, sleepHours: value)
             case .weight:
                 return makeTestMetrics(date: date, weight: value)
+            case .bodyFat, .leanBodyMass, .respiratoryRate:
+                return makeTestMetrics(date: date)
             }
         }
     }
