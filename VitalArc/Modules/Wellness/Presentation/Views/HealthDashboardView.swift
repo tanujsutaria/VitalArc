@@ -119,6 +119,12 @@ struct HealthDashboardView: View {
             return today.sleepHours ?? 0
         case .weight:
             return UnitConversion.kgToLbs(today.weight ?? 0)
+        case .bodyFat:
+            return today.bodyFatPercentage ?? 0
+        case .leanBodyMass:
+            return UnitConversion.kgToLbs(today.leanBodyMass ?? 0)
+        case .respiratoryRate:
+            return today.respiratoryRate ?? 0
         }
     }
 
@@ -159,15 +165,17 @@ struct HealthDashboardView: View {
                 .foregroundStyle(Color.vitalAdaptiveTextPrimary)
 
             HStack(spacing: Spacing.md) {
-                // Recovery Score
-                ScoreRingView(
-                    score: calculateRecoveryScore(metrics),
-                    title: "Recovery",
-                    subtitle: recoveryLabel(calculateRecoveryScore(metrics)),
-                    gradient: Color.vitalSuccessGradient,
-                    size: 90,
-                    lineWidth: 8
-                )
+                // Readiness Score (from personalized baselines use case)
+                if let readiness = viewModel.readinessScore {
+                    ScoreRingView(
+                        score: readiness.overallScore,
+                        title: "Readiness",
+                        subtitle: readiness.level.rawValue,
+                        gradient: Color.vitalSuccessGradient,
+                        size: 90,
+                        lineWidth: 8
+                    )
+                }
 
                 // Sleep Score
                 ScoreRingView(
@@ -190,41 +198,75 @@ struct HealthDashboardView: View {
                 )
             }
             .frame(maxWidth: .infinity)
+
+            // Readiness recommendation
+            if let readiness = viewModel.readinessScore {
+                readinessRecommendationView(readiness)
+            }
+        }
+    }
+
+    // MARK: - Readiness Recommendation
+
+    private func readinessRecommendationView(_ readiness: ReadinessScore) -> some View {
+        VitalCard {
+            VStack(alignment: .leading, spacing: Spacing.sm) {
+                HStack(spacing: Spacing.sm) {
+                    Image(systemName: "brain.head.profile")
+                        .font(.vitalIconMedium)
+                        .foregroundStyle(readinessColor(readiness.level))
+
+                    Text("Readiness Insight")
+                        .font(.vitalLabel)
+                        .foregroundStyle(Color.vitalAdaptiveTextPrimary)
+                }
+
+                Text(readiness.recommendation)
+                    .font(.vitalBody)
+                    .foregroundStyle(Color.vitalAdaptiveTextSecondary)
+
+                // Contribution breakdown
+                HStack(spacing: Spacing.md) {
+                    contributionPill("HRV", value: readiness.hrvContribution, max: 40)
+                    contributionPill("RHR", value: readiness.rhrContribution, max: 25)
+                    contributionPill("Quality", value: readiness.sleepQualityContribution, max: 20)
+                    contributionPill("Duration", value: readiness.sleepDurationContribution, max: 15)
+                }
+                .padding(.top, Spacing.xs)
+            }
+        }
+    }
+
+    private func contributionPill(_ label: String, value: Double, max: Double) -> some View {
+        VStack(spacing: Spacing.xxs) {
+            Text(label)
+                .font(.vitalCaptionSmall)
+                .foregroundStyle(Color.vitalAdaptiveTextSecondary)
+            Text(String(format: "%.0f", value))
+                .font(.vitalLabelSmall)
+                .foregroundStyle(value / max > 0.6 ? Color.vitalSuccess : Color.vitalWarning)
+        }
+    }
+
+    private func readinessColor(_ level: ReadinessLevel) -> Color {
+        switch level {
+        case .optimal: return .vitalSuccess
+        case .good: return .vitalInfo
+        case .moderate: return .vitalWarning
+        case .fair: return .vitalWarning
+        case .poor: return .vitalDanger
         }
     }
 
     // MARK: - Score Calculations
 
-    private func calculateRecoveryScore(_ metrics: HealthMetrics) -> Double {
-        // Recovery based on HRV and resting HR
-        var score: Double = 50 // Base score
-
-        if let hrv = metrics.heartRateVariability {
-            // HRV: Higher is generally better
-            // Typical range: 20-100ms
-            let hrvScore = min((hrv / 80) * 50, 50)
-            score = hrvScore
-        }
-
-        if let rhr = metrics.restingHeartRate {
-            // RHR: Lower is generally better for athletes
-            // Typical range: 50-80 BPM
-            let rhrScore = max(0, min((80 - rhr) / 30 * 30, 30))
-            score += rhrScore
-        }
-
-        return min(max(score, 0), 100)
-    }
-
     private func calculateSleepScore(_ metrics: HealthMetrics) -> Double {
         guard let sleepHours = metrics.sleepHours else { return 0 }
-        // Target: 7-9 hours
         if sleepHours >= 7 && sleepHours <= 9 {
             return min(100, 80 + (sleepHours - 7) * 10)
         } else if sleepHours < 7 {
             return max(0, (sleepHours / 7) * 80)
         } else {
-            // More than 9 hours, slightly diminishing returns
             return max(70, 90 - (sleepHours - 9) * 10)
         }
     }
@@ -232,27 +274,15 @@ struct HealthDashboardView: View {
     private func calculateActivityScore(_ metrics: HealthMetrics) -> Double {
         var score: Double = 0
 
-        // Steps contribution (target: 10,000)
         if let steps = metrics.steps {
             score += min(Double(steps) / 10000 * 50, 50)
         }
 
-        // Active energy contribution (target: 500 kcal)
         if let energy = metrics.activeEnergy {
             score += min(energy / 500 * 50, 50)
         }
 
         return min(score, 100)
-    }
-
-    private func recoveryLabel(_ score: Double) -> String {
-        switch score {
-        case 0..<30: return "Poor"
-        case 30..<50: return "Fair"
-        case 50..<70: return "Good"
-        case 70..<85: return "Great"
-        default: return "Excellent"
-        }
     }
 
     private func sleepLabel(_ score: Double) -> String {
@@ -352,6 +382,42 @@ struct HealthDashboardView: View {
                         color: .vitalSuccess,
                         sparklineData: getWeightSparklineData(),
                         onTap: { selectedMetric = .weight }
+                    )
+                }
+
+                if let bodyFat = metrics.bodyFatPercentage {
+                    MetricCard(
+                        title: "Body Fat",
+                        value: String(format: "%.1f", bodyFat),
+                        unit: "%",
+                        icon: "figure.arms.open",
+                        color: .vitalWarning,
+                        sparklineData: getSparklineData(for: \.bodyFatPercentage),
+                        onTap: { selectedMetric = .bodyFat }
+                    )
+                }
+
+                if let leanMass = metrics.leanBodyMass {
+                    MetricCard(
+                        title: "Lean Mass",
+                        value: String(format: "%.1f", UnitConversion.kgToLbs(leanMass)),
+                        unit: "lbs",
+                        icon: "figure.strengthtraining.traditional",
+                        color: .vitalInfo,
+                        sparklineData: viewModel.weekMetrics.compactMap { $0.leanBodyMass.map { UnitConversion.kgToLbs($0) } },
+                        onTap: { selectedMetric = .leanBodyMass }
+                    )
+                }
+
+                if let respRate = metrics.respiratoryRate {
+                    MetricCard(
+                        title: "Respiratory",
+                        value: String(format: "%.0f", respRate),
+                        unit: "brpm",
+                        icon: "lungs.fill",
+                        color: .vitalAccent,
+                        sparklineData: getSparklineData(for: \.respiratoryRate),
+                        onTap: { selectedMetric = .respiratoryRate }
                     )
                 }
             }

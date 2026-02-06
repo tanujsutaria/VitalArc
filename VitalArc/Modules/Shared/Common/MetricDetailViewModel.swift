@@ -110,8 +110,13 @@ final class MetricDetailViewModel {
         case .sleep:
             return metrics.sleepHours
         case .weight:
-            // Convert kg to lbs for display
             return metrics.weight.map { UnitConversion.kgToLbs($0) }
+        case .bodyFat:
+            return metrics.bodyFatPercentage
+        case .leanBodyMass:
+            return metrics.leanBodyMass.map { UnitConversion.kgToLbs($0) }
+        case .respiratoryRate:
+            return metrics.respiratoryRate
         }
     }
 

@@ -45,6 +45,17 @@ struct HealthKitPermissions {
         if let weightType = HKObjectType.quantityType(forIdentifier: .bodyMass) {
             types.insert(weightType)
         }
+        if let bodyFatType = HKObjectType.quantityType(forIdentifier: .bodyFatPercentage) {
+            types.insert(bodyFatType)
+        }
+        if let leanBodyMassType = HKObjectType.quantityType(forIdentifier: .leanBodyMass) {
+            types.insert(leanBodyMassType)
+        }
+
+        // Respiratory
+        if let respiratoryRateType = HKObjectType.quantityType(forIdentifier: .respiratoryRate) {
+            types.insert(respiratoryRateType)
+        }
 
         return types
     }

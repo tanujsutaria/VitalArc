@@ -426,6 +426,9 @@ final class SwiftDataHealthRepository: HealthRepository {
             existingModel.steps = metrics.steps
             existingModel.sleepHours = metrics.sleepHours
             existingModel.weight = metrics.weight
+            existingModel.bodyFatPercentage = metrics.bodyFatPercentage
+            existingModel.leanBodyMass = metrics.leanBodyMass
+            existingModel.respiratoryRate = metrics.respiratoryRate
         } else {
             // Create new model
             let model = HealthMetricsModel.fromDomain(metrics)
