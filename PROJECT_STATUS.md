@@ -1,6 +1,6 @@
 # VitalArc Project Status
 
-**Last Updated**: February 5, 2026 (Session 18.1)
+**Last Updated**: February 5, 2026 (Session 18.2)
 **Build**: Passing ✅
 **Tests**: 535 passing ✅
 **Stage**: MVP-Ready
@@ -36,6 +36,7 @@ The app compiles and runs with core MVP requirements addressed:
 - Skill system audit: added autonomous execution defaults to 7 skills (Session 18.1)
 - Fixed documentation update pipeline in session end workflow (Session 18.1)
 - Applied Opus 4.6 best practices: softened skill language, added verification guidance, updated model references (Session 18.1)
+- Fixed session start skills: replaced TaskCreate delegation with Skill() invocations, inline session number calculation, added Execution Rules (Session 18.2)
 
 **Ready for beta testing.**
 
@@ -84,8 +85,8 @@ The app compiles and runs with core MVP requirements addressed:
    - `USDAFoodAPI.swift`: demo key (rate-limited)
 
 2. **Design System Gaps**: Near complete
-   - ~126 frame dimension violations (acceptable for charts)
-   - ~4 minor violations (cornerRadius, padding)
+   - ~88 frame dimension violations (acceptable for charts/icons)
+   - 2 typography violations (VitalEmptyState.swift)
 
 ---
 
