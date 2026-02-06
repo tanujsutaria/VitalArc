@@ -369,7 +369,7 @@ struct MetricDetailSheet: View {
     }
 
     private var formattedCurrentValue: String {
-        guard currentValue >= 0 else { return "--" }
+        guard currentValue >= 0, currentValue.isFinite else { return "--" }
         switch metricType {
         case .steps:
             let formatter = NumberFormatter()

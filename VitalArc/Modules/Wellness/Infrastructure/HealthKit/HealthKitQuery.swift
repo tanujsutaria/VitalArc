@@ -13,31 +13,33 @@ struct HealthKitQuery {
 
     // MARK: - Date Range Helpers
 
+    /// Compute start of next day from a given start-of-day. Calendar never fails for simple day addition.
+    private static func endOfDay(from startOfDay: Date) -> Date {
+        // Calendar.date(byAdding: .day) is DST-safe and never returns nil for valid dates
+        Calendar.current.date(byAdding: .day, value: 1, to: startOfDay)!
+    }
+
     /// Returns date range for today (start of day to end of day)
     static func dateRangeForToday() -> (start: Date, end: Date) {
         let calendar = Calendar.current
-        let now = Date()
-        let startOfDay = calendar.startOfDay(for: now)
-        let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) ?? startOfDay
-        return (startOfDay, endOfDay)
+        let startOfDay = calendar.startOfDay(for: Date())
+        return (startOfDay, endOfDay(from: startOfDay))
     }
 
     /// Returns date range for the last N days including today
     static func dateRangeForLastDays(_ days: Int) -> (start: Date, end: Date) {
         let calendar = Calendar.current
-        let now = Date()
-        let startOfToday = calendar.startOfDay(for: now)
-        let endOfToday = calendar.date(byAdding: .day, value: 1, to: startOfToday) ?? startOfToday
+        let startOfToday = calendar.startOfDay(for: Date())
+        let end = endOfDay(from: startOfToday)
         let startDate = calendar.date(byAdding: .day, value: -(days - 1), to: startOfToday) ?? startOfToday
-        return (startDate, endOfToday)
+        return (startDate, end)
     }
 
     /// Returns date range for a specific date
     static func dateRangeForDate(_ date: Date) -> (start: Date, end: Date) {
         let calendar = Calendar.current
         let startOfDay = calendar.startOfDay(for: date)
-        let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) ?? startOfDay
-        return (startOfDay, endOfDay)
+        return (startOfDay, endOfDay(from: startOfDay))
     }
 
     /// Creates a predicate for date range

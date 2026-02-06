@@ -288,7 +288,8 @@ final class SwiftDataNutritionRepository: NutritionRepository {
     func getFoodEntries(for date: Date) async throws -> [FoodEntry] {
         let calendar = Calendar.current
         let startOfDay = calendar.startOfDay(for: date)
-        let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) ?? startOfDay
+        // Calendar.date(byAdding: .day) is DST-safe and never returns nil for valid dates
+        let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay)!
 
         let descriptor = FetchDescriptor<FoodEntryModel>(
             predicate: #Predicate { entry in
@@ -398,7 +399,8 @@ final class SwiftDataNutritionRepository: NutritionRepository {
     func getWaterEntries(for date: Date) async throws -> [WaterEntry] {
         let calendar = Calendar.current
         let startOfDay = calendar.startOfDay(for: date)
-        let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) ?? startOfDay
+        // Calendar.date(byAdding: .day) is DST-safe and never returns nil for valid dates
+        let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay)!
 
         let descriptor = FetchDescriptor<WaterEntryModel>(
             predicate: #Predicate { entry in
@@ -432,7 +434,8 @@ final class SwiftDataNutritionRepository: NutritionRepository {
     func getDailyNutrition(for date: Date) async throws -> DailyNutrition? {
         let calendar = Calendar.current
         let startOfDay = calendar.startOfDay(for: date)
-        let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) ?? startOfDay
+        // Calendar.date(byAdding: .day) is DST-safe and never returns nil for valid dates
+        let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay)!
 
         let descriptor = FetchDescriptor<DailyNutritionModel>(
             predicate: #Predicate { nutrition in
@@ -450,7 +453,8 @@ final class SwiftDataNutritionRepository: NutritionRepository {
     func saveDailyNutrition(_ nutrition: DailyNutrition) async throws {
         let calendar = Calendar.current
         let startOfDay = calendar.startOfDay(for: nutrition.date)
-        let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) ?? startOfDay
+        // Calendar.date(byAdding: .day) is DST-safe and never returns nil for valid dates
+        let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay)!
 
         let descriptor = FetchDescriptor<DailyNutritionModel>(
             predicate: #Predicate { nutritionModel in
@@ -492,12 +496,14 @@ final class SwiftDataHealthRepository: HealthRepository {
     func getHealthMetrics(for date: Date) async throws -> HealthMetrics? {
         let calendar = Calendar.current
         let startOfDay = calendar.startOfDay(for: date)
-        let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) ?? startOfDay
+        // Calendar.date(byAdding: .day) is DST-safe and never returns nil for valid dates
+        let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay)!
 
         var descriptor = FetchDescriptor<HealthMetricsModel>(
             predicate: #Predicate { metrics in
                 metrics.date >= startOfDay && metrics.date < endOfDay
-            }
+            },
+            sortBy: [SortDescriptor(\.date, order: .reverse)]
         )
         descriptor.fetchLimit = 1
 
@@ -508,7 +514,8 @@ final class SwiftDataHealthRepository: HealthRepository {
     func getHealthMetrics(from startDate: Date, to endDate: Date) async throws -> [HealthMetrics] {
         let calendar = Calendar.current
         let start = calendar.startOfDay(for: startDate)
-        let end = calendar.date(byAdding: .day, value: 1, to: calendar.startOfDay(for: endDate)) ?? calendar.startOfDay(for: endDate)
+        // Calendar.date(byAdding: .day) is DST-safe and never returns nil for valid dates
+        let end = calendar.date(byAdding: .day, value: 1, to: calendar.startOfDay(for: endDate))!
 
         let descriptor = FetchDescriptor<HealthMetricsModel>(
             predicate: #Predicate { metrics in
@@ -525,7 +532,8 @@ final class SwiftDataHealthRepository: HealthRepository {
         // Check if metrics for this date already exist
         let calendar = Calendar.current
         let startOfDay = calendar.startOfDay(for: metrics.date)
-        let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) ?? startOfDay
+        // Calendar.date(byAdding: .day) is DST-safe and never returns nil for valid dates
+        let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay)!
 
         let descriptor = FetchDescriptor<HealthMetricsModel>(
             predicate: #Predicate { model in
