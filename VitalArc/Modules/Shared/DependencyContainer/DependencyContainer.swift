@@ -94,6 +94,48 @@ final class SwiftDataWorkoutRepository: WorkoutRepository {
         try modelContext.save()
     }
 
+    func updateExercise(_ exercise: Exercise) async throws {
+        let exerciseId = exercise.id
+        var descriptor = FetchDescriptor<ExerciseModel>(
+            predicate: #Predicate { $0.id == exerciseId }
+        )
+        descriptor.fetchLimit = 1
+        let models = try modelContext.fetch(descriptor)
+
+        if let existing = models.first {
+            existing.name = exercise.name
+            existing.category = exercise.category.rawValue
+            existing.primaryMuscles = exercise.primaryMuscles.map { $0.rawValue }
+            existing.secondaryMuscles = exercise.secondaryMuscles.map { $0.rawValue }
+            existing.equipment = exercise.equipment.rawValue
+            existing.instructions = exercise.instructions
+            try modelContext.save()
+        } else {
+            try await saveExercise(exercise)
+        }
+    }
+
+    func deleteExercise(id: UUID) async throws {
+        var descriptor = FetchDescriptor<ExerciseModel>(
+            predicate: #Predicate { $0.id == id }
+        )
+        descriptor.fetchLimit = 1
+        let models = try modelContext.fetch(descriptor)
+
+        if let model = models.first {
+            modelContext.delete(model)
+            try modelContext.save()
+        }
+    }
+
+    func isExerciseUsedInWorkouts(_ exerciseId: UUID) async throws -> Bool {
+        let descriptor = FetchDescriptor<WorkoutSetModel>(
+            predicate: #Predicate { $0.exerciseId == exerciseId }
+        )
+        let sets = try modelContext.fetch(descriptor)
+        return !sets.isEmpty
+    }
+
     func getWorkouts() async throws -> [Workout] {
         let descriptor = FetchDescriptor<WorkoutModel>(
             sortBy: [SortDescriptor(\.date, order: .reverse)]

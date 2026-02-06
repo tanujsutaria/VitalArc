@@ -13,6 +13,9 @@ protocol WorkoutRepository {
     func getExercise(id: UUID) async throws -> Exercise?
     func searchExercises(query: String) async throws -> [Exercise]
     func saveExercise(_ exercise: Exercise) async throws
+    func updateExercise(_ exercise: Exercise) async throws
+    func deleteExercise(id: UUID) async throws
+    func isExerciseUsedInWorkouts(_ exerciseId: UUID) async throws -> Bool
 
     // Workout operations
     func getWorkouts() async throws -> [Workout]

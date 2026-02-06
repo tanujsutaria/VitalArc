@@ -28,6 +28,18 @@ final class PreviewWorkoutRepository: WorkoutRepository {
         // No-op for preview
     }
 
+    func updateExercise(_ exercise: Exercise) async throws {
+        // No-op for preview
+    }
+
+    func deleteExercise(id: UUID) async throws {
+        // No-op for preview
+    }
+
+    func isExerciseUsedInWorkouts(_ exerciseId: UUID) async throws -> Bool {
+        false
+    }
+
     func getWorkouts() async throws -> [Workout] {
         []
     }

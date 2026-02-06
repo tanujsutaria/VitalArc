@@ -51,6 +51,10 @@ struct WorkoutTabContentView: View {
                         ),
                         getExercisesUseCase: GetExercisesUseCase(
                             repository: container.workoutRepository
+                        ),
+                        detectPersonalRecordUseCase: DetectPersonalRecordUseCase(
+                            workoutRepository: container.workoutRepository,
+                            analyticsRepository: container.analyticsRepository
                         )
                     )
                 }

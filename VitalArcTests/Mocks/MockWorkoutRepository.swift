@@ -62,6 +62,31 @@ final class MockWorkoutRepository: WorkoutRepository {
         }
     }
 
+    func updateExercise(_ exercise: Exercise) async throws {
+        if shouldThrowOnSave {
+            throw MockError.saveFailed
+        }
+        if let index = mockExercises.firstIndex(where: { $0.id == exercise.id }) {
+            mockExercises[index] = exercise
+        }
+    }
+
+    func deleteExercise(id: UUID) async throws {
+        if shouldThrowOnDelete {
+            throw MockError.deleteFailed
+        }
+        mockExercises.removeAll { $0.id == id }
+    }
+
+    func isExerciseUsedInWorkouts(_ exerciseId: UUID) async throws -> Bool {
+        if shouldThrowOnGet {
+            throw MockError.getFailed
+        }
+        return mockWorkouts.contains { workout in
+            workout.sets.contains { $0.exerciseId == exerciseId }
+        }
+    }
+
     // MARK: - Workout Operations
 
     func getWorkouts() async throws -> [Workout] {
