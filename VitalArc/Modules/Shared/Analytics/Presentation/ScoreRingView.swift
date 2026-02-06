@@ -71,6 +71,9 @@ struct ScoreRingView: View {
                 }
             }
         }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("\(title) score")
+        .accessibilityValue("\(Int(score))\(subtitle.isEmpty ? "" : ", \(subtitle)")")
         .onAppear {
             withAnimation(.vitalSpringBouncy.delay(0.2)) {
                 animatedProgress = score
@@ -152,6 +155,9 @@ struct LargeScoreCard: View {
                 Spacer()
             }
         }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("\(title)")
+        .accessibilityValue("\(Int(score)), \(subtitle)\(trend != nil && trendValue != nil ? ", \(trendValue!)" : "")")
         .onAppear {
             withAnimation(.vitalSpringBouncy.delay(0.1)) {
                 animatedScore = score

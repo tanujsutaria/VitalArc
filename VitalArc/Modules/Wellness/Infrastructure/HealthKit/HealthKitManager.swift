@@ -39,6 +39,9 @@ final class HealthKitManager {
 
     /// Fetch health metrics for a specific date
     func fetchHealthMetrics(for date: Date) async throws -> HealthMetrics? {
+        guard isHealthKitAvailable() else {
+            throw HealthKitError.notAvailable
+        }
         let dateRange = HealthKitQuery.dateRangeForDate(date)
 
         async let hrv = fetchHRV(start: dateRange.start, end: dateRange.end)
@@ -461,7 +464,7 @@ final class HealthKitManager {
                     return
                 }
 
-                let value = sample.quantity.doubleValue(for: .percent()) * 100
+                let value = sample.quantity.doubleValue(for: .percent())
                 continuation.resume(returning: value)
             }
 

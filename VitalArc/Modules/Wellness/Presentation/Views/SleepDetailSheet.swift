@@ -60,6 +60,7 @@ struct SleepDetailSheet: View {
                             .font(.vitalIconMedium)
                             .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                     }
+                    .accessibilityLabel("Close sleep analysis")
                 }
             }
         }
@@ -141,6 +142,9 @@ struct SleepDetailSheet: View {
                 .fontWeight(.bold)
                 .foregroundStyle(.white)
         }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Sleep target progress")
+        .accessibilityValue("\(Int(progress * 100)) percent of \(Int(targetHours)) hour target")
     }
 
     private var sleepQualityLabel: String {
@@ -259,6 +263,9 @@ struct SleepDetailSheet: View {
                 .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                 .frame(width: 45, alignment: .trailing)
         }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("\(label)")
+        .accessibilityValue(String(format: "%.1f hours, %.0f percent", hours, percent))
     }
 
     // MARK: - Weekly Trend Section

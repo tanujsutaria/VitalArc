@@ -18,11 +18,12 @@ struct ReadinessScore: Equatable {
 
     var level: ReadinessLevel {
         switch overallScore {
-        case 0..<30: return .poor
+        case ..<30: return .poor
         case 30..<50: return .fair
         case 50..<70: return .moderate
         case 70..<85: return .good
-        default: return .optimal
+        case 85...: return .optimal
+        default: return .poor
         }
     }
 }

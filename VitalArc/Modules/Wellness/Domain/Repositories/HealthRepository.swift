@@ -7,6 +7,7 @@
 
 import Foundation
 
+@MainActor
 protocol HealthRepository {
     // Health metrics operations
     func getHealthMetrics(for date: Date) async throws -> HealthMetrics?

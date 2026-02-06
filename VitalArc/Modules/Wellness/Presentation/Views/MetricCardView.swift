@@ -74,6 +74,9 @@ struct MetricCardView: View {
                 }
             }
         }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("\(title)")
+        .accessibilityValue("\(value) \(unit)\(trend.map { ", trending \($0.description)" } ?? "")")
     }
 
     // MARK: - Helpers

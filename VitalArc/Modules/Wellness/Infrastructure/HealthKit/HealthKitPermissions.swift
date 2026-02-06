@@ -72,13 +72,11 @@ struct HealthKitPermissions {
         return healthStore.authorizationStatus(for: type)
     }
 
-    /// Check if all required permissions are granted
+    /// Check if HealthKit authorization has been requested.
+    /// Note: HealthKit does not reveal read authorization status for privacy.
+    /// We track whether authorization has been successfully requested via UserDefaults.
     static func hasRequiredAuthorization(healthStore: HKHealthStore) -> Bool {
-        let readTypes = requiredReadTypes()
-        return readTypes.allSatisfy { type in
-            let status = healthStore.authorizationStatus(for: type)
-            return status == .sharingAuthorized
-        }
+        return UserDefaults.standard.bool(forKey: "healthKitAuthorizationRequested")
     }
 
     /// Check if HealthKit is available on this device
@@ -101,8 +99,8 @@ struct HealthKitPermissions {
 
         try await healthStore.requestAuthorization(toShare: writeTypes, read: readTypes)
 
-        // Note: Due to privacy, we can't definitively determine if user granted access
-        // We can only check if the request was processed
+        // Track that authorization was requested (read status is private per Apple policy)
+        UserDefaults.standard.set(true, forKey: "healthKitAuthorizationRequested")
         return true
     }
 }

@@ -59,6 +59,7 @@ struct MetricDetailSheet: View {
                             .font(.vitalIconMedium)
                             .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                     }
+                    .accessibilityLabel("Close metric detail")
                 }
             }
         }
@@ -368,6 +369,7 @@ struct MetricDetailSheet: View {
     }
 
     private var formattedCurrentValue: String {
+        guard currentValue >= 0 else { return "--" }
         switch metricType {
         case .steps:
             let formatter = NumberFormatter()
@@ -429,6 +431,7 @@ struct MetricDetailSheet: View {
     return PreviewContainer()
 }
 
+@MainActor
 private struct PreviewHealthRepository: HealthRepository {
     func getHealthMetrics(for date: Date) async throws -> HealthMetrics? { nil }
     func getHealthMetrics(from startDate: Date, to endDate: Date) async throws -> [HealthMetrics] {

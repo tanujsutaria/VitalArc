@@ -34,6 +34,7 @@ final class DependencyContainer {
     var templateRepository: TemplateRepository { workout.templateRepository }
     var notificationPreferencesRepository: NotificationPreferencesRepository { shared.notificationPreferencesRepository }
     var notificationScheduler: NotificationScheduler { shared.notificationScheduler }
+    var calculateRecoveryScoreUseCase: CalculateRecoveryScoreUseCase { wellness.calculateRecoveryScoreUseCase }
     var calculateTDEEUseCase: CalculateTDEEUseCase { shared.calculateTDEEUseCase }
     var scheduleNotificationsUseCase: ScheduleNotificationsUseCase { shared.scheduleNotificationsUseCase }
     var requestNotificationPermissionUseCase: RequestNotificationPermissionUseCase { shared.requestNotificationPermissionUseCase }
@@ -287,7 +288,7 @@ final class SwiftDataNutritionRepository: NutritionRepository {
     func getFoodEntries(for date: Date) async throws -> [FoodEntry] {
         let calendar = Calendar.current
         let startOfDay = calendar.startOfDay(for: date)
-        let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) ?? startOfDay.addingTimeInterval(86400)
+        let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) ?? startOfDay
 
         let descriptor = FetchDescriptor<FoodEntryModel>(
             predicate: #Predicate { entry in
@@ -397,7 +398,7 @@ final class SwiftDataNutritionRepository: NutritionRepository {
     func getWaterEntries(for date: Date) async throws -> [WaterEntry] {
         let calendar = Calendar.current
         let startOfDay = calendar.startOfDay(for: date)
-        let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) ?? startOfDay.addingTimeInterval(86400)
+        let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) ?? startOfDay
 
         let descriptor = FetchDescriptor<WaterEntryModel>(
             predicate: #Predicate { entry in
@@ -431,7 +432,7 @@ final class SwiftDataNutritionRepository: NutritionRepository {
     func getDailyNutrition(for date: Date) async throws -> DailyNutrition? {
         let calendar = Calendar.current
         let startOfDay = calendar.startOfDay(for: date)
-        let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) ?? startOfDay.addingTimeInterval(86400)
+        let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) ?? startOfDay
 
         let descriptor = FetchDescriptor<DailyNutritionModel>(
             predicate: #Predicate { nutrition in
@@ -449,7 +450,7 @@ final class SwiftDataNutritionRepository: NutritionRepository {
     func saveDailyNutrition(_ nutrition: DailyNutrition) async throws {
         let calendar = Calendar.current
         let startOfDay = calendar.startOfDay(for: nutrition.date)
-        let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) ?? startOfDay.addingTimeInterval(86400)
+        let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) ?? startOfDay
 
         let descriptor = FetchDescriptor<DailyNutritionModel>(
             predicate: #Predicate { nutritionModel in
@@ -491,13 +492,14 @@ final class SwiftDataHealthRepository: HealthRepository {
     func getHealthMetrics(for date: Date) async throws -> HealthMetrics? {
         let calendar = Calendar.current
         let startOfDay = calendar.startOfDay(for: date)
-        let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) ?? startOfDay.addingTimeInterval(86400)
+        let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) ?? startOfDay
 
-        let descriptor = FetchDescriptor<HealthMetricsModel>(
+        var descriptor = FetchDescriptor<HealthMetricsModel>(
             predicate: #Predicate { metrics in
                 metrics.date >= startOfDay && metrics.date < endOfDay
             }
         )
+        descriptor.fetchLimit = 1
 
         let models = try modelContext.fetch(descriptor)
         return models.first?.toDomain()
@@ -506,11 +508,11 @@ final class SwiftDataHealthRepository: HealthRepository {
     func getHealthMetrics(from startDate: Date, to endDate: Date) async throws -> [HealthMetrics] {
         let calendar = Calendar.current
         let start = calendar.startOfDay(for: startDate)
-        let end = calendar.startOfDay(for: endDate)
+        let end = calendar.date(byAdding: .day, value: 1, to: calendar.startOfDay(for: endDate)) ?? calendar.startOfDay(for: endDate)
 
         let descriptor = FetchDescriptor<HealthMetricsModel>(
             predicate: #Predicate { metrics in
-                metrics.date >= start && metrics.date <= end
+                metrics.date >= start && metrics.date < end
             },
             sortBy: [SortDescriptor(\.date, order: .forward)]
         )
@@ -523,7 +525,7 @@ final class SwiftDataHealthRepository: HealthRepository {
         // Check if metrics for this date already exist
         let calendar = Calendar.current
         let startOfDay = calendar.startOfDay(for: metrics.date)
-        let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) ?? startOfDay.addingTimeInterval(86400)
+        let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) ?? startOfDay
 
         let descriptor = FetchDescriptor<HealthMetricsModel>(
             predicate: #Predicate { model in
@@ -540,6 +542,10 @@ final class SwiftDataHealthRepository: HealthRepository {
             existingModel.activeEnergy = metrics.activeEnergy
             existingModel.steps = metrics.steps
             existingModel.sleepHours = metrics.sleepHours
+            existingModel.deepSleepHours = metrics.sleepStages?.deepSleep
+            existingModel.remSleepHours = metrics.sleepStages?.remSleep
+            existingModel.coreSleepHours = metrics.sleepStages?.coreSleep
+            existingModel.awakeHours = metrics.sleepStages?.awake
             existingModel.weight = metrics.weight
             existingModel.bodyFatPercentage = metrics.bodyFatPercentage
             existingModel.leanBodyMass = metrics.leanBodyMass

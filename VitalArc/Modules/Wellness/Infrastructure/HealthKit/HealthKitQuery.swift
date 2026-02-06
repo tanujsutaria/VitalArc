@@ -18,7 +18,7 @@ struct HealthKitQuery {
         let calendar = Calendar.current
         let now = Date()
         let startOfDay = calendar.startOfDay(for: now)
-        let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) ?? startOfDay.addingTimeInterval(86400)
+        let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) ?? startOfDay
         return (startOfDay, endOfDay)
     }
 
@@ -27,8 +27,8 @@ struct HealthKitQuery {
         let calendar = Calendar.current
         let now = Date()
         let startOfToday = calendar.startOfDay(for: now)
-        let endOfToday = calendar.date(byAdding: .day, value: 1, to: startOfToday) ?? startOfToday.addingTimeInterval(86400)
-        let startDate = calendar.date(byAdding: .day, value: -(days - 1), to: startOfToday) ?? startOfToday.addingTimeInterval(Double(-days + 1) * 86400)
+        let endOfToday = calendar.date(byAdding: .day, value: 1, to: startOfToday) ?? startOfToday
+        let startDate = calendar.date(byAdding: .day, value: -(days - 1), to: startOfToday) ?? startOfToday
         return (startDate, endOfToday)
     }
 
@@ -36,13 +36,14 @@ struct HealthKitQuery {
     static func dateRangeForDate(_ date: Date) -> (start: Date, end: Date) {
         let calendar = Calendar.current
         let startOfDay = calendar.startOfDay(for: date)
-        let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) ?? startOfDay.addingTimeInterval(86400)
+        let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) ?? startOfDay
         return (startOfDay, endOfDay)
     }
 
     /// Creates a predicate for date range
+    /// Uses empty options to include samples that overlap the range (important for overnight sleep)
     static func predicateForDateRange(start: Date, end: Date) -> NSPredicate {
-        return HKQuery.predicateForSamples(withStart: start, end: end, options: .strictStartDate)
+        return HKQuery.predicateForSamples(withStart: start, end: end, options: [])
     }
 
     // MARK: - Query Building
