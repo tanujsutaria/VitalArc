@@ -72,6 +72,12 @@ private struct NutritionUnifiedView: View {
                     MacroSummarySkeletonView()
                 }
 
+                // Water Tracking
+                WaterTrackingCard(
+                    repository: container.nutritionRepository,
+                    date: viewModel.selectedDate
+                )
+
                 // Meal Sections
                 ForEach(MealType.allCases, id: \.self) { meal in
                     let entries = viewModel.foodEntries.filter { $0.meal == meal }
@@ -107,6 +113,7 @@ private struct NutritionUnifiedView: View {
                     repository: container.nutritionRepository,
                     api: USDAFoodAPI()
                 ),
+                repository: container.nutritionRepository,
                 onFoodSelected: { food in
                     selectedFood = food
                     showingQuantitySheet = true

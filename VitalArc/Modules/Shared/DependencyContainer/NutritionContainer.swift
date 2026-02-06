@@ -12,9 +12,13 @@ import SwiftData
 @MainActor
 final class NutritionContainer {
     let nutritionRepository: SwiftDataNutritionRepository
+    let logWaterUseCase: LogWaterUseCase
+    let getWaterEntriesUseCase: GetWaterEntriesUseCase
 
     init(modelContext: ModelContext) {
         self.nutritionRepository = SwiftDataNutritionRepository(modelContext: modelContext)
+        self.logWaterUseCase = LogWaterUseCase(repository: nutritionRepository)
+        self.getWaterEntriesUseCase = GetWaterEntriesUseCase(repository: nutritionRepository)
     }
 }
 
