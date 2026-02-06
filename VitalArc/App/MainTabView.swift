@@ -49,6 +49,7 @@ struct MainTabView: View {
                 .tag(4)
         }
         .tint(Color.vitalPrimaryV2)
+        .environment(\.selectedTab, $selectedTab)
     }
 }
 

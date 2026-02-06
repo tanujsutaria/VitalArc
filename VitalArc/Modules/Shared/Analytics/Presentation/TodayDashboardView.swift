@@ -9,11 +9,15 @@ import SwiftUI
 
 struct TodayDashboardView: View {
     @Environment(\.dependencyContainer) private var container
+    @Environment(\.selectedTab) private var selectedTab
     @State private var selectedDate = Date()
     @State private var healthMetrics: HealthMetrics?
     @State private var todaysWorkout: Workout?
     @State private var dailyNutrition: DailyNutrition?
     @State private var isLoading = true
+    @State private var recoveryScore: RecoveryScoreResult?
+    @State private var strainResult: StrainResult?
+    @State private var showDatePicker = false
 
     var body: some View {
         NavigationStack {
@@ -49,10 +53,22 @@ struct TodayDashboardView: View {
             .refreshable {
                 await loadTodayData()
             }
+            .onChange(of: selectedDate) {
+                Task {
+                    await loadTodayData()
+                }
+            }
+            .sheet(isPresented: $showDatePicker) {
+                datePickerSheet
+            }
         }
     }
 
     // MARK: - Date Header
+
+    private var isToday: Bool {
+        Calendar.current.isDateInToday(selectedDate)
+    }
 
     private var dateHeader: some View {
         HStack {
@@ -63,10 +79,59 @@ struct TodayDashboardView: View {
                 Text(selectedDate.formatted(.dateTime.month().day()))
                     .font(.vitalDisplayMediumV2)
                     .foregroundStyle(Color.vitalAdaptiveTextPrimaryV2)
+                    .onTapGesture {
+                        showDatePicker = true
+                    }
             }
             Spacer()
-            // Date navigation could go here
+            HStack(spacing: Spacing.sm) {
+                Button {
+                    selectedDate = Calendar.current.date(byAdding: .day, value: -1, to: selectedDate) ?? selectedDate
+                } label: {
+                    Image(systemName: "chevron.left")
+                        .font(.vitalIconSmall)
+                        .foregroundStyle(Color.vitalPrimaryV2)
+                }
+
+                if !isToday {
+                    Button {
+                        selectedDate = Date()
+                    } label: {
+                        Text("Today")
+                            .font(.vitalCaptionV2)
+                            .foregroundStyle(Color.vitalPrimaryV2)
+                    }
+                }
+
+                Button {
+                    selectedDate = Calendar.current.date(byAdding: .day, value: 1, to: selectedDate) ?? selectedDate
+                } label: {
+                    Image(systemName: "chevron.right")
+                        .font(.vitalIconSmall)
+                        .foregroundStyle(isToday ? Color.vitalAdaptiveTextTertiaryV2 : Color.vitalPrimaryV2)
+                }
+                .disabled(isToday)
+            }
         }
+    }
+
+    private var datePickerSheet: some View {
+        NavigationStack {
+            DatePicker("Select Date", selection: $selectedDate, in: ...Date(), displayedComponents: .date)
+                .datePickerStyle(.graphical)
+                .tint(Color.vitalPrimaryV2)
+                .padding(Spacing.screenPadding)
+                .navigationTitle("Select Date")
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .confirmationAction) {
+                        Button("Done") {
+                            showDatePicker = false
+                        }
+                    }
+                }
+        }
+        .presentationDetents([.medium])
     }
 
     // MARK: - Loading State
@@ -110,7 +175,14 @@ struct TodayDashboardView: View {
                         .foregroundStyle(Color.vitalAdaptiveTextSecondaryV2)
                 }
 
-                if let metrics = healthMetrics {
+                if let recovery = recoveryScore, recovery.score > 0 {
+                    Text("\(recovery.score)")
+                        .font(.vitalNumberLargeV2)
+                        .foregroundStyle(Color.vitalAdaptiveTextPrimaryV2)
+                    Text(recovery.readiness.rawValue)
+                        .font(.vitalCaptionV2)
+                        .foregroundStyle(Color.vitalAdaptiveTextTertiaryV2)
+                } else if let metrics = healthMetrics {
                     Text("\(Int(metrics.sleepHours ?? 7))h \(Int((metrics.sleepHours ?? 7).truncatingRemainder(dividingBy: 1) * 60))m")
                         .font(.vitalNumberLargeV2)
                         .foregroundStyle(Color.vitalAdaptiveTextPrimaryV2)
@@ -143,7 +215,14 @@ struct TodayDashboardView: View {
                         .foregroundStyle(Color.vitalAdaptiveTextSecondaryV2)
                 }
 
-                if let metrics = healthMetrics {
+                if let strain = strainResult {
+                    Text(String(format: "%.1f", strain.strainScore))
+                        .font(.vitalNumberLargeV2)
+                        .foregroundStyle(Color.vitalAdaptiveTextPrimaryV2)
+                    Text(strain.strainLevel.rawValue)
+                        .font(.vitalCaptionV2)
+                        .foregroundStyle(Color.vitalAdaptiveTextTertiaryV2)
+                } else if let metrics = healthMetrics {
                     Text("\(Int(metrics.activeEnergy ?? 0))")
                         .font(.vitalNumberLargeV2)
                         .foregroundStyle(Color.vitalAdaptiveTextPrimaryV2)
@@ -341,28 +420,33 @@ struct TodayDashboardView: View {
                 .foregroundStyle(Color.vitalAdaptiveTextPrimaryV2)
 
             HStack(spacing: Spacing.md) {
-                quickActionButton(icon: "plus.circle.fill", label: "Log Workout", color: .vitalPrimaryV2)
-                quickActionButton(icon: "fork.knife.circle.fill", label: "Log Food", color: .vitalAccentV2)
-                quickActionButton(icon: "chart.line.uptrend.xyaxis.circle.fill", label: "View Progress", color: .vitalSuccessV2)
+                quickActionButton(icon: "plus.circle.fill", label: "Log Workout", color: .vitalPrimaryV2, tab: 1)
+                quickActionButton(icon: "fork.knife.circle.fill", label: "Log Food", color: .vitalAccentV2, tab: 2)
+                quickActionButton(icon: "chart.line.uptrend.xyaxis.circle.fill", label: "View Progress", color: .vitalSuccessV2, tab: 3)
             }
         }
     }
 
-    private func quickActionButton(icon: String, label: String, color: Color) -> some View {
-        VitalCardV2(elevation: .raised, isTappable: true) {
-            VStack(spacing: Spacing.sm) {
-                Image(systemName: icon)
-                    .font(.vitalIconLarge)
-                    .foregroundStyle(color)
-                Text(label)
-                    .font(.vitalCaptionV2)
-                    .foregroundStyle(Color.vitalAdaptiveTextSecondaryV2)
-                    .multilineTextAlignment(.center)
-                    .lineLimit(2)
+    private func quickActionButton(icon: String, label: String, color: Color, tab: Int) -> some View {
+        Button {
+            selectedTab.wrappedValue = tab
+        } label: {
+            VitalCardV2(elevation: .raised, isTappable: true) {
+                VStack(spacing: Spacing.sm) {
+                    Image(systemName: icon)
+                        .font(.vitalIconLarge)
+                        .foregroundStyle(color)
+                    Text(label)
+                        .font(.vitalCaptionV2)
+                        .foregroundStyle(Color.vitalAdaptiveTextSecondaryV2)
+                        .multilineTextAlignment(.center)
+                        .lineLimit(2)
+                }
+                .frame(maxWidth: .infinity)
+                .frame(height: 80)
             }
-            .frame(maxWidth: .infinity)
-            .frame(height: 80)
         }
+        .buttonStyle(.plain)
     }
 
     // MARK: - Helper Views
@@ -422,6 +506,25 @@ struct TodayDashboardView: View {
             dailyNutrition = try await calculateUseCase.execute(for: selectedDate)
         } catch {
             Log.error("Failed to load nutrition", error: error, category: .nutrition)
+        }
+
+        // Load recovery score
+        do {
+            let recoveryUseCase = CalculateRecoveryScoreUseCase(healthRepository: container.healthRepository)
+            recoveryScore = try await recoveryUseCase.execute()
+        } catch {
+            Log.error("Failed to load recovery score", error: error, category: .healthKit)
+        }
+
+        // Load strain score
+        do {
+            let strainUseCase = CalculateStrainScoreUseCase(
+                healthRepository: container.healthRepository,
+                userRepository: container.userRepository
+            )
+            strainResult = try await strainUseCase.execute(for: selectedDate)
+        } catch {
+            Log.error("Failed to load strain score", error: error, category: .healthKit)
         }
     }
 }
