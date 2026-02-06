@@ -17,7 +17,7 @@ VitalArc integrates workout tracking, nutrition logging, and health analytics in
 | Nutrition Tracking | ✅ Ready |
 | Food Search (API) | ⚠️ API keys not configured |
 | Analytics Dashboard | ✅ Ready |
-| Design System | ✅ ~93% adoption |
+| Design System | ✅ ~90% adoption |
 | Recovery Score | ✅ HRV algorithm + HealthKit integration |
 | Sleep Analysis | ✅ Stage breakdown + quality scoring |
 | Macro Goal Editing | ✅ TDEE-based recommendations |
@@ -39,7 +39,9 @@ See `PROJECT_STATUS.md` for detailed status.
 ### In Progress
 | Feature | Status | Remaining |
 |---------|--------|-----------|
-| Workout History & Trends | Basic history | Charts, PR tracking improvements |
+| Workout History & Trends | PR tracking, rest timer, supersets | Charts polish |
+| Water Tracking | Manual logging with daily goals | HealthKit sync |
+| Body Composition | Body fat %, lean mass from HealthKit | Trend charts |
 
 ### Planned
 | Feature | Priority | Description |
