@@ -118,6 +118,53 @@ final class MockNutritionRepository: NutritionRepository {
         mockDailyNutrition[startOfDay] = nutrition
     }
 
+    // MARK: - Favorites
+
+    func getFavoriteFoods() async throws -> [Food] {
+        if shouldThrowOnGet {
+            throw MockError.getFailed
+        }
+        return mockFoods.filter { $0.isFavorite }
+    }
+
+    func toggleFavorite(foodId: UUID) async throws {
+        if shouldThrowOnSave {
+            throw MockError.saveFailed
+        }
+    }
+
+    // MARK: - Recent Foods
+
+    func getRecentFoods(limit: Int) async throws -> [Food] {
+        if shouldThrowOnGet {
+            throw MockError.getFailed
+        }
+        return Array(mockFoods.filter { $0.recentlyUsed != nil }
+            .sorted { ($0.recentlyUsed ?? .distantPast) > ($1.recentlyUsed ?? .distantPast) }
+            .prefix(limit))
+    }
+
+    // MARK: - Water Tracking
+
+    func getWaterEntries(for date: Date) async throws -> [WaterEntry] {
+        if shouldThrowOnGet {
+            throw MockError.getFailed
+        }
+        return []
+    }
+
+    func saveWaterEntry(_ entry: WaterEntry) async throws {
+        if shouldThrowOnSave {
+            throw MockError.saveFailed
+        }
+    }
+
+    func deleteWaterEntry(id: UUID) async throws {
+        if shouldThrowOnDelete {
+            throw MockError.deleteFailed
+        }
+    }
+
     // MARK: - Test Helpers
 
     func reset() {
