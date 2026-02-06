@@ -149,7 +149,7 @@ xcodebuild -scheme VitalArc -destination 'platform=iOS Simulator,name=iPhone 17 
 | Views | 75 |
 | ViewModels | 12 |
 | Use cases | 25 |
-| Unit tests | 605+ |
+| Unit tests | 535 |
 | Exercises | 960+ |
 
 ## Author

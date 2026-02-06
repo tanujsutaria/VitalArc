@@ -19,6 +19,16 @@ xcodebuild -scheme VitalArc -destination 'platform=iOS Simulator,name=iPhone 17 
 
 HealthKit features require a physical device with Apple Developer account and HealthKit entitlements configured.
 
+## Verification
+
+Always verify work with concrete feedback loops:
+- **Code changes**: Run the build (`xcodebuild ... build`) after modifications
+- **Test changes**: Run affected tests to confirm they pass
+- **UI changes**: Check SwiftUI previews or simulator if available
+- **Design system**: Run design-system-scanner on modified views
+
+Concrete verification produces significantly better results than assumption-based work.
+
 ## Git Workflow
 
 **Branch naming**: `dev/<platform>-<focus>-<session>.<minor>-YYYY-MM-DD`
@@ -50,7 +60,7 @@ HealthKit features require a physical device with Apple Developer account and He
 
 [optional body]
 
-Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
+Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
 ```
 
 **Types:**
@@ -122,6 +132,8 @@ Both workstreams use an enhanced session log with a **Work Log table** for track
 
 Skills in `.claude/skills/` serve as **prompt templates** for specialized tasks. They use native Claude Code frontmatter for execution control.
 
+> **Opus 4.6 Note**: This model has strong native subagent orchestration. Use subagents when tasks can run in parallel or require isolated context. For simple tasks, single-file edits, or sequential operations, work directly rather than delegating.
+
 ### Skill Frontmatter
 
 | Field | Purpose | Example |
@@ -161,7 +173,7 @@ Skills are classified by whether they can run autonomously (no arguments) or req
 
 ### Parallel Execution
 
-To run skills in parallel, launch multiple TaskCreate calls in a **single message**:
+When tasks are independent and can run concurrently, launch multiple TaskCreate calls in a single message. For simple, sequential operations or tasks that share context, work directly rather than delegating to subagents.
 
 ```javascript
 // All three run simultaneously

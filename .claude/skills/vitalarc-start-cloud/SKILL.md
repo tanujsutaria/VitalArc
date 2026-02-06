@@ -78,7 +78,7 @@ git stash list | grep -q "Auto-stash $(date +%Y-%m-%d)" && git stash pop
 
 ### Phase 5: Parallel Task Initialization
 
-**CRITICAL: Launch BOTH tasks in a SINGLE message for true parallel execution.**
+Launch both tasks in a single message for parallel execution.
 
 ```javascript
 // In a SINGLE message, create both tasks:

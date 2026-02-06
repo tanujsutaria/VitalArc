@@ -27,11 +27,14 @@ Finalize a workstation session with build verification.
 │    ├── Task: lint-check     (blockedBy: test-run)                   │
 │    └── Task: progress-update (NO DEPENDENCIES - starts immediately) │
 │                                                                      │
-│  PHASE 4 - Commit Preparation (After Phase 3):                      │
-│    └── Task: generate-commit (blockedBy: scan + lint + progress)    │
+│  PHASE 3.5 - Documentation Update (after Phase 2 + 3):             │
+│    └── Task: docs-update (blockedBy: test-run + design-scan)        │
+│                                                                      │
+│  PHASE 4 - Commit Preparation (After Phase 3 + 3.5):               │
+│    └── Task: generate-commit (blockedBy: all above)                 │
 │                                                                      │
 │  PHASE 5 - Finalization (Sequential):                               │
-│    └── Update docs → Commit → Push → (Optional) Create PR           │
+│    └── Commit → Push → (Optional) Create PR                         │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -41,7 +44,7 @@ Finalize a workstation session with build verification.
 
 ### Phase 1: Build Validation (BLOCKING)
 
-**This MUST pass before proceeding. If build fails, STOP and report.**
+This must pass before proceeding. If build fails, stop and report.
 
 ```javascript
 TaskCreate({
@@ -69,7 +72,7 @@ Then: Re-run /vitalarc-end-workstation
 
 ### Phase 2: Test Execution (BLOCKING - After Build Passes)
 
-**Tests MUST pass before proceeding. If tests fail, STOP and report.**
+Tests must pass before proceeding. If tests fail, stop and report.
 
 ```javascript
 TaskCreate({
@@ -77,9 +80,10 @@ TaskCreate({
   description: `BLOCKING TEST CHECK:
     1. Run: /test-runner (full mode)
     2. If any tests FAIL: Return immediately with failure details
-    3. If all tests PASS: Return success with summary
+    3. If all tests PASS: Return success with test count summary
 
-    This is a required quality gate.`,
+    This is a required quality gate.
+    IMPORTANT: Save the actual test count (e.g. "535 tests") - it will be needed by docs-update.`,
   activeForm: "Running tests (blocking)",
   addBlockedBy: ["task-build-id"]
 })
@@ -106,7 +110,7 @@ Then: Re-run /vitalarc-end-workstation
 
 ### Phase 3: Parallel Quality Checks (After Tests Pass)
 
-**Launch ALL THREE quality check tasks in a SINGLE message for parallel execution.**
+Launch all three quality check tasks in a single message for parallel execution.
 
 > **Note**: `progress-update` does NOT depend on test results - it only summarizes work done.
 > `design-scan` and `lint-check` wait for tests to ensure they're checking valid, working code.
@@ -120,7 +124,8 @@ TaskCreate({
   description: `Run final design-system-scanner:
     1. Scan VitalArc/Presentation/ for violations
     2. Report summary for session log
-    3. Note any new violations introduced this session`,
+    3. Note any new violations introduced this session
+    4. Report the design system adoption percentage (needed by docs-update)`,
   activeForm: "Scanning design system",
   addBlockedBy: ["task-test-id"]
 })
@@ -152,7 +157,40 @@ TaskCreate({
 // Returns: task-progress-id
 ```
 
-### Phase 4: Generate Commit Message (After Phase 3)
+### Phase 3.5: Update Project Documentation (After Tests + Design Scan)
+
+This task ensures all documentation files reflect actual session data. It must run before committing.
+
+```javascript
+TaskCreate({
+  subject: "Update project documentation",
+  description: `REQUIRED - Update all documentation files with verified data from this session.
+    Use actual results from the test run and design scan tasks - do NOT use stale values.
+
+    **PROJECT_STATUS.md**:
+    1. Update "Last Updated" line to current date and session number
+    2. Update test count in both the header line AND Codebase Stats table to actual count from test run
+    3. Update the bottom "Note" line test count to match
+    4. Update "Current State" section with this session's accomplishments
+    5. Update Design System adoption % in Feature Status table if design scan shows a different value
+    6. Review Known Issues section:
+       - Remove any issues that are now resolved (verify against codebase)
+       - Update counts for remaining issues
+       - If issues were resolved, add them to "Recent Resolutions" section
+
+    **README.md**:
+    1. Update unit test count in Codebase Stats table if it differs from actual count
+
+    **SESSION_LOG.md**:
+    1. Add "Session ended" row to Work Log with current time
+    2. Note any deferred or incomplete session goals with status`,
+  activeForm: "Updating documentation",
+  addBlockedBy: ["task-test-id", "task-scan-id"]
+})
+// Returns: task-docs-id
+```
+
+### Phase 4: Generate Commit Message (After Phase 3 + 3.5)
 
 ```javascript
 TaskCreate({
@@ -162,9 +200,9 @@ TaskCreate({
     2. Determine type (feat/fix/refactor/docs/etc)
     3. Determine scope (workout/nutrition/health/ui/infra/session)
     4. Generate conventional commit message
-    5. Include Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>`,
+    5. Include Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>`,
   activeForm: "Generating commit message",
-  addBlockedBy: ["task-scan-id", "task-lint-id", "task-progress-id"]
+  addBlockedBy: ["task-scan-id", "task-lint-id", "task-progress-id", "task-docs-id"]
 })
 // Returns: task-commit-id
 ```
@@ -173,12 +211,6 @@ TaskCreate({
 
 After commit message is generated:
 
-#### Update Documentation Files
-
-If features changed, update:
-- **PROJECT_STATUS.md**: Update "Last Updated", feature status, Known Issues, Codebase Stats
-- **README.md Roadmap**: Move features between In Progress / Planned / Completed
-
 #### Commit and Push
 
 ```bash
@@ -186,7 +218,7 @@ git add SESSION_LOG.md PROJECT_STATUS.md README.md
 git commit -m "$(cat <<'EOF'
 [generated commit message]
 
-Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
+Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
 EOF
 )"
 git push -u origin "$(git rev-parse --abbrev-ref HEAD)"
@@ -269,120 +301,3 @@ Build:    Passing
 Session ended with no uncommitted changes.
 ═══════════════════════════════════════════════════════════════
 ```
-
-## Issue Reconciliation (CRITICAL)
-
-**At session end, validate that Known Issues in PROJECT_STATUS.md match actual codebase state.**
-
-This prevents stale documentation from wasting future session time on already-resolved issues.
-
-### Reconciliation Process
-
-Before finalizing the session, run these checks:
-
-```javascript
-// 1. Read current Known Issues from PROJECT_STATUS.md
-const projectStatus = await Read("PROJECT_STATUS.md");
-const knownIssuesSection = projectStatus.match(/## Known Issues[\s\S]*?(?=##|$)/);
-
-// 2. Validate each issue against actual codebase
-const validations = [
-  {
-    issue: "Cloud Session Test Files",
-    check: async () => {
-      // Run tests and check results
-      const result = await Bash("xcodebuild test ... 2>&1 | grep 'Executed'");
-      return result.includes("0 failures") ? "RESOLVED" : "STILL_OPEN";
-    }
-  },
-  {
-    issue: "Design System Gaps",
-    check: async () => {
-      // Check for violations in app code (not DesignSystem folder)
-      const violations = await Grep({
-        pattern: "Color\\.(red|blue|green|gray)",
-        path: "VitalArc/Presentation/Tabs"
-      });
-      return violations.length === 0 ? "RESOLVED" : "STILL_OPEN";
-    }
-  },
-  {
-    issue: "API Keys",
-    check: async () => {
-      // Check for placeholder keys
-      const placeholders = await Grep({
-        pattern: "YOUR_.*_HERE|DEMO_KEY",
-        path: "VitalArc/Infrastructure"
-      });
-      return placeholders.length === 0 ? "RESOLVED" : "STILL_OPEN";
-    }
-  }
-];
-
-// 3. Report discrepancies
-validations.forEach(({ issue, check }) => {
-  if (knownIssuesSection.includes(issue)) {
-    const status = await check();
-    if (status === "RESOLVED") {
-      console.log(`⚠️ STALE ISSUE: "${issue}" is resolved but still in Known Issues`);
-    }
-  }
-});
-```
-
-### Auto-Update on Resolution
-
-When discrepancies are found:
-
-1. **Prompt for confirmation**:
-```
-═══════════════════════════════════════════════════════════════
-       ⚠️ STALE DOCUMENTATION DETECTED
-═══════════════════════════════════════════════════════════════
-The following Known Issues appear to be resolved:
-
-1. Cloud Session Test Files - 535 tests passing, 0 failures
-2. Design System Gaps - 0 violations in app code
-
-Update PROJECT_STATUS.md to remove resolved issues? [Y/n]
-═══════════════════════════════════════════════════════════════
-```
-
-2. **Update PROJECT_STATUS.md**:
-   - Remove resolved items from Known Issues section
-   - Add resolution note to session accomplishments
-
-3. **Add Work Log entry**:
-```markdown
-| [Time] | Updated PROJECT_STATUS.md | PROJECT_STATUS.md | Removed N resolved Known Issues |
-```
-
-### Integration with Session End Pipeline
-
-Add to Phase 5 (Finalization), before commit:
-
-```javascript
-// After progress-update, before generate-commit
-TaskCreate({
-  subject: "Reconcile Known Issues",
-  description: `Run issue reconciliation:
-    1. Read PROJECT_STATUS.md Known Issues section
-    2. Validate each issue against actual codebase state
-    3. Report any stale/resolved issues
-    4. Prompt to update documentation if discrepancies found`,
-  activeForm: "Reconciling issues",
-  addBlockedBy: ["task-progress-id"]
-})
-// Returns: task-reconcile-id
-// generate-commit should addBlockedBy: ["task-reconcile-id", ...]
-```
-
-### Why This Matters
-
-Without reconciliation:
-- Future sessions waste time investigating resolved issues
-- Focus-suggester recommends already-completed work
-- Documentation diverges from reality
-- Developer trust in tooling erodes
-
-**Every session end MUST verify documentation accuracy.**

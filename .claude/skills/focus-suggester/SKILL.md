@@ -67,11 +67,11 @@ Provide a ranked list with rationale:
 **Why**: [Rationale]
 ```
 
-## CRITICAL: Validate Before Recommending
+## Validate Before Recommending
 
-**NEVER recommend a focus area based solely on documentation. Always verify against actual codebase state.**
+Verify recommendations against actual codebase state when possible, rather than relying solely on documentation.
 
-### Validation Step (REQUIRED)
+### Validation Step
 
 Before including any "Known Issue" in recommendations, run verification:
 

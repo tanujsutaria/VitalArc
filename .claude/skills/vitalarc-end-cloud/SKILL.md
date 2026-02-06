@@ -34,7 +34,7 @@ Finalize a cloud session. No build verification—CI will validate.
 
 ### Phase 1: Parallel Quality Checks
 
-**Launch BOTH tasks in a SINGLE message for true parallel execution:**
+Launch both tasks in a single message for parallel execution:
 
 ```javascript
 // In a SINGLE message, create both tasks:
@@ -95,7 +95,7 @@ git commit -m "$(cat <<'EOF'
 
 - Cloud session (build not verified)
 
-Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
+Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
 EOF
 )"
 git push -u origin "$(git rev-parse --abbrev-ref HEAD)"

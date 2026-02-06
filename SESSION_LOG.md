@@ -38,6 +38,13 @@
 | -- | Updated test-runner | .claude/skills/test-runner/SKILL.md | Added autonomy directive for Full mode default |
 | -- | Removed argument-hint | 3 skill files | design-system-scanner, coverage-analyzer, (+ applicable others) |
 | -- | Added Skill Invocation Types | CLAUDE.md | Classification table: Autonomous, Args Optional, Args Required |
+| -- | Fixed doc update pipeline | vitalarc-end-workstation/SKILL.md | Added Phase 3.5 docs-update task, removed Issue Reconciliation pseudo-code |
+| -- | Fixed stale documentation | PROJECT_STATUS.md, README.md | Corrected test count (535), date, design system % |
+| -- | Opus 4.6 best practices | CLAUDE.md | Added Verification section, subagent orchestration note, updated Parallel Execution guidance |
+| -- | Updated Co-Authored-By refs | 6 files | CLAUDE.md, vitalarc-end-workstation, vitalarc-end-cloud, vitalarc-start-cloud, vitalarc-start-workstation, commit-formatter |
+| -- | Softened skill language | Multiple skill files | Replaced aggressive CRITICAL/MUST/NEVER language per Opus 4.6 prompting best practices |
+| -- | Build verification | - | Build: SUCCEEDED, Tests: 535 passing (0 failures) |
+| -- | Session ended | SESSION_LOG.md | Opus 4.6 migration complete; Goal #2 (Food API test integration) still deferred |
 
 ---
 
