@@ -1,5 +1,40 @@
 # VitalArc Development Session Log
 
+## Session 18.2 - February 5, 2026 (Night)
+
+### Session Start
+- **Time**: Night PST
+- **Platform**: macOS
+- **Focus**: General session (user-directed)
+- **Branch**: `dev/mac-session-18.2-2026-02-05`
+- **Base**: main @ ea7ad93
+
+### Environment
+- **Build Capable**: Yes
+- **Test Capable**: Yes (unit + UI)
+
+### Pre-Session Status
+- **Build**: SUCCEEDED (0 errors, 1 system warning)
+- **Design Violations**: 17 total (6 color, 1 spacing, 10 typography) - all in design system core files
+- **Uncommitted Changes**: None
+
+### Session Goals
+1. User-directed development
+2. General development as directed
+
+### Work Log
+| Time | Action | Files | Notes |
+|------|--------|-------|-------|
+| Night | Session started | - | Build verified, clean state |
+| Night | Planned skill fix | - | Analyzed root cause of session 19.0 misexecution (should have been 18.2) |
+| Night | Rewrote workstation start skill | vitalarc-start-workstation/SKILL.md | 7→6 phases, added Execution Rules, replaced TaskCreate with Skill() invocations, inline session calc with macOS date -jf |
+| Night | Updated cloud start skill | vitalarc-start-cloud/SKILL.md | Added Execution Rules, replaced TaskCreate with Skill() invocations, added date -d platform comment |
+| Night | Added Skill to allowed-tools | Both start skills | Enables Skill() invocations from within orchestrator skills |
+| Night | Updated agent memory | MEMORY.md | Added Subagent Rules section (no haiku for reasoning, inline deterministic calcs, use existing skills) |
+| Night | Session ended | - | Build: SUCCEEDED, Tests: 535 passing, Lint: clean |
+
+---
+
 ## Session 18.1 - February 5, 2026 (Evening)
 
 ### Session Start

@@ -2,7 +2,7 @@
 name: vitalarc-start-workstation
 description: Initialize a VitalArc workstation development session. Use when starting work on Mac for feature development, UI changes, large refactors, or any work requiring Xcode builds and simulator testing.
 disable-model-invocation: true
-allowed-tools: Read, Grep, Glob, Bash, Write, Edit, Task, TaskCreate, TaskUpdate, TaskList
+allowed-tools: Read, Grep, Glob, Bash, Write, Edit, Task, Skill, TaskCreate, TaskUpdate, TaskList
 argument-hint: [focus-area]
 ---
 
@@ -16,30 +16,48 @@ Start a full development session on Mac with Xcode builds and simulator access.
 ┌─────────────────────────────────────────────────────────────────────┐
 │                    SESSION INITIALIZATION PIPELINE                   │
 ├─────────────────────────────────────────────────────────────────────┤
-│  PHASE 1 - Git Sync (Sequential - required first):                  │
+│  PHASE 1 - Git Sync (inline bash):                                  │
 │    └── Stash changes → Fetch/pull main                              │
 │                                                                      │
-│  PHASE 2 - Parallel Initialization (Maximum parallelization):       │
-│    ├── Task: session-number-calc  ─┐                                │
-│    ├── Task: focus-analysis        ├── ALL run in parallel          │
-│    ├── Task: build-validation      │   (no interdependencies)       │
-│    └── Task: design-system-scan   ─┘                                │
+│  PHASE 2 - Session Number + Branch (inline bash):                   │
+│    └── Parse SESSION_LOG.md → Calculate number → Create branch      │
+│    ⚠️ MUST run inline - never delegate to subagent                  │
 │                                                                      │
-│  PHASE 3 - Branch Creation (needs session number only):             │
-│    └── Create branch (blockedBy: session-number-calc)               │
+│  PHASE 3 - Parallel Skill Invocations:                              │
+│    ├── Skill('focus-suggester')       ─┐                            │
+│    ├── Skill('build-validator')        ├── ALL run in parallel      │
+│    └── Skill('design-system-scanner') ─┘                            │
 │                                                                      │
-│  PHASE 4 - Session Log (needs all Phase 2 results):                 │
-│    └── Task: create-session-log (blockedBy: ALL Phase 2 tasks)      │
+│  PHASE 4 - Restore Stash (inline bash)                              │
+│                                                                      │
+│  PHASE 5 - Session Log (inline write, uses Phase 3 results)        │
+│                                                                      │
+│  PHASE 6 - Output Summary                                           │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
-**Optimization**: Session number calculation now runs in parallel with other tasks, reducing total init time.
+## Execution Rules
+
+Every phase has a **binding execution method**. Do not deviate.
+
+| Phase | Method | Rationale |
+|-------|--------|-----------|
+| 1 - Git Sync | Inline bash | Deterministic git commands |
+| 2 - Session Number + Branch | Inline bash | Deterministic; **must not delegate** |
+| 3 - Focus/Build/Scan | `Skill()` tool | Reuses existing skills with correct agent types |
+| 4 - Restore Stash | Inline bash | Simple git command |
+| 5 - Session Log | Inline Write/Edit | Template fill from Phase 3 results |
+| 6 - Output Summary | Inline text | Display to user |
+
+**Prohibitions:**
+- **Do not use TaskCreate for operations that have dedicated skills.** Focus analysis, build validation, and design system scanning each have dedicated skills (`focus-suggester`, `build-validator`, `design-system-scanner`). Invoke them via `Skill()`.
+- **Do not delegate deterministic calculations to subagents.** Session number parsing and date arithmetic must run inline. Subagents (especially lighter models) can produce incorrect results for arithmetic and date logic.
 
 ## Implementation
 
-### Phase 1: Git Sync (Sequential - Required First)
+### Phase 1: Git Sync (Inline Bash)
 
-Execute these git commands before spawning any tasks:
+Execute these git commands directly before any other work:
 
 ```bash
 # Stash any uncommitted changes
@@ -49,109 +67,70 @@ Execute these git commands before spawning any tasks:
 git fetch origin && git checkout main && git pull origin main --ff-only
 ```
 
-### Phase 2: Parallel Task Initialization (Maximum Parallelization)
+### Phase 2: Session Number + Branch (Inline Bash)
 
-Launch these tasks in a single message for parallel execution.
+**Run this inline. Never delegate to a subagent.**
 
-This enables true parallel execution - session number calculation no longer blocks other tasks:
+Calculate the session number and create the branch in a single inline bash block:
 
-```javascript
-// In a SINGLE message, create all four tasks:
+```bash
+TODAY=$(date +%Y-%m-%d)
+FOCUS="${ARGUMENTS:-session}"
 
-// Task 1: Calculate session number (fast, enables branch creation)
-TaskCreate({
-  subject: "Calculate session number",
-  description: `Determine next session number:
-    1. Read SESSION_LOG.md to find latest session entry
-    2. Apply rules:
-       - Major number increments when DATE changes
-       - Minor version increments for same-day sessions
-       - Always include minor version (e.g., 13.0 not 13)
-    3. Return: FULL_SESSION (e.g., "17.0") and TODAY date`,
-  activeForm: "Calculating session number"
-})
-// Returns: task-session-id
+# Parse latest session entry from SESSION_LOG.md
+LATEST_ENTRY=$(grep -E "^## Session [0-9]+\.[0-9]+ - " SESSION_LOG.md | head -1)
+LATEST_MAJOR=$(echo "$LATEST_ENTRY" | sed -E 's/## Session ([0-9]+)\..*/\1/')
+LATEST_MAJOR=${LATEST_MAJOR:-0}
 
-// Task 2: Focus analysis (runs in parallel)
-TaskCreate({
-  subject: "Analyze focus areas for session",
-  description: `Run focus-suggester analysis:
-    1. Read PROJECT_STATUS.md and SESSION_LOG.md
-    2. Score potential focus areas using priority rubric
-    3. Return top 3 recommendations with scores
-    Platform: workstation (all work types available)`,
-  activeForm: "Analyzing focus areas"
-})
-// Returns: task-focus-id
+# Extract and parse the date from the latest entry
+# Format in log: "February 5, 2026" → need to compare with today
+LATEST_DATE_STR=$(echo "$LATEST_ENTRY" | grep -oE "[A-Z][a-z]+ [0-9]+, [0-9]+" | head -1)
 
-// Task 3: Build validation (runs in parallel)
-TaskCreate({
-  subject: "Validate Xcode build",
-  description: `Run build validation:
-    1. Execute: xcodebuild -scheme VitalArc -destination 'platform=iOS Simulator,name=iPhone 17 Pro' build 2>&1 | grep -E "(error:|warning:|BUILD SUCCEEDED|BUILD FAILED)"
-    2. Report: SUCCEEDED or FAILED with error count
-    3. If FAILED, list top 3 errors`,
-  activeForm: "Validating build"
-})
-// Returns: task-build-id
+# macOS date parsing (use -jf, NOT -d which is Linux-only)
+LATEST_DATE=$(date -jf "%B %d, %Y" "$LATEST_DATE_STR" +%Y-%m-%d 2>/dev/null || echo "")
 
-// Task 4: Design system scan (runs in parallel)
-TaskCreate({
-  subject: "Scan design system compliance",
-  description: `Run design-system-scanner:
-    1. Scan VitalArc/Presentation/ for design token violations
-    2. Report summary: X color, Y spacing, Z typography violations
-    3. List top 5 files by violation count`,
-  activeForm: "Scanning design system"
-})
-// Returns: task-scan-id
+if [ "$LATEST_DATE" = "$TODAY" ]; then
+    SESSION=$LATEST_MAJOR
+    # Count existing entries for this session number today
+    MINOR=$(grep -cE "^## Session ${SESSION}\.[0-9]+ - " SESSION_LOG.md)
+else
+    SESSION=$((LATEST_MAJOR + 1))
+    MINOR=0
+fi
+
+FULL_SESSION="${SESSION}.${MINOR}"
+BRANCH="dev/mac-${FOCUS}-${FULL_SESSION}-${TODAY}"
+
+# Create the branch
+git checkout -b "$BRANCH"
 ```
 
-### Phase 3: Create Branch (After Session Number Ready)
+**Validation**: After running, echo `$FULL_SESSION` and `$BRANCH` to confirm correctness before proceeding.
 
-Once session number task completes, create the branch:
+### Phase 3: Parallel Skill Invocations
+
+Invoke all three skills in a **single message** for parallel execution. Each skill has `context: fork` in its frontmatter and runs as an isolated subagent with the correct agent type.
 
 ```javascript
-// Blocked only by session number calculation (not by build/scan)
-TaskCreate({
-  subject: "Create development branch",
-  description: `Create branch using session number from task:
-    Format: dev/mac-<focus>-<session>.<minor>-YYYY-MM-DD
-    FOCUS: ${ARGUMENTS:-session}
-    Execute: git checkout -b "$BRANCH"`,
-  activeForm: "Creating branch",
-  addBlockedBy: ["task-session-id"]
-})
-// Returns: task-branch-id
+// In a SINGLE message, invoke all three:
+Skill('focus-suggester')        // agent: Explore - reads PROJECT_STATUS + SESSION_LOG
+Skill('build-validator')        // agent: Bash - runs xcodebuild
+Skill('design-system-scanner')  // agent: Explore - scans Presentation/ for violations
 ```
 
-### Phase 4: Restore Stash
+Wait for all three to complete before proceeding to Phase 5.
+
+### Phase 4: Restore Stash (Inline Bash)
 
 ```bash
 git stash list | grep -q "Auto-stash $(date +%Y-%m-%d)" && git stash pop
 ```
 
-### Phase 5: Create Session Log (After All Phase 2 Tasks)
+### Phase 5: Create Session Log (Inline Write/Edit)
 
-After all parallel tasks complete, create the session log entry:
+Using results from the three completed skills, write the session log entry directly. Do not delegate this to a TaskCreate.
 
-```javascript
-TaskCreate({
-  subject: "Create SESSION_LOG.md entry",
-  description: `Create session entry with results from all parallel tasks:
-    - Session: [from session-number task]
-    - Branch: [from branch task]
-    - Build status: [from build task]
-    - Focus: [from focus task or user-specified]
-    - Design violations: [from scan task]
-
-    Use workstation template format.`,
-  activeForm: "Creating session log",
-  addBlockedBy: ["task-session-id", "task-focus-id", "task-build-id", "task-scan-id", "task-branch-id"]
-})
-```
-
-### Session Log Template
+Use the Write or Edit tool to prepend/append the following template to SESSION_LOG.md, filled with actual values:
 
 ```markdown
 ## Session [FULL_SESSION] - [Month Day, Year] ([Time])
@@ -159,7 +138,7 @@ TaskCreate({
 ### Session Start
 - **Time**: [Time] PST
 - **Platform**: macOS
-- **Focus**: [FOCUS or suggested focus]
+- **Focus**: [FOCUS or suggested focus from focus-suggester]
 - **Branch**: [BRANCH]
 - **Base**: main @ [latest commit]
 
@@ -168,8 +147,8 @@ TaskCreate({
 - **Test Capable**: Yes (unit + UI)
 
 ### Pre-Session Status
-- **Build**: [from build-validator task]
-- **Design Violations**: [from design-system-scanner task]
+- **Build**: [from build-validator result]
+- **Design Violations**: [from design-system-scanner result]
 - **Uncommitted Changes**: None
 
 ### Session Goals
@@ -183,7 +162,7 @@ TaskCreate({
 | [Time] | Session started | - | Build verified |
 ```
 
-### Phase 7: Output Summary
+### Phase 6: Output Summary
 
 ```
 ═══════════════════════════════════════════════════════════════
@@ -191,9 +170,9 @@ TaskCreate({
 ═══════════════════════════════════════════════════════════════
 Branch:   [branch]
 Session:  [FULL_SESSION]
-Build:    [status from task]
+Build:    [status from build-validator]
 Focus:    [focus]
-Violations: [count from scan task]
+Violations: [count from design-system-scanner]
 ───────────────────────────────────────────────────────────────
 Full builds, simulator, and testing available
 ═══════════════════════════════════════════════════════════════
@@ -203,7 +182,7 @@ Full builds, simulator, and testing available
 
 ### Build Failed on Init
 
-If build-validation task reports FAILED:
+If build-validator reports FAILED:
 
 ```
 ═══════════════════════════════════════════════════════════════
@@ -217,9 +196,9 @@ Priority: Fix build before starting new work
 ═══════════════════════════════════════════════════════════════
 ```
 
-### Task Timeout
+### Skill Timeout
 
-If any parallel task doesn't complete within 2 minutes, proceed with available results and note the timeout in the session log.
+If any skill doesn't complete within 2 minutes, proceed with available results and note the timeout in the session log.
 
 ## Options
 
