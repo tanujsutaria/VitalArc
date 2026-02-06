@@ -15,6 +15,7 @@ struct TodayDashboardView: View {
     @State private var todaysWorkout: Workout?
     @State private var dailyNutrition: DailyNutrition?
     @State private var isLoading = true
+    @State private var showDatePicker = false
 
     var body: some View {
         NavigationStack {
@@ -50,10 +51,22 @@ struct TodayDashboardView: View {
             .refreshable {
                 await loadTodayData()
             }
+            .onChange(of: selectedDate) {
+                Task {
+                    await loadTodayData()
+                }
+            }
+            .sheet(isPresented: $showDatePicker) {
+                datePickerSheet
+            }
         }
     }
 
     // MARK: - Date Header
+
+    private var isToday: Bool {
+        Calendar.current.isDateInToday(selectedDate)
+    }
 
     private var dateHeader: some View {
         HStack {
@@ -64,10 +77,59 @@ struct TodayDashboardView: View {
                 Text(selectedDate.formatted(.dateTime.month().day()))
                     .font(.vitalDisplayMediumV2)
                     .foregroundStyle(Color.vitalAdaptiveTextPrimaryV2)
+                    .onTapGesture {
+                        showDatePicker = true
+                    }
             }
             Spacer()
-            // Date navigation could go here
+            HStack(spacing: Spacing.sm) {
+                Button {
+                    selectedDate = Calendar.current.date(byAdding: .day, value: -1, to: selectedDate) ?? selectedDate
+                } label: {
+                    Image(systemName: "chevron.left")
+                        .font(.vitalIconSmall)
+                        .foregroundStyle(Color.vitalPrimaryV2)
+                }
+
+                if !isToday {
+                    Button {
+                        selectedDate = Date()
+                    } label: {
+                        Text("Today")
+                            .font(.vitalCaptionV2)
+                            .foregroundStyle(Color.vitalPrimaryV2)
+                    }
+                }
+
+                Button {
+                    selectedDate = Calendar.current.date(byAdding: .day, value: 1, to: selectedDate) ?? selectedDate
+                } label: {
+                    Image(systemName: "chevron.right")
+                        .font(.vitalIconSmall)
+                        .foregroundStyle(isToday ? Color.vitalAdaptiveTextTertiaryV2 : Color.vitalPrimaryV2)
+                }
+                .disabled(isToday)
+            }
         }
+    }
+
+    private var datePickerSheet: some View {
+        NavigationStack {
+            DatePicker("Select Date", selection: $selectedDate, in: ...Date(), displayedComponents: .date)
+                .datePickerStyle(.graphical)
+                .tint(Color.vitalPrimaryV2)
+                .padding(Spacing.screenPadding)
+                .navigationTitle("Select Date")
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .confirmationAction) {
+                        Button("Done") {
+                            showDatePicker = false
+                        }
+                    }
+                }
+        }
+        .presentationDetents([.medium])
     }
 
     // MARK: - Loading State
