@@ -10,6 +10,7 @@ import SwiftUI
 struct SetRowView: View {
     @Binding var setData: WorkoutSetData
     let onDelete: () -> Void
+    var onComplete: (() -> Void)? = nil
 
     var body: some View {
         HStack(spacing: Spacing.md) {
@@ -59,7 +60,11 @@ struct SetRowView: View {
 
             // Completed Checkbox
             Button {
+                let wasCompleted = setData.completed
                 setData.completed.toggle()
+                if !wasCompleted && setData.completed {
+                    onComplete?()
+                }
             } label: {
                 Image(systemName: setData.completed ? "checkmark.circle.fill" : "circle")
                     .font(.vitalH2)

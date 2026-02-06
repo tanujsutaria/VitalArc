@@ -156,8 +156,45 @@ struct ExerciseLibraryView: View {
                 customCategories.append(categoryName)
             }
         }
+        .sheet(isPresented: $viewModel.showingEditExercise) {
+            if let exercise = viewModel.exerciseToEdit {
+                EditCustomExerciseView(exercise: exercise) {
+                    Task {
+                        await viewModel.loadExercises()
+                    }
+                }
+            }
+        }
+        .alert("Cannot Delete", isPresented: .init(
+            get: { viewModel.deleteError != nil },
+            set: { if !$0 { viewModel.deleteError = nil } }
+        )) {
+            Button("OK") { viewModel.deleteError = nil }
+        } message: {
+            if let error = viewModel.deleteError {
+                Text(error)
+            }
+        }
         .task {
             await viewModel.loadExercises()
+        }
+    }
+
+    private func deleteExercise(_ exercise: Exercise) {
+        Task {
+            guard let container = container else { return }
+            do {
+                let isUsed = try await container.workoutRepository.isExerciseUsedInWorkouts(exercise.id)
+                if isUsed {
+                    viewModel.deleteError = "This exercise is used in existing workouts and cannot be deleted."
+                } else {
+                    try await container.workoutRepository.deleteExercise(id: exercise.id)
+                    await viewModel.loadExercises()
+                }
+            } catch {
+                Log.error("Failed to delete exercise", error: error, category: .workout)
+                viewModel.deleteError = "Failed to delete exercise. Please try again."
+            }
         }
     }
 
@@ -212,6 +249,22 @@ struct ExerciseLibraryView: View {
                                             ExerciseRowView(exercise: exercise)
                                         }
                                         .buttonStyle(.plain)
+                                        .contextMenu {
+                                            if exercise.isCustom {
+                                                Button {
+                                                    viewModel.exerciseToEdit = exercise
+                                                    viewModel.showingEditExercise = true
+                                                } label: {
+                                                    Label("Edit", systemImage: "pencil")
+                                                }
+
+                                                Button(role: .destructive) {
+                                                    deleteExercise(exercise)
+                                                } label: {
+                                                    Label("Delete", systemImage: "trash")
+                                                }
+                                            }
+                                        }
                                     }
                                 }
                                 .padding(.horizontal, Spacing.screenPadding)

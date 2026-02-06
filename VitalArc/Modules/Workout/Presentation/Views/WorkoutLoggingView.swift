@@ -16,11 +16,13 @@ struct WorkoutLoggingView: View {
     init(
         createWorkoutUseCase: CreateWorkoutUseCase,
         calculateProgressionUseCase: CalculateProgressionUseCase,
-        getExercisesUseCase: GetExercisesUseCase
+        getExercisesUseCase: GetExercisesUseCase,
+        detectPersonalRecordUseCase: DetectPersonalRecordUseCase? = nil
     ) {
         self.viewModel = WorkoutLoggingViewModel(
             createWorkoutUseCase: createWorkoutUseCase,
-            calculateProgressionUseCase: calculateProgressionUseCase
+            calculateProgressionUseCase: calculateProgressionUseCase,
+            detectPersonalRecordUseCase: detectPersonalRecordUseCase
         )
         self.getExercisesUseCase = getExercisesUseCase
     }
@@ -29,6 +31,16 @@ struct WorkoutLoggingView: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: Spacing.screenPadding) {
+                    // Rest Timer
+                    if viewModel.restTimerActive, let endDate = viewModel.restTimerEndDate {
+                        RestTimerView(
+                            endDate: endDate,
+                            totalDuration: viewModel.restTimerDuration,
+                            onCancel: { viewModel.cancelRestTimer() },
+                            onFinished: { viewModel.restTimerFinished() }
+                        )
+                    }
+
                     // Workout Info Card
                     workoutInfoCard
 
@@ -51,13 +63,23 @@ struct WorkoutLoggingView: View {
                 }
 
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Save") {
-                        Task {
-                            await viewModel.saveWorkout()
-                            dismiss()
+                    HStack(spacing: Spacing.sm) {
+                        if !viewModel.selectedExercises.isEmpty {
+                            Button {
+                                viewModel.toggleGroupingMode()
+                            } label: {
+                                Image(systemName: viewModel.isGroupingMode ? "link.circle.fill" : "link.circle")
+                            }
                         }
+
+                        Button("Save") {
+                            Task {
+                                await viewModel.saveWorkout()
+                                dismiss()
+                            }
+                        }
+                        .disabled(!viewModel.canSave || viewModel.isLoading)
                     }
-                    .disabled(!viewModel.canSave || viewModel.isLoading)
                 }
             }
             .sheet(isPresented: $viewModel.showingExerciseLibrary) {
@@ -77,6 +99,17 @@ struct WorkoutLoggingView: View {
                 if let error = viewModel.errorMessage {
                     Text(error)
                 }
+            }
+            .sheet(isPresented: $viewModel.showingPersonalRecords) {
+                PersonalRecordBadgeView(
+                    records: viewModel.newPersonalRecords,
+                    onDismiss: {
+                        viewModel.showingPersonalRecords = false
+                        viewModel.resetWorkout()
+                        dismiss()
+                    }
+                )
+                .presentationDetents([.medium])
             }
         }
     }
@@ -136,31 +169,126 @@ struct WorkoutLoggingView: View {
 
     private var exercisesList: some View {
         VStack(spacing: Spacing.lg) {
+            // Grouping mode controls
+            if viewModel.isGroupingMode {
+                groupingControls
+            }
+
             ForEach(viewModel.selectedExercises) { exercise in
                 let sets = Binding(
                     get: { viewModel.exerciseSets[exercise.id] ?? [] },
                     set: { viewModel.exerciseSets[exercise.id] = $0 }
                 )
-                ExerciseSetView(
-                        exercise: exercise,
-                        sets: sets,
-                        onAddSet: {
-                            viewModel.addSet(for: exercise.id)
-                        },
-                        onRemoveSet: { index in
-                            viewModel.removeSet(for: exercise.id, at: index)
-                        },
-                        onUpdateSet: { updatedSet, index in
-                            viewModel.updateSet(updatedSet, for: exercise.id, at: index)
-                        },
-                        onRemoveExercise: {
-                            viewModel.removeExercise(exercise)
+
+                VStack(spacing: 0) {
+                    // Group header for first exercise in group
+                    if viewModel.isFirstInGroup(exercise.id),
+                       let group = viewModel.groupForExercise(exercise.id) {
+                        HStack(spacing: Spacing.sm) {
+                            Image(systemName: group.groupType.icon)
+                                .font(.vitalCaption)
+                            Text(group.displayName)
+                                .font(.vitalCaption)
+                                .fontWeight(.semibold)
+                            Spacer()
+                            Button {
+                                viewModel.removeGroup(group.id)
+                            } label: {
+                                Image(systemName: "xmark.circle.fill")
+                                    .font(.vitalCaption)
+                                    .foregroundStyle(.secondary)
+                            }
+                            .buttonStyle(.plain)
                         }
-                    )
+                        .foregroundStyle(Color.vitalPrimary)
+                        .padding(.horizontal, Spacing.md)
+                        .padding(.vertical, Spacing.sm)
+                        .background(Color.vitalPrimary.opacity(0.08))
+                        .clipShape(RoundedRectangle(cornerRadius: Spacing.radiusSmall))
+                    }
+
+                    HStack(spacing: 0) {
+                        // Grouping selection
+                        if viewModel.isGroupingMode {
+                            Button {
+                                viewModel.toggleExerciseForGrouping(exercise.id)
+                            } label: {
+                                Image(systemName: viewModel.selectedExerciseIdsForGrouping.contains(exercise.id)
+                                      ? "checkmark.circle.fill" : "circle")
+                                    .font(.vitalH3)
+                                    .foregroundStyle(viewModel.selectedExerciseIdsForGrouping.contains(exercise.id)
+                                                     ? Color.vitalPrimary : .secondary)
+                            }
+                            .buttonStyle(.plain)
+                            .padding(.trailing, Spacing.sm)
+                        }
+
+                        // Group bracket indicator
+                        if viewModel.groupForExercise(exercise.id) != nil {
+                            RoundedRectangle(cornerRadius: 2)
+                                .fill(Color.vitalPrimary)
+                                .frame(width: 3)
+                                .padding(.vertical, Spacing.xs)
+                                .padding(.trailing, Spacing.sm)
+                        }
+
+                        ExerciseSetView(
+                            exercise: exercise,
+                            sets: sets,
+                            onAddSet: {
+                                viewModel.addSet(for: exercise.id)
+                            },
+                            onRemoveSet: { index in
+                                viewModel.removeSet(for: exercise.id, at: index)
+                            },
+                            onUpdateSet: { updatedSet, index in
+                                viewModel.updateSet(updatedSet, for: exercise.id, at: index)
+                            },
+                            onRemoveExercise: {
+                                viewModel.removeExercise(exercise)
+                            },
+                            onSetCompleted: {
+                                viewModel.startRestTimer(duration: 90, for: exercise.id)
+                            }
+                        )
+                    }
+                }
             }
 
             addExerciseButton
         }
+    }
+
+    // MARK: - Grouping Controls
+
+    private var groupingControls: some View {
+        VStack(spacing: Spacing.sm) {
+            Text("Select 2+ exercises to group")
+                .font(.vitalCaption)
+                .foregroundStyle(Color.vitalAdaptiveTextSecondary)
+
+            if viewModel.selectedExerciseIdsForGrouping.count >= 2 {
+                HStack(spacing: Spacing.sm) {
+                    ForEach(SetGroupType.allCases, id: \.self) { type in
+                        Button {
+                            viewModel.createGroup(type: type)
+                        } label: {
+                            Label(type.rawValue, systemImage: type.icon)
+                                .font(.vitalCaption)
+                                .padding(.horizontal, Spacing.md)
+                                .padding(.vertical, Spacing.sm)
+                                .background(Color.vitalPrimary.opacity(0.1))
+                                .foregroundStyle(Color.vitalPrimary)
+                                .clipShape(RoundedRectangle(cornerRadius: Spacing.radiusSmall))
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+            }
+        }
+        .padding(Spacing.md)
+        .background(Color.vitalAdaptiveSurface)
+        .clipShape(RoundedRectangle(cornerRadius: Spacing.radiusMedium))
     }
 
     // MARK: - Empty State
