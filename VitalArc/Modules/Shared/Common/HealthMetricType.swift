@@ -14,6 +14,9 @@ enum HealthMetricType: String, Identifiable, CaseIterable {
     case activeEnergy = "Active Energy"
     case sleep = "Sleep"
     case weight = "Weight"
+    case bodyFat = "Body Fat"
+    case leanBodyMass = "Lean Mass"
+    case respiratoryRate = "Respiratory Rate"
 
     var id: String { rawValue }
 
@@ -25,6 +28,9 @@ enum HealthMetricType: String, Identifiable, CaseIterable {
         case .activeEnergy: return "flame.fill"
         case .sleep: return "bed.double.fill"
         case .weight: return "scalemass.fill"
+        case .bodyFat: return "figure.arms.open"
+        case .leanBodyMass: return "figure.strengthtraining.traditional"
+        case .respiratoryRate: return "lungs.fill"
         }
     }
 
@@ -36,6 +42,9 @@ enum HealthMetricType: String, Identifiable, CaseIterable {
         case .activeEnergy: return "warning"
         case .sleep: return "secondary"
         case .weight: return "success"
+        case .bodyFat: return "warning"
+        case .leanBodyMass: return "info"
+        case .respiratoryRate: return "accent"
         }
     }
 
@@ -47,6 +56,9 @@ enum HealthMetricType: String, Identifiable, CaseIterable {
         case .activeEnergy: return "kcal"
         case .sleep: return "hours"
         case .weight: return "lbs"
+        case .bodyFat: return "%"
+        case .leanBodyMass: return "lbs"
+        case .respiratoryRate: return "brpm"
         }
     }
 
@@ -58,6 +70,9 @@ enum HealthMetricType: String, Identifiable, CaseIterable {
         case .activeEnergy: return "Active Energy Burned"
         case .sleep: return "Sleep Duration"
         case .weight: return "Body Weight"
+        case .bodyFat: return "Body Fat Percentage"
+        case .leanBodyMass: return "Lean Body Mass"
+        case .respiratoryRate: return "Respiratory Rate"
         }
     }
 }

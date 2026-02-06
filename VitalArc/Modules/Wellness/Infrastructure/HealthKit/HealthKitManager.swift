@@ -48,9 +48,14 @@ final class HealthKitManager {
         async let sleep = fetchSleepHours(start: dateRange.start, end: dateRange.end)
         async let sleepStages = fetchSleepStages(start: dateRange.start, end: dateRange.end)
         async let weight = fetchWeight(start: dateRange.start, end: dateRange.end)
+        async let bodyFat = fetchBodyFatPercentage(start: dateRange.start, end: dateRange.end)
+        async let leanMass = fetchLeanBodyMass(start: dateRange.start, end: dateRange.end)
+        async let respRate = fetchRespiratoryRate(start: dateRange.start, end: dateRange.end)
 
-        let (hrvValue, hrValue, energyValue, stepsValue, sleepValue, sleepStagesValue, weightValue) =
-            await (try? hrv, try? heartRate, try? activeEnergy, try? steps, try? sleep, try? sleepStages, try? weight)
+        let (hrvValue, hrValue, energyValue, stepsValue, sleepValue, sleepStagesValue, weightValue,
+             bodyFatValue, leanMassValue, respRateValue) =
+            await (try? hrv, try? heartRate, try? activeEnergy, try? steps, try? sleep, try? sleepStages, try? weight,
+                   try? bodyFat, try? leanMass, try? respRate)
 
         return HealthMetrics(
             date: date,
@@ -60,7 +65,10 @@ final class HealthKitManager {
             steps: stepsValue,
             sleepHours: sleepValue,
             sleepStages: sleepStagesValue,
-            weight: weightValue
+            weight: weightValue,
+            bodyFatPercentage: bodyFatValue,
+            leanBodyMass: leanMassValue,
+            respiratoryRate: respRateValue
         )
     }
 
@@ -423,6 +431,99 @@ final class HealthKitManager {
                 }
 
                 let value = sample.quantity.doubleValue(for: .gramUnit(with: .kilo))
+                continuation.resume(returning: value)
+            }
+
+            healthStore.execute(query)
+        }
+    }
+
+    /// Fetch body fat percentage
+    private func fetchBodyFatPercentage(start: Date, end: Date) async throws -> Double? {
+        guard let bodyFatType = HKQuantityType.quantityType(forIdentifier: .bodyFatPercentage) else {
+            throw HealthKitError.queryFailed
+        }
+
+        return try await withCheckedThrowingContinuation { continuation in
+            let query = HealthKitQuery.sampleQuery(
+                for: bodyFatType,
+                start: start,
+                end: end,
+                limit: 1
+            ) { samples, error in
+                if let error = error {
+                    continuation.resume(throwing: error)
+                    return
+                }
+
+                guard let sample = samples?.first as? HKQuantitySample else {
+                    continuation.resume(returning: nil)
+                    return
+                }
+
+                let value = sample.quantity.doubleValue(for: .percent()) * 100
+                continuation.resume(returning: value)
+            }
+
+            healthStore.execute(query)
+        }
+    }
+
+    /// Fetch lean body mass (in kg)
+    private func fetchLeanBodyMass(start: Date, end: Date) async throws -> Double? {
+        guard let leanMassType = HKQuantityType.quantityType(forIdentifier: .leanBodyMass) else {
+            throw HealthKitError.queryFailed
+        }
+
+        return try await withCheckedThrowingContinuation { continuation in
+            let query = HealthKitQuery.sampleQuery(
+                for: leanMassType,
+                start: start,
+                end: end,
+                limit: 1
+            ) { samples, error in
+                if let error = error {
+                    continuation.resume(throwing: error)
+                    return
+                }
+
+                guard let sample = samples?.first as? HKQuantitySample else {
+                    continuation.resume(returning: nil)
+                    return
+                }
+
+                let value = sample.quantity.doubleValue(for: .gramUnit(with: .kilo))
+                continuation.resume(returning: value)
+            }
+
+            healthStore.execute(query)
+        }
+    }
+
+    /// Fetch respiratory rate (breaths per minute)
+    private func fetchRespiratoryRate(start: Date, end: Date) async throws -> Double? {
+        guard let respType = HKQuantityType.quantityType(forIdentifier: .respiratoryRate) else {
+            throw HealthKitError.queryFailed
+        }
+
+        return try await withCheckedThrowingContinuation { continuation in
+            let query = HealthKitQuery.sampleQuery(
+                for: respType,
+                start: start,
+                end: end,
+                limit: 1
+            ) { samples, error in
+                if let error = error {
+                    continuation.resume(throwing: error)
+                    return
+                }
+
+                guard let sample = samples?.first as? HKQuantitySample else {
+                    continuation.resume(returning: nil)
+                    return
+                }
+
+                let value = sample.quantity.doubleValue(for: HKUnit.count().unitDivided(by: .minute()))
                 continuation.resume(returning: value)
             }
 

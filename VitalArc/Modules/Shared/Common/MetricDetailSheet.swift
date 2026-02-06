@@ -373,9 +373,7 @@ struct MetricDetailSheet: View {
             let formatter = NumberFormatter()
             formatter.numberStyle = .decimal
             return formatter.string(from: NSNumber(value: Int(currentValue))) ?? "\(Int(currentValue))"
-        case .sleep:
-            return String(format: "%.1f", currentValue)
-        case .weight:
+        case .sleep, .weight, .leanBodyMass, .bodyFat:
             return String(format: "%.1f", currentValue)
         default:
             return String(format: "%.0f", currentValue)
@@ -388,7 +386,7 @@ struct MetricDetailSheet: View {
             let formatter = NumberFormatter()
             formatter.numberStyle = .decimal
             return formatter.string(from: NSNumber(value: Int(value))) ?? "\(Int(value))"
-        case .sleep, .weight:
+        case .sleep, .weight, .leanBodyMass, .bodyFat:
             return String(format: "%.1f", value)
         default:
             return String(format: "%.0f", value)

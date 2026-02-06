@@ -15,17 +15,23 @@ final class HealthDashboardViewModel {
     // MARK: - Properties
 
     private let healthRepository: HealthRepository
+    private let calculateReadinessScore: CalculateReadinessScoreUseCaseProtocol
 
     var todayMetrics: HealthMetrics?
     var weekMetrics: [HealthMetrics] = []
+    var readinessScore: ReadinessScore?
     var isLoading = false
     var error: Error?
     var showingPermissionAlert = false
 
     // MARK: - Initialization
 
-    init(healthRepository: HealthRepository) {
+    init(
+        healthRepository: HealthRepository,
+        calculateReadinessScore: CalculateReadinessScoreUseCaseProtocol = CalculateReadinessScoreUseCase()
+    ) {
         self.healthRepository = healthRepository
+        self.calculateReadinessScore = calculateReadinessScore
     }
 
     // MARK: - Data Loading
@@ -65,10 +71,20 @@ final class HealthDashboardViewModel {
         isLoading = false
     }
 
-    /// Load all metrics (today + week)
+    /// Load all metrics (today + week) and compute readiness score
     func loadAllMetrics() async {
         await loadTodayMetrics()
         await loadWeekMetrics()
+        updateReadinessScore()
+    }
+
+    /// Compute readiness score from today's metrics and weekly baselines
+    private func updateReadinessScore() {
+        guard let today = todayMetrics else {
+            readinessScore = nil
+            return
+        }
+        readinessScore = calculateReadinessScore.execute(todayMetrics: today, weekMetrics: weekMetrics)
     }
 
     /// Refresh all metrics
