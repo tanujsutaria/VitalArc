@@ -313,6 +313,79 @@ final class SwiftDataNutritionRepository: NutritionRepository {
         try modelContext.save()
     }
 
+    // MARK: - Favorites
+
+    func getFavoriteFoods() async throws -> [Food] {
+        let descriptor = FetchDescriptor<FoodModel>(
+            predicate: #Predicate { food in
+                food.isFavorite == true
+            },
+            sortBy: [SortDescriptor(\.name)]
+        )
+        let models = try modelContext.fetch(descriptor)
+        return models.map { $0.toDomain() }
+    }
+
+    func toggleFavorite(foodId: UUID) async throws {
+        let descriptor = FetchDescriptor<FoodModel>(
+            predicate: #Predicate { food in
+                food.id == foodId
+            }
+        )
+        guard let model = try modelContext.fetch(descriptor).first else { return }
+        model.isFavorite.toggle()
+        try modelContext.save()
+    }
+
+    // MARK: - Recent/Frequent
+
+    func getRecentFoods(limit: Int) async throws -> [Food] {
+        let descriptor = FetchDescriptor<FoodModel>(
+            predicate: #Predicate { food in
+                food.recentlyUsed != nil
+            },
+            sortBy: [SortDescriptor(\.recentlyUsed, order: .reverse)]
+        )
+        let models = try modelContext.fetch(descriptor)
+        return Array(models.prefix(limit)).map { $0.toDomain() }
+    }
+
+    // MARK: - Water Tracking
+
+    func getWaterEntries(for date: Date) async throws -> [WaterEntry] {
+        let calendar = Calendar.current
+        let startOfDay = calendar.startOfDay(for: date)
+        let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) ?? startOfDay.addingTimeInterval(86400)
+
+        let descriptor = FetchDescriptor<WaterEntryModel>(
+            predicate: #Predicate { entry in
+                entry.date >= startOfDay && entry.date < endOfDay
+            },
+            sortBy: [SortDescriptor(\.date)]
+        )
+        let models = try modelContext.fetch(descriptor)
+        return models.map { $0.toDomain() }
+    }
+
+    func saveWaterEntry(_ entry: WaterEntry) async throws {
+        let model = WaterEntryModel.fromDomain(entry)
+        modelContext.insert(model)
+        try modelContext.save()
+    }
+
+    func deleteWaterEntry(id: UUID) async throws {
+        let descriptor = FetchDescriptor<WaterEntryModel>(
+            predicate: #Predicate { entry in
+                entry.id == id
+            }
+        )
+        guard let model = try modelContext.fetch(descriptor).first else { return }
+        modelContext.delete(model)
+        try modelContext.save()
+    }
+
+    // MARK: - Daily Nutrition
+
     func getDailyNutrition(for date: Date) async throws -> DailyNutrition? {
         let calendar = Calendar.current
         let startOfDay = calendar.startOfDay(for: date)

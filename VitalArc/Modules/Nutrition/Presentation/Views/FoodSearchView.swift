@@ -13,8 +13,15 @@ struct FoodSearchView: View {
 
     let onFoodSelected: (Food) -> Void
 
-    init(searchFoodUseCase: SearchFoodUseCaseProtocol, onFoodSelected: @escaping (Food) -> Void) {
-        _viewModel = State(initialValue: FoodSearchViewModel(searchFoodUseCase: searchFoodUseCase))
+    init(
+        searchFoodUseCase: SearchFoodUseCaseProtocol,
+        repository: NutritionRepository? = nil,
+        onFoodSelected: @escaping (Food) -> Void
+    ) {
+        _viewModel = State(initialValue: FoodSearchViewModel(
+            searchFoodUseCase: searchFoodUseCase,
+            repository: repository
+        ))
         self.onFoodSelected = onFoodSelected
     }
 
@@ -40,15 +47,22 @@ struct FoodSearchView: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .padding(.horizontal, Spacing.screenPadding)
                 } else if viewModel.searchResults.isEmpty {
-                    InitialSearchView()
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .padding(.horizontal, Spacing.screenPadding)
+                    SuggestionsView(
+                        viewModel: viewModel,
+                        onSelect: { food in
+                            onFoodSelected(food)
+                            dismiss()
+                        }
+                    )
                 } else {
                     SearchResultsListView(
                         results: viewModel.searchResults,
                         onSelect: { food in
                             onFoodSelected(food)
                             dismiss()
+                        },
+                        onToggleFavorite: { food in
+                            Task { await viewModel.toggleFavorite(for: food) }
                         }
                     )
                 }
@@ -84,6 +98,18 @@ struct FoodSearchView: View {
                     viewModel.searchByBarcode(barcode)
                     viewModel.scannedBarcode = nil
                 }
+            }
+            .sheet(isPresented: $viewModel.showingCreateCustomFood) {
+                CreateCustomFoodView { food in
+                    Task {
+                        await viewModel.saveCustomFood(food)
+                        onFoodSelected(food)
+                        dismiss()
+                    }
+                }
+            }
+            .task {
+                await viewModel.loadSuggestions()
             }
         }
     }
@@ -138,12 +164,93 @@ private struct FoodSearchErrorView: View {
     }
 }
 
-/// Initial search view shown when no query has been entered
-private struct InitialSearchView: View {
+/// Suggestions view shown when search is empty: favorites, recent foods, create custom
+private struct SuggestionsView: View {
+    let viewModel: FoodSearchViewModel
+    let onSelect: (Food) -> Void
+
+    var body: some View {
+        ScrollView {
+            VStack(spacing: Spacing.sectionSpacing) {
+                // Create Custom Food button
+                Button {
+                    viewModel.showingCreateCustomFood = true
+                } label: {
+                    HStack(spacing: Spacing.sm) {
+                        Image(systemName: "plus.circle.fill")
+                            .font(.vitalBody)
+                        Text("Create Custom Food")
+                            .font(.vitalLabel)
+                    }
+                    .foregroundStyle(Color.vitalPrimary)
+                    .frame(maxWidth: .infinity)
+                    .padding(Spacing.md)
+                    .background(Color.vitalPrimary.opacity(0.1))
+                    .cornerRadius(Spacing.radiusMedium)
+                }
+                .buttonStyle(.plain)
+
+                // Favorites section
+                if !viewModel.favoriteFoods.isEmpty {
+                    VStack(alignment: .leading, spacing: Spacing.sm) {
+                        HStack(spacing: Spacing.xs) {
+                            Image(systemName: "heart.fill")
+                                .foregroundStyle(Color.vitalDanger)
+                            Text("Favorites")
+                                .font(.vitalH3)
+                                .foregroundStyle(Color.vitalAdaptiveTextPrimary)
+                        }
+
+                        ForEach(viewModel.favoriteFoods) { food in
+                            FoodResultRowView(
+                                food: food,
+                                onSelect: onSelect,
+                                onToggleFavorite: { food in
+                                    Task { await viewModel.toggleFavorite(for: food) }
+                                }
+                            )
+                        }
+                    }
+                }
+
+                // Recent section
+                if !viewModel.recentFoods.isEmpty {
+                    VStack(alignment: .leading, spacing: Spacing.sm) {
+                        HStack(spacing: Spacing.xs) {
+                            Image(systemName: "clock.fill")
+                                .foregroundStyle(Color.vitalInfo)
+                            Text("Recent")
+                                .font(.vitalH3)
+                                .foregroundStyle(Color.vitalAdaptiveTextPrimary)
+                        }
+
+                        ForEach(viewModel.recentFoods) { food in
+                            FoodResultRowView(
+                                food: food,
+                                onSelect: onSelect,
+                                onToggleFavorite: { food in
+                                    Task { await viewModel.toggleFavorite(for: food) }
+                                }
+                            )
+                        }
+                    }
+                }
+
+                // Info card when no favorites/recent
+                if viewModel.favoriteFoods.isEmpty && viewModel.recentFoods.isEmpty {
+                    InitialSearchInfoView()
+                }
+            }
+            .padding(Spacing.screenPadding)
+        }
+    }
+}
+
+/// Info card shown when no favorites or recent foods exist
+private struct InitialSearchInfoView: View {
     var body: some View {
         VitalCard(padding: Spacing.xl) {
             VStack(spacing: Spacing.lg) {
-                // Icon
                 ZStack {
                     Circle()
                         .fill(Color.vitalPrimary.opacity(0.15))
@@ -154,7 +261,6 @@ private struct InitialSearchView: View {
                         .foregroundStyle(Color.vitalPrimary)
                 }
 
-                // Text
                 VStack(spacing: Spacing.sm) {
                     Text("Search for Foods")
                         .font(.vitalDisplaySmall)
@@ -167,7 +273,6 @@ private struct InitialSearchView: View {
                         .multilineTextAlignment(.center)
                 }
 
-                // Database badges
                 HStack(spacing: Spacing.itemSpacing) {
                     DatabaseBadge(name: "USDA", icon: "leaf.fill", color: .vitalSuccess)
                     DatabaseBadge(name: "Nutritionix", icon: "fork.knife", color: .vitalWarning)
@@ -209,11 +314,16 @@ private struct DatabaseBadge: View {
 private struct SearchResultsListView: View {
     let results: [Food]
     let onSelect: (Food) -> Void
+    var onToggleFavorite: ((Food) -> Void)?
 
     var body: some View {
         List {
             ForEach(results) { food in
-                FoodResultRowView(food: food, onSelect: onSelect)
+                FoodResultRowView(
+                    food: food,
+                    onSelect: onSelect,
+                    onToggleFavorite: onToggleFavorite
+                )
             }
         }
         .listStyle(.plain)

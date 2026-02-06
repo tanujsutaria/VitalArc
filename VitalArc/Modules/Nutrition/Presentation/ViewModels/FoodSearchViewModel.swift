@@ -13,12 +13,16 @@ import Observation
 final class FoodSearchViewModel {
     var searchQuery = ""
     var searchResults: [Food] = []
+    var favoriteFoods: [Food] = []
+    var recentFoods: [Food] = []
     var isLoading = false
     var errorMessage: String?
     var isBarcodeScannerPresented = false
     var scannedBarcode: String?
+    var showingCreateCustomFood = false
 
     private let searchFoodUseCase: SearchFoodUseCaseProtocol
+    private let repository: NutritionRepository?
     private var _multiSourceUseCase: SearchMultiSourceFoodUseCaseProtocol?
     private var searchTask: Task<Void, Never>?
 
@@ -34,10 +38,12 @@ final class FoodSearchViewModel {
 
     init(
         searchFoodUseCase: SearchFoodUseCaseProtocol,
-        multiSourceUseCase: SearchMultiSourceFoodUseCaseProtocol? = nil
+        multiSourceUseCase: SearchMultiSourceFoodUseCaseProtocol? = nil,
+        repository: NutritionRepository? = nil
     ) {
         self.searchFoodUseCase = searchFoodUseCase
         self._multiSourceUseCase = multiSourceUseCase
+        self.repository = repository
     }
 
     /// Perform debounced search using multi-source
@@ -112,5 +118,38 @@ final class FoodSearchViewModel {
         searchResults = []
         errorMessage = nil
         searchTask?.cancel()
+    }
+
+    /// Load favorites and recent foods for display when search is empty
+    func loadSuggestions() async {
+        guard let repository = repository else { return }
+        do {
+            favoriteFoods = try await repository.getFavoriteFoods()
+            recentFoods = try await repository.getRecentFoods(limit: 10)
+        } catch {
+            // Non-critical: don't surface errors for suggestions
+        }
+    }
+
+    /// Toggle favorite status for a food
+    func toggleFavorite(for food: Food) async {
+        guard let repository = repository else { return }
+        do {
+            try await repository.toggleFavorite(foodId: food.id)
+            await loadSuggestions()
+        } catch {
+            // Non-critical
+        }
+    }
+
+    /// Save a custom food
+    func saveCustomFood(_ food: Food) async {
+        guard let repository = repository else { return }
+        do {
+            try await repository.saveFood(food)
+            await loadSuggestions()
+        } catch {
+            errorMessage = "Failed to save custom food"
+        }
     }
 }
