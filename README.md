@@ -30,11 +30,12 @@ See `PROJECT_STATUS.md` for detailed status.
 ### Completed
 | Feature | Status |
 |---------|--------|
-| Recovery Score | ✅ HRV algorithm + HealthKit integration |
+| Recovery Score | ✅ HRV algorithm + HealthKit integration + 22 bug fixes |
 | Strain Tracking | ✅ TRIMP calculation + custom settings |
 | Nutrition Algorithm | ✅ TDEE estimation + UI integration + macro goal editing |
 | Notifications | ✅ UI, ViewModel, use cases, infrastructure |
-| Sleep Analysis | ✅ Stage breakdown, quality scoring, 7-day trends |
+| Sleep Analysis | ✅ Stage breakdown, quality scoring, 7-day trends, overnight fix |
+| Wellness Accessibility | ✅ VoiceOver labels across all wellness views |
 
 ### In Progress
 | Feature | Status | Remaining |
