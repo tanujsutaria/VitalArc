@@ -13,10 +13,14 @@ struct HealthKitQuery {
 
     // MARK: - Date Range Helpers
 
-    /// Compute start of next day from a given start-of-day. Calendar never fails for simple day addition.
+    /// Compute start of next day from a given start-of-day. DST-safe via Calendar.
+    /// Uses guard + assertionFailure for safety: returns startOfDay + 86400 as last-resort fallback.
     private static func endOfDay(from startOfDay: Date) -> Date {
-        // Calendar.date(byAdding: .day) is DST-safe and never returns nil for valid dates
-        Calendar.current.date(byAdding: .day, value: 1, to: startOfDay)!
+        guard let next = Calendar.current.date(byAdding: .day, value: 1, to: startOfDay) else {
+            assertionFailure("Calendar.date(byAdding: .day) returned nil for \(startOfDay)")
+            return startOfDay.addingTimeInterval(86400)
+        }
+        return next
     }
 
     /// Returns date range for today (start of day to end of day)

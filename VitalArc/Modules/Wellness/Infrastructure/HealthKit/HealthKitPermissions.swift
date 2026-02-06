@@ -73,10 +73,25 @@ struct HealthKitPermissions {
     }
 
     /// Check if HealthKit authorization has been requested.
-    /// Note: HealthKit does not reveal read authorization status for privacy.
-    /// We track whether authorization has been successfully requested via UserDefaults.
+    ///
+    /// **Apple Privacy Limitation**: `HKHealthStore.authorizationStatus(for:)` only
+    /// reports status for **write** types. For read-only types it always returns
+    /// `.notDetermined`, even after the user grants or revokes access in
+    /// Settings → Privacy → Health. We therefore track whether the authorization
+    /// dialog was presented via UserDefaults.
+    ///
+    /// This flag can become stale if the user revokes access after granting it.
+    /// Callers that depend on actual data availability (e.g., `syncFromHealthKit`)
+    /// should handle empty results gracefully and call `clearAuthorizationFlag()`
+    /// when a sync returns no data, prompting re-authorization on next use.
     static func hasRequiredAuthorization(healthStore: HKHealthStore) -> Bool {
         return UserDefaults.standard.bool(forKey: "healthKitAuthorizationRequested")
+    }
+
+    /// Clear the authorization-requested flag, forcing re-authorization on next sync.
+    /// Call this when a sync returns no data, suggesting the user may have revoked access.
+    static func clearAuthorizationFlag() {
+        UserDefaults.standard.removeObject(forKey: "healthKitAuthorizationRequested")
     }
 
     /// Check if HealthKit is available on this device
