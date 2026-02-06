@@ -10,6 +10,7 @@ import SwiftUI
 struct FoodResultRowView: View {
     let food: Food
     var onSelect: ((Food) -> Void)?
+    var onToggleFavorite: ((Food) -> Void)?
 
     var body: some View {
         Button {
@@ -51,6 +52,10 @@ struct FoodResultRowView: View {
 
                         Spacer()
 
+                        if food.isCustom {
+                            CustomBadge()
+                        }
+
                         SourceBadge(source: food.source)
                     }
 
@@ -74,6 +79,19 @@ struct FoodResultRowView: View {
                     Text("\(formatServingSize(food.servingSize))\(food.servingUnit) serving")
                         .font(.vitalCaptionSmall)
                         .foregroundStyle(Color.vitalAdaptiveTextSecondary)
+                }
+
+                // Favorite toggle
+                if onToggleFavorite != nil {
+                    Button {
+                        HapticFeedback.light()
+                        onToggleFavorite?(food)
+                    } label: {
+                        Image(systemName: food.isFavorite ? "heart.fill" : "heart")
+                            .font(.vitalBody)
+                            .foregroundStyle(food.isFavorite ? Color.vitalDanger : Color.vitalAdaptiveTextSecondary)
+                    }
+                    .buttonStyle(.plain)
                 }
 
                 // Chevron
@@ -137,6 +155,22 @@ private struct FoodIcon: View {
         case .openFoodFacts: return .vitalInfo
         case .manual, .custom: return .vitalTextSecondary
         }
+    }
+}
+
+private struct CustomBadge: View {
+    var body: some View {
+        HStack(spacing: Spacing.xxs) {
+            Image(systemName: "person.fill")
+                .font(.vitalIconTiny)
+            Text("Custom")
+                .font(.vitalCaptionSmall)
+        }
+        .foregroundStyle(Color.vitalPrimary)
+        .padding(.horizontal, Spacing.xs)
+        .padding(.vertical, Spacing.xxs)
+        .background(Color.vitalPrimary.opacity(0.15))
+        .cornerRadius(Spacing.xs)
     }
 }
 
