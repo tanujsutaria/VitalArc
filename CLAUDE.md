@@ -227,26 +227,38 @@ TaskCreate({
 
 ## Architecture Overview
 
-VitalArc uses **Clean Architecture** with **MVVM** pattern:
+VitalArc uses **Clean Architecture** with **MVVM** pattern, organized into **domain-bounded modules**:
 
 ```
 VitalArc/
-├── Domain/           # Pure Swift business logic (no framework dependencies)
-│   ├── Entities/     # Business models (UserProfile, Workout, Food, HealthMetrics, Mesocycle)
-│   ├── Repositories/ # Protocol definitions for data access
-│   └── UseCases/     # Business logic operations (single responsibility)
-├── Data/
-│   ├── Models/       # SwiftData @Model classes (persist Domain entities)
-│   └── Seeds/        # Exercise database seeds (200+ exercises by body part)
-├── Infrastructure/
-│   ├── HealthKit/    # HealthKitManager, permissions, queries
-│   ├── Networking/   # Food API clients (Nutritionix, OpenFoodFacts, USDA)
-│   ├── Cache/        # FoodCache for API response caching
-│   └── Export/       # PDF/CSV export utilities
-└── Presentation/
-    ├── Common/       # Design system, shared components
-    ├── Onboarding/   # Welcome, profile setup, HealthKit permissions
-    └── Tabs/         # Main app tabs (Health, Workout, Nutrition, Profile)
+├── App/                          # App entry point
+│   ├── VitalArcApp.swift         # SwiftData schema, DependencyContainer setup
+│   └── MainTabView.swift         # Tab navigation
+├── Modules/
+│   ├── Workout/                  # Workout domain (exercises, sets, mesocycles, templates)
+│   │   ├── Domain/               # Entities, Repositories, UseCases
+│   │   ├── Data/                 # SwiftData Models, Seeds (200+ exercises)
+│   │   ├── Infrastructure/       # SwiftDataWorkoutRepository, etc.
+│   │   └── Presentation/         # Views, ViewModels
+│   ├── Nutrition/                # Nutrition domain (food search, logging, APIs)
+│   │   ├── Domain/               # Entities, Repositories, UseCases
+│   │   ├── Data/                 # SwiftData Models
+│   │   ├── Infrastructure/       # API clients, Cache, Repositories
+│   │   └── Presentation/         # Views, ViewModels
+│   ├── Wellness/                 # Health/Wellness domain (HealthKit, metrics, sleep)
+│   │   ├── Domain/               # Entities, Repositories, UseCases
+│   │   ├── Data/                 # SwiftData Models
+│   │   ├── Infrastructure/       # HealthKit, Mappers, Repositories
+│   │   └── Presentation/         # Views, ViewModels
+│   └── Shared/                   # Cross-domain code
+│       ├── User/                 # User profile, onboarding
+│       ├── Analytics/            # Progress tracking, reports
+│       ├── Notifications/        # Notification scheduling
+│       ├── Protocols/            # Cross-domain data access protocols
+│       ├── DependencyContainer/  # DI containers (main + per-domain)
+│       ├── DesignSystem/         # Colors, Typography, Spacing, Components
+│       ├── Export/               # PDF/CSV exporters
+│       └── Common/               # Shared UI components
 ```
 
 ### Key Architectural Patterns
@@ -256,10 +268,10 @@ VitalArc/
 @Environment(\.dependencyContainer) private var container
 ```
 
-**Repository Pattern**: Domain defines protocols, Data provides SwiftData implementations:
+**Repository Pattern**: Domain defines protocols, Infrastructure provides SwiftData implementations:
 ```swift
-// Domain/Repositories/WorkoutRepository.swift - protocol
-// Infrastructure/DependencyContainer.swift - SwiftDataWorkoutRepository implementation
+// Modules/Workout/Domain/Repositories/WorkoutRepository.swift - protocol
+// Modules/Shared/DependencyContainer/DependencyContainer.swift - SwiftDataWorkoutRepository implementation
 ```
 
 **Use Cases**: Single-purpose business operations that ViewModels call:
@@ -359,10 +371,15 @@ UnitConversion.feetInchesToCm(feet:inches:)       // ft/in → cm
 
 ## Key Files
 
-- `VitalArcApp.swift` - App entry, SwiftData schema, DependencyContainer setup
-- `DependencyContainer.swift` - All repository implementations
-- `MainTabView.swift` - Main app navigation (Health, Workout, Nutrition, Profile tabs)
-- `Presentation/Common/DesignSystem/` - Colors, Typography, Spacing, Components
+- `App/VitalArcApp.swift` - App entry, SwiftData schema, DependencyContainer setup
+- `Modules/Shared/DependencyContainer/DependencyContainer.swift` - Orchestrator DI container
+- `Modules/Shared/DependencyContainer/WorkoutContainer.swift` - Workout domain DI
+- `Modules/Shared/DependencyContainer/NutritionContainer.swift` - Nutrition domain DI
+- `Modules/Shared/DependencyContainer/WellnessContainer.swift` - Wellness domain DI
+- `Modules/Shared/DependencyContainer/SharedContainer.swift` - Shared/cross-domain DI
+- `App/MainTabView.swift` - Main app navigation (Today, Workout, Nutrition, Progress, Profile)
+- `Modules/Shared/DesignSystem/` - Colors, Typography, Spacing, Components
+- `Modules/Shared/Protocols/` - Cross-domain data access protocols
 
 ## Codebase Statistics
 
@@ -400,6 +417,48 @@ Automated workflows are configured in `.github/workflows/`:
 - Branch name patterns
 - Conventional commit type in title
 - PR size (XS/S/M/L/XL)
+
+## Domain Modules & Agent Teams
+
+The codebase is organized into **domain-bounded modules** for parallel agent team development.
+
+### Module Ownership
+
+| Module | Agent | Directory | Key Files |
+|--------|-------|-----------|-----------|
+| **Workout** | `workout-agent` | `Modules/Workout/` | Exercises, sets, mesocycles, templates |
+| **Nutrition** | `nutrition-agent` | `Modules/Nutrition/` | Food search, logging, API clients |
+| **Wellness** | `wellness-agent` | `Modules/Wellness/` | HealthKit, health metrics, sleep |
+| **Shared** | `orchestrator-agent` | `Modules/Shared/`, `App/` | User, analytics, DI, design system |
+
+### Cross-Domain Protocols
+
+Domains communicate via read-only protocols in `Modules/Shared/Protocols/`:
+
+| Protocol | Purpose | Used By |
+|----------|---------|---------|
+| `WorkoutDataProviding` | Read-only workout data | Analytics |
+| `NutritionDataProviding` | Read-only nutrition data | Analytics, TDEE |
+| `HealthDataProviding` | Read-only health metrics | Analytics, Recovery |
+| `UserProfileProviding` | Read-only user profile | Nutrition (TDEE), Analytics |
+
+### Agent Team Skills
+
+- `/team-feature` - Spawn domain agents for multi-domain feature work
+- `/team-review` - Spawn reviewers per domain for PR review
+
+### DependencyContainer Structure
+
+The main `DependencyContainer` delegates to domain sub-containers:
+```swift
+DependencyContainer
+├── workout: WorkoutContainer      (workoutRepository, mesocycleRepository, templateRepository)
+├── nutrition: NutritionContainer  (nutritionRepository)
+├── wellness: WellnessContainer    (healthRepository)
+└── shared: SharedContainer        (userRepository, analyticsRepository, notifications, TDEE)
+```
+
+Backward-compatible: `container.workoutRepository` still works (delegates to `container.workout.workoutRepository`).
 
 ## Current Status
 

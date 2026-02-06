@@ -385,6 +385,8 @@ final class OpenFoodFactsAPITests: XCTestCase {
         // Then
         let url = mockNetworkService.requestedURLs.first
         XCTAssertNotNil(url)
-        XCTAssertTrue(url?.absoluteString.contains("categories_tags=en%3Achocolates") ?? false)
+        let urlString = url?.absoluteString ?? ""
+        // URLComponents may or may not percent-encode the colon (both are valid per RFC 3986)
+        XCTAssertTrue(urlString.contains("categories_tags=en%3Achocolates") || urlString.contains("categories_tags=en:chocolates"))
     }
 }

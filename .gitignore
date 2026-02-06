@@ -2,7 +2,7 @@
 *.log
 
 # API Secrets (contains API keys - DO NOT COMMIT)
-VitalArc/Infrastructure/Security/Secrets.swift
+VitalArc/Modules/Shared/Security/Secrets.swift
 
 # Xcode
 build/

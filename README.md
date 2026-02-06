@@ -17,7 +17,7 @@ VitalArc integrates workout tracking, nutrition logging, and health analytics in
 | Nutrition Tracking | ✅ Ready |
 | Food Search (API) | ⚠️ API keys not configured |
 | Analytics Dashboard | ✅ Ready |
-| Design System | ✅ ~95% adoption |
+| Design System | ✅ ~93% adoption |
 | Recovery Score | ✅ HRV algorithm + HealthKit integration |
 | Sleep Analysis | ✅ Stage breakdown + quality scoring |
 | Macro Goal Editing | ✅ TDEE-based recommendations |
@@ -85,26 +85,31 @@ See `PROJECT_STATUS.md` for detailed status.
 
 ```
 VitalArc/
-├── Domain/                  # Pure Swift business logic
-│   ├── Entities/            # Business models (UserProfile, Workout, Food, etc.)
-│   ├── Repositories/        # Protocol definitions for data access
-│   └── UseCases/            # Single-responsibility business operations
-├── Data/
-│   ├── Models/              # SwiftData @Model classes
-│   └── Seeds/               # Exercise database (960+ exercises)
-├── Infrastructure/
-│   ├── HealthKit/           # HealthKitManager, permissions, queries
-│   ├── Networking/          # Food API clients
-│   ├── Cache/               # API response caching
-│   └── Export/              # PDF/CSV export utilities
-├── Presentation/
-│   ├── Common/              # Design system, shared components
-│   ├── Onboarding/          # Welcome, profile setup, permissions
-│   └── Tabs/                # Main app tabs (Health, Workout, Nutrition, Profile)
+├── App/                     # App entry point, main tab view
+├── Modules/
+│   ├── Workout/             # Workout tracking, exercises, mesocycles, templates
+│   │   ├── Domain/          # Entities, repositories, use cases
+│   │   ├── Data/            # SwiftData models, exercise seeds
+│   │   ├── Infrastructure/  # Repository implementations
+│   │   └── Presentation/    # Views, ViewModels
+│   ├── Nutrition/           # Food search, logging, API integration
+│   │   ├── Domain/          # Entities, repositories, use cases
+│   │   ├── Data/            # SwiftData models
+│   │   ├── Infrastructure/  # API clients, cache, models
+│   │   └── Presentation/    # Views, ViewModels
+│   ├── Wellness/            # HealthKit, health metrics, sleep
+│   │   ├── Domain/          # Entities, repositories, use cases
+│   │   ├── Data/            # SwiftData models
+│   │   ├── Infrastructure/  # HealthKit integration
+│   │   └── Presentation/    # Views, ViewModels
+│   └── Shared/              # Cross-domain: user, analytics, design system
+│       ├── Analytics/       # Progress, recovery, strain
+│       ├── DesignSystem/    # Colors, Typography, Spacing, Components
+│       ├── DependencyContainer/ # DI orchestrator + sub-containers
+│       ├── Protocols/       # Cross-domain data protocols
+│       ├── User/            # Profile, onboarding, settings
+│       └── Notifications/   # Notification scheduling
 └── docs/                    # Documentation
-    ├── ARCHITECTURE.md      # Technical architecture deep-dive
-    ├── DESIGN_SYSTEM.md     # Component and token reference
-    └── SETUP.md             # Development environment setup
 ```
 
 ## Getting Started
@@ -144,12 +149,12 @@ xcodebuild -scheme VitalArc -destination 'platform=iOS Simulator,name=iPhone 17 
 
 | Metric | Value |
 |--------|-------|
-| Swift files | ~193 |
-| Lines of code | ~46,500 |
+| Swift files | ~201 |
+| Lines of code | ~47,000 |
 | Views | 75 |
 | ViewModels | 12 |
 | Use cases | 25 |
-| Unit tests | 535 |
+| Unit tests | 623 |
 | Exercises | 960+ |
 
 ## Author
