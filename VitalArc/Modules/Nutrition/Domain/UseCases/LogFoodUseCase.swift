@@ -45,6 +45,12 @@ final class LogFoodUseCase: LogFoodUseCaseProtocol {
         // Save to repository
         try await repository.saveFoodEntry(entry)
 
+        // Update food usage tracking for recent/frequent foods
+        var updatedFood = food
+        updatedFood.recentlyUsed = Date()
+        updatedFood.usageCount = food.usageCount + 1
+        try? await repository.saveFood(updatedFood)
+
         // Update daily nutrition totals
         try? await updateDailyNutrition(for: date)
 
