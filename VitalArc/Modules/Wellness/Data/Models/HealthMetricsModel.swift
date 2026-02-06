@@ -25,6 +25,13 @@ final class HealthMetricsModel {
     var coreSleepHours: Double?
     var awakeHours: Double?
 
+    // Body composition
+    var bodyFatPercentage: Double?
+    var leanBodyMass: Double?
+
+    // Respiratory
+    var respiratoryRate: Double?
+
     init(
         id: UUID = UUID(),
         date: Date,
@@ -37,7 +44,10 @@ final class HealthMetricsModel {
         deepSleepHours: Double? = nil,
         remSleepHours: Double? = nil,
         coreSleepHours: Double? = nil,
-        awakeHours: Double? = nil
+        awakeHours: Double? = nil,
+        bodyFatPercentage: Double? = nil,
+        leanBodyMass: Double? = nil,
+        respiratoryRate: Double? = nil
     ) {
         self.id = id
         self.date = date
@@ -51,6 +61,9 @@ final class HealthMetricsModel {
         self.remSleepHours = remSleepHours
         self.coreSleepHours = coreSleepHours
         self.awakeHours = awakeHours
+        self.bodyFatPercentage = bodyFatPercentage
+        self.leanBodyMass = leanBodyMass
+        self.respiratoryRate = respiratoryRate
     }
 
     /// Convert to domain entity
@@ -77,7 +90,10 @@ final class HealthMetricsModel {
             steps: steps,
             sleepHours: sleepHours,
             sleepStages: sleepStages,
-            weight: weight
+            weight: weight,
+            bodyFatPercentage: bodyFatPercentage,
+            leanBodyMass: leanBodyMass,
+            respiratoryRate: respiratoryRate
         )
     }
 
@@ -95,7 +111,10 @@ final class HealthMetricsModel {
             deepSleepHours: metrics.sleepStages?.deepSleep,
             remSleepHours: metrics.sleepStages?.remSleep,
             coreSleepHours: metrics.sleepStages?.coreSleep,
-            awakeHours: metrics.sleepStages?.awake
+            awakeHours: metrics.sleepStages?.awake,
+            bodyFatPercentage: metrics.bodyFatPercentage,
+            leanBodyMass: metrics.leanBodyMass,
+            respiratoryRate: metrics.respiratoryRate
         )
     }
 }

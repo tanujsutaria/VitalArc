@@ -20,6 +20,11 @@ final class ExerciseLibraryViewModel {
     var isLoading: Bool = false
     var errorMessage: String? = nil
 
+    // Custom exercise management
+    var exerciseToEdit: Exercise? = nil
+    var showingEditExercise: Bool = false
+    var deleteError: String? = nil
+
     init(getExercisesUseCase: GetExercisesUseCase) {
         self.getExercisesUseCase = getExercisesUseCase
     }

@@ -13,6 +13,7 @@ import Observation
 final class WorkoutLoggingViewModel {
     private let createWorkoutUseCase: CreateWorkoutUseCase
     private let calculateProgressionUseCase: CalculateProgressionUseCase
+    private let detectPersonalRecordUseCase: DetectPersonalRecordUseCase?
 
     var workoutName: String = ""
     var notes: String = ""
@@ -23,12 +24,105 @@ final class WorkoutLoggingViewModel {
     var errorMessage: String? = nil
     var showingExerciseLibrary: Bool = false
 
+    // MARK: - Rest Timer State
+    var restTimerActive: Bool = false
+    var restTimerEndDate: Date? = nil
+    var restTimerDuration: Int = 90 // default rest seconds
+    var restTimerExerciseId: UUID? = nil
+
+    // MARK: - Superset/Circuit State
+    var setGroups: [SetGroup] = []
+    var selectedExerciseIdsForGrouping: Set<UUID> = []
+    var isGroupingMode: Bool = false
+
+    // MARK: - Personal Records State
+    var newPersonalRecords: [PersonalRecord] = []
+    var showingPersonalRecords: Bool = false
+
     init(
         createWorkoutUseCase: CreateWorkoutUseCase,
-        calculateProgressionUseCase: CalculateProgressionUseCase
+        calculateProgressionUseCase: CalculateProgressionUseCase,
+        detectPersonalRecordUseCase: DetectPersonalRecordUseCase? = nil
     ) {
         self.createWorkoutUseCase = createWorkoutUseCase
         self.calculateProgressionUseCase = calculateProgressionUseCase
+        self.detectPersonalRecordUseCase = detectPersonalRecordUseCase
+    }
+
+    // MARK: - Rest Timer
+
+    func startRestTimer(duration: Int, for exerciseId: UUID) {
+        restTimerDuration = duration
+        restTimerExerciseId = exerciseId
+        restTimerEndDate = Date().addingTimeInterval(TimeInterval(duration))
+        restTimerActive = true
+    }
+
+    func cancelRestTimer() {
+        restTimerActive = false
+        restTimerEndDate = nil
+        restTimerExerciseId = nil
+    }
+
+    func restTimerFinished() {
+        restTimerActive = false
+        restTimerEndDate = nil
+        restTimerExerciseId = nil
+    }
+
+    // MARK: - Superset/Circuit Management
+
+    func toggleGroupingMode() {
+        isGroupingMode.toggle()
+        if !isGroupingMode {
+            selectedExerciseIdsForGrouping.removeAll()
+        }
+    }
+
+    func toggleExerciseForGrouping(_ exerciseId: UUID) {
+        if selectedExerciseIdsForGrouping.contains(exerciseId) {
+            selectedExerciseIdsForGrouping.remove(exerciseId)
+        } else {
+            selectedExerciseIdsForGrouping.insert(exerciseId)
+        }
+    }
+
+    func createGroup(type: SetGroupType) {
+        guard selectedExerciseIdsForGrouping.count >= 2 else { return }
+
+        // Remove these exercises from any existing groups
+        setGroups.removeAll { group in
+            group.exerciseIds.contains(where: { selectedExerciseIdsForGrouping.contains($0) })
+        }
+
+        // Preserve the order from selectedExercises
+        let orderedIds = selectedExercises
+            .filter { selectedExerciseIdsForGrouping.contains($0.id) }
+            .map { $0.id }
+
+        let group = SetGroup(groupType: type, exerciseIds: orderedIds)
+        setGroups.append(group)
+
+        selectedExerciseIdsForGrouping.removeAll()
+        isGroupingMode = false
+    }
+
+    func removeGroup(_ groupId: UUID) {
+        setGroups.removeAll { $0.id == groupId }
+    }
+
+    func groupForExercise(_ exerciseId: UUID) -> SetGroup? {
+        setGroups.first { $0.exerciseIds.contains(exerciseId) }
+    }
+
+    func isFirstInGroup(_ exerciseId: UUID) -> Bool {
+        guard let group = groupForExercise(exerciseId) else { return false }
+        return group.exerciseIds.first == exerciseId
+    }
+
+    func isLastInGroup(_ exerciseId: UUID) -> Bool {
+        guard let group = groupForExercise(exerciseId) else { return false }
+        return group.exerciseIds.last == exerciseId
     }
 
     // MARK: - Exercise Management
@@ -143,8 +237,23 @@ final class WorkoutLoggingViewModel {
                 duration: duration
             )
 
-            // Reset for new workout
-            resetWorkout()
+            // Detect personal records
+            if let detectPR = detectPersonalRecordUseCase {
+                do {
+                    let prs = try await detectPR.execute(sets: allSets)
+                    if !prs.isEmpty {
+                        newPersonalRecords = prs
+                        showingPersonalRecords = true
+                    }
+                } catch {
+                    Log.warning("Failed to detect personal records: \(error.localizedDescription)", category: .workout)
+                }
+            }
+
+            // Reset for new workout (if no PRs to show)
+            if !showingPersonalRecords {
+                resetWorkout()
+            }
         } catch {
             errorMessage = UserFacingError.message(for: error, context: .saving)
         }
@@ -158,6 +267,10 @@ final class WorkoutLoggingViewModel {
         selectedExercises = []
         exerciseSets = [:]
         startTime = Date()
+        cancelRestTimer()
+        setGroups = []
+        selectedExerciseIdsForGrouping = []
+        isGroupingMode = false
     }
 
     // MARK: - Computed Properties

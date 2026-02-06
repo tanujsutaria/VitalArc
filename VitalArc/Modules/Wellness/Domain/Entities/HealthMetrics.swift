@@ -89,6 +89,9 @@ struct HealthMetrics: Identifiable, Equatable {
     let sleepHours: Double? // total sleep in hours
     let sleepStages: SleepStages? // detailed sleep breakdown
     let weight: Double? // in kg
+    let bodyFatPercentage: Double? // percentage (0-100)
+    let leanBodyMass: Double? // in kg
+    let respiratoryRate: Double? // breaths per minute
 
     init(
         id: UUID = UUID(),
@@ -99,7 +102,10 @@ struct HealthMetrics: Identifiable, Equatable {
         steps: Int? = nil,
         sleepHours: Double? = nil,
         sleepStages: SleepStages? = nil,
-        weight: Double? = nil
+        weight: Double? = nil,
+        bodyFatPercentage: Double? = nil,
+        leanBodyMass: Double? = nil,
+        respiratoryRate: Double? = nil
     ) {
         self.id = id
         self.date = date
@@ -110,6 +116,9 @@ struct HealthMetrics: Identifiable, Equatable {
         self.sleepHours = sleepHours
         self.sleepStages = sleepStages
         self.weight = weight
+        self.bodyFatPercentage = bodyFatPercentage
+        self.leanBodyMass = leanBodyMass
+        self.respiratoryRate = respiratoryRate
     }
 
     /// Simple recovery indicator based on HRV (higher is better)

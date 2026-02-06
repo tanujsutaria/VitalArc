@@ -14,6 +14,7 @@ struct ExerciseSetView: View {
     let onRemoveSet: (Int) -> Void
     let onUpdateSet: (WorkoutSetData, Int) -> Void
     let onRemoveExercise: () -> Void
+    var onSetCompleted: (() -> Void)? = nil
 
     var body: some View {
         VStack(alignment: .leading, spacing: Spacing.md) {
@@ -54,7 +55,8 @@ struct ExerciseSetView: View {
                             get: { sets[index] },
                             set: { onUpdateSet($0, index) }
                         ),
-                        onDelete: { onRemoveSet(index) }
+                        onDelete: { onRemoveSet(index) },
+                        onComplete: onSetCompleted
                     )
                     .id(sets[index].id)
                 }

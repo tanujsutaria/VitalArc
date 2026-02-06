@@ -59,7 +59,10 @@ struct HealthKitMapper {
             activeEnergy: activeEnergy,
             steps: steps.map { Int($0) },
             sleepHours: sleepHours,
-            weight: weight
+            weight: weight,
+            bodyFatPercentage: nil,
+            leanBodyMass: nil,
+            respiratoryRate: nil
         )
     }
 
