@@ -283,7 +283,7 @@ private struct TemplatePreviewCard: View {
                 }
                 .foregroundStyle(Color.vitalPrimary)
             }
-            .frame(width: 140)
+            .frame(width: Spacing.pieChartSize)
         }
     }
 }

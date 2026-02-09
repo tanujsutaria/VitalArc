@@ -77,10 +77,16 @@ enum Spacing {
     static let chartHeightSmall: CGFloat = 150     // Trend charts
     static let chartHeightMedium: CGFloat = 160    // Standard charts
     static let chartHeightLarge: CGFloat = 180     // Featured charts
+    static let chartHeightExtraLarge: CGFloat = 200  // Standard featured charts
+    static let chartHeightXL: CGFloat = 250           // Volume distribution charts
 
     // MARK: - Component Widths
 
     static let pickerWidthCompact: CGFloat = 150   // Segmented pickers
+
+    // MARK: - Component Heights
+    static let progressBarHeight: CGFloat = 6         // Macro progress bars
+    static let quickActionCardHeight: CGFloat = 80    // Dashboard quick action cards
 
     // MARK: - Chart Sizes
 

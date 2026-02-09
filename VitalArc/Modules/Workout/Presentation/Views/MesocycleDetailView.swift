@@ -198,7 +198,7 @@ struct MesocycleDetailView: View {
                         HStack(spacing: Spacing.sm) {
                             Image(systemName: group.phaseType.icon)
                                 .foregroundStyle(Color(group.phaseType.color))
-                                .frame(width: 24)
+                                .frame(width: Spacing.iconLarge)
 
                             Text(group.phaseType.rawValue)
                                 .font(.vitalBody)
@@ -366,7 +366,7 @@ struct MesocycleDetailView: View {
                     .foregroundStyle(Color.vitalPrimary.gradient)
                     .cornerRadius(Spacing.xs)
                 }
-                .frame(height: 180)
+                .frame(height: Spacing.chartHeightLarge)
                 .chartYAxis {
                     AxisMarks(position: .leading) { value in
                         if let vol = value.as(Double.self) {
@@ -437,7 +437,7 @@ struct MesocycleDetailView: View {
                     )
                     .foregroundStyle(Color.vitalWarning)
                 }
-                .frame(height: 120)
+                .frame(height: Spacing.chartHeightCompact)
                 .chartYScale(domain: 0...5)
                 .chartYAxis {
                     AxisMarks(values: [0, 1, 2, 3, 4, 5])
@@ -622,7 +622,7 @@ struct TrainingBlockCard: View {
                             Text("\(exercise.orderIndex + 1).")
                                 .font(.vitalCaption)
                                 .foregroundStyle(Color.vitalAdaptiveTextSecondary)
-                                .frame(width: 24)
+                                .frame(width: Spacing.iconLarge)
 
                             VStack(alignment: .leading, spacing: Spacing.xxs) {
                                 Text(exercise.prescription)

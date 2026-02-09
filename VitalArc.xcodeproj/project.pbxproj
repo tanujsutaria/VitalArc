@@ -222,6 +222,7 @@
 		CEDCA363CE5E28947A40451A /* TermsOfServiceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7532FFED3C7322F2D1DA63F4 /* TermsOfServiceView.swift */; };
 		CF5804DB975B02CD98079F8E /* ExerciseSetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFDA1C27DFAF3789479FBA22 /* ExerciseSetView.swift */; };
 		CF7BD496616C8A732E28104E /* HealthKitPermissionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEE9C37F9825E01C26320F0F /* HealthKitPermissionView.swift */; };
+		D0625C27F9E60B11A87980F5 /* CalculateReadinessScoreUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BE127FCC1E18A792C0CB7D8 /* CalculateReadinessScoreUseCaseTests.swift */; };
 		D0C62E5645A357D424ED8C36 /* FeedbackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B9484D5D14F91D204661B8F /* FeedbackView.swift */; };
 		D1A6621DE97C5D3B9D69A029 /* FoodAPICoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDA612DB6E4BD11CE637F78A /* FoodAPICoordinatorTests.swift */; };
 		D1D1B7496B244EA0D7F92DD2 /* PersonalRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 832379FA77789251113B6D55 /* PersonalRecord.swift */; };
@@ -434,6 +435,7 @@
 		783B5EBB58978D289DF62F92 /* CreateCustomFoodView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateCustomFoodView.swift; sourceTree = "<group>"; };
 		787CB00A431620BCAC5268E4 /* TemplateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemplateTests.swift; sourceTree = "<group>"; };
 		78CD494AA555FCC77EE7AE58 /* Secrets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Secrets.swift; sourceTree = "<group>"; };
+		7BE127FCC1E18A792C0CB7D8 /* CalculateReadinessScoreUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalculateReadinessScoreUseCaseTests.swift; sourceTree = "<group>"; };
 		7C7962577832BFCFB44500AD /* RestTimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestTimerView.swift; sourceTree = "<group>"; };
 		7F1D3381D323D6FF074FBD7C /* MetricCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetricCard.swift; sourceTree = "<group>"; };
 		7FC36A079D39BDED882FE853 /* UserProfileModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileModel.swift; sourceTree = "<group>"; };
@@ -609,6 +611,7 @@
 			isa = PBXGroup;
 			children = (
 				2CF141A2F85B0FAED380D2F3 /* CalculateNutritionUseCaseTests.swift */,
+				7BE127FCC1E18A792C0CB7D8 /* CalculateReadinessScoreUseCaseTests.swift */,
 				02E2D24312FE0978AA66DD24 /* CalculateVolumeUseCaseTests.swift */,
 				3BF205ECCFD8D82456A13F47 /* CreateWorkoutUseCaseTests.swift */,
 				6741575CC45FBD5A51A967C3 /* LogFoodUseCaseTests.swift */,
@@ -1454,6 +1457,34 @@
 			path = Data;
 			sourceTree = "<group>";
 		};
+		"TEMP_2B21888D-19D2-4703-A866-98D900C43981" /* Data */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Data;
+			sourceTree = "<group>";
+		};
+		"TEMP_403D7C50-70DB-4253-B185-E2470B7865DF" /* Common */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Common;
+			sourceTree = "<group>";
+		};
+		"TEMP_48AE2334-2A7A-4714-ACED-62C2767D9964" /* Infrastructure */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Infrastructure;
+			sourceTree = "<group>";
+		};
+		"TEMP_D212E7A2-A95C-49A1-94DA-D9E888C82BFE" /* Presentation */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Presentation;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -1773,6 +1804,7 @@
 				83D8C9C0B4E5992D3F08B16F /* AnalyticsDashboardViewModelTests.swift in Sources */,
 				EB41E2AFBD5AB5C174DBE61F /* AnalyticsTests.swift in Sources */,
 				FF72615E412DAD63464DDABC /* CalculateNutritionUseCaseTests.swift in Sources */,
+				D0625C27F9E60B11A87980F5 /* CalculateReadinessScoreUseCaseTests.swift in Sources */,
 				6D46BB1E4C450DD94595E9D2 /* CalculateVolumeUseCaseTests.swift in Sources */,
 				E5BC0C2721ADF20AF7F95934 /* CreateWorkoutUseCaseTests.swift in Sources */,
 				828411638BC0FE0E5D56AC86 /* ExerciseLibraryViewModelTests.swift in Sources */,

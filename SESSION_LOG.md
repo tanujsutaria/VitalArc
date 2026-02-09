@@ -1,5 +1,49 @@
 # VitalArc Development Session Log
 
+## Session 20.0 - February 8, 2026 (Workstation)
+
+### Session Start
+- **Time**: Morning PST
+- **Platform**: macOS (Workstation)
+- **Focus**: TBD (see suggested focus areas below)
+- **Branch**: dev/mac-session-20.0-2026-02-08
+- **Base**: main @ d3ec1a1 (Merge PR #57 - cloud wellness fixes)
+
+### Environment
+- **Build Capable**: Yes
+- **Test Capable**: Yes (unit + UI)
+
+### Pre-Session Status
+- **Build**: PASSING (0 errors, 1 non-actionable warning)
+- **Design Violations**: 31 (22 frame heights, 8 frame widths, 1 UIColor - mostly chart dimensions)
+- **Design Adoption**: ~95%
+- **Uncommitted Changes**: None
+- **Tests**: 623 passing
+
+### Session Goals
+1. Design system token migration and violation fixes
+2. Parallel worktree development (wellness, workout, analytics)
+3. New tests for readiness score and workout logging
+
+### Work Log
+| Time | Action | Files | Notes |
+|------|--------|-------|-------|
+| - | Session started | - | Build verified, 8 commits pulled from main |
+| - | Added missing Spacing tokens | Spacing.swift, VitalEmptyState.swift | New chartHeight/chartMinHeight/chartBarWidth tokens |
+| - | Added readiness score tests | CalculateReadinessScoreUseCaseTests.swift | 181-line edge case test suite |
+| - | Fixed ChartView design tokens | ChartView.swift | Replaced hardcoded dimensions |
+| - | Migrated analytics to design tokens | 6 analytics view files | Replaced hardcoded frame dimensions |
+| - | Added workout features | WorkoutLoggingViewModel.swift, MesocycleDetailView.swift | Per-exercise rest duration, superset editing |
+| - | Added workout logging tests | WorkoutLoggingViewModelTests.swift | 64-line test file for new features |
+| - | Merged 3 worktree branches | Wellness, Workout, Today branches | Parallel development merged to session branch |
+| - | Removed SpacingShim files | 3 SpacingShim.swift files removed | Post-merge cleanup, tokens now in main DesignSystem |
+| 8:41 PM | Updated work log | SESSION_LOG.md | 10 commits, 15 files changed, +334/-30 lines |
+| 8:42 PM | Final verification | - | Build PASSED, 638 tests PASSED (0 failures) |
+| 8:43 PM | Updated docs | PROJECT_STATUS.md, README.md | Test count 623→638, design adoption 90%→98% |
+| 8:44 PM | Session ended | - | All 4 streams merged, SpacingShims removed |
+
+---
+
 ## Session 19.0 - February 6, 2026 (Cloud)
 
 ### Session Start

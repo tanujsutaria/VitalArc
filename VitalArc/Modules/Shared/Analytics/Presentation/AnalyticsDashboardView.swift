@@ -95,7 +95,10 @@ struct AnalyticsDashboardView: View {
                     loadingOverlay
                 }
             }
-            .alert("Error", isPresented: .constant(viewModel.errorMessage != nil)) {
+            .alert("Error", isPresented: Binding(
+                get: { viewModel.errorMessage != nil },
+                set: { if !$0 { viewModel.errorMessage = nil } }
+            )) {
                 Button("OK") {
                     viewModel.errorMessage = nil
                 }
@@ -169,7 +172,7 @@ struct AnalyticsDashboardView: View {
                                         ? Color.vitalPrimary
                                         : Color.clear
                                 )
-                                .frame(height: 3)
+                                .frame(height: Spacing.borderThick)
                                 .cornerRadius(Spacing.xxs)
                         }
                         .padding(.horizontal, Spacing.lg)
@@ -420,7 +423,7 @@ struct AnalyticsDashboardView: View {
                         AxisGridLine()
                     }
                 }
-                .frame(height: 200)
+                .frame(height: Spacing.chartHeightExtraLarge)
             }
         }
     }
@@ -552,7 +555,7 @@ struct AnalyticsDashboardView: View {
                         }
                     }
                 }
-                .frame(height: 180)
+                .frame(height: Spacing.chartHeightLarge)
 
                 // Change summary
                 if let first = viewModel.weightTrend.first,

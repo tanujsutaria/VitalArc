@@ -44,7 +44,7 @@ struct VolumeChartView: View {
                                 .interpolationMethod(.catmullRom)
                             }
                         }
-                        .frame(height: 200)
+                        .frame(height: Spacing.chartHeightExtraLarge)
                         .chartXAxis {
                             AxisMarks(values: .stride(by: .weekOfYear)) { _ in
                                 AxisGridLine()
@@ -80,7 +80,7 @@ struct VolumeChartView: View {
                                 .foregroundStyle(Color.vitalSuccess)
                             }
                         }
-                        .frame(height: 180)
+                        .frame(height: Spacing.chartHeightLarge)
                         .chartXAxis {
                             AxisMarks(values: .stride(by: .weekOfYear)) { _ in
                                 AxisGridLine()
@@ -146,7 +146,7 @@ struct VolumeChartView: View {
                                     .foregroundStyle(by: .value("Exercise", exercise.exerciseName))
                                 }
                             }
-                            .frame(height: 250)
+                            .frame(height: Spacing.chartHeightXL)
                         }
                         .padding(Spacing.lg)
                         .background(Color.vitalAdaptiveSurface)

@@ -35,7 +35,7 @@ struct VitalEmptyState: View {
                 ZStack {
                     Circle()
                         .fill(Color.vitalPrimary.opacity(0.15))
-                        .frame(width: 100, height: 100)
+                        .frame(width: Spacing.illustrationMedium, height: Spacing.illustrationMedium)
 
                     Image(systemName: icon)
                         .font(.vitalIconHuge)
@@ -108,7 +108,7 @@ struct VitalErrorState: View {
                 ZStack {
                     Circle()
                         .fill(Color.vitalDanger.opacity(0.15))
-                        .frame(width: 100, height: 100)
+                        .frame(width: Spacing.illustrationMedium, height: Spacing.illustrationMedium)
 
                     Image(systemName: "exclamationmark.triangle")
                         .font(.vitalIconHuge)
@@ -262,7 +262,7 @@ struct NoDataIllustration: View {
             // Background circle
             Circle()
                 .fill(color.opacity(0.1))
-                .frame(width: 100, height: 100)
+                .frame(width: Spacing.illustrationMedium, height: Spacing.illustrationMedium)
 
             // Document shape
             RoundedRectangle(cornerRadius: Spacing.radiusSmall)
@@ -317,7 +317,7 @@ struct NoResultsIllustration: View {
             // Background circle
             Circle()
                 .fill(color.opacity(0.1))
-                .frame(width: 100, height: 100)
+                .frame(width: Spacing.illustrationMedium, height: Spacing.illustrationMedium)
 
             // Magnifying glass
             Circle()
@@ -359,7 +359,7 @@ struct ErrorIllustration: View {
             // Background circle
             Circle()
                 .fill(color.opacity(0.1))
-                .frame(width: 100, height: 100)
+                .frame(width: Spacing.illustrationMedium, height: Spacing.illustrationMedium)
 
             // Warning triangle
             TriangleShape()
@@ -402,7 +402,7 @@ struct OfflineIllustration: View {
             // Background circle
             Circle()
                 .fill(color.opacity(0.1))
-                .frame(width: 100, height: 100)
+                .frame(width: Spacing.illustrationMedium, height: Spacing.illustrationMedium)
 
             // Cloud shape
             CloudShape()
