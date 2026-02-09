@@ -396,14 +396,14 @@ struct TodayDashboardView: View {
                 ZStack(alignment: .leading) {
                     RoundedRectangle(cornerRadius: Spacing.radiusTinyV2)
                         .fill(Color.vitalSurfaceRaisedV2)
-                        .frame(height: 6)
+                        .frame(height: Spacing.progressBarHeight)
 
                     RoundedRectangle(cornerRadius: Spacing.radiusTinyV2)
                         .fill(color)
-                        .frame(width: min(geometry.size.width * (current / target), geometry.size.width), height: 6)
+                        .frame(width: min(geometry.size.width * (current / target), geometry.size.width), height: Spacing.progressBarHeight)
                 }
             }
-            .frame(height: 6)
+            .frame(height: Spacing.progressBarHeight)
 
             Text("\(Int(current))g")
                 .font(.vitalUnitV2)
@@ -443,7 +443,7 @@ struct TodayDashboardView: View {
                         .lineLimit(2)
                 }
                 .frame(maxWidth: .infinity)
-                .frame(height: 80)
+                .frame(height: Spacing.quickActionCardHeight)
             }
         }
         .buttonStyle(.plain)

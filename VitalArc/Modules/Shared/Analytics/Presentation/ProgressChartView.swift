@@ -42,7 +42,7 @@ struct ProgressChartView: View {
                                     .foregroundStyle(Color.vitalInfo)
                                 }
                             }
-                            .frame(height: 200)
+                            .frame(height: Spacing.chartHeightExtraLarge)
                             .chartXAxis {
                                 AxisMarks { _ in
                                     AxisGridLine()
@@ -111,7 +111,7 @@ struct ProgressChartView: View {
                                     .foregroundStyle(Color.vitalWarning)
                                 }
                             }
-                            .frame(height: 180)
+                            .frame(height: Spacing.chartHeightLarge)
                             .chartXAxis {
                                 AxisMarks { _ in
                                     AxisGridLine()
@@ -178,7 +178,7 @@ struct ProgressChartView: View {
                                         }
                                     }
                                 }
-                                .frame(height: 180)
+                                .frame(height: Spacing.chartHeightLarge)
                                 .chartXAxis {
                                     AxisMarks { _ in
                                         AxisGridLine()
