@@ -169,7 +169,7 @@ struct AnalyticsDashboardView: View {
                                         ? Color.vitalPrimary
                                         : Color.clear
                                 )
-                                .frame(height: 3)
+                                .frame(height: Spacing.borderThick)
                                 .cornerRadius(Spacing.xxs)
                         }
                         .padding(.horizontal, Spacing.lg)
@@ -420,7 +420,7 @@ struct AnalyticsDashboardView: View {
                         AxisGridLine()
                     }
                 }
-                .frame(height: 200)
+                .frame(height: Spacing.chartHeightExtraLarge)
             }
         }
     }
@@ -552,7 +552,7 @@ struct AnalyticsDashboardView: View {
                         }
                     }
                 }
-                .frame(height: 180)
+                .frame(height: Spacing.chartHeightLarge)
 
                 // Change summary
                 if let first = viewModel.weightTrend.first,

@@ -60,7 +60,7 @@ struct TrainingHeatmapView: View {
                             Text(dayLabels[day])
                                 .font(.vitalCaptionSmall)
                                 .foregroundStyle(Color.vitalAdaptiveTextSecondary)
-                                .frame(width: 16, height: cellSize)
+                                .frame(width: Spacing.iconSmall, height: cellSize)
                         }
                     }
 
@@ -102,7 +102,7 @@ struct TrainingHeatmapView: View {
                     ForEach(0..<5, id: \.self) { level in
                         RoundedRectangle(cornerRadius: 2)
                             .fill(intensityColor(level))
-                            .frame(width: 12, height: 12)
+                            .frame(width: Spacing.iconXSmall, height: Spacing.iconXSmall)
                     }
 
                     Text("More")

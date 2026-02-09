@@ -143,7 +143,7 @@ struct StrengthProgressionChartView: View {
                         }
                     }
                     .chartLegend(position: .bottom, alignment: .leading)
-                    .frame(height: 220)
+                    .frame(height: Spacing.chartHeightExtraLarge)
                     .animation(.vitalSpringBouncy, value: hasAppeared)
                     .animation(.vitalSpring, value: selectedExercise)
 
@@ -232,7 +232,7 @@ struct StrengthProgressionChartView: View {
                 .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                 .multilineTextAlignment(.center)
         }
-        .frame(height: 200)
+        .frame(height: Spacing.chartHeightExtraLarge)
         .frame(maxWidth: .infinity)
     }
 }
