@@ -449,4 +449,68 @@ final class WorkoutLoggingViewModelTests: XCTestCase {
         XCTAssertNotNil(savedWorkout?.duration)
         XCTAssertGreaterThan(savedWorkout?.duration ?? 0, 0)
     }
+
+    // MARK: - Rest Duration Tests
+
+    func testRestDurationDefault() {
+        let exercise = makeTestExercise()
+        // No override, no group → should return global default (90)
+        XCTAssertEqual(viewModel.restDurationForExercise(exercise.id), 90)
+    }
+
+    func testRestDurationPerExerciseOverride() {
+        let exercise = makeTestExercise()
+        viewModel.exerciseRestDurations[exercise.id] = 120
+        XCTAssertEqual(viewModel.restDurationForExercise(exercise.id), 120)
+    }
+
+    func testRestDurationSupersetMiddle() async {
+        let ex1 = makeTestExercise(name: "Bench Press")
+        let ex2 = makeTestExercise(name: "Bent Over Row")
+        await viewModel.addExercise(ex1)
+        await viewModel.addExercise(ex2)
+        // Create superset group
+        viewModel.toggleGroupingMode()
+        viewModel.toggleExerciseForGrouping(ex1.id)
+        viewModel.toggleExerciseForGrouping(ex2.id)
+        viewModel.createGroup(type: .superset)
+        // Middle exercise (not last) → 30s
+        XCTAssertEqual(viewModel.restDurationForExercise(ex1.id), 30)
+    }
+
+    func testRestDurationSupersetLast() async {
+        let ex1 = makeTestExercise(name: "Bench Press")
+        let ex2 = makeTestExercise(name: "Bent Over Row")
+        await viewModel.addExercise(ex1)
+        await viewModel.addExercise(ex2)
+        viewModel.toggleGroupingMode()
+        viewModel.toggleExerciseForGrouping(ex1.id)
+        viewModel.toggleExerciseForGrouping(ex2.id)
+        viewModel.createGroup(type: .superset)
+        // Last exercise → full rest (90s)
+        XCTAssertEqual(viewModel.restDurationForExercise(ex2.id), 90)
+    }
+
+    func testEditGroupType() async {
+        let ex1 = makeTestExercise(name: "Bench Press")
+        let ex2 = makeTestExercise(name: "Bent Over Row")
+        await viewModel.addExercise(ex1)
+        await viewModel.addExercise(ex2)
+        viewModel.toggleGroupingMode()
+        viewModel.toggleExerciseForGrouping(ex1.id)
+        viewModel.toggleExerciseForGrouping(ex2.id)
+        viewModel.createGroup(type: .superset)
+        let groupId = viewModel.setGroups.first!.id
+        viewModel.editGroupType(groupId, newType: .circuit)
+        XCTAssertEqual(viewModel.setGroups.first?.groupType, .circuit)
+    }
+
+    func testToggleGroupingModeClearsSelection() {
+        let exerciseId = UUID()
+        viewModel.isGroupingMode = true
+        viewModel.selectedExerciseIdsForGrouping.insert(exerciseId)
+        viewModel.toggleGroupingMode()
+        XCTAssertFalse(viewModel.isGroupingMode)
+        XCTAssertTrue(viewModel.selectedExerciseIdsForGrouping.isEmpty)
+    }
 }

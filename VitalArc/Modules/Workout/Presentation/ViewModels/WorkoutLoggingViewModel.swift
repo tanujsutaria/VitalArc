@@ -29,6 +29,7 @@ final class WorkoutLoggingViewModel {
     var restTimerEndDate: Date? = nil
     var restTimerDuration: Int = 90 // default rest seconds
     var restTimerExerciseId: UUID? = nil
+    var exerciseRestDurations: [UUID: Int] = [:]  // per-exercise overrides
 
     // MARK: - Superset/Circuit State
     var setGroups: [SetGroup] = []
@@ -70,6 +71,16 @@ final class WorkoutLoggingViewModel {
         restTimerExerciseId = nil
     }
 
+    func restDurationForExercise(_ exerciseId: UUID) -> Int {
+        // Per-exercise override
+        if let custom = exerciseRestDurations[exerciseId] { return custom }
+        // Superset-aware: short rest between exercises in same group, full rest after last
+        if let _ = groupForExercise(exerciseId), !isLastInGroup(exerciseId) {
+            return 30
+        }
+        return restTimerDuration  // global default (90s)
+    }
+
     // MARK: - Superset/Circuit Management
 
     func toggleGroupingMode() {
@@ -109,6 +120,12 @@ final class WorkoutLoggingViewModel {
 
     func removeGroup(_ groupId: UUID) {
         setGroups.removeAll { $0.id == groupId }
+    }
+
+    func editGroupType(_ groupId: UUID, newType: SetGroupType) {
+        guard let idx = setGroups.firstIndex(where: { $0.id == groupId }) else { return }
+        let old = setGroups[idx]
+        setGroups[idx] = SetGroup(id: old.id, name: old.name, groupType: newType, exerciseIds: old.exerciseIds)
     }
 
     func groupForExercise(_ exerciseId: UUID) -> SetGroup? {
