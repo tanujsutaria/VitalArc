@@ -17,7 +17,7 @@ VitalArc integrates workout tracking, nutrition logging, and health analytics in
 | Nutrition Tracking | ✅ Ready |
 | Food Search (API) | ⚠️ API keys not configured |
 | Analytics Dashboard | ✅ Ready |
-| Design System | ✅ ~90% adoption |
+| Design System | ✅ ~98% adoption |
 | Recovery Score | ✅ HRV algorithm + HealthKit integration |
 | Sleep Analysis | ✅ Stage breakdown + quality scoring |
 | Macro Goal Editing | ✅ TDEE-based recommendations |
@@ -157,7 +157,7 @@ xcodebuild -scheme VitalArc -destination 'platform=iOS Simulator,name=iPhone 17 
 | Views | 75 |
 | ViewModels | 12 |
 | Use cases | 25 |
-| Unit tests | 623 |
+| Unit tests | 638 |
 | Exercises | 960+ |
 
 ## Author
