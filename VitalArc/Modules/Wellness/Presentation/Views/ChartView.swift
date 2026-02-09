@@ -86,7 +86,7 @@ struct ChartView: View {
         .chartYAxis {
             AxisMarks(position: .leading)
         }
-        .frame(height: 200)
+        .frame(height: Spacing.chartHeightExtraLarge)
     }
 
     // MARK: - Empty State
@@ -101,7 +101,7 @@ struct ChartView: View {
                 .font(.vitalBody)
                 .foregroundStyle(Color.vitalAdaptiveTextSecondary)
         }
-        .frame(height: 200)
+        .frame(height: Spacing.chartHeightExtraLarge)
         .frame(maxWidth: .infinity)
     }
 }
