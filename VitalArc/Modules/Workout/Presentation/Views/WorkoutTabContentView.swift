@@ -55,6 +55,9 @@ struct WorkoutTabContentView: View {
                         detectPersonalRecordUseCase: DetectPersonalRecordUseCase(
                             workoutRepository: container.workoutRepository,
                             analyticsRepository: container.analyticsRepository
+                        ),
+                        calculateOneRepMaxUseCase: CalculateOneRepMaxUseCase(
+                            analyticsRepository: container.analyticsRepository
                         )
                     )
                 }
@@ -218,7 +221,15 @@ struct WorkoutTabContentView: View {
             }
 
             ForEach(recentWorkouts.prefix(3)) { workout in
-                WorkoutSummaryCard(workout: workout)
+                NavigationLink {
+                    WorkoutDetailView(
+                        workout: workout,
+                        repository: container.workoutRepository
+                    )
+                } label: {
+                    WorkoutSummaryCard(workout: workout)
+                }
+                .buttonStyle(.plain)
             }
         }
     }

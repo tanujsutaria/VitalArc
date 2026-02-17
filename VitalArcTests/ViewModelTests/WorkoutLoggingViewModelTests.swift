@@ -513,4 +513,101 @@ final class WorkoutLoggingViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isGroupingMode)
         XCTAssertTrue(viewModel.selectedExerciseIdsForGrouping.isEmpty)
     }
+
+    // MARK: - 1RM Integration Tests
+
+    func testCurrentEstimated1RMWithSets() async {
+        // Given
+        let exercise = makeTestExercise()
+        await viewModel.addExercise(exercise)
+
+        // Update set: 100kg x 10 reps → e1RM = 100 * (1 + 10/30) = 133.33
+        var set = viewModel.exerciseSets[exercise.id]![0]
+        set.weight = 100
+        set.reps = 10
+        viewModel.updateSet(set, for: exercise.id, at: 0)
+
+        // Then
+        let e1rm = viewModel.currentEstimated1RM(for: exercise.id)
+        XCTAssertNotNil(e1rm)
+        XCTAssertEqual(e1rm!, 133.33, accuracy: 0.01)
+    }
+
+    func testCurrentEstimated1RMPicksHighest() async {
+        // Given
+        let exercise = makeTestExercise()
+        await viewModel.addExercise(exercise)
+
+        // Set 1: 100kg x 10 → e1RM = 133.33
+        var set1 = viewModel.exerciseSets[exercise.id]![0]
+        set1.weight = 100
+        set1.reps = 10
+        viewModel.updateSet(set1, for: exercise.id, at: 0)
+
+        // Add set 2: 120kg x 5 → e1RM = 120 * (1 + 5/30) = 140
+        viewModel.addSet(for: exercise.id)
+        var set2 = viewModel.exerciseSets[exercise.id]![1]
+        set2.weight = 120
+        set2.reps = 5
+        viewModel.updateSet(set2, for: exercise.id, at: 1)
+
+        // Then - Should pick the higher of 133.33 and 140
+        let e1rm = viewModel.currentEstimated1RM(for: exercise.id)
+        XCTAssertNotNil(e1rm)
+        XCTAssertEqual(e1rm!, 140, accuracy: 0.01)
+    }
+
+    func testCurrentEstimated1RMForNonExistentExercise() {
+        // Given - No exercise added
+        let fakeId = UUID()
+
+        // Then
+        XCTAssertNil(viewModel.currentEstimated1RM(for: fakeId))
+    }
+
+    func testHistoricalBestLoadedOnAddExercise() async {
+        // Given - ViewModel with 1RM use case
+        let analyticsRepo = MockAnalyticsRepository()
+        let oneRMUseCase = CalculateOneRepMaxUseCase(analyticsRepository: analyticsRepo)
+        let vmWith1RM = WorkoutLoggingViewModel(
+            createWorkoutUseCase: createWorkoutUseCase,
+            calculateProgressionUseCase: calculateProgressionUseCase,
+            calculateOneRepMaxUseCase: oneRMUseCase
+        )
+
+        let exercise = makeTestExercise()
+        analyticsRepo.mockPersonalRecords = [
+            PersonalRecord(exerciseId: exercise.id, exerciseName: "Bench Press", recordType: .oneRepMax, value: 130, date: Date())
+        ]
+
+        // When
+        await vmWith1RM.addExercise(exercise)
+
+        // Then
+        XCTAssertEqual(vmWith1RM.historicalBest(for: exercise.id), 130)
+    }
+
+    func testResetWorkoutClears1RMState() async {
+        // Given - ViewModel with 1RM use case
+        let analyticsRepo = MockAnalyticsRepository()
+        let oneRMUseCase = CalculateOneRepMaxUseCase(analyticsRepository: analyticsRepo)
+        let vmWith1RM = WorkoutLoggingViewModel(
+            createWorkoutUseCase: createWorkoutUseCase,
+            calculateProgressionUseCase: calculateProgressionUseCase,
+            calculateOneRepMaxUseCase: oneRMUseCase
+        )
+
+        let exercise = makeTestExercise()
+        analyticsRepo.mockPersonalRecords = [
+            PersonalRecord(exerciseId: exercise.id, exerciseName: "Bench Press", recordType: .oneRepMax, value: 130, date: Date())
+        ]
+        await vmWith1RM.addExercise(exercise)
+        XCTAssertNotNil(vmWith1RM.historicalBest(for: exercise.id))
+
+        // When
+        vmWith1RM.resetWorkout()
+
+        // Then
+        XCTAssertTrue(vmWith1RM.historicalBest1RM.isEmpty)
+    }
 }

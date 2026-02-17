@@ -12,13 +12,26 @@ struct WaterTrackingCard: View {
     @State private var customAmount = ""
     @State private var showingCustomInput = false
 
-    private let repository: NutritionRepository
+    private let logWaterUseCase: LogWaterUseCaseProtocol
+    private let getWaterEntriesUseCase: GetWaterEntriesUseCaseProtocol
+    private let deleteWaterEntryUseCase: DeleteWaterEntryUseCaseProtocol?
     private let date: Date
-    private let dailyGoal: Double = 2500 // ml
+    private let dailyGoal: Double
 
-    init(repository: NutritionRepository, date: Date) {
-        self.repository = repository
+    private static let maxEntryAmount: Double = 5000
+
+    init(
+        logWaterUseCase: LogWaterUseCaseProtocol,
+        getWaterEntriesUseCase: GetWaterEntriesUseCaseProtocol,
+        deleteWaterEntryUseCase: DeleteWaterEntryUseCaseProtocol? = nil,
+        date: Date,
+        dailyGoal: Double = 2500
+    ) {
+        self.logWaterUseCase = logWaterUseCase
+        self.getWaterEntriesUseCase = getWaterEntriesUseCase
+        self.deleteWaterEntryUseCase = deleteWaterEntryUseCase
         self.date = date
+        self.dailyGoal = dailyGoal
     }
 
     private var totalIntake: Double {
@@ -122,7 +135,8 @@ struct WaterTrackingCard: View {
 
                         Button {
                             if let amount = Double(customAmount), amount > 0 {
-                                Task { await addWater(amount: amount) }
+                                let capped = min(amount, Self.maxEntryAmount)
+                                Task { await addWater(amount: capped) }
                                 customAmount = ""
                                 showingCustomInput = false
                             }
@@ -135,6 +149,39 @@ struct WaterTrackingCard: View {
                     }
                     .transition(.opacity.combined(with: .move(edge: .top)))
                 }
+
+                // Today's entries with swipe-to-delete
+                if !waterEntries.isEmpty {
+                    Divider()
+                        .background(Color.vitalAdaptiveBorder)
+
+                    ForEach(waterEntries) { entry in
+                        HStack {
+                            Image(systemName: "drop")
+                                .font(.vitalCaption)
+                                .foregroundStyle(Color.vitalInfo)
+                            Text("\(Int(entry.amount))ml")
+                                .font(.vitalBody)
+                                .foregroundStyle(Color.vitalAdaptiveTextPrimary)
+                            Spacer()
+                            Text(entry.date, format: .dateTime.hour().minute())
+                                .font(.vitalCaption)
+                                .foregroundStyle(Color.vitalAdaptiveTextSecondary)
+
+                            if deleteWaterEntryUseCase != nil {
+                                Button {
+                                    Task { await deleteWaterEntry(id: entry.id) }
+                                } label: {
+                                    Image(systemName: "trash")
+                                        .font(.vitalCaption)
+                                        .foregroundStyle(Color.vitalDanger)
+                                }
+                                .buttonStyle(.plain)
+                            }
+                        }
+                        .padding(.vertical, Spacing.xxs)
+                    }
+                }
             }
         }
         .animation(.vitalSpring, value: showingCustomInput)
@@ -146,16 +193,26 @@ struct WaterTrackingCard: View {
 
     private func loadWaterEntries() async {
         do {
-            waterEntries = try await repository.getWaterEntries(for: date)
+            waterEntries = try await getWaterEntriesUseCase.execute(for: date)
         } catch {
             // Non-critical
         }
     }
 
     private func addWater(amount: Double) async {
-        let entry = WaterEntry(date: date, amount: amount)
         do {
-            try await repository.saveWaterEntry(entry)
+            _ = try await logWaterUseCase.execute(amount: amount, date: date)
+            HapticFeedback.light()
+            await loadWaterEntries()
+        } catch {
+            // Non-critical
+        }
+    }
+
+    private func deleteWaterEntry(id: UUID) async {
+        guard let deleteUseCase = deleteWaterEntryUseCase else { return }
+        do {
+            try await deleteUseCase.execute(id: id)
             HapticFeedback.light()
             await loadWaterEntries()
         } catch {

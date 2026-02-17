@@ -14,11 +14,13 @@ final class NutritionContainer {
     let nutritionRepository: SwiftDataNutritionRepository
     let logWaterUseCase: LogWaterUseCase
     let getWaterEntriesUseCase: GetWaterEntriesUseCase
+    let deleteWaterEntryUseCase: DeleteWaterEntryUseCase
 
     init(modelContext: ModelContext) {
         self.nutritionRepository = SwiftDataNutritionRepository(modelContext: modelContext)
         self.logWaterUseCase = LogWaterUseCase(repository: nutritionRepository)
         self.getWaterEntriesUseCase = GetWaterEntriesUseCase(repository: nutritionRepository)
+        self.deleteWaterEntryUseCase = DeleteWaterEntryUseCase(repository: nutritionRepository)
     }
 }
 

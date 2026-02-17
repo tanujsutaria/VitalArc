@@ -11,7 +11,7 @@ import Observation
 @MainActor
 @Observable
 final class WorkoutHistoryViewModel {
-    private let repository: WorkoutRepository
+    let repository: WorkoutRepository
 
     var workouts: [Workout] = []
     var isLoading: Bool = false

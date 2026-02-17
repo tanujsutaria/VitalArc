@@ -8,6 +8,11 @@
 import Foundation
 import Observation
 
+enum FavoriteSortOrder: String, CaseIterable {
+    case alphabetical = "A-Z"
+    case mostUsed = "Most Used"
+}
+
 @MainActor
 @Observable
 final class FoodSearchViewModel {
@@ -15,6 +20,7 @@ final class FoodSearchViewModel {
     var searchResults: [Food] = []
     var favoriteFoods: [Food] = []
     var recentFoods: [Food] = []
+    var favoriteSortOrder: FavoriteSortOrder = .alphabetical
     var isLoading = false
     var errorMessage: String?
     var isBarcodeScannerPresented = false
@@ -124,10 +130,20 @@ final class FoodSearchViewModel {
     func loadSuggestions() async {
         guard let repository = repository else { return }
         do {
-            favoriteFoods = try await repository.getFavoriteFoods()
+            let favorites = try await repository.getFavoriteFoods()
+            favoriteFoods = sortedFavorites(favorites)
             recentFoods = try await repository.getRecentFoods(limit: 10)
         } catch {
             // Non-critical: don't surface errors for suggestions
+        }
+    }
+
+    private func sortedFavorites(_ foods: [Food]) -> [Food] {
+        switch favoriteSortOrder {
+        case .alphabetical:
+            return foods.sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
+        case .mostUsed:
+            return foods.sorted { $0.usageCount > $1.usageCount }
         }
     }
 

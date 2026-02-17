@@ -15,7 +15,7 @@ struct PersonalRecordBadgeView: View {
         VStack(spacing: Spacing.lg) {
             // Trophy icon
             Image(systemName: "trophy.fill")
-                .font(.system(size: 48))
+                .font(.system(size: Spacing.iconHuge))
                 .foregroundStyle(Color.vitalWarning)
 
             Text("New Personal Record\(records.count > 1 ? "s" : "")!")
@@ -28,7 +28,7 @@ struct PersonalRecordBadgeView: View {
                         Image(systemName: record.recordType.icon)
                             .font(.vitalH3)
                             .foregroundStyle(Color.vitalWarning)
-                            .frame(width: 32)
+                            .frame(width: Spacing.iconXLarge)
 
                         VStack(alignment: .leading, spacing: Spacing.xxs) {
                             Text(record.exerciseName)

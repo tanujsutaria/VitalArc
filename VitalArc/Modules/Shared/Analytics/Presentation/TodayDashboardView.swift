@@ -10,92 +10,103 @@ import SwiftUI
 struct TodayDashboardView: View {
     @Environment(\.dependencyContainer) private var container
     @Environment(\.selectedTab) private var selectedTab
-    @State private var selectedDate = Date()
-    @State private var healthMetrics: HealthMetrics?
-    @State private var todaysWorkout: Workout?
-    @State private var dailyNutrition: DailyNutrition?
-    @State private var isLoading = true
-    @State private var recoveryScore: RecoveryScoreResult?
-    @State private var strainResult: StrainResult?
-    @State private var showDatePicker = false
+    @State private var viewModel: TodayDashboardViewModel?
 
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(spacing: Spacing.lg) {
-                    // Date Header
-                    dateHeader
-
-                    // Quick Stats Summary
-                    if isLoading {
-                        loadingSection
-                    } else {
-                        // Recovery & Strain Section
-                        recoveryStrainSection
-
-                        // Today's Activity Section
-                        activitySection
-
-                        // Nutrition Summary Section
-                        nutritionSection
-
-                        // Quick Actions Section
-                        quickActionsSection
+            Group {
+                if let viewModel {
+                    dashboardContent(viewModel)
+                } else {
+                    VStack(spacing: Spacing.md) {
+                        VitalMetricCardSkeleton()
+                        VitalMetricCardSkeleton()
+                        VitalWorkoutCardSkeleton()
                     }
+                    .padding(Spacing.screenPadding)
                 }
-                .padding(Spacing.screenPadding)
             }
             .background(Color.vitalAdaptiveBackgroundV2)
             .navigationTitle("Today")
-            .task {
-                await loadTodayData()
+        }
+        .task {
+            if viewModel == nil, let container {
+                viewModel = TodayDashboardViewModel(container: container)
             }
-            .refreshable {
-                await loadTodayData()
-            }
-            .onChange(of: selectedDate) {
-                Task {
-                    await loadTodayData()
+            await viewModel?.loadTodayData()
+        }
+    }
+
+    @ViewBuilder
+    private func dashboardContent(_ vm: TodayDashboardViewModel) -> some View {
+        ScrollView {
+            VStack(spacing: Spacing.lg) {
+                // Date Header
+                dateHeader(vm)
+
+                // Quick Stats Summary
+                if vm.isLoading {
+                    loadingSection
+                } else {
+                    // Recovery & Strain Section
+                    recoveryStrainSection(vm)
+
+                    // Today's Activity Section
+                    activitySection(vm)
+
+                    // Nutrition Summary Section
+                    nutritionSection(vm)
+
+                    // Quick Actions Section
+                    quickActionsSection
                 }
             }
-            .sheet(isPresented: $showDatePicker) {
-                datePickerSheet
+            .padding(Spacing.screenPadding)
+        }
+        .refreshable {
+            await vm.loadTodayData()
+        }
+        .onChange(of: vm.selectedDate) {
+            Task {
+                await vm.loadTodayData()
             }
+        }
+        .sheet(isPresented: Binding(
+            get: { vm.showDatePicker },
+            set: { vm.showDatePicker = $0 }
+        )) {
+            datePickerSheet(vm)
         }
     }
 
     // MARK: - Date Header
 
-    private var isToday: Bool {
-        Calendar.current.isDateInToday(selectedDate)
-    }
-
-    private var dateHeader: some View {
+    private func dateHeader(_ vm: TodayDashboardViewModel) -> some View {
         HStack {
             VStack(alignment: .leading, spacing: Spacing.xs) {
-                Text(selectedDate.formatted(.dateTime.weekday(.wide)))
+                Text(vm.selectedDate.formatted(.dateTime.weekday(.wide)))
                     .font(.vitalLabelV2)
                     .foregroundStyle(Color.vitalAdaptiveTextSecondaryV2)
-                Text(selectedDate.formatted(.dateTime.month().day()))
+                Text(vm.selectedDate.formatted(.dateTime.month().day()))
                     .font(.vitalDisplayMediumV2)
                     .foregroundStyle(Color.vitalAdaptiveTextPrimaryV2)
                     .onTapGesture {
-                        showDatePicker = true
+                        vm.showDatePicker = true
                     }
             }
             Spacer()
             HStack(spacing: Spacing.sm) {
                 Button {
-                    selectedDate = Calendar.current.date(byAdding: .day, value: -1, to: selectedDate) ?? selectedDate
+                    vm.previousDay()
                 } label: {
                     Image(systemName: "chevron.left")
                         .font(.vitalIconSmall)
                         .foregroundStyle(Color.vitalPrimaryV2)
                 }
 
-                if !isToday {
+                if !vm.isToday {
                     Button {
-                        selectedDate = Date()
+                        vm.goToToday()
                     } label: {
                         Text("Today")
                             .font(.vitalCaptionV2)
@@ -104,20 +115,23 @@ struct TodayDashboardView: View {
                 }
 
                 Button {
-                    selectedDate = Calendar.current.date(byAdding: .day, value: 1, to: selectedDate) ?? selectedDate
+                    vm.nextDay()
                 } label: {
                     Image(systemName: "chevron.right")
                         .font(.vitalIconSmall)
-                        .foregroundStyle(isToday ? Color.vitalAdaptiveTextTertiaryV2 : Color.vitalPrimaryV2)
+                        .foregroundStyle(vm.isToday ? Color.vitalAdaptiveTextTertiaryV2 : Color.vitalPrimaryV2)
                 }
-                .disabled(isToday)
+                .disabled(vm.isToday)
             }
         }
     }
 
-    private var datePickerSheet: some View {
+    private func datePickerSheet(_ vm: TodayDashboardViewModel) -> some View {
         NavigationStack {
-            DatePicker("Select Date", selection: $selectedDate, in: ...Date(), displayedComponents: .date)
+            DatePicker("Select Date", selection: Binding(
+                get: { vm.selectedDate },
+                set: { vm.selectedDate = $0 }
+            ), in: ...Date(), displayedComponents: .date)
                 .datePickerStyle(.graphical)
                 .tint(Color.vitalPrimaryV2)
                 .padding(Spacing.screenPadding)
@@ -126,7 +140,7 @@ struct TodayDashboardView: View {
                 .toolbar {
                     ToolbarItem(placement: .confirmationAction) {
                         Button("Done") {
-                            showDatePicker = false
+                            vm.showDatePicker = false
                         }
                     }
                 }
@@ -146,7 +160,7 @@ struct TodayDashboardView: View {
 
     // MARK: - Recovery & Strain Section
 
-    private var recoveryStrainSection: some View {
+    private func recoveryStrainSection(_ vm: TodayDashboardViewModel) -> some View {
         VStack(alignment: .leading, spacing: Spacing.md) {
             Text("Recovery & Strain")
                 .font(.vitalH3V2)
@@ -154,15 +168,15 @@ struct TodayDashboardView: View {
 
             HStack(spacing: Spacing.md) {
                 // Recovery Score Card
-                recoveryCard
+                recoveryCard(vm)
 
                 // Strain Score Card
-                strainCard
+                strainCard(vm)
             }
         }
     }
 
-    private var recoveryCard: some View {
+    private func recoveryCard(_ vm: TodayDashboardViewModel) -> some View {
         VitalCardV2(elevation: .elevated) {
             VStack(alignment: .leading, spacing: Spacing.sm) {
                 HStack {
@@ -175,15 +189,15 @@ struct TodayDashboardView: View {
                         .foregroundStyle(Color.vitalAdaptiveTextSecondaryV2)
                 }
 
-                if let recovery = recoveryScore, recovery.score > 0 {
+                if let recovery = vm.recoveryScore, recovery.score > 0 {
                     Text("\(recovery.score)")
                         .font(.vitalNumberLargeV2)
                         .foregroundStyle(Color.vitalAdaptiveTextPrimaryV2)
                     Text(recovery.readiness.rawValue)
                         .font(.vitalCaptionV2)
                         .foregroundStyle(Color.vitalAdaptiveTextTertiaryV2)
-                } else if let metrics = healthMetrics {
-                    Text("\(Int(metrics.sleepHours ?? 7))h \(Int((metrics.sleepHours ?? 7).truncatingRemainder(dividingBy: 1) * 60))m")
+                } else if let metrics = vm.healthMetrics, let sleep = metrics.sleepHours {
+                    Text("\(Int(sleep))h \(Int(sleep.truncatingRemainder(dividingBy: 1) * 60))m")
                         .font(.vitalNumberLargeV2)
                         .foregroundStyle(Color.vitalAdaptiveTextPrimaryV2)
                     Text("Sleep")
@@ -202,7 +216,7 @@ struct TodayDashboardView: View {
         .frame(maxWidth: .infinity)
     }
 
-    private var strainCard: some View {
+    private func strainCard(_ vm: TodayDashboardViewModel) -> some View {
         VitalCardV2(elevation: .elevated) {
             VStack(alignment: .leading, spacing: Spacing.sm) {
                 HStack {
@@ -215,14 +229,14 @@ struct TodayDashboardView: View {
                         .foregroundStyle(Color.vitalAdaptiveTextSecondaryV2)
                 }
 
-                if let strain = strainResult {
+                if let strain = vm.strainResult {
                     Text(String(format: "%.1f", strain.strainScore))
                         .font(.vitalNumberLargeV2)
                         .foregroundStyle(Color.vitalAdaptiveTextPrimaryV2)
                     Text(strain.strainLevel.rawValue)
                         .font(.vitalCaptionV2)
                         .foregroundStyle(Color.vitalAdaptiveTextTertiaryV2)
-                } else if let metrics = healthMetrics {
+                } else if let metrics = vm.healthMetrics {
                     Text("\(Int(metrics.activeEnergy ?? 0))")
                         .font(.vitalNumberLargeV2)
                         .foregroundStyle(Color.vitalAdaptiveTextPrimaryV2)
@@ -244,28 +258,28 @@ struct TodayDashboardView: View {
 
     // MARK: - Activity Section
 
-    private var activitySection: some View {
+    private func activitySection(_ vm: TodayDashboardViewModel) -> some View {
         VStack(alignment: .leading, spacing: Spacing.md) {
             HStack {
                 Text("Today's Activity")
                     .font(.vitalH3V2)
                     .foregroundStyle(Color.vitalAdaptiveTextPrimaryV2)
                 Spacer()
-                if todaysWorkout != nil {
+                if vm.todaysWorkout != nil {
                     Image(systemName: "checkmark.circle.fill")
                         .foregroundStyle(Color.vitalSuccessV2)
                 }
             }
 
-            if let workout = todaysWorkout {
-                workoutSummaryCard(workout)
+            if let workout = vm.todaysWorkout {
+                workoutSummaryCard(workout, vm: vm)
             } else {
                 noWorkoutCard
             }
         }
     }
 
-    private func workoutSummaryCard(_ workout: Workout) -> some View {
+    private func workoutSummaryCard(_ workout: Workout, vm: TodayDashboardViewModel) -> some View {
         VitalCardV2(elevation: .elevated) {
             VStack(alignment: .leading, spacing: Spacing.md) {
                 HStack {
@@ -279,7 +293,7 @@ struct TodayDashboardView: View {
                     }
                     Spacer()
                     if let duration = workout.duration {
-                        Text(formatDuration(duration))
+                        Text(vm.formatDuration(duration))
                             .font(.vitalDataMediumV2)
                             .foregroundStyle(Color.vitalAdaptiveTextSecondaryV2)
                     }
@@ -287,46 +301,51 @@ struct TodayDashboardView: View {
 
                 HStack(spacing: Spacing.lg) {
                     statItem(value: "\(workout.sets.count)", label: "Sets")
-                    statItem(value: String(format: "%.0f", workout.totalVolume), label: "kg Volume")
+                    statItem(value: vm.formattedVolume(workout.totalVolume), label: "lbs Volume")
                 }
             }
         }
     }
 
     private var noWorkoutCard: some View {
-        VitalCardV2(elevation: .raised) {
-            HStack(spacing: Spacing.md) {
-                Image(systemName: "dumbbell")
-                    .font(.vitalIconLarge)
-                    .foregroundStyle(Color.vitalAdaptiveTextTertiaryV2)
+        Button {
+            selectedTab.wrappedValue = 1
+        } label: {
+            VitalCardV2(elevation: .raised, isTappable: true) {
+                HStack(spacing: Spacing.md) {
+                    Image(systemName: "dumbbell")
+                        .font(.vitalIconLarge)
+                        .foregroundStyle(Color.vitalAdaptiveTextTertiaryV2)
 
-                VStack(alignment: .leading, spacing: Spacing.xs) {
-                    Text("No workout logged")
-                        .font(.vitalLabelV2)
-                        .foregroundStyle(Color.vitalAdaptiveTextPrimaryV2)
-                    Text("Tap to start a workout")
-                        .font(.vitalCaptionV2)
-                        .foregroundStyle(Color.vitalAdaptiveTextSecondaryV2)
+                    VStack(alignment: .leading, spacing: Spacing.xs) {
+                        Text("No workout logged")
+                            .font(.vitalLabelV2)
+                            .foregroundStyle(Color.vitalAdaptiveTextPrimaryV2)
+                        Text("Tap to start a workout")
+                            .font(.vitalCaptionV2)
+                            .foregroundStyle(Color.vitalAdaptiveTextSecondaryV2)
+                    }
+
+                    Spacer()
+
+                    Image(systemName: "chevron.right")
+                        .font(.vitalIconSmall)
+                        .foregroundStyle(Color.vitalAdaptiveTextTertiaryV2)
                 }
-
-                Spacer()
-
-                Image(systemName: "chevron.right")
-                    .font(.vitalIconSmall)
-                    .foregroundStyle(Color.vitalAdaptiveTextTertiaryV2)
             }
         }
+        .buttonStyle(.plain)
     }
 
     // MARK: - Nutrition Section
 
-    private var nutritionSection: some View {
+    private func nutritionSection(_ vm: TodayDashboardViewModel) -> some View {
         VStack(alignment: .leading, spacing: Spacing.md) {
             Text("Nutrition")
                 .font(.vitalH3V2)
                 .foregroundStyle(Color.vitalAdaptiveTextPrimaryV2)
 
-            if let nutrition = dailyNutrition {
+            if let nutrition = vm.dailyNutrition {
                 VitalCardV2(elevation: .elevated) {
                     VStack(spacing: Spacing.md) {
                         // Calories progress
@@ -360,28 +379,33 @@ struct TodayDashboardView: View {
                     }
                 }
             } else {
-                VitalCardV2(elevation: .raised) {
-                    HStack(spacing: Spacing.md) {
-                        Image(systemName: "fork.knife")
-                            .font(.vitalIconLarge)
-                            .foregroundStyle(Color.vitalAdaptiveTextTertiaryV2)
+                Button {
+                    selectedTab.wrappedValue = 2
+                } label: {
+                    VitalCardV2(elevation: .raised, isTappable: true) {
+                        HStack(spacing: Spacing.md) {
+                            Image(systemName: "fork.knife")
+                                .font(.vitalIconLarge)
+                                .foregroundStyle(Color.vitalAdaptiveTextTertiaryV2)
 
-                        VStack(alignment: .leading, spacing: Spacing.xs) {
-                            Text("No food logged")
-                                .font(.vitalLabelV2)
-                                .foregroundStyle(Color.vitalAdaptiveTextPrimaryV2)
-                            Text("Tap to log your first meal")
-                                .font(.vitalCaptionV2)
-                                .foregroundStyle(Color.vitalAdaptiveTextSecondaryV2)
+                            VStack(alignment: .leading, spacing: Spacing.xs) {
+                                Text("No food logged")
+                                    .font(.vitalLabelV2)
+                                    .foregroundStyle(Color.vitalAdaptiveTextPrimaryV2)
+                                Text("Tap to log your first meal")
+                                    .font(.vitalCaptionV2)
+                                    .foregroundStyle(Color.vitalAdaptiveTextSecondaryV2)
+                            }
+
+                            Spacer()
+
+                            Image(systemName: "chevron.right")
+                                .font(.vitalIconSmall)
+                                .foregroundStyle(Color.vitalAdaptiveTextTertiaryV2)
                         }
-
-                        Spacer()
-
-                        Image(systemName: "chevron.right")
-                            .font(.vitalIconSmall)
-                            .foregroundStyle(Color.vitalAdaptiveTextTertiaryV2)
                     }
                 }
+                .buttonStyle(.plain)
             }
         }
     }
@@ -459,72 +483,6 @@ struct TodayDashboardView: View {
             Text(label)
                 .font(.vitalCaptionSmallV2)
                 .foregroundStyle(Color.vitalAdaptiveTextTertiaryV2)
-        }
-    }
-
-    // MARK: - Helper Methods
-
-    private func formatDuration(_ duration: TimeInterval) -> String {
-        let hours = Int(duration) / 3600
-        let minutes = (Int(duration) % 3600) / 60
-        if hours > 0 {
-            return "\(hours)h \(minutes)m"
-        } else {
-            return "\(minutes)m"
-        }
-    }
-
-    // MARK: - Data Loading
-
-    @MainActor
-    private func loadTodayData() async {
-        isLoading = true
-        defer { isLoading = false }
-
-        guard let container = container else { return }
-
-        // Load health metrics using use case
-        do {
-            let getHealthMetricsUseCase = GetHealthMetricsUseCase(repository: container.healthRepository)
-            healthMetrics = try await getHealthMetricsUseCase.execute(for: selectedDate)
-        } catch {
-            Log.error("Failed to load health metrics", error: error, category: .healthKit)
-        }
-
-        // Load today's workout using use case
-        do {
-            let getTodayWorkoutsUseCase = GetTodayWorkoutsUseCase(repository: container.workoutRepository)
-            let workouts = try await getTodayWorkoutsUseCase.execute(for: selectedDate)
-            todaysWorkout = workouts.first
-        } catch {
-            Log.error("Failed to load workouts", error: error, category: .workout)
-        }
-
-        // Load nutrition
-        do {
-            let calculateUseCase = CalculateNutritionUseCase(repository: container.nutritionRepository)
-            dailyNutrition = try await calculateUseCase.execute(for: selectedDate)
-        } catch {
-            Log.error("Failed to load nutrition", error: error, category: .nutrition)
-        }
-
-        // Load recovery score
-        do {
-            let recoveryUseCase = CalculateRecoveryScoreUseCase(healthRepository: container.healthRepository)
-            recoveryScore = try await recoveryUseCase.execute()
-        } catch {
-            Log.error("Failed to load recovery score", error: error, category: .healthKit)
-        }
-
-        // Load strain score
-        do {
-            let strainUseCase = CalculateStrainScoreUseCase(
-                healthRepository: container.healthRepository,
-                userRepository: container.userRepository
-            )
-            strainResult = try await strainUseCase.execute(for: selectedDate)
-        } catch {
-            Log.error("Failed to load strain score", error: error, category: .healthKit)
         }
     }
 }

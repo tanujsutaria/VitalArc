@@ -828,6 +828,7 @@ final class SwiftDataUserRepository: UserRepository {
         existingProfile.weightGoal = profile.weightGoal.rawValue
         existingProfile.customHRMax = profile.customHRMax
         existingProfile.customHRResting = profile.customHRResting
+        existingProfile.dailyWaterGoal = profile.dailyWaterGoal
         existingProfile.updatedAt = Date()
 
         try modelContext.save()

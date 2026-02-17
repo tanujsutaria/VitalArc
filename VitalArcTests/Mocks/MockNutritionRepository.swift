@@ -14,6 +14,7 @@ final class MockNutritionRepository: NutritionRepository {
     var mockFoods: [Food] = []
     var mockFoodEntries: [FoodEntry] = []
     var mockDailyNutrition: [Date: DailyNutrition] = [:]
+    var mockWaterEntries: [WaterEntry] = []
 
     // MARK: - Call Tracking
 
@@ -22,6 +23,9 @@ final class MockNutritionRepository: NutritionRepository {
     var savedDailyNutritions: [DailyNutrition] = []
     var deletedFoodEntryIds: [UUID] = []
     var searchQueries: [String] = []
+    var savedWaterEntries: [WaterEntry] = []
+    var deletedWaterEntryIds: [UUID] = []
+    var toggleFavoriteCalled: [UUID] = []
 
     // MARK: - Error Simulation
 
@@ -131,6 +135,10 @@ final class MockNutritionRepository: NutritionRepository {
         if shouldThrowOnSave {
             throw MockError.saveFailed
         }
+        toggleFavoriteCalled.append(foodId)
+        if let index = mockFoods.firstIndex(where: { $0.id == foodId }) {
+            mockFoods[index].isFavorite.toggle()
+        }
     }
 
     // MARK: - Recent Foods
@@ -150,12 +158,19 @@ final class MockNutritionRepository: NutritionRepository {
         if shouldThrowOnGet {
             throw MockError.getFailed
         }
-        return []
+        let calendar = Calendar.current
+        return mockWaterEntries.filter { calendar.isDate($0.date, inSameDayAs: date) }
     }
 
     func saveWaterEntry(_ entry: WaterEntry) async throws {
         if shouldThrowOnSave {
             throw MockError.saveFailed
+        }
+        savedWaterEntries.append(entry)
+        if let existingIndex = mockWaterEntries.firstIndex(where: { $0.id == entry.id }) {
+            mockWaterEntries[existingIndex] = entry
+        } else {
+            mockWaterEntries.append(entry)
         }
     }
 
@@ -163,6 +178,8 @@ final class MockNutritionRepository: NutritionRepository {
         if shouldThrowOnDelete {
             throw MockError.deleteFailed
         }
+        deletedWaterEntryIds.append(id)
+        mockWaterEntries.removeAll { $0.id == id }
     }
 
     // MARK: - Test Helpers
@@ -171,11 +188,15 @@ final class MockNutritionRepository: NutritionRepository {
         mockFoods = []
         mockFoodEntries = []
         mockDailyNutrition = [:]
+        mockWaterEntries = []
         savedFoods = []
         savedFoodEntries = []
         savedDailyNutritions = []
         deletedFoodEntryIds = []
         searchQueries = []
+        savedWaterEntries = []
+        deletedWaterEntryIds = []
+        toggleFavoriteCalled = []
         shouldThrowOnSearch = false
         shouldThrowOnSave = false
         shouldThrowOnDelete = false

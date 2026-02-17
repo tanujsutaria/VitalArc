@@ -123,16 +123,23 @@ struct WorkoutHistoryView: View {
             ForEach(groupedWorkouts.keys.sorted(by: >), id: \.self) { date in
                 Section {
                     ForEach(groupedWorkouts[date] ?? []) { workout in
-                        WorkoutRowView(workout: workout)
-                            .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                                Button(role: .destructive) {
-                                    Task {
-                                        await viewModel.deleteWorkout(workout)
-                                    }
-                                } label: {
-                                    Label("Delete", systemImage: "trash")
+                        NavigationLink {
+                            WorkoutDetailView(
+                                workout: workout,
+                                repository: viewModel.repository
+                            )
+                        } label: {
+                            WorkoutRowView(workout: workout)
+                        }
+                        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                            Button(role: .destructive) {
+                                Task {
+                                    await viewModel.deleteWorkout(workout)
                                 }
+                            } label: {
+                                Label("Delete", systemImage: "trash")
                             }
+                        }
                     }
                 } header: {
                     Text(formatDate(date))
