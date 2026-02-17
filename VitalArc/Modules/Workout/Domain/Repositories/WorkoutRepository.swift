@@ -24,6 +24,9 @@ protocol WorkoutRepository {
     func saveWorkout(_ workout: Workout) async throws
     func deleteWorkout(id: UUID) async throws
 
+    // HealthKit import
+    func getWorkoutByHealthKitId(_ healthKitId: String) async throws -> Workout?
+
     // Progression
     func getLastWorkoutForExercise(_ exerciseId: UUID) async throws -> Workout?
 }

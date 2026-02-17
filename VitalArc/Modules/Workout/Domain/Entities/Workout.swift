@@ -7,6 +7,12 @@
 
 import Foundation
 
+/// Source of a workout entry
+enum WorkoutSource: String, Equatable {
+    case local
+    case healthKit
+}
+
 /// Domain entity representing a workout session
 struct Workout: Identifiable, Equatable {
     let id: UUID
@@ -15,6 +21,8 @@ struct Workout: Identifiable, Equatable {
     let sets: [WorkoutSet]
     let notes: String?
     let duration: TimeInterval?
+    let source: WorkoutSource
+    let healthKitId: String?
 
     init(
         id: UUID = UUID(),
@@ -22,7 +30,9 @@ struct Workout: Identifiable, Equatable {
         name: String? = nil,
         sets: [WorkoutSet] = [],
         notes: String? = nil,
-        duration: TimeInterval? = nil
+        duration: TimeInterval? = nil,
+        source: WorkoutSource = .local,
+        healthKitId: String? = nil
     ) {
         self.id = id
         self.date = date
@@ -30,6 +40,8 @@ struct Workout: Identifiable, Equatable {
         self.sets = sets
         self.notes = notes
         self.duration = duration
+        self.source = source
+        self.healthKitId = healthKitId
     }
 
     /// Total volume for this workout (weight × reps)

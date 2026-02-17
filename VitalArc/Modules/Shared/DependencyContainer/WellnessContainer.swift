@@ -12,11 +12,13 @@ import SwiftData
 @MainActor
 final class WellnessContainer {
     let healthRepository: SwiftDataHealthRepository
+    let healthKitManager: HealthKitManager
     let calculateReadinessScoreUseCase: CalculateReadinessScoreUseCase
     let calculateRecoveryScoreUseCase: CalculateRecoveryScoreUseCase
 
-    init(modelContext: ModelContext) {
-        self.healthRepository = SwiftDataHealthRepository(modelContext: modelContext)
+    init(modelContext: ModelContext, healthKitManager: HealthKitManager = HealthKitManager()) {
+        self.healthKitManager = healthKitManager
+        self.healthRepository = SwiftDataHealthRepository(modelContext: modelContext, healthKitManager: healthKitManager)
         self.calculateReadinessScoreUseCase = CalculateReadinessScoreUseCase()
         self.calculateRecoveryScoreUseCase = CalculateRecoveryScoreUseCase(healthRepository: healthRepository)
     }
