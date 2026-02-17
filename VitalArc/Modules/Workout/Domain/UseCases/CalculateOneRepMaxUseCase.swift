@@ -30,6 +30,7 @@ struct CalculateOneRepMaxUseCase {
                 .filter { $0.recordType == .oneRepMax }
                 .max(by: { $0.value < $1.value })?.value
         } catch {
+            Log.error("Failed to load historical 1RM records", error: error, category: .workout)
             return nil
         }
     }
