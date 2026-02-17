@@ -19,6 +19,7 @@ struct UserProfile: Identifiable, Equatable {
     let weightGoal: WeightGoal
     let customHRMax: Int? // User-specified max heart rate (overrides age-based estimate)
     let customHRResting: Int? // User-specified resting heart rate (overrides HealthKit)
+    let dailyWaterGoal: Double? // User-specified daily water goal in ml (nil = use default 2500)
     let createdAt: Date
     let updatedAt: Date
 
@@ -33,6 +34,7 @@ struct UserProfile: Identifiable, Equatable {
         weightGoal: WeightGoal = .maintain,
         customHRMax: Int? = nil,
         customHRResting: Int? = nil,
+        dailyWaterGoal: Double? = nil,
         createdAt: Date = Date(),
         updatedAt: Date = Date()
     ) {
@@ -46,8 +48,14 @@ struct UserProfile: Identifiable, Equatable {
         self.weightGoal = weightGoal
         self.customHRMax = customHRMax
         self.customHRResting = customHRResting
+        self.dailyWaterGoal = dailyWaterGoal
         self.createdAt = createdAt
         self.updatedAt = updatedAt
+    }
+
+    /// Effective daily water goal (custom if set, otherwise default 2500ml)
+    var effectiveWaterGoal: Double {
+        dailyWaterGoal ?? 2500
     }
 
     /// Calculate age from birth date

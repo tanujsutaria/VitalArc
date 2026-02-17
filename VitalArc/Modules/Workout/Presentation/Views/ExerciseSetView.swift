@@ -15,6 +15,8 @@ struct ExerciseSetView: View {
     let onUpdateSet: (WorkoutSetData, Int) -> Void
     let onRemoveExercise: () -> Void
     var onSetCompleted: (() -> Void)? = nil
+    var estimated1RM: Double? = nil
+    var historicalBest1RM: Double? = nil
 
     var body: some View {
         VStack(alignment: .leading, spacing: Spacing.md) {
@@ -84,6 +86,11 @@ struct ExerciseSetView: View {
                     .foregroundStyle(.secondary)
 
                 Spacer()
+
+                OneRepMaxIndicatorView(
+                    estimated1RM: estimated1RM,
+                    historicalBest: historicalBest1RM
+                )
 
                 Text("Volume: \(totalVolume, specifier: "%.0f") kg")
                     .font(.vitalCaption)

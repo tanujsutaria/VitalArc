@@ -17,12 +17,14 @@ struct WorkoutLoggingView: View {
         createWorkoutUseCase: CreateWorkoutUseCase,
         calculateProgressionUseCase: CalculateProgressionUseCase,
         getExercisesUseCase: GetExercisesUseCase,
-        detectPersonalRecordUseCase: DetectPersonalRecordUseCase? = nil
+        detectPersonalRecordUseCase: DetectPersonalRecordUseCase? = nil,
+        calculateOneRepMaxUseCase: CalculateOneRepMaxUseCase? = nil
     ) {
         self.viewModel = WorkoutLoggingViewModel(
             createWorkoutUseCase: createWorkoutUseCase,
             calculateProgressionUseCase: calculateProgressionUseCase,
-            detectPersonalRecordUseCase: detectPersonalRecordUseCase
+            detectPersonalRecordUseCase: detectPersonalRecordUseCase,
+            calculateOneRepMaxUseCase: calculateOneRepMaxUseCase
         )
         self.getExercisesUseCase = getExercisesUseCase
     }
@@ -127,8 +129,14 @@ struct WorkoutLoggingView: View {
                     Text("Duration")
                         .font(.vitalCaption)
                         .foregroundStyle(.secondary)
-                    Text(durationString)
-                        .font(.vitalH3)
+                    TimelineView(.periodic(from: .now, by: 1)) { context in
+                        let elapsed = context.date.timeIntervalSince(viewModel.startTime)
+                        let minutes = Int(elapsed) / 60
+                        let seconds = Int(elapsed) % 60
+                        Text(String(format: "%02d:%02d", minutes, seconds))
+                            .font(.vitalH3)
+                            .monospacedDigit()
+                    }
                 }
 
                 Divider()
@@ -249,7 +257,9 @@ struct WorkoutLoggingView: View {
                             },
                             onSetCompleted: {
                                 viewModel.startRestTimer(duration: 90, for: exercise.id)
-                            }
+                            },
+                            estimated1RM: viewModel.currentEstimated1RM(for: exercise.id),
+                            historicalBest1RM: viewModel.historicalBest(for: exercise.id)
                         )
                     }
                 }
@@ -331,12 +341,4 @@ struct WorkoutLoggingView: View {
         }
     }
 
-    // MARK: - Helpers
-
-    private var durationString: String {
-        let duration = viewModel.duration
-        let minutes = Int(duration) / 60
-        let seconds = Int(duration) % 60
-        return String(format: "%02d:%02d", minutes, seconds)
-    }
 }

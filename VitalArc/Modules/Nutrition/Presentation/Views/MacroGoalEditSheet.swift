@@ -145,7 +145,7 @@ struct MacroGoalEditSheet: View {
             Image(systemName: icon)
                 .font(.vitalIconMedium)
                 .foregroundStyle(color)
-                .frame(width: 32)
+                .frame(width: Spacing.iconXLarge)
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(label)

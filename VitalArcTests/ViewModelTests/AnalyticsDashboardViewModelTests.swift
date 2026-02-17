@@ -511,7 +511,7 @@ private final class MockCalculateRecoveryScoreUseCaseAdapter: CalculateRecoveryS
         super.init(healthRepository: MockHealthRepository())
     }
 
-    override func execute() async throws -> RecoveryScoreResult {
+    override func execute(for date: Date = Date()) async throws -> RecoveryScoreResult {
         return try await mock.execute()
     }
 }

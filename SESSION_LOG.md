@@ -1,5 +1,60 @@
 # VitalArc Development Session Log
 
+## Session 21.0 - February 17, 2026 (Workstation)
+
+### Session Start
+- **Time**: Morning PST
+- **Platform**: macOS
+- **Focus**: Session (general development)
+- **Branch**: dev/mac-session-21.0-2026-02-17
+- **Base**: main @ 179e69e
+
+### Environment
+- **Build Capable**: Yes
+- **Test Capable**: Yes (unit + UI)
+
+### Pre-Session Status
+- **Build**: PASSING (0 errors, 0 warnings)
+- **Design Violations**: 4 (icon sizes only, 99% compliance)
+- **Uncommitted Changes**: None
+
+### Suggested Focus Areas (from focus-suggester)
+| Rank | Feature | Score | Complexity |
+|------|---------|-------|------------|
+| 1 | API Configuration (unblocks Nutrition MVP) | 18 | Low |
+| 2 | Water Tracking (new feature N4) | 16 | Medium |
+| 3 | Today Dashboard (wire nav + real scores) | 15 | Medium |
+| 4 | Food Favorites & Recents (N1+N2) | 14 | Small |
+| 5 | Workout Polish (W5+W7+W8) | 13 | Medium |
+| 6 | Design Polish (4 icon violations) | 12 | Low |
+
+### Session Goals
+1. Workout Polish: W5 (Detail View), W7 (Live Timer), W8 (1RM Calculator)
+2. Water Tracking enhancements (use case routing, configurable goal, delete entry, validation)
+3. Food Favorites sort options
+4. Today Dashboard ViewModel extraction + enhancements
+5. Design polish (4 icon violations fixed)
+6. Comprehensive test coverage (+74 new tests, 712 total)
+
+### Work Log
+| Time | Action | Files | Notes |
+|------|--------|-------|-------|
+| Morning | Session started | - | Build verified, 4 design violations |
+| Morning | Implemented plan, spawned 3-agent team | - | Workout, Nutrition, Orchestrator agents |
+| Morning | T0: Fixed MockNutritionRepository | MockNutritionRepository.swift | Water stubs + toggleFavorite |
+| Morning | T1: W7 Live Duration Timer | WorkoutLoggingView.swift | TimelineView periodic update |
+| Morning | T2: W5 Workout Detail View | WorkoutDetailView.swift, WorkoutDetailViewModel.swift + 2 | New view + ViewModel + navigation |
+| Morning | T3: W8 1RM Calculator | CalculateOneRepMaxUseCase.swift, OneRepMaxIndicatorView.swift + 4 | Epley formula + PR detection |
+| Morning | T4: Water tracking enhancements | WaterTrackingCard.swift, UserProfile.swift + 5 | Use cases, configurable goal, delete, validation |
+| Morning | T5: Food favorites sort | FoodSearchViewModel.swift, FoodSearchView.swift | Alphabetical + most used sort |
+| Morning | T7-T8: Dashboard ViewModel + enhancements | TodayDashboardViewModel.swift, TodayDashboardView.swift | Extracted VM, fixed recovery fallback, tappable empty, lbs units |
+| Morning | T10: Design polish | PersonalRecordBadgeView.swift, MacroGoalEditSheet.swift, AboutView.swift | 4 icon size violations → design tokens |
+| Morning | T6+T9+T11: Test coverage | 5 new test files | 74 new tests (638→712), 0 failures |
+| Morning | Integration fixes | WorkoutDetailView.swift, WorkoutLoggingView.swift, WorkoutDetailViewModelTests.swift | Duplicate PreviewWorkoutRepository, TimelineView API, type mismatch |
+| Morning | Build + tests verified | - | 712 tests, 0 failures |
+
+---
+
 ## Session 20.0 - February 8, 2026 (Workstation)
 
 ### Session Start

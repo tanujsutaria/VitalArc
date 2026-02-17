@@ -166,7 +166,7 @@ private struct FoodSearchErrorView: View {
 
 /// Suggestions view shown when search is empty: favorites, recent foods, create custom
 private struct SuggestionsView: View {
-    let viewModel: FoodSearchViewModel
+    @Bindable var viewModel: FoodSearchViewModel
     let onSelect: (Food) -> Void
 
     var body: some View {
@@ -199,6 +199,14 @@ private struct SuggestionsView: View {
                             Text("Favorites")
                                 .font(.vitalH3)
                                 .foregroundStyle(Color.vitalAdaptiveTextPrimary)
+                            Spacer()
+                            Picker("Sort", selection: $viewModel.favoriteSortOrder) {
+                                ForEach(FavoriteSortOrder.allCases, id: \.self) { order in
+                                    Text(order.rawValue).tag(order)
+                                }
+                            }
+                            .pickerStyle(.menu)
+                            .font(.vitalCaption)
                         }
 
                         ForEach(viewModel.favoriteFoods) { food in
@@ -242,6 +250,9 @@ private struct SuggestionsView: View {
                 }
             }
             .padding(Spacing.screenPadding)
+        }
+        .onChange(of: viewModel.favoriteSortOrder) {
+            Task { await viewModel.loadSuggestions() }
         }
     }
 }

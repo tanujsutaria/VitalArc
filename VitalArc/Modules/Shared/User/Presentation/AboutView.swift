@@ -177,7 +177,7 @@ struct FeatureItem: View {
             Image(systemName: icon)
                 .font(.vitalH2)
                 .foregroundStyle(Color.vitalPrimary)
-                .frame(width: 32)
+                .frame(width: Spacing.iconXLarge)
 
             VStack(alignment: .leading, spacing: Spacing.xs) {
                 Text(title)

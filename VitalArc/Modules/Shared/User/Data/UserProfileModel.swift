@@ -20,6 +20,7 @@ final class UserProfileModel {
     var weightGoal: String
     var customHRMax: Int?
     var customHRResting: Int?
+    var dailyWaterGoal: Double?
     var createdAt: Date
     var updatedAt: Date
 
@@ -34,6 +35,7 @@ final class UserProfileModel {
         weightGoal: String = "Maintain Weight",
         customHRMax: Int? = nil,
         customHRResting: Int? = nil,
+        dailyWaterGoal: Double? = nil,
         createdAt: Date = Date(),
         updatedAt: Date = Date()
     ) {
@@ -47,6 +49,7 @@ final class UserProfileModel {
         self.weightGoal = weightGoal
         self.customHRMax = customHRMax
         self.customHRResting = customHRResting
+        self.dailyWaterGoal = dailyWaterGoal
         self.createdAt = createdAt
         self.updatedAt = updatedAt
     }
@@ -64,6 +67,7 @@ final class UserProfileModel {
             weightGoal: WeightGoal(rawValue: weightGoal) ?? .maintain,
             customHRMax: customHRMax,
             customHRResting: customHRResting,
+            dailyWaterGoal: dailyWaterGoal,
             createdAt: createdAt,
             updatedAt: updatedAt
         )
@@ -82,6 +86,7 @@ final class UserProfileModel {
             weightGoal: profile.weightGoal.rawValue,
             customHRMax: profile.customHRMax,
             customHRResting: profile.customHRResting,
+            dailyWaterGoal: profile.dailyWaterGoal,
             createdAt: profile.createdAt,
             updatedAt: profile.updatedAt
         )

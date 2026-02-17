@@ -1,8 +1,8 @@
 # VitalArc Project Status
 
-**Last Updated**: February 8, 2026 (Session 20.0)
+**Last Updated**: February 17, 2026 (Session 21.0)
 **Build**: Passing (verified locally)
-**Tests**: 638 passing
+**Tests**: 712 passing
 **Stage**: MVP-Ready
 
 ---
@@ -62,6 +62,12 @@ The app compiles and runs with core MVP requirements addressed:
   - Workout: Per-exercise rest duration with superset-aware logic, editGroupType, 6 new tests
   - Analytics: 14+ design token violations fixed across 6 analytics views
   - VitalEmptyState: Replaced 6 hardcoded frame dimensions with Spacing.illustrationMedium
+- Session 21.0: 3-agent parallel team (Workout Specialist, Nutrition Specialist, Domain Orchestrator):
+  - Workout: Live duration timer (W7), workout detail view (W5), 1RM calculator with historical PR comparison (W8)
+  - Nutrition: Water tracking routed through use cases, configurable daily goal, delete entry UI, input validation; food favorites sort options
+  - Dashboard: Extracted TodayDashboardViewModel, fixed recovery card fallback, tappable empty states, volume units (lbs)
+  - Design: 4 icon size violations fixed (PersonalRecordBadgeView, MacroGoalEditSheet, AboutView)
+  - Tests: 74 new tests (638→712) across 5 new test files covering all new features
 
 **Ready for beta testing.**
 
@@ -72,7 +78,7 @@ The app compiles and runs with core MVP requirements addressed:
 | Feature | Status | Notes |
 |---------|--------|-------|
 | Health Dashboard | Ready | Uses lbs, VoiceOver accessible |
-| Workout Tracking | Ready | Minor polish needed |
+| Workout Tracking | Ready | Detail view, live timer, 1RM calculator added (Session 21.0) |
 | Exercise Library | Ready | 960+ exercises |
 | Templates System | Ready | Day-by-day editor |
 | Mesocycle System | Ready | - |
@@ -80,7 +86,7 @@ The app compiles and runs with core MVP requirements addressed:
 | Recovery Score | Ready | HRV + HealthKit HR integration, 22 bugs fixed (Session 19.0) |
 | Strain Tracking | Ready | TRIMP + HealthKit HR, custom settings |
 | Nutrition Tracking | Ready | **API keys not configured** |
-| Design System | Ready | ~98% adoption |
+| Design System | Ready | ~98% adoption, 4 icon violations fixed (Session 21.0) |
 | Profile/Settings | Ready | - |
 
 ### Partially Implemented
@@ -132,7 +138,7 @@ The app compiles and runs with core MVP requirements addressed:
 | ViewModels | 12 |
 | Use cases | 25 |
 | Test files | 31 (in project) |
-| Unit tests | 638 (passing) |
+| Unit tests | 712 (passing) |
 
 ### Test Coverage by ViewModel
 

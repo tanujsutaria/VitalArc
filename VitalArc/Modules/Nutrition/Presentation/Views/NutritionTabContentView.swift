@@ -74,8 +74,11 @@ private struct NutritionUnifiedView: View {
 
                 // Water Tracking
                 WaterTrackingCard(
-                    repository: container.nutritionRepository,
-                    date: viewModel.selectedDate
+                    logWaterUseCase: container.nutrition.logWaterUseCase,
+                    getWaterEntriesUseCase: container.nutrition.getWaterEntriesUseCase,
+                    deleteWaterEntryUseCase: container.nutrition.deleteWaterEntryUseCase,
+                    date: viewModel.selectedDate,
+                    dailyGoal: viewModel.dailyWaterGoal
                 )
 
                 // Meal Sections
@@ -404,6 +407,7 @@ final class NutritionTabViewModel {
     var foodEntries: [FoodEntry] = []
     var dailyNutrition: DailyNutrition?
     var tdeeResult: TDEEResult?
+    var dailyWaterGoal: Double = 2500
     var isLoading = false
     var error: Error?
 
@@ -434,6 +438,11 @@ final class NutritionTabViewModel {
             defer { isLoading = false }
 
             do {
+                // Load user profile for water goal
+                if let profile = try? await userRepository?.getUserProfile() {
+                    dailyWaterGoal = profile.effectiveWaterGoal
+                }
+
                 // Load food entries for selected date using use case
                 let entries = try await getFoodEntriesUseCase.execute(for: selectedDate)
 

@@ -125,7 +125,15 @@ struct WorkoutHistoryContentView: View {
             } else {
                 VStack(spacing: Spacing.sm) {
                     ForEach(viewModel.workouts.prefix(5)) { workout in
-                        workoutCard(workout)
+                        NavigationLink {
+                            WorkoutDetailView(
+                                workout: workout,
+                                repository: container.workoutRepository
+                            )
+                        } label: {
+                            workoutCard(workout)
+                        }
+                        .buttonStyle(.plain)
                     }
                 }
             }

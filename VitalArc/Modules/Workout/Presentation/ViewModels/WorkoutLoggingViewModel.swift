@@ -14,6 +14,7 @@ final class WorkoutLoggingViewModel {
     private let createWorkoutUseCase: CreateWorkoutUseCase
     private let calculateProgressionUseCase: CalculateProgressionUseCase
     private let detectPersonalRecordUseCase: DetectPersonalRecordUseCase?
+    private let calculateOneRepMaxUseCase: CalculateOneRepMaxUseCase?
 
     var workoutName: String = ""
     var notes: String = ""
@@ -40,14 +41,19 @@ final class WorkoutLoggingViewModel {
     var newPersonalRecords: [PersonalRecord] = []
     var showingPersonalRecords: Bool = false
 
+    // MARK: - 1RM State
+    var historicalBest1RM: [UUID: Double] = [:]
+
     init(
         createWorkoutUseCase: CreateWorkoutUseCase,
         calculateProgressionUseCase: CalculateProgressionUseCase,
-        detectPersonalRecordUseCase: DetectPersonalRecordUseCase? = nil
+        detectPersonalRecordUseCase: DetectPersonalRecordUseCase? = nil,
+        calculateOneRepMaxUseCase: CalculateOneRepMaxUseCase? = nil
     ) {
         self.createWorkoutUseCase = createWorkoutUseCase
         self.calculateProgressionUseCase = calculateProgressionUseCase
         self.detectPersonalRecordUseCase = detectPersonalRecordUseCase
+        self.calculateOneRepMaxUseCase = calculateOneRepMaxUseCase
     }
 
     // MARK: - Rest Timer
@@ -171,6 +177,13 @@ final class WorkoutLoggingViewModel {
             )
         ]
 
+        // Load historical best 1RM for this exercise
+        if let oneRMUseCase = calculateOneRepMaxUseCase {
+            if let best = await oneRMUseCase.getHistoricalBest(for: exercise.id) {
+                historicalBest1RM[exercise.id] = best
+            }
+        }
+
         showingExerciseLibrary = false
     }
 
@@ -278,6 +291,21 @@ final class WorkoutLoggingViewModel {
         isLoading = false
     }
 
+    // MARK: - 1RM Calculations
+
+    /// Returns the current estimated 1RM for an exercise based on the best set logged so far
+    func currentEstimated1RM(for exerciseId: UUID) -> Double? {
+        guard let sets = exerciseSets[exerciseId] else { return nil }
+        return sets.compactMap { set in
+            CalculateOneRepMaxUseCase.estimate(weight: set.weight, reps: set.reps)
+        }.max()
+    }
+
+    /// Returns the historical best 1RM for an exercise
+    func historicalBest(for exerciseId: UUID) -> Double? {
+        historicalBest1RM[exerciseId]
+    }
+
     func resetWorkout() {
         workoutName = ""
         notes = ""
@@ -288,6 +316,7 @@ final class WorkoutLoggingViewModel {
         setGroups = []
         selectedExerciseIdsForGrouping = []
         isGroupingMode = false
+        historicalBest1RM = [:]
     }
 
     // MARK: - Computed Properties
