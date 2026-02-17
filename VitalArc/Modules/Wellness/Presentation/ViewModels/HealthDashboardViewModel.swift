@@ -102,9 +102,10 @@ final class HealthDashboardViewModel {
         readinessScore = calculateReadinessScore.execute(todayMetrics: today, weekMetrics: weekMetrics)
     }
 
-    /// Refresh all metrics
+    /// Refresh all metrics and import new workouts
     func refresh() async {
         await syncFromHealthKit()
+        await importWorkoutsFromHealthKit()
         await loadAllMetrics()
     }
 
@@ -131,7 +132,11 @@ final class HealthDashboardViewModel {
         let calendar = Calendar.current
         let now = Date()
         let startDate = calendar.date(byAdding: .month, value: -3, to: now) ?? now.addingTimeInterval(-90 * 86400)
-        _ = try? await importUseCase.execute(from: startDate, to: now)
+        do {
+            _ = try await importUseCase.execute(from: startDate, to: now)
+        } catch {
+            Log.error("Failed to import workouts from HealthKit", error: error, category: .data)
+        }
     }
 
     /// Sync data from HealthKit
