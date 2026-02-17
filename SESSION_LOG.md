@@ -26,6 +26,23 @@
 | Time | Action | Files | Notes |
 |------|--------|-------|-------|
 | - | Session started | - | Cloud session |
+| - | Investigated HealthKit workout import bug | Wellness/Infrastructure/, Workout/Domain/ | Historical workouts from Apple Health not showing |
+| - | Identified 3 root causes | - | Missing HKWorkoutType permission, no import pipeline, no data model support |
+| - | Added HKWorkoutType permission | HealthKitManager.swift | Added workout type to read permissions |
+| - | Added source/healthKitId fields | Workout.swift, WorkoutModel.swift | Data model support for imported workouts |
+| - | Created import use case | ImportHealthKitWorkoutsUseCase.swift (new) | Reads HK workouts, deduplicates, maps to domain |
+| - | Wired DI container | DependencyContainer.swift, WorkoutContainer.swift | Registered new use case |
+| - | Added import UI | WellnessView.swift, WorkoutListView.swift | Import button + auto-import on HealthKit auth |
+| - | Session ended | - | 13 files changed, 1 new file created |
+
+### Session End
+- **Status**: HealthKit workout import bug fully investigated and fixed
+- **Changes**: 13 files modified, 1 new file (ImportHealthKitWorkoutsUseCase.swift)
+- **Root Causes Found**:
+  1. Missing `HKWorkoutType` in HealthKit read permissions
+  2. No import pipeline to read historical workouts from Apple Health
+  3. No `source`/`healthKitId` fields on Workout/WorkoutModel for tracking imported data
+- **Next Steps**: Build verification on workstation, test with physical device + HealthKit entitlements, confirm historical workouts appear
 
 ---
 
