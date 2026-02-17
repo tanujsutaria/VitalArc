@@ -73,7 +73,7 @@ struct WorkoutDetailView: View {
 
             statItem(
                 title: "Volume",
-                value: String(format: "%.0f kg", viewModel.totalVolume),
+                value: String(format: "%.0f lbs", UnitConversion.kgToLbs(viewModel.totalVolume)),
                 icon: "scalemass"
             )
 
@@ -196,7 +196,7 @@ struct WorkoutDetailView: View {
 
                     Spacer()
 
-                    Text(String(format: "%.0f kg", viewModel.exerciseVolume(for: exerciseId)))
+                    Text(String(format: "%.0f lbs", UnitConversion.kgToLbs(viewModel.exerciseVolume(for: exerciseId))))
                         .font(.vitalLabel)
                         .fontWeight(.semibold)
                         .foregroundStyle(Color.vitalPrimary)
@@ -211,7 +211,7 @@ struct WorkoutDetailView: View {
         return HStack {
             Text("\(workoutSet.setNumber)")
                 .frame(width: 32, alignment: .leading)
-            Text(String(format: "%.1f kg", workoutSet.weight))
+            Text(String(format: "%.1f lbs", UnitConversion.kgToLbs(workoutSet.weight)))
                 .frame(maxWidth: .infinity, alignment: .trailing)
             Text("\(workoutSet.reps)")
                 .frame(width: 48, alignment: .trailing)

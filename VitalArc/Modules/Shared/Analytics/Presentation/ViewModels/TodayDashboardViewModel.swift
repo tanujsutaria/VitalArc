@@ -101,15 +101,15 @@ final class TodayDashboardViewModel {
             Log.error("Failed to load nutrition", error: error, category: .nutrition)
         }
 
-        // Load recovery score
+        // Load recovery score for the selected date
         do {
             let recoveryUseCase = CalculateRecoveryScoreUseCase(healthRepository: healthRepository)
-            recoveryScore = try await recoveryUseCase.execute()
+            recoveryScore = try await recoveryUseCase.execute(for: selectedDate)
         } catch {
             Log.error("Failed to load recovery score", error: error, category: .healthKit)
         }
 
-        // Load strain score
+        // Load strain score (date-aware)
         do {
             let strainUseCase = CalculateStrainScoreUseCase(
                 healthRepository: healthRepository,

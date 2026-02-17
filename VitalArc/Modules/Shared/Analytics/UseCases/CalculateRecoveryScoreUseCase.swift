@@ -59,21 +59,20 @@ class CalculateRecoveryScoreUseCase {
         self.healthRepository = healthRepository
     }
 
-    /// Calculate recovery score for today based on recent health data
-    func execute() async throws -> RecoveryScoreResult {
+    /// Calculate recovery score for a given date based on health data
+    func execute(for date: Date = Date()) async throws -> RecoveryScoreResult {
         let calendar = Calendar.current
-        let today = Date()
-        let startDate = calendar.date(byAdding: .day, value: -baselineDays, to: today) ?? today
+        let startDate = calendar.date(byAdding: .day, value: -baselineDays, to: date) ?? date
 
-        // Fetch health metrics for baseline period
-        let metrics = try await healthRepository.getHealthMetrics(from: startDate, to: today)
+        // Fetch health metrics for baseline period up to the target date
+        let metrics = try await healthRepository.getHealthMetrics(from: startDate, to: date)
 
         guard !metrics.isEmpty else {
             return createDefaultResult(message: "Not enough health data available")
         }
 
-        // Get today's metrics (or most recent)
-        let todayMetrics = metrics.last
+        // Get the target date's metrics (match by day, fall back to most recent)
+        let todayMetrics = metrics.last(where: { calendar.isDate($0.date, inSameDayAs: date) }) ?? metrics.last
 
         // Calculate baselines from historical data
         let hrvBaseline = calculateHRVBaseline(metrics: metrics)

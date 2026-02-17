@@ -14,7 +14,7 @@ struct OneRepMaxIndicatorView: View {
     var body: some View {
         if let e1rm = estimated1RM {
             HStack(spacing: Spacing.xs) {
-                Text("e1RM: \(Int(e1rm)) kg")
+                Text("e1RM: \(Int(UnitConversion.kgToLbs(e1rm))) lbs")
                     .font(.vitalCaption)
                     .monospacedDigit()
 
