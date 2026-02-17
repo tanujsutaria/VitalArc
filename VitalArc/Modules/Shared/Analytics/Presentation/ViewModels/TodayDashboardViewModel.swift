@@ -82,8 +82,11 @@ final class TodayDashboardViewModel {
         // Load health metrics
         do {
             let getHealthMetricsUseCase = GetHealthMetricsUseCase(repository: healthRepository)
-            healthMetrics = try await getHealthMetricsUseCase.execute(for: date)
+            let metrics = try await getHealthMetricsUseCase.execute(for: date)
+            guard selectedDate == date else { return }
+            healthMetrics = metrics
         } catch {
+            guard selectedDate == date else { return }
             healthMetrics = nil
             Log.error("Failed to load health metrics", error: error, category: .healthKit)
         }
@@ -92,8 +95,10 @@ final class TodayDashboardViewModel {
         do {
             let getTodayWorkoutsUseCase = GetTodayWorkoutsUseCase(repository: workoutRepository)
             let workouts = try await getTodayWorkoutsUseCase.execute(for: date)
+            guard selectedDate == date else { return }
             todaysWorkout = workouts.first
         } catch {
+            guard selectedDate == date else { return }
             todaysWorkout = nil
             Log.error("Failed to load workouts", error: error, category: .workout)
         }
@@ -101,8 +106,11 @@ final class TodayDashboardViewModel {
         // Load nutrition
         do {
             let calculateUseCase = CalculateNutritionUseCase(repository: nutritionRepository)
-            dailyNutrition = try await calculateUseCase.execute(for: date)
+            let nutrition = try await calculateUseCase.execute(for: date)
+            guard selectedDate == date else { return }
+            dailyNutrition = nutrition
         } catch {
+            guard selectedDate == date else { return }
             dailyNutrition = nil
             Log.error("Failed to load nutrition", error: error, category: .nutrition)
         }
@@ -110,8 +118,11 @@ final class TodayDashboardViewModel {
         // Load recovery score for the selected date
         do {
             let recoveryUseCase = CalculateRecoveryScoreUseCase(healthRepository: healthRepository)
-            recoveryScore = try await recoveryUseCase.execute(for: date)
+            let recovery = try await recoveryUseCase.execute(for: date)
+            guard selectedDate == date else { return }
+            recoveryScore = recovery
         } catch {
+            guard selectedDate == date else { return }
             recoveryScore = nil
             Log.error("Failed to load recovery score", error: error, category: .healthKit)
         }
@@ -122,8 +133,11 @@ final class TodayDashboardViewModel {
                 healthRepository: healthRepository,
                 userRepository: userRepository
             )
-            strainResult = try await strainUseCase.execute(for: date)
+            let strain = try await strainUseCase.execute(for: date)
+            guard selectedDate == date else { return }
+            strainResult = strain
         } catch {
+            guard selectedDate == date else { return }
             strainResult = nil
             Log.error("Failed to load strain score", error: error, category: .healthKit)
         }
