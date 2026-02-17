@@ -112,6 +112,13 @@ final class MockWorkoutRepository: WorkoutRepository {
         }
     }
 
+    func getWorkoutByHealthKitId(_ healthKitId: String) async throws -> Workout? {
+        if shouldThrowOnGet {
+            throw MockError.getFailed
+        }
+        return mockWorkouts.first { $0.healthKitId == healthKitId }
+    }
+
     func saveWorkout(_ workout: Workout) async throws {
         if shouldThrowOnSave {
             throw MockError.saveFailed
