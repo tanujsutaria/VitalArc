@@ -406,6 +406,77 @@ final class CalculateNutritionUseCaseTests: XCTestCase {
         XCTAssertEqual(calories, 0)
     }
 
+    // MARK: - Fiber/Sugar Aggregation Tests
+
+    func testExecuteAggregatesFiberAndSugar() async throws {
+        // Given
+        let date = Date()
+        let entries = [
+            FoodEntry(foodId: UUID(), date: date, meal: .breakfast, quantity: 100, calories: 300, protein: 10, carbs: 50, fat: 5, fiber: 8.0, sugar: 12.0),
+            FoodEntry(foodId: UUID(), date: date, meal: .lunch, quantity: 100, calories: 500, protein: 30, carbs: 60, fat: 15, fiber: 4.0, sugar: 8.0),
+            FoodEntry(foodId: UUID(), date: date, meal: .dinner, quantity: 100, calories: 400, protein: 25, carbs: 40, fat: 12, fiber: 6.0, sugar: 5.0)
+        ]
+        repository.mockFoodEntries = entries
+
+        // When
+        let nutrition = try await useCase.execute(for: date)
+
+        // Then
+        XCTAssertEqual(nutrition.fiberConsumed, 18.0, accuracy: 0.1)
+        XCTAssertEqual(nutrition.sugarConsumed, 25.0, accuracy: 0.1)
+    }
+
+    func testExecuteHandlesNilFiberAndSugar() async throws {
+        // Given - Entries with nil fiber/sugar
+        let date = Date()
+        let entries = [
+            FoodEntry(foodId: UUID(), date: date, meal: .breakfast, quantity: 100, calories: 300, protein: 10, carbs: 50, fat: 5),
+            FoodEntry(foodId: UUID(), date: date, meal: .lunch, quantity: 100, calories: 500, protein: 30, carbs: 60, fat: 15, fiber: 4.0, sugar: nil)
+        ]
+        repository.mockFoodEntries = entries
+
+        // When
+        let nutrition = try await useCase.execute(for: date)
+
+        // Then - Nil values should be treated as 0
+        XCTAssertEqual(nutrition.fiberConsumed, 4.0, accuracy: 0.1)
+        XCTAssertEqual(nutrition.sugarConsumed, 0.0, accuracy: 0.1)
+    }
+
+    func testExecutePreservesFiberAndSugarGoals() async throws {
+        // Given
+        let date = Date()
+        let calendar = Calendar.current
+        let startOfDay = calendar.startOfDay(for: date)
+
+        let existingNutrition = DailyNutrition(
+            date: startOfDay,
+            caloriesConsumed: 0,
+            proteinConsumed: 0,
+            carbsConsumed: 0,
+            fatConsumed: 0,
+            calorieGoal: 2000,
+            proteinGoal: 150,
+            carbsGoal: 200,
+            fatGoal: 70,
+            fiberGoal: 30,
+            sugarGoal: 50
+        )
+        repository.mockDailyNutrition[startOfDay] = existingNutrition
+
+        let entry = FoodEntry(foodId: UUID(), date: date, meal: .breakfast, quantity: 100, calories: 300, protein: 10, carbs: 50, fat: 5, fiber: 8.0, sugar: 12.0)
+        repository.mockFoodEntries = [entry]
+
+        // When
+        let nutrition = try await useCase.execute(for: date)
+
+        // Then - Fiber/sugar goals should be preserved
+        XCTAssertEqual(nutrition.fiberGoal, 30)
+        XCTAssertEqual(nutrition.sugarGoal, 50)
+        XCTAssertEqual(nutrition.fiberConsumed, 8.0, accuracy: 0.1)
+        XCTAssertEqual(nutrition.sugarConsumed, 12.0, accuracy: 0.1)
+    }
+
     // MARK: - Error Handling
 
     func testExecuteThrowsOnGetError() async throws {

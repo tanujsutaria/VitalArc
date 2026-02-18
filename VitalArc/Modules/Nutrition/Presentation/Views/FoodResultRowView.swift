@@ -75,6 +75,19 @@ struct FoodResultRowView: View {
                     }
                     .font(.vitalBodySmall)
 
+                    // Micronutrients (fiber/sugar) when available
+                    if food.fiber != nil || food.sugar != nil {
+                        HStack(spacing: Spacing.sm) {
+                            if let fiber = food.fiber {
+                                MacroLabel(value: Int(fiber), unit: "Fiber", color: .vitalSuccess)
+                            }
+                            if let sugar = food.sugar {
+                                MacroLabel(value: Int(sugar), unit: "Sugar", color: .vitalPrimary)
+                            }
+                        }
+                        .font(.vitalCaptionSmall)
+                    }
+
                     // Serving size
                     Text("\(formatServingSize(food.servingSize))\(food.servingUnit) serving")
                         .font(.vitalCaptionSmall)

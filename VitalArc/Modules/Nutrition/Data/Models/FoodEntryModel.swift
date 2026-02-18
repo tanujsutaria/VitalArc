@@ -19,6 +19,8 @@ final class FoodEntryModel {
     var protein: Double
     var carbs: Double
     var fat: Double
+    var fiber: Double?
+    var sugar: Double?
 
     init(
         id: UUID = UUID(),
@@ -29,7 +31,9 @@ final class FoodEntryModel {
         calories: Double,
         protein: Double,
         carbs: Double,
-        fat: Double
+        fat: Double,
+        fiber: Double? = nil,
+        sugar: Double? = nil
     ) {
         self.id = id
         self.foodId = foodId
@@ -40,6 +44,8 @@ final class FoodEntryModel {
         self.protein = protein
         self.carbs = carbs
         self.fat = fat
+        self.fiber = fiber
+        self.sugar = sugar
     }
 
     /// Convert to domain entity
@@ -53,7 +59,9 @@ final class FoodEntryModel {
             calories: calories,
             protein: protein,
             carbs: carbs,
-            fat: fat
+            fat: fat,
+            fiber: fiber,
+            sugar: sugar
         )
     }
 
@@ -68,7 +76,9 @@ final class FoodEntryModel {
             calories: entry.calories,
             protein: entry.protein,
             carbs: entry.carbs,
-            fat: entry.fat
+            fat: entry.fat,
+            fiber: entry.fiber,
+            sugar: entry.sugar
         )
     }
 }
