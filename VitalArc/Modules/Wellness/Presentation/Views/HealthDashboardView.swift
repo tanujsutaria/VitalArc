@@ -134,6 +134,10 @@ struct HealthDashboardView: View {
             return UnitConversion.kgToLbs(lbm)
         case .respiratoryRate:
             return today.respiratoryRate ?? -1
+        case .spo2:
+            return today.oxygenSaturation ?? -1
+        case .vo2Max:
+            return today.vo2Max ?? -1
         }
     }
 

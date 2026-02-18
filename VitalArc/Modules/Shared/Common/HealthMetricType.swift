@@ -17,6 +17,8 @@ enum HealthMetricType: String, Identifiable, CaseIterable {
     case bodyFat = "Body Fat"
     case leanBodyMass = "Lean Mass"
     case respiratoryRate = "Respiratory Rate"
+    case spo2 = "SpO2"
+    case vo2Max = "VO2 Max"
 
     var id: String { rawValue }
 
@@ -31,6 +33,8 @@ enum HealthMetricType: String, Identifiable, CaseIterable {
         case .bodyFat: return "figure.arms.open"
         case .leanBodyMass: return "figure.strengthtraining.traditional"
         case .respiratoryRate: return "lungs.fill"
+        case .spo2: return "lungs.fill"
+        case .vo2Max: return "figure.run"
         }
     }
 
@@ -45,6 +49,8 @@ enum HealthMetricType: String, Identifiable, CaseIterable {
         case .bodyFat: return "warning"
         case .leanBodyMass: return "info"
         case .respiratoryRate: return "accent"
+        case .spo2: return "info"
+        case .vo2Max: return "success"
         }
     }
 
@@ -59,6 +65,8 @@ enum HealthMetricType: String, Identifiable, CaseIterable {
         case .bodyFat: return "%"
         case .leanBodyMass: return "lbs"
         case .respiratoryRate: return "brpm"
+        case .spo2: return "%"
+        case .vo2Max: return "mL/kg/min"
         }
     }
 
@@ -73,6 +81,8 @@ enum HealthMetricType: String, Identifiable, CaseIterable {
         case .bodyFat: return "Body Fat Percentage"
         case .leanBodyMass: return "Lean Body Mass"
         case .respiratoryRate: return "Respiratory Rate"
+        case .spo2: return "Blood Oxygen Saturation"
+        case .vo2Max: return "VO2 Max"
         }
     }
 }

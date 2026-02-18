@@ -62,6 +62,9 @@ final class DependencyContainer {
     var requestNotificationPermissionUseCase: RequestNotificationPermissionUseCase { shared.requestNotificationPermissionUseCase }
     var checkRecoveryAndNotifyUseCase: CheckRecoveryAndNotifyUseCase { shared.checkRecoveryAndNotifyUseCase }
     var importHealthKitWorkoutsUseCase: ImportHealthKitWorkoutsUseCase { workout.importHealthKitWorkoutsUseCase }
+    var getExerciseHistoryUseCase: GetExerciseHistoryUseCase { workout.getExerciseHistoryUseCase }
+    var updateFoodEntryUseCase: UpdateFoodEntryUseCase { nutrition.updateFoodEntryUseCase }
+    var calculateSleepConsistencyUseCase: CalculateSleepConsistencyUseCase { wellness.calculateSleepConsistencyUseCase }
 
     init(modelContext: ModelContext) {
         self.modelContext = modelContext
