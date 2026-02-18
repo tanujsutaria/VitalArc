@@ -548,5 +548,6 @@ private final class DummyWorkoutRepository: WorkoutRepository {
     func getWorkouts(from startDate: Date, to endDate: Date) async throws -> [Workout] { [] }
     func saveWorkout(_ workout: Workout) async throws {}
     func deleteWorkout(id: UUID) async throws {}
+    func getWorkoutByHealthKitId(_ healthKitId: String) async throws -> Workout? { nil }
     func getLastWorkoutForExercise(_ exerciseId: UUID) async throws -> Workout? { nil }
 }
