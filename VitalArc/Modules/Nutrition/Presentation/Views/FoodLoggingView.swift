@@ -11,10 +11,12 @@ struct FoodLoggingView: View {
     @State private var viewModel: FoodLoggingViewModel
     @State private var showingQuantitySheet = false
     @State private var selectedFood: Food?
+    @State private var editingEntry: FoodEntry?
 
-    init(logFoodUseCase: LogFoodUseCaseProtocol, repository: NutritionRepository) {
+    init(logFoodUseCase: LogFoodUseCaseProtocol, updateFoodEntryUseCase: UpdateFoodEntryUseCaseProtocol, repository: NutritionRepository) {
         _viewModel = State(initialValue: FoodLoggingViewModel(
             logFoodUseCase: logFoodUseCase,
+            updateFoodEntryUseCase: updateFoodEntryUseCase,
             repository: repository
         ))
     }
@@ -48,6 +50,14 @@ struct FoodLoggingView: View {
                             onDeleteEntry: { entry in
                                 Task {
                                     await viewModel.deleteEntry(entry)
+                                }
+                            },
+                            onEditEntry: { entry in
+                                editingEntry = entry
+                            },
+                            onRelogEntry: { entry in
+                                Task {
+                                    await viewModel.relogEntry(entry)
                                 }
                             }
                         )
@@ -105,6 +115,13 @@ struct FoodLoggingView: View {
                     selectedFood = nil
                     Task {
                         await viewModel.loadEntries()
+                    }
+                }
+            }
+            .sheet(item: $editingEntry) { entry in
+                EditQuantitySheet(entry: entry) { newQuantity in
+                    Task {
+                        await viewModel.updateEntry(entry, newQuantity: newQuantity)
                     }
                 }
             }

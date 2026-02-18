@@ -12,17 +12,24 @@ import XCTest
 final class FoodLoggingViewModelTests: XCTestCase {
     var repository: MockNutritionRepository!
     var logFoodUseCase: LogFoodUseCase!
+    var updateFoodEntryUseCase: UpdateFoodEntryUseCase!
     var viewModel: FoodLoggingViewModel!
 
     override func setUp() async throws {
         repository = MockNutritionRepository()
         logFoodUseCase = LogFoodUseCase(repository: repository)
-        viewModel = FoodLoggingViewModel(logFoodUseCase: logFoodUseCase, repository: repository)
+        updateFoodEntryUseCase = UpdateFoodEntryUseCase(repository: repository)
+        viewModel = FoodLoggingViewModel(
+            logFoodUseCase: logFoodUseCase,
+            updateFoodEntryUseCase: updateFoodEntryUseCase,
+            repository: repository
+        )
     }
 
     override func tearDown() async throws {
         repository = nil
         logFoodUseCase = nil
+        updateFoodEntryUseCase = nil
         viewModel = nil
     }
 
@@ -466,5 +473,193 @@ final class FoodLoggingViewModelTests: XCTestCase {
         let savedEntry = repository.savedFoodEntries.first
         XCTAssertEqual(savedEntry?.calories ?? 0, 330, accuracy: 0.1) // 165 * 2
         XCTAssertEqual(savedEntry?.protein ?? 0, 62, accuracy: 0.1)   // 31 * 2
+    }
+
+    // MARK: - Update Entry Tests (N6)
+
+    func testUpdateEntryQuantity() async {
+        // Given
+        let entry = FoodEntry(
+            foodId: UUID(),
+            date: Date(),
+            meal: .breakfast,
+            quantity: 100,
+            calories: 165,
+            protein: 31,
+            carbs: 0,
+            fat: 3.6,
+            fiber: 2.0,
+            sugar: 1.0
+        )
+        repository.mockFoodEntries = [entry]
+        await viewModel.loadEntries()
+
+        // When - Double the quantity
+        await viewModel.updateEntry(entry, newQuantity: 200)
+
+        // Then - Macros should be doubled
+        let savedEntry = repository.savedFoodEntries.last
+        XCTAssertNotNil(savedEntry)
+        XCTAssertEqual(savedEntry?.quantity ?? 0, 200, accuracy: 0.1)
+        XCTAssertEqual(savedEntry?.calories ?? 0, 330, accuracy: 0.1)
+        XCTAssertEqual(savedEntry?.protein ?? 0, 62, accuracy: 0.1)
+        XCTAssertEqual(savedEntry?.fat ?? 0, 7.2, accuracy: 0.1)
+        XCTAssertEqual(savedEntry?.fiber ?? 0, 4.0, accuracy: 0.1)
+        XCTAssertEqual(savedEntry?.sugar ?? 0, 2.0, accuracy: 0.1)
+    }
+
+    func testUpdateEntryPreservesId() async {
+        // Given
+        let entryId = UUID()
+        let entry = FoodEntry(
+            id: entryId,
+            foodId: UUID(),
+            date: Date(),
+            meal: .lunch,
+            quantity: 100,
+            calories: 200,
+            protein: 20,
+            carbs: 25,
+            fat: 5
+        )
+        repository.mockFoodEntries = [entry]
+        await viewModel.loadEntries()
+
+        // When
+        await viewModel.updateEntry(entry, newQuantity: 150)
+
+        // Then - ID should be preserved (upsert)
+        let savedEntry = repository.savedFoodEntries.last
+        XCTAssertEqual(savedEntry?.id, entryId)
+    }
+
+    func testUpdateEntryHandlesError() async {
+        // Given
+        let entry = makeTestEntry()
+        repository.mockFoodEntries = [entry]
+        await viewModel.loadEntries()
+        repository.shouldThrowOnSave = true
+
+        // When
+        await viewModel.updateEntry(entry, newQuantity: 200)
+
+        // Then
+        XCTAssertNotNil(viewModel.errorMessage)
+    }
+
+    // MARK: - Re-Log Entry Tests (N7)
+
+    func testRelogEntryCreatesNewEntry() async {
+        // Given
+        let originalEntry = FoodEntry(
+            foodId: UUID(),
+            date: Date().addingTimeInterval(-86400), // yesterday
+            meal: .breakfast,
+            quantity: 100,
+            calories: 165,
+            protein: 31,
+            carbs: 0,
+            fat: 3.6
+        )
+        repository.mockFoodEntries = [originalEntry]
+        await viewModel.loadEntries()
+
+        let initialSavedCount = repository.savedFoodEntries.count
+
+        // When
+        await viewModel.relogEntry(originalEntry)
+
+        // Then - A new entry should be saved
+        XCTAssertGreaterThan(repository.savedFoodEntries.count, initialSavedCount)
+    }
+
+    func testRelogEntryUsesSelectedDate() async {
+        // Given
+        let yesterday = Date().addingTimeInterval(-86400)
+        let originalEntry = FoodEntry(
+            foodId: UUID(),
+            date: yesterday,
+            meal: .lunch,
+            quantity: 150,
+            calories: 250,
+            protein: 30,
+            carbs: 20,
+            fat: 8
+        )
+
+        // When
+        await viewModel.relogEntry(originalEntry)
+
+        // Then - New entry should have the selected date (today), not the original date
+        let savedEntry = repository.savedFoodEntries.last
+        XCTAssertNotNil(savedEntry)
+        let calendar = Calendar.current
+        XCTAssertTrue(calendar.isDateInToday(savedEntry!.date))
+    }
+
+    func testRelogEntryPreservesMacros() async {
+        // Given
+        let originalEntry = FoodEntry(
+            foodId: UUID(),
+            date: Date().addingTimeInterval(-86400),
+            meal: .dinner,
+            quantity: 200,
+            calories: 400,
+            protein: 45,
+            carbs: 30,
+            fat: 12,
+            fiber: 5.0,
+            sugar: 3.0
+        )
+
+        // When
+        await viewModel.relogEntry(originalEntry)
+
+        // Then - Macros should be identical to original
+        let savedEntry = repository.savedFoodEntries.last
+        XCTAssertNotNil(savedEntry)
+        XCTAssertEqual(savedEntry?.quantity ?? 0, 200, accuracy: 0.1)
+        XCTAssertEqual(savedEntry?.calories ?? 0, 400, accuracy: 0.1)
+        XCTAssertEqual(savedEntry?.protein ?? 0, 45, accuracy: 0.1)
+        XCTAssertEqual(savedEntry?.carbs ?? 0, 30, accuracy: 0.1)
+        XCTAssertEqual(savedEntry?.fat ?? 0, 12, accuracy: 0.1)
+        XCTAssertEqual(savedEntry?.fiber ?? 0, 5.0, accuracy: 0.1)
+        XCTAssertEqual(savedEntry?.sugar ?? 0, 3.0, accuracy: 0.1)
+    }
+
+    func testRelogEntryCreatesNewId() async {
+        // Given
+        let originalId = UUID()
+        let originalEntry = FoodEntry(
+            id: originalId,
+            foodId: UUID(),
+            date: Date(),
+            meal: .snack,
+            quantity: 50,
+            calories: 100,
+            protein: 5,
+            carbs: 15,
+            fat: 3
+        )
+
+        // When
+        await viewModel.relogEntry(originalEntry)
+
+        // Then - New entry should have a different ID
+        let savedEntry = repository.savedFoodEntries.last
+        XCTAssertNotNil(savedEntry)
+        XCTAssertNotEqual(savedEntry?.id, originalId)
+    }
+
+    func testRelogEntryHandlesError() async {
+        // Given
+        let entry = makeTestEntry()
+        repository.shouldThrowOnSave = true
+
+        // When
+        await viewModel.relogEntry(entry)
+
+        // Then
+        XCTAssertNotNil(viewModel.errorMessage)
     }
 }

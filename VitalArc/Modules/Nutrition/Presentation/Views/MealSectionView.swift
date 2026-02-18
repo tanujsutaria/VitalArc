@@ -13,6 +13,8 @@ struct MealSectionView: View {
     let totals: (calories: Double, protein: Double, carbs: Double, fat: Double)
     let onAddFood: () -> Void
     let onDeleteEntry: (FoodEntry) -> Void
+    var onEditEntry: ((FoodEntry) -> Void)?
+    var onRelogEntry: ((FoodEntry) -> Void)?
 
     var body: some View {
         VStack(alignment: .leading, spacing: Spacing.md) {
@@ -52,9 +54,12 @@ struct MealSectionView: View {
                 EmptyMealView()
             } else {
                 ForEach(entries) { entry in
-                    FoodEntryRowView(entry: entry, onDelete: {
-                        onDeleteEntry(entry)
-                    })
+                    FoodEntryRowView(
+                        entry: entry,
+                        onDelete: { onDeleteEntry(entry) },
+                        onEdit: onEditEntry != nil ? { onEditEntry?(entry) } : nil,
+                        onRelog: onRelogEntry != nil ? { onRelogEntry?(entry) } : nil
+                    )
                 }
 
                 // Meal totals
@@ -108,6 +113,8 @@ private struct EmptyMealView: View {
 private struct FoodEntryRowView: View {
     let entry: FoodEntry
     let onDelete: () -> Void
+    var onEdit: (() -> Void)?
+    var onRelog: (() -> Void)?
 
     var body: some View {
         HStack(alignment: .top, spacing: Spacing.md) {
@@ -128,14 +135,38 @@ private struct FoodEntryRowView: View {
 
             Spacer()
 
-            Button(role: .destructive) {
-                onDelete()
-            } label: {
-                Image(systemName: "trash")
-                    .font(.vitalCaption)
-                    .foregroundStyle(Color.vitalDanger)
+            HStack(spacing: Spacing.sm) {
+                if onRelog != nil {
+                    Button {
+                        onRelog?()
+                    } label: {
+                        Image(systemName: "arrow.counterclockwise")
+                            .font(.vitalCaption)
+                            .foregroundStyle(Color.vitalSuccess)
+                    }
+                    .buttonStyle(.plain)
+                }
+
+                if onEdit != nil {
+                    Button {
+                        onEdit?()
+                    } label: {
+                        Image(systemName: "pencil")
+                            .font(.vitalCaption)
+                            .foregroundStyle(Color.vitalPrimary)
+                    }
+                    .buttonStyle(.plain)
+                }
+
+                Button(role: .destructive) {
+                    onDelete()
+                } label: {
+                    Image(systemName: "trash")
+                        .font(.vitalCaption)
+                        .foregroundStyle(Color.vitalDanger)
+                }
+                .buttonStyle(.plain)
             }
-            .buttonStyle(.plain)
         }
         .padding(.vertical, Spacing.xs)
     }
@@ -181,6 +212,88 @@ private struct MealTotalsView: View {
     }
 }
 
+// MARK: - Edit Quantity Sheet
+
+struct EditQuantitySheet: View {
+    let entry: FoodEntry
+    let onSave: (Double) -> Void
+
+    @State private var quantity: String
+    @Environment(\.dismiss) private var dismiss
+
+    init(entry: FoodEntry, onSave: @escaping (Double) -> Void) {
+        self.entry = entry
+        self.onSave = onSave
+        _quantity = State(initialValue: "\(Int(entry.quantity))")
+    }
+
+    private var quantityValue: Double {
+        LocaleAwareParsing.parsePositiveDouble(from: quantity) ?? entry.quantity
+    }
+
+    private var scale: Double {
+        guard entry.quantity > 0 else { return 1.0 }
+        return quantityValue / entry.quantity
+    }
+
+    var body: some View {
+        NavigationStack {
+            Form {
+                Section("Quantity") {
+                    HStack {
+                        TextField("Quantity", text: $quantity)
+                            .keyboardType(.decimalPad)
+                            .textFieldStyle(.roundedBorder)
+
+                        Text("grams")
+                            .foregroundStyle(.secondary)
+                    }
+                }
+
+                Section("Updated Nutrition") {
+                    NutritionPreviewRow(label: "Calories", value: "\(Int(entry.calories * scale))", color: .vitalPrimary)
+                    NutritionPreviewRow(label: "Protein", value: "\(Int(entry.protein * scale))g", color: .vitalInfo)
+                    NutritionPreviewRow(label: "Carbs", value: "\(Int(entry.carbs * scale))g", color: .vitalWarning)
+                    NutritionPreviewRow(label: "Fat", value: "\(Int(entry.fat * scale))g", color: .vitalDanger)
+                }
+            }
+            .navigationTitle("Edit Quantity")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") {
+                        dismiss()
+                    }
+                }
+
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Save") {
+                        onSave(quantityValue)
+                        dismiss()
+                    }
+                    .disabled(quantityValue <= 0)
+                }
+            }
+        }
+    }
+}
+
+private struct NutritionPreviewRow: View {
+    let label: String
+    let value: String
+    let color: Color
+
+    var body: some View {
+        HStack {
+            Text(label)
+            Spacer()
+            Text(value)
+                .fontWeight(.semibold)
+                .foregroundStyle(color)
+        }
+    }
+}
+
 #Preview {
     ScrollView {
         VStack(spacing: Spacing.lg) {
@@ -199,7 +312,9 @@ private struct MealTotalsView: View {
                 ],
                 totals: (calories: 165, protein: 31, carbs: 0, fat: 3.6),
                 onAddFood: {},
-                onDeleteEntry: { _ in }
+                onDeleteEntry: { _ in },
+                onEditEntry: { _ in },
+                onRelogEntry: { _ in }
             )
 
             MealSectionView(
