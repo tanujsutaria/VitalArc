@@ -10,8 +10,8 @@ import SwiftUI
 struct WorkoutHistoryView: View {
     @State private var viewModel: WorkoutHistoryViewModel
 
-    init(repository: WorkoutRepository) {
-        self.viewModel = WorkoutHistoryViewModel(repository: repository)
+    init(repository: WorkoutRepository, importUseCase: ImportHealthKitWorkoutsUseCase? = nil) {
+        self.viewModel = WorkoutHistoryViewModel(repository: repository, importUseCase: importUseCase)
     }
 
     var body: some View {
@@ -42,6 +42,43 @@ struct WorkoutHistoryView: View {
                 }
             }
             .navigationTitle("Workout History")
+            .toolbar {
+                if viewModel.canImportFromHealthKit {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button {
+                            Task {
+                                await viewModel.importFromHealthKit()
+                            }
+                        } label: {
+                            if viewModel.isImporting {
+                                ProgressView()
+                            } else {
+                                Label("Import from Health", systemImage: "heart.circle")
+                            }
+                        }
+                        .disabled(viewModel.isImporting)
+                    }
+                }
+            }
+            .overlay(alignment: .bottom) {
+                if let message = viewModel.importResultMessage {
+                    Text(message)
+                        .font(.vitalBody)
+                        .padding(Spacing.md)
+                        .background(Color.vitalSuccess.opacity(0.9))
+                        .foregroundStyle(.white)
+                        .clipShape(Capsule())
+                        .padding(.bottom, Spacing.lg)
+                        .transition(.move(edge: .bottom).combined(with: .opacity))
+                        .onAppear {
+                            Task {
+                                try? await Task.sleep(for: .seconds(3))
+                                viewModel.importResultMessage = nil
+                            }
+                        }
+                }
+            }
+            .animation(.easeInOut, value: viewModel.importResultMessage)
             .task {
                 await viewModel.loadWorkouts()
             }
@@ -224,6 +261,12 @@ struct WorkoutRowView: View {
             HStack {
                 Text(workout.name ?? "Workout")
                     .font(.vitalH3)
+
+                if workout.source == .healthKit {
+                    Image(systemName: "heart.circle.fill")
+                        .font(.vitalCaption)
+                        .foregroundStyle(Color.vitalSuccess)
+                }
 
                 Spacer()
 

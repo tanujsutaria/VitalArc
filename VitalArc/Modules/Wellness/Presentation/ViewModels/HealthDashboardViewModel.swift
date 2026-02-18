@@ -16,6 +16,7 @@ final class HealthDashboardViewModel {
 
     private let healthRepository: HealthRepository
     private let calculateReadinessScore: CalculateReadinessScoreUseCaseProtocol
+    private let importHealthKitWorkoutsUseCase: ImportHealthKitWorkoutsUseCase?
 
     var todayMetrics: HealthMetrics?
     var weekMetrics: [HealthMetrics] = []
@@ -28,10 +29,12 @@ final class HealthDashboardViewModel {
 
     init(
         healthRepository: HealthRepository,
-        calculateReadinessScore: CalculateReadinessScoreUseCaseProtocol = CalculateReadinessScoreUseCase()
+        calculateReadinessScore: CalculateReadinessScoreUseCaseProtocol = CalculateReadinessScoreUseCase(),
+        importHealthKitWorkoutsUseCase: ImportHealthKitWorkoutsUseCase? = nil
     ) {
         self.healthRepository = healthRepository
         self.calculateReadinessScore = calculateReadinessScore
+        self.importHealthKitWorkoutsUseCase = importHealthKitWorkoutsUseCase
     }
 
     // MARK: - Data Loading
@@ -99,9 +102,10 @@ final class HealthDashboardViewModel {
         readinessScore = calculateReadinessScore.execute(todayMetrics: today, weekMetrics: weekMetrics)
     }
 
-    /// Refresh all metrics
+    /// Refresh all metrics and import new workouts
     func refresh() async {
         await syncFromHealthKit()
+        await importWorkoutsFromHealthKit()
         await loadAllMetrics()
     }
 
@@ -113,11 +117,25 @@ final class HealthDashboardViewModel {
             let authorized = try await healthRepository.requestHealthKitAuthorization()
             if authorized {
                 await syncFromHealthKit()
+                await importWorkoutsFromHealthKit()
                 await loadAllMetrics()
             }
         } catch {
             self.error = error
             showingPermissionAlert = true
+        }
+    }
+
+    /// Import historical workouts from HealthKit (last 3 months)
+    private func importWorkoutsFromHealthKit() async {
+        guard let importUseCase = importHealthKitWorkoutsUseCase else { return }
+        let calendar = Calendar.current
+        let now = Date()
+        let startDate = calendar.date(byAdding: .month, value: -3, to: now) ?? now.addingTimeInterval(-90 * 86400)
+        do {
+            _ = try await importUseCase.execute(from: startDate, to: now)
+        } catch {
+            Log.error("Failed to import workouts from HealthKit", error: error, category: .data)
         }
     }
 

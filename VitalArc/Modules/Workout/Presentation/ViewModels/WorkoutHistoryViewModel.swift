@@ -12,14 +12,18 @@ import Observation
 @Observable
 final class WorkoutHistoryViewModel {
     let repository: WorkoutRepository
+    private let importUseCase: ImportHealthKitWorkoutsUseCase?
 
     var workouts: [Workout] = []
     var isLoading: Bool = false
+    var isImporting: Bool = false
     var errorMessage: String? = nil
+    var importResultMessage: String? = nil
     var selectedDateRange: DateRange = .week
 
-    init(repository: WorkoutRepository) {
+    init(repository: WorkoutRepository, importUseCase: ImportHealthKitWorkoutsUseCase? = nil) {
         self.repository = repository
+        self.importUseCase = importUseCase
     }
 
     func loadWorkouts() async {
@@ -48,6 +52,36 @@ final class WorkoutHistoryViewModel {
     func selectDateRange(_ range: DateRange) async {
         selectedDateRange = range
         await loadWorkouts()
+    }
+
+    // MARK: - HealthKit Import
+
+    var canImportFromHealthKit: Bool {
+        importUseCase != nil
+    }
+
+    func importFromHealthKit() async {
+        guard let importUseCase else { return }
+        isImporting = true
+        importResultMessage = nil
+        errorMessage = nil
+
+        do {
+            let calendar = Calendar.current
+            let now = Date()
+            let startDate = calendar.date(byAdding: .month, value: -3, to: now) ?? now.addingTimeInterval(-90 * 86400)
+            let count = try await importUseCase.execute(from: startDate, to: now)
+            if count > 0 {
+                importResultMessage = "Imported \(count) workout\(count == 1 ? "" : "s") from Health"
+                await loadWorkouts()
+            } else {
+                importResultMessage = "No new workouts to import"
+            }
+        } catch {
+            errorMessage = UserFacingError.message(for: error, context: .loading)
+        }
+
+        isImporting = false
     }
 
     // MARK: - Statistics

@@ -78,7 +78,7 @@ struct WorkoutHistoryContentView: View {
 
                 if viewModel.workouts.count > 5 {
                     NavigationLink {
-                        WorkoutHistoryView(repository: container.workoutRepository)
+                        WorkoutHistoryView(repository: container.workoutRepository, importUseCase: container.importHealthKitWorkoutsUseCase)
                     } label: {
                         Text("See All")
                             .font(.vitalLabelSmall)

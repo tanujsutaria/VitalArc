@@ -61,14 +61,18 @@ final class DependencyContainer {
     var scheduleNotificationsUseCase: ScheduleNotificationsUseCase { shared.scheduleNotificationsUseCase }
     var requestNotificationPermissionUseCase: RequestNotificationPermissionUseCase { shared.requestNotificationPermissionUseCase }
     var checkRecoveryAndNotifyUseCase: CheckRecoveryAndNotifyUseCase { shared.checkRecoveryAndNotifyUseCase }
+    var importHealthKitWorkoutsUseCase: ImportHealthKitWorkoutsUseCase { workout.importHealthKitWorkoutsUseCase }
 
     init(modelContext: ModelContext) {
         self.modelContext = modelContext
 
+        // Shared HealthKitManager instance used by both wellness and workout domains
+        let healthKitManager = HealthKitManager()
+
         // Initialize domain sub-containers
-        self.workout = WorkoutContainer(modelContext: modelContext)
+        self.workout = WorkoutContainer(modelContext: modelContext, healthKitManager: healthKitManager)
         self.nutrition = NutritionContainer(modelContext: modelContext)
-        self.wellness = WellnessContainer(modelContext: modelContext)
+        self.wellness = WellnessContainer(modelContext: modelContext, healthKitManager: healthKitManager)
         self.shared = SharedContainer(modelContext: modelContext)
     }
 }
@@ -214,6 +218,14 @@ final class SwiftDataWorkoutRepository: WorkoutRepository {
             modelContext.delete(model)
             try modelContext.save()
         }
+    }
+
+    func getWorkoutByHealthKitId(_ healthKitId: String) async throws -> Workout? {
+        let descriptor = FetchDescriptor<WorkoutModel>(
+            predicate: #Predicate { $0.healthKitId == healthKitId }
+        )
+        let models = try modelContext.fetch(descriptor)
+        return models.first?.toDomain()
     }
 
     func getLastWorkoutForExercise(_ exerciseId: UUID) async throws -> Workout? {

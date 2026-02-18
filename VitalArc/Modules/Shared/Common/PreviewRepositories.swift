@@ -60,6 +60,10 @@ final class PreviewWorkoutRepository: WorkoutRepository {
         // No-op for preview
     }
 
+    func getWorkoutByHealthKitId(_ healthKitId: String) async throws -> Workout? {
+        nil
+    }
+
     func getLastWorkoutForExercise(_ exerciseId: UUID) async throws -> Workout? {
         nil
     }

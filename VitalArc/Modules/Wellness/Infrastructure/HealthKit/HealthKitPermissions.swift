@@ -57,6 +57,9 @@ struct HealthKitPermissions {
             types.insert(respiratoryRateType)
         }
 
+        // Workouts
+        types.insert(HKObjectType.workoutType())
+
         return types
     }
 

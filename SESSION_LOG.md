@@ -1,5 +1,51 @@
 # VitalArc Development Session Log
 
+## Session 21.1 - February 17, 2026 (Cloud)
+
+### Session Start
+- **Time**: UTC
+- **Platform**: cloud
+- **Focus**: API Key Configuration & Design System Migration (cloud-appropriate tasks)
+- **Branch**: claude/vitalarc-cloud-setup-NXMgS
+- **Base**: main @ a9d56a6
+
+### Environment
+- **Build Capable**: No
+- **Test Capable**: No
+
+### Pre-Session Status
+- **Build**: Skipped (cloud)
+- **Design Violations**: 88 violations across 46 files (69 frame widths, 18 stack spacing, 1 typography)
+- **Uncommitted Changes**: None
+
+### Session Goals
+1. API key configuration improvements (Secrets template, documentation)
+2. Design system migration for cloud-safe changes (spacing tokens, typography fix)
+
+### Work Log
+| Time | Action | Files | Notes |
+|------|--------|-------|-------|
+| - | Session started | - | Cloud session |
+| - | Investigated HealthKit workout import bug | Wellness/Infrastructure/, Workout/Domain/ | Historical workouts from Apple Health not showing |
+| - | Identified 3 root causes | - | Missing HKWorkoutType permission, no import pipeline, no data model support |
+| - | Added HKWorkoutType permission | HealthKitManager.swift | Added workout type to read permissions |
+| - | Added source/healthKitId fields | Workout.swift, WorkoutModel.swift | Data model support for imported workouts |
+| - | Created import use case | ImportHealthKitWorkoutsUseCase.swift (new) | Reads HK workouts, deduplicates, maps to domain |
+| - | Wired DI container | DependencyContainer.swift, WorkoutContainer.swift | Registered new use case |
+| - | Added import UI | WellnessView.swift, WorkoutListView.swift | Import button + auto-import on HealthKit auth |
+| - | Session ended | - | 13 files changed, 1 new file created |
+
+### Session End
+- **Status**: HealthKit workout import bug fully investigated and fixed
+- **Changes**: 13 files modified, 1 new file (ImportHealthKitWorkoutsUseCase.swift)
+- **Root Causes Found**:
+  1. Missing `HKWorkoutType` in HealthKit read permissions
+  2. No import pipeline to read historical workouts from Apple Health
+  3. No `source`/`healthKitId` fields on Workout/WorkoutModel for tracking imported data
+- **Next Steps**: Build verification on workstation, test with physical device + HealthKit entitlements, confirm historical workouts appear
+
+---
+
 ## Session 21.0 - February 17, 2026 (Workstation)
 
 ### Session Start

@@ -16,6 +16,8 @@ final class WorkoutModel {
     @Relationship(deleteRule: .cascade) var sets: [WorkoutSetModel]
     var notes: String?
     var duration: TimeInterval?
+    var source: String?
+    var healthKitId: String?
 
     init(
         id: UUID = UUID(),
@@ -23,7 +25,9 @@ final class WorkoutModel {
         name: String? = nil,
         sets: [WorkoutSetModel] = [],
         notes: String? = nil,
-        duration: TimeInterval? = nil
+        duration: TimeInterval? = nil,
+        source: String? = nil,
+        healthKitId: String? = nil
     ) {
         self.id = id
         self.date = date
@@ -31,6 +35,8 @@ final class WorkoutModel {
         self.sets = sets
         self.notes = notes
         self.duration = duration
+        self.source = source
+        self.healthKitId = healthKitId
     }
 
     /// Convert to domain entity
@@ -41,7 +47,9 @@ final class WorkoutModel {
             name: name,
             sets: sets.map { $0.toDomain() },
             notes: notes,
-            duration: duration
+            duration: duration,
+            source: WorkoutSource(rawValue: source ?? "local") ?? .local,
+            healthKitId: healthKitId
         )
     }
 
@@ -53,7 +61,9 @@ final class WorkoutModel {
             name: workout.name,
             sets: sets,
             notes: workout.notes,
-            duration: workout.duration
+            duration: workout.duration,
+            source: workout.source.rawValue,
+            healthKitId: workout.healthKitId
         )
     }
 }

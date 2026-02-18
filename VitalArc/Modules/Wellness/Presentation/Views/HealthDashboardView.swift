@@ -18,9 +18,12 @@ struct HealthDashboardView: View {
 
     // MARK: - Initialization
 
-    init(healthRepository: HealthRepository) {
+    init(healthRepository: HealthRepository, importHealthKitWorkoutsUseCase: ImportHealthKitWorkoutsUseCase? = nil) {
         self.healthRepository = healthRepository
-        self._viewModel = State(initialValue: HealthDashboardViewModel(healthRepository: healthRepository))
+        self._viewModel = State(initialValue: HealthDashboardViewModel(
+            healthRepository: healthRepository,
+            importHealthKitWorkoutsUseCase: importHealthKitWorkoutsUseCase
+        ))
     }
 
     // MARK: - Body
