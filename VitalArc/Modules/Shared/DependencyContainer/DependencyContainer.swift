@@ -245,6 +245,51 @@ final class SwiftDataWorkoutRepository: WorkoutRepository {
 
         return nil
     }
+
+    // MARK: - Custom Categories
+
+    func getCustomCategories() async throws -> [CustomCategory] {
+        let descriptor = FetchDescriptor<CustomCategoryModel>(
+            sortBy: [SortDescriptor(\.sortOrder)]
+        )
+        let models = try modelContext.fetch(descriptor)
+        return models.map { $0.toDomain() }
+    }
+
+    func saveCustomCategory(_ category: CustomCategory) async throws {
+        let categoryId = category.id
+        let descriptor = FetchDescriptor<CustomCategoryModel>(
+            predicate: #Predicate { model in
+                model.id == categoryId
+            }
+        )
+
+        if let existing = try modelContext.fetch(descriptor).first {
+            existing.name = category.name
+            existing.icon = category.icon
+            existing.sortOrder = category.sortOrder
+        } else {
+            let model = CustomCategoryModel.fromDomain(category)
+            modelContext.insert(model)
+        }
+
+        try modelContext.save()
+    }
+
+    func deleteCustomCategory(id: UUID) async throws {
+        let descriptor = FetchDescriptor<CustomCategoryModel>(
+            predicate: #Predicate { model in
+                model.id == id
+            }
+        )
+
+        guard let model = try modelContext.fetch(descriptor).first else {
+            return
+        }
+
+        modelContext.delete(model)
+        try modelContext.save()
+    }
 }
 
 /// SwiftData implementation of NutritionRepository

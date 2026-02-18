@@ -20,9 +20,10 @@ final class WorkoutContainer {
         self.workoutRepository = SwiftDataWorkoutRepository(modelContext: modelContext)
         self.mesocycleRepository = SwiftDataMesocycleRepository(modelContext: modelContext)
         self.templateRepository = SwiftDataTemplateRepository(modelContext: modelContext)
+        let importSource = HealthKitWorkoutImportSource(healthKitManager: healthKitManager)
         self.importHealthKitWorkoutsUseCase = ImportHealthKitWorkoutsUseCase(
             repository: workoutRepository,
-            healthKitManager: healthKitManager
+            importSource: importSource
         )
     }
 }

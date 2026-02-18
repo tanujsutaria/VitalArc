@@ -39,6 +39,9 @@ struct VitalArcApp: App {
             // User Domain Models
             UserProfileModel.self,
 
+            // Custom Category Model
+            CustomCategoryModel.self,
+
             // Analytics Domain Models
             ProgressSnapshotModel.self,
             VolumeMetricsModel.self,

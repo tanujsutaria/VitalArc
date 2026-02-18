@@ -2,24 +2,23 @@
 //  ImportHealthKitWorkoutsUseCase.swift
 //  VitalArc
 //
-//  Use Case: Import workouts from HealthKit into the workout repository
+//  Use Case: Import workouts from an external source into the workout repository
 //
 
 import Foundation
-import HealthKit
 
 @MainActor
 final class ImportHealthKitWorkoutsUseCase {
     private let repository: WorkoutRepository
-    private let healthKitManager: HealthKitManager
+    private let importSource: WorkoutImportSource
     private var isImporting = false
 
-    init(repository: WorkoutRepository, healthKitManager: HealthKitManager) {
+    init(repository: WorkoutRepository, importSource: WorkoutImportSource) {
         self.repository = repository
-        self.healthKitManager = healthKitManager
+        self.importSource = importSource
     }
 
-    /// Import workouts from HealthKit for a date range.
+    /// Import workouts from the configured source for a date range.
     /// Returns the number of newly imported workouts (skips duplicates).
     /// Serialized: concurrent calls return 0 immediately to prevent duplicates.
     func execute(from startDate: Date, to endDate: Date) async throws -> Int {
@@ -27,26 +26,24 @@ final class ImportHealthKitWorkoutsUseCase {
         isImporting = true
         defer { isImporting = false }
 
-        let hkWorkouts = try await healthKitManager.fetchWorkouts(from: startDate, to: endDate)
+        let importedWorkouts = try await importSource.fetchWorkouts(from: startDate, to: endDate)
 
         var importedCount = 0
 
-        for hkWorkout in hkWorkouts {
-            let healthKitId = hkWorkout.uuid.uuidString
-
+        for workoutData in importedWorkouts {
             // Skip if already imported (deduplication)
-            if let _ = try await repository.getWorkoutByHealthKitId(healthKitId) {
+            if let _ = try await repository.getWorkoutByHealthKitId(workoutData.healthKitId) {
                 continue
             }
 
             let workout = Workout(
-                date: hkWorkout.startDate,
-                name: hkWorkout.workoutActivityType.name,
+                date: workoutData.startDate,
+                name: workoutData.activityName,
                 sets: [],
                 notes: nil,
-                duration: hkWorkout.duration,
+                duration: workoutData.duration,
                 source: .healthKit,
-                healthKitId: healthKitId
+                healthKitId: workoutData.healthKitId
             )
 
             try await repository.saveWorkout(workout)

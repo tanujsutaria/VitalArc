@@ -550,4 +550,7 @@ private final class DummyWorkoutRepository: WorkoutRepository {
     func deleteWorkout(id: UUID) async throws {}
     func getWorkoutByHealthKitId(_ healthKitId: String) async throws -> Workout? { nil }
     func getLastWorkoutForExercise(_ exerciseId: UUID) async throws -> Workout? { nil }
+    func getCustomCategories() async throws -> [CustomCategory] { [] }
+    func saveCustomCategory(_ category: CustomCategory) async throws {}
+    func deleteCustomCategory(id: UUID) async throws {}
 }

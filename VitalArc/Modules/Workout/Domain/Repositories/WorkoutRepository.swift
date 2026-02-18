@@ -29,4 +29,9 @@ protocol WorkoutRepository {
 
     // Progression
     func getLastWorkoutForExercise(_ exerciseId: UUID) async throws -> Workout?
+
+    // Custom Categories
+    func getCustomCategories() async throws -> [CustomCategory]
+    func saveCustomCategory(_ category: CustomCategory) async throws
+    func deleteCustomCategory(id: UUID) async throws
 }
