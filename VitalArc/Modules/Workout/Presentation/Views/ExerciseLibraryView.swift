@@ -86,14 +86,18 @@ struct ExerciseLibraryView: View {
     @State private var showingAddExercise = false
     @State private var showingAddCategory = false
     @State private var customCategories: [CustomCategory] = []
+    @State private var exerciseForProgress: Exercise?
 
     let onSelectExercise: (Exercise) -> Void
+    var getExerciseHistoryUseCase: GetExerciseHistoryUseCase?
 
     init(
         getExercisesUseCase: GetExercisesUseCase,
+        getExerciseHistoryUseCase: GetExerciseHistoryUseCase? = nil,
         onSelectExercise: @escaping (Exercise) -> Void
     ) {
         self.viewModel = ExerciseLibraryViewModel(getExercisesUseCase: getExercisesUseCase)
+        self.getExerciseHistoryUseCase = getExerciseHistoryUseCase
         self.onSelectExercise = onSelectExercise
     }
 
@@ -166,6 +170,23 @@ struct ExerciseLibraryView: View {
                 EditCustomExerciseView(exercise: exercise) {
                     Task {
                         await viewModel.loadExercises()
+                    }
+                }
+            }
+        }
+        .sheet(item: $exerciseForProgress) { exercise in
+            if let useCase = getExerciseHistoryUseCase {
+                NavigationStack {
+                    ExerciseProgressView(
+                        exercise: exercise,
+                        getExerciseHistoryUseCase: useCase
+                    )
+                    .toolbar {
+                        ToolbarItem(placement: .cancellationAction) {
+                            Button("Done") {
+                                exerciseForProgress = nil
+                            }
+                        }
                     }
                 }
             }
@@ -265,6 +286,14 @@ struct ExerciseLibraryView: View {
                                         }
                                         .buttonStyle(.plain)
                                         .contextMenu {
+                                            if getExerciseHistoryUseCase != nil {
+                                                Button {
+                                                    exerciseForProgress = exercise
+                                                } label: {
+                                                    Label("Progress", systemImage: "chart.line.uptrend.xyaxis")
+                                                }
+                                            }
+
                                             if exercise.isCustom {
                                                 Button {
                                                     viewModel.exerciseToEdit = exercise

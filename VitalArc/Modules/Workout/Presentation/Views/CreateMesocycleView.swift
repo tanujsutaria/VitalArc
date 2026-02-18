@@ -27,6 +27,7 @@ struct CreateMesocycleView: View {
     @State private var weightIncrementLbs: Double = 5.0
     @State private var repIncrement: Int = 1
 
+    @State private var selectedDayOfWeek: Int = 2 // Monday (Calendar weekday: 1=Sun, 2=Mon, ...)
     @State private var isCreating = false
 
     var selectedTemplate: WorkoutTemplate? {
@@ -195,6 +196,29 @@ struct CreateMesocycleView: View {
                 }
                 .padding(.horizontal, Spacing.screenPadding)
 
+                // Training Day
+                VStack(alignment: .leading, spacing: Spacing.sm) {
+                    Text("TRAINING DAY")
+                        .font(.vitalCaptionSmall)
+                        .foregroundStyle(Color.vitalAdaptiveTextTertiary)
+
+                    HStack(spacing: Spacing.sm) {
+                        ForEach(dayOfWeekOptions, id: \.value) { option in
+                            Button {
+                                selectedDayOfWeek = option.value
+                            } label: {
+                                Text(option.short)
+                                    .font(.vitalLabelSmall)
+                                    .foregroundStyle(selectedDayOfWeek == option.value ? .white : Color.vitalAdaptiveTextPrimary)
+                                    .frame(width: 40, height: 40)
+                                    .background(selectedDayOfWeek == option.value ? Color.vitalPrimary : Color.vitalAdaptiveSurface)
+                                    .cornerRadius(Spacing.radiusSmall)
+                            }
+                        }
+                    }
+                }
+                .padding(.horizontal, Spacing.screenPadding)
+
                 // Auto-Progression
                 VStack(alignment: .leading, spacing: Spacing.sm) {
                     Text("AUTO-PROGRESSION")
@@ -311,6 +335,8 @@ struct CreateMesocycleView: View {
                             summaryRow("Start", startDate.formatted(date: .abbreviated, time: .omitted))
                             Divider()
                             summaryRow("End", endDate.formatted(date: .abbreviated, time: .omitted))
+                            Divider()
+                            summaryRow("Training Day", selectedDayName)
                             if autoProgressionEnabled {
                                 Divider()
                                 summaryRow("Weekly Progress", "+\(String(format: "%.1f", weightIncrementLbs)) lbs / +\(repIncrement) reps")
@@ -385,6 +411,28 @@ struct CreateMesocycleView: View {
         selectedTemplateId != nil && !programName.trimmingCharacters(in: .whitespaces).isEmpty
     }
 
+    private struct DayOption {
+        let value: Int
+        let short: String
+        let full: String
+    }
+
+    private var dayOfWeekOptions: [DayOption] {
+        [
+            DayOption(value: 1, short: "S", full: "Sunday"),
+            DayOption(value: 2, short: "M", full: "Monday"),
+            DayOption(value: 3, short: "T", full: "Tuesday"),
+            DayOption(value: 4, short: "W", full: "Wednesday"),
+            DayOption(value: 5, short: "T", full: "Thursday"),
+            DayOption(value: 6, short: "F", full: "Friday"),
+            DayOption(value: 7, short: "S", full: "Saturday")
+        ]
+    }
+
+    private var selectedDayName: String {
+        dayOfWeekOptions.first { $0.value == selectedDayOfWeek }?.full ?? "Monday"
+    }
+
     // MARK: - Actions
 
     private func loadUserTemplates() async {
@@ -416,7 +464,7 @@ struct CreateMesocycleView: View {
             // Create a single training block representing the template
             let block = TrainingBlock(
                 name: template.name,
-                dayOfWeek: 1,
+                dayOfWeek: selectedDayOfWeek,
                 mesocycleId: tempMesocycleId
             )
             trainingBlocks.append(block)
