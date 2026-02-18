@@ -198,7 +198,7 @@ private struct CalorieProgressView: View {
                     // Background
                     RoundedRectangle(cornerRadius: Spacing.radiusSmall)
                         .fill(Color.vitalWarning.opacity(0.2))
-                        .frame(height: 10)
+                        .frame(height: Spacing.iconTiny)
 
                     // Progress
                     RoundedRectangle(cornerRadius: Spacing.radiusSmall)
@@ -211,11 +211,11 @@ private struct CalorieProgressView: View {
                                 endPoint: .trailing
                             )
                         )
-                        .frame(width: geometry.size.width * progress, height: 10)
+                        .frame(width: geometry.size.width * progress, height: Spacing.iconTiny)
                         .animation(.vitalSpring, value: progress)
                 }
             }
-            .frame(height: 10)
+            .frame(height: Spacing.iconTiny)
 
             // Percentage
             Text("\(Int(progress * 100))% of goal")
@@ -232,7 +232,7 @@ private struct EmptyNutritionView: View {
             ZStack {
                 Circle()
                     .fill(Color.vitalWarning.opacity(0.15))
-                    .frame(width: 80, height: 80)
+                    .frame(width: Spacing.illustrationSmall, height: Spacing.illustrationSmall)
 
                 Image(systemName: "chart.pie")
                     .font(.vitalIcon2XLarge)

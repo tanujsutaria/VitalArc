@@ -16,7 +16,7 @@ struct ExerciseRowView: View {
             ZStack {
                 Circle()
                     .fill(categoryColor.opacity(0.15))
-                    .frame(width: 48, height: 48)
+                    .frame(width: Spacing.avatarMedium, height: Spacing.avatarMedium)
 
                 categoryIcon
                     .font(.vitalIconMediumSemibold)

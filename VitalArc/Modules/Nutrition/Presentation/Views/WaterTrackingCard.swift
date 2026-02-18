@@ -64,7 +64,7 @@ struct WaterTrackingCard: View {
                 // Progress ring
                 HStack(spacing: Spacing.lg) {
                     WaterProgressRing(progress: progress)
-                        .frame(width: 80, height: 80)
+                        .frame(width: Spacing.illustrationSmall, height: Spacing.illustrationSmall)
 
                     VStack(alignment: .leading, spacing: Spacing.xs) {
                         Text("\(Int(totalIntake))")

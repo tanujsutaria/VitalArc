@@ -298,7 +298,7 @@ private struct MacroBarView: View {
                         .frame(width: geometry.size.width * progress)
                 }
             }
-            .frame(height: 6)
+            .frame(height: Spacing.progressBarHeight)
 
             HStack(spacing: 2) {
                 Text("\(Int(consumed))")
@@ -351,11 +351,11 @@ private struct MacroSummarySkeletonView: View {
                     VStack(alignment: .leading, spacing: Spacing.xs) {
                         Rectangle()
                             .fill(Color.vitalAdaptiveBorder)
-                            .frame(width: 60, height: 12)
+                            .frame(width: Spacing.iconGiant, height: Spacing.iconXSmall)
                             .cornerRadius(Spacing.radiusSmall)
                         Rectangle()
                             .fill(Color.vitalAdaptiveBorder)
-                            .frame(width: 100, height: 24)
+                            .frame(width: Spacing.illustrationMedium, height: Spacing.lg)
                             .cornerRadius(Spacing.radiusSmall)
                     }
                     Spacer()
@@ -372,11 +372,11 @@ private struct MacroSummarySkeletonView: View {
                         VStack(alignment: .leading, spacing: Spacing.xs) {
                             Rectangle()
                                 .fill(Color.vitalAdaptiveBorder)
-                                .frame(width: 40, height: 10)
+                                .frame(width: Spacing.avatarSmall, height: Spacing.iconTiny)
                                 .cornerRadius(Spacing.radiusSmall)
                             Rectangle()
                                 .fill(Color.vitalAdaptiveBorder)
-                                .frame(height: 6)
+                                .frame(height: Spacing.progressBarHeight)
                                 .cornerRadius(Spacing.radiusSmall)
                             Rectangle()
                                 .fill(Color.vitalAdaptiveBorder)

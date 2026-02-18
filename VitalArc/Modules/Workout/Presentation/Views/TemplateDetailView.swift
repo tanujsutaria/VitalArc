@@ -196,7 +196,7 @@ struct ExerciseDetailRow: View {
                 .font(.vitalH2)
                 .fontWeight(.bold)
                 .foregroundStyle(Color.vitalPrimary)
-                .frame(width: 40, height: 40)
+                .frame(width: Spacing.avatarSmall, height: Spacing.avatarSmall)
                 .background(Color.vitalPrimary.opacity(0.1))
                 .clipShape(Circle())
 
@@ -210,7 +210,7 @@ struct ExerciseDetailRow: View {
                     HStack {
                         Image(systemName: "number")
                             .foregroundStyle(Color.vitalAdaptiveTextSecondary)
-                            .frame(width: 20)
+                            .frame(width: Spacing.iconMedium)
                         Text("\(exercise.sets) sets × \(exercise.repsDisplay) reps")
                     }
                     .font(.vitalBody)
@@ -218,7 +218,7 @@ struct ExerciseDetailRow: View {
                     HStack {
                         Image(systemName: "timer")
                             .foregroundStyle(Color.vitalAdaptiveTextSecondary)
-                            .frame(width: 20)
+                            .frame(width: Spacing.iconMedium)
                         Text("Rest: \(exercise.restDisplay)")
                     }
                     .font(.vitalBody)

@@ -18,7 +18,7 @@ struct SetRowView: View {
             Text("\(setData.setNumber)")
                 .font(.vitalH4)
                 .foregroundStyle(.secondary)
-                .frame(width: 30)
+                .frame(width: Spacing.xl)
 
             // Weight Input
             VStack(alignment: .leading, spacing: Spacing.xxs) {

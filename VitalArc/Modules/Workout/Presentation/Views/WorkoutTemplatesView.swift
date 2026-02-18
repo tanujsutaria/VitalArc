@@ -174,7 +174,7 @@ struct TemplateRow: View {
             Image(systemName: template.category.icon)
                 .font(.vitalH2)
                 .foregroundStyle(Color.vitalPrimary)
-                .frame(width: 40)
+                .frame(width: Spacing.avatarSmall)
 
             // Template details
             VStack(alignment: .leading, spacing: Spacing.xs) {

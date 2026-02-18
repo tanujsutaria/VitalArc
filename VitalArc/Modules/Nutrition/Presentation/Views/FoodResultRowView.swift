@@ -24,12 +24,12 @@ struct FoodResultRowView: View {
                         switch phase {
                         case .empty:
                             ProgressView()
-                                .frame(width: 56, height: 56)
+                                .frame(width: Spacing.avatarLargish, height: Spacing.avatarLargish)
                         case .success(let image):
                             image
                                 .resizable()
                                 .aspectRatio(contentMode: .fill)
-                                .frame(width: 56, height: 56)
+                                .frame(width: Spacing.avatarLargish, height: Spacing.avatarLargish)
                                 .clipShape(RoundedRectangle(cornerRadius: Spacing.radiusSmall))
                         case .failure:
                             FoodIcon(source: food.source)
@@ -140,7 +140,7 @@ private struct FoodIcon: View {
         ZStack {
             RoundedRectangle(cornerRadius: Spacing.radiusSmall)
                 .fill(sourceColor.opacity(0.15))
-                .frame(width: 56, height: 56)
+                .frame(width: Spacing.avatarLargish, height: Spacing.avatarLargish)
 
             Image(systemName: source.iconName)
                 .font(.vitalDisplaySmall)
