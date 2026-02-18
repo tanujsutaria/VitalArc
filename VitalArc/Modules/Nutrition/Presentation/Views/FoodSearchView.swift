@@ -88,6 +88,8 @@ struct FoodSearchView: View {
                         Image(systemName: "barcode.viewfinder")
                             .font(.vitalBody)
                     }
+                    .accessibilityLabel("Scan barcode")
+                    .accessibilityHint("Double tap to scan a food product barcode")
                 }
             }
             .sheet(isPresented: $viewModel.isBarcodeScannerPresented) {

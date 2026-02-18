@@ -53,7 +53,7 @@ struct BarcodeScannerView: View {
 
                     // Scanning frame
                     ScannerFrame()
-                        .frame(width: 280, height: 180)
+                        .frame(width: Spacing.scannerWidth, height: Spacing.scannerHeight)
 
                     Spacer()
 

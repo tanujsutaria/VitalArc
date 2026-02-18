@@ -346,7 +346,7 @@ struct ExerciseLibraryView: View {
                             ZStack {
                                 RoundedRectangle(cornerRadius: Spacing.radiusSmall)
                                     .fill(Color.vitalAdaptiveTextSecondary.opacity(0.15))
-                                    .frame(width: 40, height: 40)
+                                    .frame(width: Spacing.avatarSmall, height: Spacing.avatarSmall)
 
                                 Image(systemName: category.icon)
                                     .font(.vitalIconSmallSemibold)
@@ -415,7 +415,7 @@ struct BodyPartSectionHeader: View {
                 ZStack {
                     RoundedRectangle(cornerRadius: Spacing.radiusSmall)
                         .fill(color.opacity(0.15))
-                        .frame(width: 40, height: 40)
+                        .frame(width: Spacing.avatarSmall, height: Spacing.avatarSmall)
 
                     Image(systemName: icon)
                         .font(.vitalIconSmallSemibold)
@@ -446,6 +446,9 @@ struct BodyPartSectionHeader: View {
             .background(Color.vitalAdaptiveSurface)
         }
         .buttonStyle(.plain)
+        .accessibilityLabel("\(title), \(exerciseCount) exercise\(exerciseCount == 1 ? "" : "s")")
+        .accessibilityHint("Double tap to \(isExpanded ? "collapse" : "expand")")
+        .accessibilityAddTraits(.isHeader)
     }
 }
 

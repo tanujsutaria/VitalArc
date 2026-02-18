@@ -69,7 +69,7 @@ struct VitalLineChart: View {
                         AxisGridLine()
                     }
                 }
-                .frame(height: 200)
+                .frame(height: Spacing.chartHeightExtraLarge)
 
                 // Summary
                 if let avg = averageValue, let min = minValue, let max = maxValue {
@@ -142,7 +142,7 @@ struct VitalBarChart: View {
                         }
                     }
                 }
-                .frame(height: 200)
+                .frame(height: Spacing.chartHeightExtraLarge)
             }
         }
     }

@@ -371,7 +371,7 @@ extension View {
             // Bounce in
             Circle()
                 .fill(Color.vitalSuccess)
-                .frame(width: 60, height: 60)
+                .frame(width: Spacing.frameMediumLarge, height: Spacing.frameMediumLarge)
                 .bounceIn(delay: 0.5)
 
             // Animated progress
@@ -381,7 +381,7 @@ extension View {
                 gradient: Color.vitalPrimaryGradientV2,
                 backgroundColor: Color.vitalAdaptiveBorder
             )
-            .frame(width: 100, height: 100)
+            .frame(width: Spacing.illustrationMedium, height: Spacing.illustrationMedium)
 
             // Counting text
             CountingText(1234, format: "%.0f")

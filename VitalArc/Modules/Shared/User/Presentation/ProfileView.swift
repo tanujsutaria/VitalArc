@@ -695,6 +695,9 @@ struct StatCard: View {
             }
             .frame(maxWidth: .infinity)
         }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(title)
+        .accessibilityValue(value)
     }
 }
 
@@ -740,6 +743,9 @@ struct StatCardWithSource: View {
             }
             .frame(maxWidth: .infinity)
         }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(title)
+        .accessibilityValue("\(value), source: \(source)")
     }
 }
 

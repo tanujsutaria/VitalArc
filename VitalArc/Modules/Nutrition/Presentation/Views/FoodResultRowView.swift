@@ -118,6 +118,11 @@ struct FoodResultRowView: View {
             .vitalCardShadow()
         }
         .buttonStyle(.plain)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("\(food.name)\(food.brand.map { ", \($0)" } ?? "")")
+        .accessibilityValue("\(Int(food.calories)) calories, \(Int(food.protein))g protein, \(Int(food.carbs))g carbs, \(Int(food.fat))g fat per \(formatServingSize(food.servingSize))\(food.servingUnit)")
+        .accessibilityAddTraits(.isButton)
+        .accessibilityHint("Double tap to select food")
     }
 
     private func formatServingSize(_ size: Double) -> String {

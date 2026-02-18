@@ -126,6 +126,9 @@ struct SleepDetailSheet: View {
         }
         .scaleEffect(hasAppeared ? 1 : 0.95)
         .opacity(hasAppeared ? 1 : 0)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("Last night's sleep")
+        .accessibilityValue(String(format: "%.1f hours, %@", sleepHours, sleepQualityLabel))
     }
 
     private var sleepProgressRing: some View {
@@ -134,12 +137,12 @@ struct SleepDetailSheet: View {
         return ZStack {
             Circle()
                 .stroke(.white.opacity(0.3), lineWidth: 6)
-                .frame(width: 60, height: 60)
+                .frame(width: Spacing.frameMediumLarge, height: Spacing.frameMediumLarge)
 
             Circle()
                 .trim(from: 0, to: hasAppeared ? progress : 0)
                 .stroke(.white, style: StrokeStyle(lineWidth: 6, lineCap: .round))
-                .frame(width: 60, height: 60)
+                .frame(width: Spacing.frameMediumLarge, height: Spacing.frameMediumLarge)
                 .rotationEffect(.degrees(-90))
                 .animation(.easeOut(duration: 1.0).delay(0.3), value: hasAppeared)
 
@@ -464,6 +467,9 @@ struct SleepDetailSheet: View {
                             .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                     }
                     .frame(maxWidth: .infinity)
+                    .accessibilityElement(children: .ignore)
+                    .accessibilityLabel("Bedtime Variance")
+                    .accessibilityValue(String(format: "%.0f minutes", consistency.bedtimeVariance))
 
                     VStack(spacing: Spacing.xs) {
                         Image(systemName: "sunrise.fill")
@@ -479,6 +485,9 @@ struct SleepDetailSheet: View {
                             .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                     }
                     .frame(maxWidth: .infinity)
+                    .accessibilityElement(children: .ignore)
+                    .accessibilityLabel("Wake Variance")
+                    .accessibilityValue(String(format: "%.0f minutes", consistency.wakeVariance))
                 }
 
                 Text(consistencyInsight(for: consistency.consistencyScore))

@@ -282,7 +282,7 @@ struct TemplateExercisePickerView: View {
                 ZStack {
                     Circle()
                         .fill(Color.vitalPrimary.opacity(0.1))
-                        .frame(width: 44, height: 44)
+                        .frame(width: Spacing.frameTouchTarget, height: Spacing.frameTouchTarget)
 
                     Image(systemName: bodyPart.icon)
                         .font(.vitalLabel)

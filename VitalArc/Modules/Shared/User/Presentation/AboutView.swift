@@ -18,7 +18,7 @@ struct AboutView: View {
                     Image(systemName: "heart.circle.fill")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
-                        .frame(width: 100, height: 100)
+                        .frame(width: Spacing.illustrationMedium, height: Spacing.illustrationMedium)
                         .foregroundStyle(Color.vitalPrimary.gradient)
                         .padding(.top, Spacing.xxl)
 

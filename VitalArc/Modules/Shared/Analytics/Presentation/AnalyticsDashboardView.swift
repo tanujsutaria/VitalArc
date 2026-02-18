@@ -71,6 +71,7 @@ struct AnalyticsDashboardView: View {
                         Image(systemName: "square.and.arrow.up")
                             .foregroundStyle(Color.vitalPrimary)
                     }
+                    .accessibilityLabel("Export analytics data")
                 }
             }
             .refreshable {
@@ -619,7 +620,7 @@ struct AnalyticsDashboardView: View {
                 ZStack {
                     Circle()
                         .fill(Color.vitalSuccess.opacity(0.15))
-                        .frame(width: 80, height: 80)
+                        .frame(width: Spacing.frameLarge, height: Spacing.frameLarge)
 
                     Image(systemName: "figure.stand")
                         .font(.vitalIcon2XLarge)

@@ -194,7 +194,7 @@ struct FoodSearchResultRow: View {
                 ZStack {
                     Circle()
                         .fill(Color.vitalWarning.opacity(0.15))
-                        .frame(width: 40, height: 40)
+                        .frame(width: Spacing.avatarSmall, height: Spacing.avatarSmall)
 
                     Image(systemName: "fork.knife")
                         .font(.vitalIconMediumSemibold)

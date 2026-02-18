@@ -236,6 +236,8 @@ private struct CompactMacroSummaryView: View {
                             .foregroundStyle(Color.vitalPrimary)
                     }
                     .buttonStyle(.plain)
+                    .accessibilityLabel("Edit nutrition goals")
+                    .accessibilityHint("Double tap to adjust calorie and macro targets")
 
                     if let goal = nutrition.calorieGoal, goal > 0 {
                         let progress = min(nutrition.caloriesConsumed / goal, 1.0)
@@ -244,7 +246,10 @@ private struct CompactMacroSummaryView: View {
                             color: progress > 1.0 ? Color.vitalDanger : Color.vitalPrimary,
                             lineWidth: 6
                         )
-                        .frame(width: 50, height: 50)
+                        .frame(width: Spacing.frameMedium, height: Spacing.frameMedium)
+                        .accessibilityElement(children: .ignore)
+                        .accessibilityLabel("Calorie progress")
+                        .accessibilityValue("\(Int(progress * 100)) percent of goal")
                     }
                 }
 
@@ -354,6 +359,9 @@ private struct MacroBarView: View {
             }
         }
         .frame(maxWidth: .infinity)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(name)
+        .accessibilityValue("\(Int(consumed))\(goal.map { " of \(Int($0))" } ?? "") \(unit)")
     }
 }
 
@@ -402,7 +410,7 @@ private struct MacroSummarySkeletonView: View {
                     Spacer()
                     Circle()
                         .fill(Color.vitalAdaptiveBorder)
-                        .frame(width: 50, height: 50)
+                        .frame(width: Spacing.frameMedium, height: Spacing.frameMedium)
                 }
 
                 Divider()

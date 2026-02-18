@@ -26,12 +26,12 @@ struct RestTimerView: View {
                     ZStack {
                         Circle()
                             .stroke(Color.vitalPrimary.opacity(0.2), lineWidth: 4)
-                            .frame(width: 44, height: 44)
+                            .frame(width: Spacing.frameTouchTarget, height: Spacing.frameTouchTarget)
 
                         Circle()
                             .trim(from: 0, to: CGFloat(progress))
                             .stroke(Color.vitalPrimary, style: StrokeStyle(lineWidth: 4, lineCap: .round))
-                            .frame(width: 44, height: 44)
+                            .frame(width: Spacing.frameTouchTarget, height: Spacing.frameTouchTarget)
                             .rotationEffect(.degrees(-90))
 
                         Image(systemName: "timer")

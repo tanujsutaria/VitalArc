@@ -20,7 +20,7 @@ struct NotificationPreviewCard: View {
                 ZStack {
                     RoundedRectangle(cornerRadius: Spacing.radiusSmall)
                         .fill(color.opacity(0.2))
-                        .frame(width: 40, height: 40)
+                        .frame(width: Spacing.avatarSmall, height: Spacing.avatarSmall)
 
                     Image(systemName: icon)
                         .font(.vitalIconMediumSemibold)

@@ -107,7 +107,7 @@ struct LargeScoreCard: View {
                 ZStack {
                     Circle()
                         .stroke(.white.opacity(0.2), lineWidth: 8)
-                        .frame(width: 80, height: 80)
+                        .frame(width: Spacing.frameLarge, height: Spacing.frameLarge)
 
                     Circle()
                         .trim(from: 0, to: animatedScore / 100)
@@ -115,7 +115,7 @@ struct LargeScoreCard: View {
                             .white,
                             style: StrokeStyle(lineWidth: 8, lineCap: .round)
                         )
-                        .frame(width: 80, height: 80)
+                        .frame(width: Spacing.frameLarge, height: Spacing.frameLarge)
                         .rotationEffect(.degrees(-90))
 
                     Text("\(Int(animatedScore))")

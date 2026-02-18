@@ -89,7 +89,7 @@ struct PersonalRecordRow: View {
             Image(systemName: record.recordType.icon)
                 .font(.vitalH2)
                 .foregroundStyle(iconColor)
-                .frame(width: 40)
+                .frame(width: Spacing.avatarSmall)
 
             // Details
             VStack(alignment: .leading, spacing: Spacing.xs) {

@@ -259,6 +259,9 @@ struct HealthDashboardView: View {
                 .font(.vitalLabelSmall)
                 .foregroundStyle(value / max > 0.6 ? Color.vitalSuccess : Color.vitalWarning)
         }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("\(label) contribution")
+        .accessibilityValue(String(format: "%.0f out of %.0f", value, max))
     }
 
     private func readinessColor(_ level: ReadinessLevel) -> Color {
@@ -559,6 +562,9 @@ struct HealthDashboardView: View {
                     .foregroundStyle(.white.opacity(0.3))
             }
         }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Recovery Status")
+        .accessibilityValue(recovery.rawValue)
     }
 
     private func recoveryColor(_ recovery: RecoveryLevel) -> Color {
@@ -656,7 +662,7 @@ struct HealthDashboardView: View {
                 ZStack {
                     Circle()
                         .fill(Color.vitalDanger.opacity(0.15))
-                        .frame(width: 100, height: 100)
+                        .frame(width: Spacing.illustrationMedium, height: Spacing.illustrationMedium)
 
                     Image(systemName: "heart.text.square")
                         .font(.vitalIconHuge)
@@ -685,6 +691,7 @@ struct HealthDashboardView: View {
                     }
                 }
                 .padding(.top, Spacing.sm)
+                .accessibilityHint("Double tap to open HealthKit permissions")
             }
         }
     }
@@ -713,7 +720,7 @@ struct HealthDashboardView: View {
                 ZStack {
                     Circle()
                         .fill(Color.vitalWarning.opacity(0.15))
-                        .frame(width: 100, height: 100)
+                        .frame(width: Spacing.illustrationMedium, height: Spacing.illustrationMedium)
 
                     Image(systemName: "exclamationmark.triangle")
                         .font(.vitalIconHuge)
