@@ -8,7 +8,7 @@
 import Foundation
 
 /// Data transferred from an external workout source (e.g., HealthKit)
-struct ImportedWorkoutData {
+struct ImportedWorkoutData: Sendable {
     let healthKitId: String
     let startDate: Date
     let activityName: String
@@ -16,6 +16,6 @@ struct ImportedWorkoutData {
 }
 
 /// Protocol for fetching workouts from an external source
-protocol WorkoutImportSource {
+protocol WorkoutImportSource: Sendable {
     func fetchWorkouts(from startDate: Date, to endDate: Date) async throws -> [ImportedWorkoutData]
 }
