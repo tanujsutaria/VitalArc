@@ -16,11 +16,13 @@ final class HealthDashboardViewModel {
 
     private let healthRepository: HealthRepository
     private let calculateReadinessScore: CalculateReadinessScoreUseCaseProtocol
+    private let calculateSleepConsistency: CalculateSleepConsistencyUseCase
     private let importHealthKitWorkoutsUseCase: ImportHealthKitWorkoutsUseCase?
 
     var todayMetrics: HealthMetrics?
     var weekMetrics: [HealthMetrics] = []
     var readinessScore: ReadinessScore?
+    var sleepConsistency: SleepConsistencyScore?
     var isLoading = false
     var error: Error?
     var showingPermissionAlert = false
@@ -30,10 +32,12 @@ final class HealthDashboardViewModel {
     init(
         healthRepository: HealthRepository,
         calculateReadinessScore: CalculateReadinessScoreUseCaseProtocol = CalculateReadinessScoreUseCase(),
+        calculateSleepConsistency: CalculateSleepConsistencyUseCase = CalculateSleepConsistencyUseCase(),
         importHealthKitWorkoutsUseCase: ImportHealthKitWorkoutsUseCase? = nil
     ) {
         self.healthRepository = healthRepository
         self.calculateReadinessScore = calculateReadinessScore
+        self.calculateSleepConsistency = calculateSleepConsistency
         self.importHealthKitWorkoutsUseCase = importHealthKitWorkoutsUseCase
     }
 
@@ -91,6 +95,7 @@ final class HealthDashboardViewModel {
         }
 
         updateReadinessScore()
+        updateSleepConsistency()
     }
 
     /// Compute readiness score from today's metrics and weekly baselines
@@ -100,6 +105,11 @@ final class HealthDashboardViewModel {
             return
         }
         readinessScore = calculateReadinessScore.execute(todayMetrics: today, weekMetrics: weekMetrics)
+    }
+
+    /// Compute sleep consistency from week metrics
+    private func updateSleepConsistency() {
+        sleepConsistency = calculateSleepConsistency.execute(weekMetrics: weekMetrics)
     }
 
     /// Refresh all metrics and import new workouts

@@ -88,7 +88,8 @@ struct HealthDashboardView: View {
                                 remSleepHours: metrics.sleepStages?.remSleep,
                                 lightSleepHours: metrics.sleepStages?.coreSleep
                             )
-                        }
+                        },
+                        sleepConsistency: viewModel.sleepConsistency
                     )
                     .presentationDetents([.medium, .large])
                     .presentationDragIndicator(.visible)
@@ -426,6 +427,28 @@ struct HealthDashboardView: View {
                         color: .vitalAccent,
                         sparklineData: getSparklineData(for: \.respiratoryRate),
                         onTap: { selectedMetric = .respiratoryRate }
+                    )
+                }
+
+                if let spo2 = metrics.oxygenSaturation {
+                    MetricCard(
+                        title: "Blood Oxygen",
+                        value: String(format: "%.0f", spo2),
+                        unit: "%",
+                        icon: "lungs.fill",
+                        color: .vitalInfo,
+                        sparklineData: getSparklineData(for: \.oxygenSaturation)
+                    )
+                }
+
+                if let vo2Max = metrics.vo2Max {
+                    MetricCard(
+                        title: "VO2 Max",
+                        value: String(format: "%.1f", vo2Max),
+                        unit: "mL/kg/min",
+                        icon: "figure.run",
+                        color: .vitalSuccess,
+                        sparklineData: getSparklineData(for: \.vo2Max)
                     )
                 }
             }

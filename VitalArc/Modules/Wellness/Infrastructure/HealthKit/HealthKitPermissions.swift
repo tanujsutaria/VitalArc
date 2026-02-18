@@ -57,6 +57,16 @@ struct HealthKitPermissions {
             types.insert(respiratoryRateType)
         }
 
+        // Blood oxygen
+        if let oxygenSaturationType = HKObjectType.quantityType(forIdentifier: .oxygenSaturation) {
+            types.insert(oxygenSaturationType)
+        }
+
+        // Cardio fitness
+        if let vo2MaxType = HKObjectType.quantityType(forIdentifier: .vo2Max) {
+            types.insert(vo2MaxType)
+        }
+
         // Workouts
         types.insert(HKObjectType.workoutType())
 

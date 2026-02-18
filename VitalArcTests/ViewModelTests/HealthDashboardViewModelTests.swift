@@ -307,6 +307,74 @@ final class HealthDashboardViewModelTests: XCTestCase {
         XCTAssertNil(viewModel.averageSleepHours)
     }
 
+    // MARK: - SpO2 and VO2 Max Tests
+
+    func testTodayMetricsIncludesSpO2() async {
+        let metrics = createHealthMetrics(oxygenSaturation: 98.0)
+        mockRepository.mockTodayMetrics = metrics
+
+        await viewModel.loadTodayMetrics()
+
+        XCTAssertNotNil(viewModel.todayMetrics)
+        XCTAssertEqual(viewModel.todayMetrics?.oxygenSaturation ?? 0, 98.0, accuracy: 0.1)
+    }
+
+    func testTodayMetricsIncludesVO2Max() async {
+        let metrics = createHealthMetrics(vo2Max: 42.5)
+        mockRepository.mockTodayMetrics = metrics
+
+        await viewModel.loadTodayMetrics()
+
+        XCTAssertNotNil(viewModel.todayMetrics)
+        XCTAssertEqual(viewModel.todayMetrics?.vo2Max ?? 0, 42.5, accuracy: 0.1)
+    }
+
+    func testWeekMetricsWithSpO2AndVO2Max() async {
+        mockRepository.mockWeekMetrics = (0..<7).map { day in
+            HealthMetrics(
+                date: Date().addingTimeInterval(Double(-day * 86400)),
+                oxygenSaturation: 97.0 + Double(day) * 0.3,
+                vo2Max: 40.0 + Double(day) * 0.5
+            )
+        }
+        await viewModel.loadWeekMetrics()
+
+        XCTAssertEqual(viewModel.weekMetrics.count, 7)
+        XCTAssertNotNil(viewModel.weekMetrics.first?.oxygenSaturation)
+        XCTAssertNotNil(viewModel.weekMetrics.first?.vo2Max)
+    }
+
+    // MARK: - Sleep Consistency Tests
+
+    func testSleepConsistencyComputedOnLoadAll() async {
+        mockRepository.mockTodayMetrics = createHealthMetrics(sleepHours: 8.0)
+        mockRepository.mockWeekMetrics = (0..<7).map { day in
+            HealthMetrics(
+                date: Date().addingTimeInterval(Double(-day * 86400)),
+                sleepHours: 8.0
+            )
+        }
+
+        await viewModel.loadAllMetrics()
+
+        XCTAssertNotNil(viewModel.sleepConsistency)
+        XCTAssertEqual(viewModel.sleepConsistency?.consistencyScore, 100)
+    }
+
+    func testSleepConsistencyNilWithoutSleepData() async {
+        mockRepository.mockTodayMetrics = createHealthMetrics(sleepHours: nil)
+        mockRepository.mockWeekMetrics = (0..<7).map { day in
+            HealthMetrics(
+                date: Date().addingTimeInterval(Double(-day * 86400)),
+                heartRateVariability: 75.0
+            )
+        }
+
+        await viewModel.loadAllMetrics()
+
+        XCTAssertNil(viewModel.sleepConsistency)
+    }
+
     // MARK: - Helper Methods
 
     private func createHealthMetrics(
@@ -314,7 +382,9 @@ final class HealthDashboardViewModelTests: XCTestCase {
         heartRate: Double? = 65,
         steps: Int? = 10000,
         activeEnergy: Double? = 450,
-        sleepHours: Double? = 7.5
+        sleepHours: Double? = 7.5,
+        oxygenSaturation: Double? = nil,
+        vo2Max: Double? = nil
     ) -> HealthMetrics {
         HealthMetrics(
             date: Date(),
@@ -323,7 +393,9 @@ final class HealthDashboardViewModelTests: XCTestCase {
             activeEnergy: activeEnergy,
             steps: steps,
             sleepHours: sleepHours,
-            weight: nil
+            weight: nil,
+            oxygenSaturation: oxygenSaturation,
+            vo2Max: vo2Max
         )
     }
 

@@ -32,6 +32,10 @@ final class HealthMetricsModel {
     // Respiratory
     var respiratoryRate: Double?
 
+    // Blood oxygen & cardio fitness
+    var oxygenSaturation: Double?
+    var vo2Max: Double?
+
     init(
         id: UUID = UUID(),
         date: Date,
@@ -47,7 +51,9 @@ final class HealthMetricsModel {
         awakeHours: Double? = nil,
         bodyFatPercentage: Double? = nil,
         leanBodyMass: Double? = nil,
-        respiratoryRate: Double? = nil
+        respiratoryRate: Double? = nil,
+        oxygenSaturation: Double? = nil,
+        vo2Max: Double? = nil
     ) {
         self.id = id
         self.date = date
@@ -64,6 +70,8 @@ final class HealthMetricsModel {
         self.bodyFatPercentage = bodyFatPercentage
         self.leanBodyMass = leanBodyMass
         self.respiratoryRate = respiratoryRate
+        self.oxygenSaturation = oxygenSaturation
+        self.vo2Max = vo2Max
     }
 
     /// Convert to domain entity
@@ -93,7 +101,9 @@ final class HealthMetricsModel {
             weight: weight,
             bodyFatPercentage: bodyFatPercentage,
             leanBodyMass: leanBodyMass,
-            respiratoryRate: respiratoryRate
+            respiratoryRate: respiratoryRate,
+            oxygenSaturation: oxygenSaturation,
+            vo2Max: vo2Max
         )
     }
 
@@ -114,7 +124,9 @@ final class HealthMetricsModel {
             awakeHours: metrics.sleepStages?.awake,
             bodyFatPercentage: metrics.bodyFatPercentage,
             leanBodyMass: metrics.leanBodyMass,
-            respiratoryRate: metrics.respiratoryRate
+            respiratoryRate: metrics.respiratoryRate,
+            oxygenSaturation: metrics.oxygenSaturation,
+            vo2Max: metrics.vo2Max
         )
     }
 }
