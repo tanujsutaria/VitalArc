@@ -354,7 +354,7 @@ struct CreateMesocycleView: View {
                     .font(.vitalCaption)
                     .foregroundStyle(selectedTemplateId == template.id ? .white.opacity(0.8) : Color.vitalAdaptiveTextSecondary)
             }
-            .frame(width: 140)
+            .frame(width: Spacing.illustrationXLarge)
             .padding(Spacing.md)
             .background(selectedTemplateId == template.id ? Color.vitalPrimary : Color.vitalAdaptiveSurface)
             .cornerRadius(Spacing.radiusMedium)

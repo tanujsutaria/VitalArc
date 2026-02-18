@@ -340,7 +340,7 @@ struct MesocycleDetailView: View {
                 Spacer()
 
                 CircularProgressView(progress: summary.progressPercentage / 100)
-                    .frame(width: 80, height: 80)
+                    .frame(width: Spacing.illustrationSmall, height: Spacing.illustrationSmall)
             }
         }
         .padding(Spacing.lg)
@@ -507,7 +507,7 @@ struct MesocycleDetailView: View {
                             .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                     }
                 }
-                .frame(height: 60)
+                .frame(height: Spacing.iconGiant)
                 .chartYAxis(.hidden)
 
                 // Progress indicator

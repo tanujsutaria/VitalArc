@@ -153,6 +153,39 @@ final class MockWorkoutRepository: WorkoutRepository {
         return relevantWorkouts.sorted { $0.date > $1.date }.first
     }
 
+    // MARK: - Custom Categories
+
+    var mockCustomCategories: [CustomCategory] = []
+    var savedCustomCategories: [CustomCategory] = []
+    var deletedCustomCategoryIds: [UUID] = []
+
+    func getCustomCategories() async throws -> [CustomCategory] {
+        if shouldThrowOnGet {
+            throw MockError.getFailed
+        }
+        return mockCustomCategories
+    }
+
+    func saveCustomCategory(_ category: CustomCategory) async throws {
+        if shouldThrowOnSave {
+            throw MockError.saveFailed
+        }
+        savedCustomCategories.append(category)
+        if let idx = mockCustomCategories.firstIndex(where: { $0.id == category.id }) {
+            mockCustomCategories[idx] = category
+        } else {
+            mockCustomCategories.append(category)
+        }
+    }
+
+    func deleteCustomCategory(id: UUID) async throws {
+        if shouldThrowOnDelete {
+            throw MockError.deleteFailed
+        }
+        deletedCustomCategoryIds.append(id)
+        mockCustomCategories.removeAll { $0.id == id }
+    }
+
     // MARK: - Test Helpers
 
     func reset() {

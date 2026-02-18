@@ -21,7 +21,7 @@
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>NSHealthShareUsageDescription</key>
-	<string>VitalArc needs access to your health and workout data to provide personalized fitness insights, import workout history, and track recovery metrics.</string>
+	<string>VitalArc needs access to your health data to provide personalized fitness and nutrition insights.</string>
 	<key>NSHealthUpdateUsageDescription</key>
 	<string>VitalArc needs permission to save workout and health data.</string>
 	<key>UIApplicationSceneManifest</key>

@@ -177,7 +177,7 @@ struct MacroDetailSheet: View {
                         HStack(spacing: Spacing.xs) {
                             RoundedRectangle(cornerRadius: 2)
                                 .fill(macroColor)
-                                .frame(width: 12, height: 12)
+                                .frame(width: Spacing.iconXSmall, height: Spacing.iconXSmall)
                             Text("Daily Intake")
                                 .font(.vitalCaptionSmall)
                                 .foregroundStyle(Color.vitalAdaptiveTextSecondary)
@@ -186,7 +186,7 @@ struct MacroDetailSheet: View {
                         HStack(spacing: Spacing.xs) {
                             Rectangle()
                                 .fill(Color.vitalSuccess.opacity(0.5))
-                                .frame(width: 12, height: 2)
+                                .frame(width: Spacing.iconXSmall, height: Spacing.borderMedium)
                             Text("Goal")
                                 .font(.vitalCaptionSmall)
                                 .foregroundStyle(Color.vitalAdaptiveTextSecondary)

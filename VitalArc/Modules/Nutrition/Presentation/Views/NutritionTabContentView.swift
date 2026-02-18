@@ -261,6 +261,31 @@ private struct CompactMacroSummaryView: View {
                         unit: "g"
                     )
                 }
+
+                // Micronutrient bars (fiber/sugar)
+                if nutrition.fiberConsumed > 0 || nutrition.sugarConsumed > 0 {
+                    HStack(spacing: Spacing.lg) {
+                        MacroBarView(
+                            name: "Fiber",
+                            consumed: nutrition.fiberConsumed,
+                            goal: nutrition.fiberGoal,
+                            color: .vitalSuccess,
+                            unit: "g"
+                        )
+
+                        MacroBarView(
+                            name: "Sugar",
+                            consumed: nutrition.sugarConsumed,
+                            goal: nutrition.sugarGoal,
+                            color: .vitalPrimary,
+                            unit: "g"
+                        )
+
+                        // Spacer to balance 2 items against 3 above
+                        Spacer()
+                            .frame(maxWidth: .infinity)
+                    }
+                }
             }
         }
     }
@@ -298,7 +323,7 @@ private struct MacroBarView: View {
                         .frame(width: geometry.size.width * progress)
                 }
             }
-            .frame(height: 6)
+            .frame(height: Spacing.progressBarHeight)
 
             HStack(spacing: 2) {
                 Text("\(Int(consumed))")
@@ -351,11 +376,11 @@ private struct MacroSummarySkeletonView: View {
                     VStack(alignment: .leading, spacing: Spacing.xs) {
                         Rectangle()
                             .fill(Color.vitalAdaptiveBorder)
-                            .frame(width: 60, height: 12)
+                            .frame(width: Spacing.iconGiant, height: Spacing.iconXSmall)
                             .cornerRadius(Spacing.radiusSmall)
                         Rectangle()
                             .fill(Color.vitalAdaptiveBorder)
-                            .frame(width: 100, height: 24)
+                            .frame(width: Spacing.illustrationMedium, height: Spacing.lg)
                             .cornerRadius(Spacing.radiusSmall)
                     }
                     Spacer()
@@ -372,11 +397,11 @@ private struct MacroSummarySkeletonView: View {
                         VStack(alignment: .leading, spacing: Spacing.xs) {
                             Rectangle()
                                 .fill(Color.vitalAdaptiveBorder)
-                                .frame(width: 40, height: 10)
+                                .frame(width: Spacing.avatarSmall, height: Spacing.iconTiny)
                                 .cornerRadius(Spacing.radiusSmall)
                             Rectangle()
                                 .fill(Color.vitalAdaptiveBorder)
-                                .frame(height: 6)
+                                .frame(height: Spacing.progressBarHeight)
                                 .cornerRadius(Spacing.radiusSmall)
                             Rectangle()
                                 .fill(Color.vitalAdaptiveBorder)
@@ -474,10 +499,14 @@ final class NutritionTabViewModel {
                                 proteinConsumed: nutrition.proteinConsumed,
                                 carbsConsumed: nutrition.carbsConsumed,
                                 fatConsumed: nutrition.fatConsumed,
+                                fiberConsumed: nutrition.fiberConsumed,
+                                sugarConsumed: nutrition.sugarConsumed,
                                 calorieGoal: nutrition.calorieGoal ?? result.adjustedCalories,
                                 proteinGoal: nutrition.proteinGoal ?? result.proteinGoal,
                                 carbsGoal: nutrition.carbsGoal ?? result.carbGoal,
-                                fatGoal: nutrition.fatGoal ?? result.fatGoal
+                                fatGoal: nutrition.fatGoal ?? result.fatGoal,
+                                fiberGoal: nutrition.fiberGoal,
+                                sugarGoal: nutrition.sugarGoal
                             )
                         }
                     }
@@ -550,10 +579,14 @@ final class NutritionTabViewModel {
             proteinConsumed: currentNutrition.proteinConsumed,
             carbsConsumed: currentNutrition.carbsConsumed,
             fatConsumed: currentNutrition.fatConsumed,
+            fiberConsumed: currentNutrition.fiberConsumed,
+            sugarConsumed: currentNutrition.sugarConsumed,
             calorieGoal: calories ?? currentNutrition.calorieGoal,
             proteinGoal: protein ?? currentNutrition.proteinGoal,
             carbsGoal: carbs ?? currentNutrition.carbsGoal,
-            fatGoal: fat ?? currentNutrition.fatGoal
+            fatGoal: fat ?? currentNutrition.fatGoal,
+            fiberGoal: currentNutrition.fiberGoal,
+            sugarGoal: currentNutrition.sugarGoal
         )
 
         do {

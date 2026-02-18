@@ -166,11 +166,11 @@ struct WorkoutDetailView: View {
                 // Set table header
                 HStack {
                     Text("Set")
-                        .frame(width: 32, alignment: .leading)
+                        .frame(width: Spacing.xl, alignment: .leading)
                     Text("Weight")
                         .frame(maxWidth: .infinity, alignment: .trailing)
                     Text("Reps")
-                        .frame(width: 48, alignment: .trailing)
+                        .frame(width: Spacing.xxl, alignment: .trailing)
                     Text("RIR")
                         .frame(width: 36, alignment: .trailing)
                     Text("Volume")
@@ -210,11 +210,11 @@ struct WorkoutDetailView: View {
 
         return HStack {
             Text("\(workoutSet.setNumber)")
-                .frame(width: 32, alignment: .leading)
+                .frame(width: Spacing.xl, alignment: .leading)
             Text(String(format: "%.1f lbs", UnitConversion.kgToLbs(workoutSet.weight)))
                 .frame(maxWidth: .infinity, alignment: .trailing)
             Text("\(workoutSet.reps)")
-                .frame(width: 48, alignment: .trailing)
+                .frame(width: Spacing.xxl, alignment: .trailing)
             Text(workoutSet.rir.map { "\($0)" } ?? "-")
                 .frame(width: 36, alignment: .trailing)
             Text(String(format: "%.0f", workoutSet.volume))

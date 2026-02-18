@@ -129,7 +129,7 @@ private struct FoodSearchErrorView: View {
                 ZStack {
                     Circle()
                         .fill(Color.vitalWarning.opacity(0.15))
-                        .frame(width: 100, height: 100)
+                        .frame(width: Spacing.illustrationMedium, height: Spacing.illustrationMedium)
 
                     Image(systemName: "exclamationmark.triangle.fill")
                         .font(.vitalIconHuge)
@@ -265,7 +265,7 @@ private struct InitialSearchInfoView: View {
                 ZStack {
                     Circle()
                         .fill(Color.vitalPrimary.opacity(0.15))
-                        .frame(width: 100, height: 100)
+                        .frame(width: Spacing.illustrationMedium, height: Spacing.illustrationMedium)
 
                     Image(systemName: "magnifyingglass")
                         .font(.vitalIconHuge)

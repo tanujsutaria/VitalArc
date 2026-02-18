@@ -235,7 +235,7 @@ struct WorkoutLoggingView: View {
                         if viewModel.groupForExercise(exercise.id) != nil {
                             RoundedRectangle(cornerRadius: 2)
                                 .fill(Color.vitalPrimary)
-                                .frame(width: 3)
+                                .frame(width: Spacing.borderThick)
                                 .padding(.vertical, Spacing.xs)
                                 .padding(.trailing, Spacing.sm)
                         }

@@ -372,4 +372,104 @@ final class LogFoodUseCaseTests: XCTestCase {
         // Then
         XCTAssertNotEqual(entry1.id, entry2.id)
     }
+
+    // MARK: - Usage Tracking Tests
+
+    func testLogFoodUpdatesUsageTracking() async throws {
+        // Given
+        let food = makeTestFood()
+
+        // When
+        _ = try await useCase.execute(food: food, quantity: 100, meal: .breakfast, date: Date())
+
+        // Then - saveFood should be called (usage tracking updates recentlyUsed/usageCount)
+        XCTAssertEqual(repository.savedFoods.count, 1)
+        XCTAssertEqual(repository.savedFoods.first?.id, food.id)
+    }
+
+    func testLogFoodIncrementsExistingUsageCount() async throws {
+        // Given - Food with existing usage count
+        var food = makeTestFood()
+        food.usageCount = 5
+        food.recentlyUsed = Date().addingTimeInterval(-3600)
+
+        // When
+        _ = try await useCase.execute(food: food, quantity: 100, meal: .lunch, date: Date())
+
+        // Then - Usage count should be incremented
+        let savedFood = repository.savedFoods.first
+        XCTAssertNotNil(savedFood)
+        XCTAssertEqual(savedFood?.usageCount, 6)
+    }
+
+    // MARK: - Fiber/Sugar Propagation Tests
+
+    func testLogFoodPropagatesFiberAndSugar() async throws {
+        // Given - Food with fiber and sugar per 100g
+        let food = Food(
+            name: "Oatmeal",
+            servingSize: 100,
+            servingUnit: "g",
+            calories: 389,
+            protein: 16.9,
+            carbs: 66.3,
+            fat: 6.9,
+            fiber: 10.6,
+            sugar: 0.9
+        )
+
+        // When - Log 200g
+        let entry = try await useCase.execute(
+            food: food,
+            quantity: 200,
+            meal: .breakfast,
+            date: Date()
+        )
+
+        // Then - Fiber and sugar should be scaled and propagated
+        XCTAssertEqual(entry.fiber ?? 0, 21.2, accuracy: 0.1)
+        XCTAssertEqual(entry.sugar ?? 0, 1.8, accuracy: 0.1)
+    }
+
+    func testLogFoodWithNilFiberAndSugar() async throws {
+        // Given - Food without fiber/sugar
+        let food = makeTestFood() // no fiber/sugar
+
+        // When
+        let entry = try await useCase.execute(
+            food: food,
+            quantity: 100,
+            meal: .breakfast,
+            date: Date()
+        )
+
+        // Then - Fiber and sugar should be nil
+        XCTAssertNil(entry.fiber)
+        XCTAssertNil(entry.sugar)
+    }
+
+    func testLogFoodDailyNutritionIncludesFiberAndSugar() async throws {
+        // Given
+        let food = Food(
+            name: "Apple",
+            servingSize: 100,
+            servingUnit: "g",
+            calories: 52,
+            protein: 0.3,
+            carbs: 13.8,
+            fat: 0.2,
+            fiber: 2.4,
+            sugar: 10.4
+        )
+        let date = Date()
+
+        // When
+        _ = try await useCase.execute(food: food, quantity: 100, meal: .snack, date: date)
+
+        // Then - Daily nutrition should include fiber/sugar totals
+        let dailyNutrition = repository.savedDailyNutritions.last
+        XCTAssertNotNil(dailyNutrition)
+        XCTAssertEqual(dailyNutrition?.fiberConsumed ?? 0, 2.4, accuracy: 0.1)
+        XCTAssertEqual(dailyNutrition?.sugarConsumed ?? 0, 10.4, accuracy: 0.1)
+    }
 }

@@ -16,10 +16,14 @@ final class DailyNutritionModel {
     var proteinConsumed: Double
     var carbsConsumed: Double
     var fatConsumed: Double
+    var fiberConsumed: Double?
+    var sugarConsumed: Double?
     var calorieGoal: Double?
     var proteinGoal: Double?
     var carbsGoal: Double?
     var fatGoal: Double?
+    var fiberGoal: Double?
+    var sugarGoal: Double?
 
     init(
         id: UUID = UUID(),
@@ -28,10 +32,14 @@ final class DailyNutritionModel {
         proteinConsumed: Double,
         carbsConsumed: Double,
         fatConsumed: Double,
+        fiberConsumed: Double? = nil,
+        sugarConsumed: Double? = nil,
         calorieGoal: Double? = nil,
         proteinGoal: Double? = nil,
         carbsGoal: Double? = nil,
-        fatGoal: Double? = nil
+        fatGoal: Double? = nil,
+        fiberGoal: Double? = nil,
+        sugarGoal: Double? = nil
     ) {
         self.id = id
         self.date = date
@@ -39,10 +47,14 @@ final class DailyNutritionModel {
         self.proteinConsumed = proteinConsumed
         self.carbsConsumed = carbsConsumed
         self.fatConsumed = fatConsumed
+        self.fiberConsumed = fiberConsumed
+        self.sugarConsumed = sugarConsumed
         self.calorieGoal = calorieGoal
         self.proteinGoal = proteinGoal
         self.carbsGoal = carbsGoal
         self.fatGoal = fatGoal
+        self.fiberGoal = fiberGoal
+        self.sugarGoal = sugarGoal
     }
 
     /// Convert to domain entity
@@ -54,10 +66,14 @@ final class DailyNutritionModel {
             proteinConsumed: proteinConsumed,
             carbsConsumed: carbsConsumed,
             fatConsumed: fatConsumed,
+            fiberConsumed: fiberConsumed ?? 0,
+            sugarConsumed: sugarConsumed ?? 0,
             calorieGoal: calorieGoal,
             proteinGoal: proteinGoal,
             carbsGoal: carbsGoal,
-            fatGoal: fatGoal
+            fatGoal: fatGoal,
+            fiberGoal: fiberGoal,
+            sugarGoal: sugarGoal
         )
     }
 
@@ -70,10 +86,14 @@ final class DailyNutritionModel {
             proteinConsumed: nutrition.proteinConsumed,
             carbsConsumed: nutrition.carbsConsumed,
             fatConsumed: nutrition.fatConsumed,
+            fiberConsumed: nutrition.fiberConsumed,
+            sugarConsumed: nutrition.sugarConsumed,
             calorieGoal: nutrition.calorieGoal,
             proteinGoal: nutrition.proteinGoal,
             carbsGoal: nutrition.carbsGoal,
-            fatGoal: nutrition.fatGoal
+            fatGoal: nutrition.fatGoal,
+            fiberGoal: nutrition.fiberGoal,
+            sugarGoal: nutrition.sugarGoal
         )
     }
 }

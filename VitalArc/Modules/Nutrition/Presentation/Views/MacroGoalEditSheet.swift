@@ -165,7 +165,7 @@ struct MacroGoalEditSheet: View {
                 TextField("0", text: value)
                     .keyboardType(.decimalPad)
                     .multilineTextAlignment(.trailing)
-                    .frame(width: 80)
+                    .frame(width: Spacing.illustrationSmall)
                     .font(.vitalBody).fontWeight(.semibold)
 
                 Text(unit)

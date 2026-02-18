@@ -85,7 +85,7 @@ struct ExerciseLibraryView: View {
     @State private var expandedSections: Set<BodyPartCategory> = Set(BodyPartCategory.allCases)
     @State private var showingAddExercise = false
     @State private var showingAddCategory = false
-    @State private var customCategories: [String] = []
+    @State private var customCategories: [CustomCategory] = []
 
     let onSelectExercise: (Exercise) -> Void
 
@@ -153,7 +153,12 @@ struct ExerciseLibraryView: View {
         }
         .sheet(isPresented: $showingAddCategory) {
             AddCustomCategoryView { categoryName in
-                customCategories.append(categoryName)
+                let category = CustomCategory(name: categoryName)
+                customCategories.append(category)
+                Task {
+                    guard let container = container else { return }
+                    try? await container.workoutRepository.saveCustomCategory(category)
+                }
             }
         }
         .sheet(isPresented: $viewModel.showingEditExercise) {
@@ -177,6 +182,16 @@ struct ExerciseLibraryView: View {
         }
         .task {
             await viewModel.loadExercises()
+            await loadCustomCategories()
+        }
+    }
+
+    private func loadCustomCategories() async {
+        guard let container = container else { return }
+        do {
+            customCategories = try await container.workoutRepository.getCustomCategories()
+        } catch {
+            Log.error("Failed to load custom categories", error: error, category: .workout)
         }
     }
 
@@ -291,7 +306,7 @@ struct ExerciseLibraryView: View {
                 }
 
                 // Custom categories
-                ForEach(customCategories, id: \.self) { categoryName in
+                ForEach(customCategories) { category in
                     Section {
                         Text("No exercises in this category")
                             .font(.vitalCaption)
@@ -304,13 +319,13 @@ struct ExerciseLibraryView: View {
                                     .fill(Color.vitalAdaptiveTextSecondary.opacity(0.15))
                                     .frame(width: 40, height: 40)
 
-                                Image(systemName: "star.fill")
+                                Image(systemName: category.icon)
                                     .font(.vitalIconSmallSemibold)
                                     .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                             }
 
                             VStack(alignment: .leading, spacing: Spacing.xxs) {
-                                Text(categoryName)
+                                Text(category.name)
                                     .font(.vitalH3)
                                     .foregroundStyle(Color.vitalAdaptiveTextPrimary)
 
@@ -320,6 +335,19 @@ struct ExerciseLibraryView: View {
                             }
 
                             Spacer()
+
+                            Button(role: .destructive) {
+                                Task {
+                                    guard let container = container else { return }
+                                    try? await container.workoutRepository.deleteCustomCategory(id: category.id)
+                                    customCategories.removeAll { $0.id == category.id }
+                                }
+                            } label: {
+                                Image(systemName: "trash")
+                                    .font(.vitalIconSmall)
+                                    .foregroundStyle(Color.vitalDanger)
+                            }
+                            .buttonStyle(.plain)
                         }
                         .padding(.horizontal, Spacing.screenPadding)
                         .padding(.vertical, Spacing.sm)

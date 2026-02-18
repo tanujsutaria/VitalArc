@@ -698,6 +698,29 @@ final class HealthKitManager {
     }
 }
 
+// MARK: - WorkoutImportSource Adapter
+
+/// Adapts HealthKitManager to the WorkoutImportSource protocol for testability
+final class HealthKitWorkoutImportSource: WorkoutImportSource, @unchecked Sendable {
+    private let healthKitManager: HealthKitManager
+
+    init(healthKitManager: HealthKitManager) {
+        self.healthKitManager = healthKitManager
+    }
+
+    func fetchWorkouts(from startDate: Date, to endDate: Date) async throws -> [ImportedWorkoutData] {
+        let hkWorkouts = try await healthKitManager.fetchWorkouts(from: startDate, to: endDate)
+        return hkWorkouts.map { workout in
+            ImportedWorkoutData(
+                healthKitId: workout.uuid.uuidString,
+                startDate: workout.startDate,
+                activityName: workout.workoutActivityType.name,
+                duration: workout.duration
+            )
+        }
+    }
+}
+
 // MARK: - HKWorkoutActivityType Extension
 
 extension HKWorkoutActivityType {

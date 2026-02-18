@@ -33,7 +33,7 @@ struct MacroRingView: View {
                 // Background circle
                 Circle()
                     .stroke(color.opacity(0.2), lineWidth: 10)
-                    .frame(width: 100, height: 100)
+                    .frame(width: Spacing.illustrationMedium, height: Spacing.illustrationMedium)
 
                 // Progress circle
                 Circle()
@@ -42,7 +42,7 @@ struct MacroRingView: View {
                         color,
                         style: StrokeStyle(lineWidth: 10, lineCap: .round)
                     )
-                    .frame(width: 100, height: 100)
+                    .frame(width: Spacing.illustrationMedium, height: Spacing.illustrationMedium)
                     .rotationEffect(.degrees(-90))
                     .animation(.vitalSpring, value: progress)
 
