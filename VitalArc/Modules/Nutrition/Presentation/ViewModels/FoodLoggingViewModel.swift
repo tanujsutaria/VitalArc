@@ -19,12 +19,19 @@ final class FoodLoggingViewModel {
     var selectedMeal: MealType = .breakfast
     var isLoggingFood = false
     var isDeletingEntry = false
+    var isUpdatingEntry = false
 
     private let logFoodUseCase: LogFoodUseCaseProtocol
+    private let updateFoodEntryUseCase: UpdateFoodEntryUseCaseProtocol
     let repository: NutritionRepository
 
-    init(logFoodUseCase: LogFoodUseCaseProtocol, repository: NutritionRepository) {
+    init(
+        logFoodUseCase: LogFoodUseCaseProtocol,
+        updateFoodEntryUseCase: UpdateFoodEntryUseCaseProtocol,
+        repository: NutritionRepository
+    ) {
         self.logFoodUseCase = logFoodUseCase
+        self.updateFoodEntryUseCase = updateFoodEntryUseCase
         self.repository = repository
     }
 
@@ -77,6 +84,49 @@ final class FoodLoggingViewModel {
         }
 
         isDeletingEntry = false
+    }
+
+    /// Update a food entry's quantity with proportional macro recalculation
+    func updateEntry(_ entry: FoodEntry, newQuantity: Double) async {
+        guard !isUpdatingEntry else { return }
+        isUpdatingEntry = true
+
+        do {
+            _ = try await updateFoodEntryUseCase.execute(entry: entry, newQuantity: newQuantity)
+            await loadEntries()
+        } catch {
+            errorMessage = UserFacingError.message(for: error, context: .saving)
+        }
+
+        isUpdatingEntry = false
+    }
+
+    /// Re-log an existing food entry with today's date
+    func relogEntry(_ entry: FoodEntry) async {
+        guard !isLoggingFood else { return }
+        isLoggingFood = true
+
+        do {
+            // Create a new entry with the same food data but current date
+            let newEntry = FoodEntry(
+                foodId: entry.foodId,
+                date: selectedDate,
+                meal: entry.meal,
+                quantity: entry.quantity,
+                calories: entry.calories,
+                protein: entry.protein,
+                carbs: entry.carbs,
+                fat: entry.fat,
+                fiber: entry.fiber,
+                sugar: entry.sugar
+            )
+            try await repository.saveFoodEntry(newEntry)
+            await loadEntries()
+        } catch {
+            errorMessage = UserFacingError.message(for: error, context: .saving)
+        }
+
+        isLoggingFood = false
     }
 
     /// Get entries grouped by meal

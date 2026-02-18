@@ -50,6 +50,7 @@ private struct NutritionUnifiedView: View {
     @State private var selectedFood: Food?
     @State private var showingQuantitySheet = false
     @State private var showingGoalEditSheet = false
+    @State private var editingEntry: FoodEntry?
 
     var body: some View {
         ScrollView {
@@ -97,6 +98,14 @@ private struct NutritionUnifiedView: View {
                         onDeleteEntry: { entry in
                             Task {
                                 await viewModel.deleteEntry(entry)
+                            }
+                        },
+                        onEditEntry: { entry in
+                            editingEntry = entry
+                        },
+                        onRelogEntry: { entry in
+                            Task {
+                                await viewModel.relogEntry(entry)
                             }
                         }
                     )
@@ -175,6 +184,13 @@ private struct NutritionUnifiedView: View {
             if !isShowing {
                 Task {
                     await viewModel.loadData()
+                }
+            }
+        }
+        .sheet(item: $editingEntry) { entry in
+            EditQuantitySheet(entry: entry) { newQuantity in
+                Task {
+                    await viewModel.updateEntry(entry, newQuantity: newQuantity)
                 }
             }
         }
@@ -543,6 +559,39 @@ final class NutritionTabViewModel {
         } catch {
             self.error = error
             Log.error("Failed to delete entry", error: error, category: .nutrition)
+        }
+    }
+
+    func updateEntry(_ entry: FoodEntry, newQuantity: Double) async {
+        do {
+            let updateUseCase = UpdateFoodEntryUseCase(repository: nutritionRepository)
+            _ = try await updateUseCase.execute(entry: entry, newQuantity: newQuantity)
+            await loadData()
+        } catch {
+            self.error = error
+            Log.error("Failed to update entry", error: error, category: .nutrition)
+        }
+    }
+
+    func relogEntry(_ entry: FoodEntry) async {
+        do {
+            let newEntry = FoodEntry(
+                foodId: entry.foodId,
+                date: selectedDate,
+                meal: entry.meal,
+                quantity: entry.quantity,
+                calories: entry.calories,
+                protein: entry.protein,
+                carbs: entry.carbs,
+                fat: entry.fat,
+                fiber: entry.fiber,
+                sugar: entry.sugar
+            )
+            try await nutritionRepository.saveFoodEntry(newEntry)
+            await loadData()
+        } catch {
+            self.error = error
+            Log.error("Failed to re-log entry", error: error, category: .nutrition)
         }
     }
 
