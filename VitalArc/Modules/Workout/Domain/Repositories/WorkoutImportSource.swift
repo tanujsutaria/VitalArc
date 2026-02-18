@@ -8,7 +8,7 @@
 import Foundation
 
 /// Data transferred from an external workout source (e.g., HealthKit)
-struct ImportedWorkoutData: Sendable {
+struct ImportedWorkoutData: Sendable, Equatable {
     let healthKitId: String
     let startDate: Date
     let activityName: String

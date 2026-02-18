@@ -701,7 +701,7 @@ final class HealthKitManager {
 // MARK: - WorkoutImportSource Adapter
 
 /// Adapts HealthKitManager to the WorkoutImportSource protocol for testability
-final class HealthKitWorkoutImportSource: WorkoutImportSource {
+final class HealthKitWorkoutImportSource: WorkoutImportSource, @unchecked Sendable {
     private let healthKitManager: HealthKitManager
 
     init(healthKitManager: HealthKitManager) {
