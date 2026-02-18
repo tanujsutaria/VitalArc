@@ -12,6 +12,9 @@ enum NotificationType: String, CaseIterable, Codable {
     case workoutReminder = "workout_reminder"
     case recoveryAlert = "recovery_alert"
     case nutritionReminder = "nutrition_reminder"
+    case goalAchievement = "goal_achievement"
+    case streakMilestone = "streak_milestone"
+    case personalRecord = "personal_record"
 
     /// User-facing label
     var label: String {
@@ -22,6 +25,12 @@ enum NotificationType: String, CaseIterable, Codable {
             return "Recovery Alerts"
         case .nutritionReminder:
             return "Nutrition Reminders"
+        case .goalAchievement:
+            return "Goal Achievement"
+        case .streakMilestone:
+            return "Streak Milestones"
+        case .personalRecord:
+            return "Personal Records"
         }
     }
 
@@ -34,6 +43,12 @@ enum NotificationType: String, CaseIterable, Codable {
             return "heart.text.square.fill"
         case .nutritionReminder:
             return "fork.knife"
+        case .goalAchievement:
+            return "trophy.fill"
+        case .streakMilestone:
+            return "flame.fill"
+        case .personalRecord:
+            return "star.fill"
         }
     }
 
@@ -46,6 +61,12 @@ enum NotificationType: String, CaseIterable, Codable {
             return true
         case .nutritionReminder:
             return false
+        case .goalAchievement:
+            return true
+        case .streakMilestone:
+            return true
+        case .personalRecord:
+            return true
         }
     }
 

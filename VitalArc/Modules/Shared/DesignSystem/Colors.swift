@@ -179,7 +179,9 @@ enum ColorOpacity {
     static let heavy: Double = 0.5
 }
 
-// MARK: - V2 Premium Design System Colors
+// MARK: - V2 Premium Theme (used by TodayDashboard + DesignSystem components)
+// These tokens support the dark premium aesthetic for TodayDashboardView.
+// Non-dashboard views should use V1 adaptive tokens (vitalAdaptiveBackground, etc.).
 
 extension Color {
     // MARK: - V2 Primary Palette (WHOOP-inspired)
