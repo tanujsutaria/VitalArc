@@ -88,6 +88,14 @@ enum Spacing {
     static let progressBarHeight: CGFloat = 6         // Macro progress bars
     static let quickActionCardHeight: CGFloat = 80    // Dashboard quick action cards
 
+    // MARK: - Frame Dimensions
+    static let frameTouchTarget: CGFloat = 44   // Rest timer circles, touch targets
+    static let frameMedium: CGFloat = 50        // Avatar placeholders, progress indicators
+    static let frameMediumLarge: CGFloat = 60   // Sleep metric icons
+    static let frameLarge: CGFloat = 80         // Score rings, stat displays
+    static let scannerWidth: CGFloat = 280      // Barcode scanner
+    static let scannerHeight: CGFloat = 180     // Barcode scanner
+
     // MARK: - Chart Sizes
 
     static let pieChartSize: CGFloat = 140         // Pie/donut chart diameter
