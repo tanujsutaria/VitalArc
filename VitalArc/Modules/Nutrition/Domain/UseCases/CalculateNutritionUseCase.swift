@@ -38,6 +38,8 @@ final class CalculateNutritionUseCase: CalculateNutritionUseCaseProtocol {
         let totalProtein = entries.reduce(0) { $0 + $1.protein }
         let totalCarbs = entries.reduce(0) { $0 + $1.carbs }
         let totalFat = entries.reduce(0) { $0 + $1.fat }
+        let totalFiber = entries.reduce(0) { $0 + ($1.fiber ?? 0) }
+        let totalSugar = entries.reduce(0) { $0 + ($1.sugar ?? 0) }
 
         // Get existing daily nutrition to preserve goals
         let existing = try? await repository.getDailyNutrition(for: date)
@@ -49,10 +51,14 @@ final class CalculateNutritionUseCase: CalculateNutritionUseCaseProtocol {
             proteinConsumed: totalProtein,
             carbsConsumed: totalCarbs,
             fatConsumed: totalFat,
+            fiberConsumed: totalFiber,
+            sugarConsumed: totalSugar,
             calorieGoal: existing?.calorieGoal,
             proteinGoal: existing?.proteinGoal,
             carbsGoal: existing?.carbsGoal,
-            fatGoal: existing?.fatGoal
+            fatGoal: existing?.fatGoal,
+            fiberGoal: existing?.fiberGoal,
+            sugarGoal: existing?.sugarGoal
         )
 
         // Save updated totals
@@ -104,10 +110,14 @@ final class CalculateNutritionUseCase: CalculateNutritionUseCaseProtocol {
             proteinConsumed: existing?.proteinConsumed ?? 0,
             carbsConsumed: existing?.carbsConsumed ?? 0,
             fatConsumed: existing?.fatConsumed ?? 0,
+            fiberConsumed: existing?.fiberConsumed ?? 0,
+            sugarConsumed: existing?.sugarConsumed ?? 0,
             calorieGoal: calorieGoal ?? existing?.calorieGoal,
             proteinGoal: proteinGoal ?? existing?.proteinGoal,
             carbsGoal: carbsGoal ?? existing?.carbsGoal,
-            fatGoal: fatGoal ?? existing?.fatGoal
+            fatGoal: fatGoal ?? existing?.fatGoal,
+            fiberGoal: existing?.fiberGoal,
+            sugarGoal: existing?.sugarGoal
         )
 
         try await repository.saveDailyNutrition(dailyNutrition)

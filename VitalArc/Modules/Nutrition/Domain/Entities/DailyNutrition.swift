@@ -15,10 +15,14 @@ struct DailyNutrition: Identifiable, Equatable {
     let proteinConsumed: Double
     let carbsConsumed: Double
     let fatConsumed: Double
+    let fiberConsumed: Double
+    let sugarConsumed: Double
     let calorieGoal: Double?
     let proteinGoal: Double?
     let carbsGoal: Double?
     let fatGoal: Double?
+    let fiberGoal: Double?
+    let sugarGoal: Double?
 
     init(
         id: UUID = UUID(),
@@ -27,10 +31,14 @@ struct DailyNutrition: Identifiable, Equatable {
         proteinConsumed: Double,
         carbsConsumed: Double,
         fatConsumed: Double,
+        fiberConsumed: Double = 0,
+        sugarConsumed: Double = 0,
         calorieGoal: Double? = nil,
         proteinGoal: Double? = nil,
         carbsGoal: Double? = nil,
-        fatGoal: Double? = nil
+        fatGoal: Double? = nil,
+        fiberGoal: Double? = nil,
+        sugarGoal: Double? = nil
     ) {
         self.id = id
         self.date = date
@@ -38,10 +46,14 @@ struct DailyNutrition: Identifiable, Equatable {
         self.proteinConsumed = proteinConsumed
         self.carbsConsumed = carbsConsumed
         self.fatConsumed = fatConsumed
+        self.fiberConsumed = fiberConsumed
+        self.sugarConsumed = sugarConsumed
         self.calorieGoal = calorieGoal
         self.proteinGoal = proteinGoal
         self.carbsGoal = carbsGoal
         self.fatGoal = fatGoal
+        self.fiberGoal = fiberGoal
+        self.sugarGoal = sugarGoal
     }
 
     /// Percentage of calorie goal consumed

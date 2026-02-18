@@ -18,6 +18,8 @@ struct FoodEntry: Identifiable, Equatable {
     let protein: Double
     let carbs: Double
     let fat: Double
+    let fiber: Double?
+    let sugar: Double?
 
     init(
         id: UUID = UUID(),
@@ -28,7 +30,9 @@ struct FoodEntry: Identifiable, Equatable {
         calories: Double,
         protein: Double,
         carbs: Double,
-        fat: Double
+        fat: Double,
+        fiber: Double? = nil,
+        sugar: Double? = nil
     ) {
         self.id = id
         self.foodId = foodId
@@ -39,6 +43,8 @@ struct FoodEntry: Identifiable, Equatable {
         self.protein = protein
         self.carbs = carbs
         self.fat = fat
+        self.fiber = fiber
+        self.sugar = sugar
     }
 }
 

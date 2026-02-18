@@ -366,6 +366,8 @@ final class SwiftDataNutritionRepository: NutritionRepository {
             existing.protein = entry.protein
             existing.carbs = entry.carbs
             existing.fat = entry.fat
+            existing.fiber = entry.fiber
+            existing.sugar = entry.sugar
         } else {
             // Insert new
             let model = FoodEntryModel.fromDomain(entry)
@@ -498,10 +500,14 @@ final class SwiftDataNutritionRepository: NutritionRepository {
             existing.proteinConsumed = nutrition.proteinConsumed
             existing.carbsConsumed = nutrition.carbsConsumed
             existing.fatConsumed = nutrition.fatConsumed
+            existing.fiberConsumed = nutrition.fiberConsumed
+            existing.sugarConsumed = nutrition.sugarConsumed
             existing.calorieGoal = nutrition.calorieGoal
             existing.proteinGoal = nutrition.proteinGoal
             existing.carbsGoal = nutrition.carbsGoal
             existing.fatGoal = nutrition.fatGoal
+            existing.fiberGoal = nutrition.fiberGoal
+            existing.sugarGoal = nutrition.sugarGoal
         } else {
             // Insert new
             let model = DailyNutritionModel.fromDomain(nutrition)

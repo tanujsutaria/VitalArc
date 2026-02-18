@@ -215,6 +215,12 @@ struct QuantityInputView: View {
                     NutritionRow(label: "Protein", value: "\(Int(scaledFood.protein))g", color: .vitalInfo)
                     NutritionRow(label: "Carbs", value: "\(Int(scaledFood.carbs))g", color: .vitalWarning)
                     NutritionRow(label: "Fat", value: "\(Int(scaledFood.fat))g", color: .vitalDanger)
+                    if let fiber = scaledFood.fiber {
+                        NutritionRow(label: "Fiber", value: "\(Int(fiber))g", color: .vitalSuccess)
+                    }
+                    if let sugar = scaledFood.sugar {
+                        NutritionRow(label: "Sugar", value: "\(Int(sugar))g", color: .vitalPrimary)
+                    }
                 }
             }
             .navigationTitle("Log Food")

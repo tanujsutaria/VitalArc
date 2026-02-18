@@ -39,7 +39,9 @@ final class LogFoodUseCase: LogFoodUseCaseProtocol {
             calories: scaledFood.calories,
             protein: scaledFood.protein,
             carbs: scaledFood.carbs,
-            fat: scaledFood.fat
+            fat: scaledFood.fat,
+            fiber: scaledFood.fiber,
+            sugar: scaledFood.sugar
         )
 
         // Save to repository
@@ -49,7 +51,12 @@ final class LogFoodUseCase: LogFoodUseCaseProtocol {
         var updatedFood = food
         updatedFood.recentlyUsed = Date()
         updatedFood.usageCount = food.usageCount + 1
-        try? await repository.saveFood(updatedFood)
+        do {
+            try await repository.saveFood(updatedFood)
+        } catch {
+            // Usage tracking failure is non-critical — log but don't block food logging
+            print("[LogFoodUseCase] Warning: Failed to update food usage tracking: \(error.localizedDescription)")
+        }
 
         // Update daily nutrition totals
         try? await updateDailyNutrition(for: date)
@@ -67,6 +74,8 @@ final class LogFoodUseCase: LogFoodUseCaseProtocol {
         let totalProtein = entries.reduce(0) { $0 + $1.protein }
         let totalCarbs = entries.reduce(0) { $0 + $1.carbs }
         let totalFat = entries.reduce(0) { $0 + $1.fat }
+        let totalFiber = entries.reduce(0) { $0 + ($1.fiber ?? 0) }
+        let totalSugar = entries.reduce(0) { $0 + ($1.sugar ?? 0) }
 
         // Get existing daily nutrition or create new
         let existing = try? await repository.getDailyNutrition(for: date)
@@ -78,10 +87,14 @@ final class LogFoodUseCase: LogFoodUseCaseProtocol {
             proteinConsumed: totalProtein,
             carbsConsumed: totalCarbs,
             fatConsumed: totalFat,
+            fiberConsumed: totalFiber,
+            sugarConsumed: totalSugar,
             calorieGoal: existing?.calorieGoal,
             proteinGoal: existing?.proteinGoal,
             carbsGoal: existing?.carbsGoal,
-            fatGoal: existing?.fatGoal
+            fatGoal: existing?.fatGoal,
+            fiberGoal: existing?.fiberGoal,
+            sugarGoal: existing?.sugarGoal
         )
 
         try await repository.saveDailyNutrition(dailyNutrition)
