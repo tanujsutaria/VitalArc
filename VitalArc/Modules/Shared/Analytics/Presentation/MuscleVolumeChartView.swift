@@ -163,7 +163,7 @@ struct MuscleVolumeChartView: View {
                 .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                 .multilineTextAlignment(.center)
         }
-        .frame(height: 200)
+        .frame(height: Spacing.chartHeightExtraLarge)
         .frame(maxWidth: .infinity)
     }
 }

@@ -117,6 +117,10 @@ final class MetricDetailViewModel {
             return metrics.leanBodyMass.map { UnitConversion.kgToLbs($0) }
         case .respiratoryRate:
             return metrics.respiratoryRate
+        case .spo2:
+            return metrics.oxygenSaturation
+        case .vo2Max:
+            return metrics.vo2Max
         }
     }
 

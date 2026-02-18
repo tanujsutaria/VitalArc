@@ -124,9 +124,15 @@ struct MetricCard: View {
                     SparklineView(data: data, color: color)
                         .frame(height: 30)
                         .padding(.top, Spacing.xs)
+                        .accessibilityHidden(true)
                 }
             }
         }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("\(title)")
+        .accessibilityValue("\(value) \(unit)\(trend.map { ", trending \($0.description.lowercased())" } ?? "")")
+        .accessibilityAddTraits(onTap != nil ? .isButton : [])
+        .accessibilityHint(onTap != nil ? "Double tap to view details" : "")
     }
 
     @ViewBuilder

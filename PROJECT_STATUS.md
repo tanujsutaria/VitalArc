@@ -1,8 +1,8 @@
 # VitalArc Project Status
 
-**Last Updated**: February 18, 2026 (Session 22.0)
+**Last Updated**: February 18, 2026 (Session 22.1)
 **Build**: Passing (verified locally)
-**Tests**: 740 passing
+**Tests**: 786 passing
 **Stage**: MVP-Ready
 
 ---
@@ -73,6 +73,15 @@ The app compiles and runs with core MVP requirements addressed:
   - Workout: Custom category persistence (SwiftData), testable HealthKit imports (WorkoutImportSource protocol + adapter), ExerciseLibrary load/save/delete
   - Design: 25 hardcoded .frame() dimensions → Spacing tokens across 16 views (violations reduced 88→32)
   - Tests: 28 new tests (712→740): HealthKit import (8), PR detection (12), nutrition use cases (8)
+- Session 22.1: 12-feature parallel sprint across 3 worktrees + orchestrator patches:
+  - Wellness: Blood oxygen (SpO2) tracking (H5), VO2 Max tracking (H9), sleep consistency score (H6)
+  - Workout: Per-exercise progressive overload charts (W6), per-set notes (W9), template day scheduling (W10)
+  - Nutrition: Edit food entry quantity (N6), quick re-log from history (N7)
+  - Shared: Goal achievement notifications (S11), V1/V2 color documentation (S5)
+  - Accessibility: VoiceOver labels/hints/values across all domains (S14)
+  - Design System: Frame token migration complete — 32 remaining violations replaced with Spacing tokens (DS)
+  - Tests: 46 new tests (740→786): sleep consistency, exercise history, food entry update use cases
+  - Orchestrator patches: HealthMetricType enum (SpO2, VO2 Max), MetricDetailViewModel, DI accessors
 
 **Ready for beta testing.**
 
@@ -82,25 +91,27 @@ The app compiles and runs with core MVP requirements addressed:
 
 | Feature | Status | Notes |
 |---------|--------|-------|
-| Health Dashboard | Ready | Uses lbs, VoiceOver accessible |
-| Workout Tracking | Ready | Detail view, live timer, 1RM calculator added (Session 21.0) |
-| Exercise Library | Ready | 960+ exercises |
-| Templates System | Ready | Day-by-day editor |
-| Mesocycle System | Ready | - |
+| Health Dashboard | Ready | SpO2, VO2 Max, sleep consistency added (Session 22.1) |
+| Workout Tracking | Ready | Detail view, live timer, 1RM, progressive overload charts, per-set notes |
+| Exercise Library | Ready | 960+ exercises, progressive overload charts |
+| Templates System | Ready | Day-by-day editor, day scheduling (Session 22.1) |
+| Mesocycle System | Ready | Template day scheduling added (Session 22.1) |
 | Analytics Dashboard | Ready | TRIMP integrated, gender-aware |
 | Recovery Score | Ready | HRV + HealthKit HR integration, 22 bugs fixed (Session 19.0) |
 | Strain Tracking | Ready | TRIMP + HealthKit HR, custom settings |
-| Nutrition Tracking | Ready | **API keys not configured** |
-| Design System | Ready | ~96% adoption, 25 frame violations fixed (Session 22.0), 32 remaining |
+| Nutrition Tracking | Ready | Edit quantity, quick re-log added (Session 22.1). **API keys not configured** |
+| Design System | Ready | ~99% adoption, frame token migration complete (Session 22.1) |
+| VoiceOver Accessibility | Ready | Labels, hints, values across all domains (Session 22.1) |
+| Notifications | Ready | Goal achievement, streak milestone, personal record types added (Session 22.1) |
 | Profile/Settings | Ready | - |
 
 ### Partially Implemented
 
 | Feature | Done | Missing |
 |---------|------|---------|
-| Sleep Analysis | Basic score, stage breakdown, quality scoring, 7-day trends | Ready ✅ (overnight query fix, accessibility added) |
+| Sleep Analysis | Basic score, stage breakdown, quality scoring, 7-day trends, consistency score | Ready ✅ |
 | Nutrition Algorithm | Daily totals, TDEE estimation, TDEE UI, macro goal editing, locale parsing | Ready ✅ |
-| Notifications | UI, ViewModel, Repository, Use Cases (wired), Infrastructure, Protocol | Ready ✅ |
+| Notifications | UI, ViewModel, Repository, Use Cases, goal/streak/PR types | Ready ✅ |
 
 ### Not Implemented
 
@@ -120,9 +131,8 @@ The app compiles and runs with core MVP requirements addressed:
    - `NutritionixAPI.swift`: placeholder keys
    - `USDAFoodAPI.swift`: demo key (rate-limited)
 
-2. **Design System Gaps**: Near complete (~96% adoption)
-   - 32 remaining violations (mostly values without exact tokens: 44, 50, 70, 72, 280)
-   - Would require new Spacing tokens to fix remaining violations
+2. **Design System**: Near complete (~99% adoption)
+   - Frame token migration complete (Session 22.1), minimal remaining violations
 
 ---
 
@@ -137,13 +147,13 @@ The app compiles and runs with core MVP requirements addressed:
 
 | Metric | Value |
 |--------|-------|
-| Swift files | ~201 |
-| Lines of code | ~47,000 |
-| Views | 75 |
-| ViewModels | 12 |
-| Use cases | 25 |
-| Test files | 31 (in project) |
-| Unit tests | 740 (passing) |
+| Swift files | ~230 |
+| Lines of code | ~51,600 |
+| Views | ~80 |
+| ViewModels | 14 |
+| Use cases | 27 |
+| Test files | 56 (in project) |
+| Unit tests | 786 (passing) |
 
 ### Test Coverage by ViewModel
 
@@ -171,4 +181,4 @@ The app compiles and runs with core MVP requirements addressed:
 | USDAFoodAPI | Tested | 12 | In project ✅ |
 | FoodAPICoordinator | Tested | 18 | In project ✅ |
 
-**Note**: All 638 tests passing. Test files properly integrated in Xcode project.
+**Note**: All 786 tests passing. Test files properly integrated in Xcode project.

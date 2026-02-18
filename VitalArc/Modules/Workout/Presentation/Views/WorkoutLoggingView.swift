@@ -149,6 +149,9 @@ struct WorkoutLoggingView: View {
                     Text("\(viewModel.totalSets)")
                         .font(.vitalH3)
                 }
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel("Total sets")
+                .accessibilityValue("\(viewModel.totalSets)")
 
                 Divider()
                     .frame(height: Spacing.avatarSmall)
@@ -160,6 +163,9 @@ struct WorkoutLoggingView: View {
                     Text("\(viewModel.totalVolume, specifier: "%.0f") kg")
                         .font(.vitalH3)
                 }
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel("Total volume")
+                .accessibilityValue("\(viewModel.totalVolume, specifier: "%.0f") kilograms")
 
                 Spacer()
             }
@@ -339,6 +345,7 @@ struct WorkoutLoggingView: View {
                 .foregroundStyle(.white)
                 .clipShape(RoundedRectangle(cornerRadius: Spacing.radiusMedium))
         }
+        .accessibilityHint("Double tap to open exercise library")
     }
 
 }

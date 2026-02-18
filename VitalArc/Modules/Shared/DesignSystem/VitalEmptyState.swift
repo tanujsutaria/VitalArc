@@ -322,7 +322,7 @@ struct NoResultsIllustration: View {
             // Magnifying glass
             Circle()
                 .stroke(color, lineWidth: 5)
-                .frame(width: 40, height: 40)
+                .frame(width: Spacing.avatarSmall, height: Spacing.avatarSmall)
                 .offset(x: -5, y: -5)
 
             // Handle

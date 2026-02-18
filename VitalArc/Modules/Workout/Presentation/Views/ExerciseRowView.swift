@@ -66,6 +66,11 @@ struct ExerciseRowView: View {
         .background(Color.vitalAdaptiveSurface)
         .cornerRadius(Spacing.radiusMedium)
         .vitalCardShadow()
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("\(exercise.name), \(exercise.equipment.rawValue)")
+        .accessibilityValue(exercise.primaryMuscles.first.map { $0.rawValue } ?? "")
+        .accessibilityAddTraits(.isButton)
+        .accessibilityHint("Double tap to select exercise")
     }
 
     // MARK: - Computed Properties

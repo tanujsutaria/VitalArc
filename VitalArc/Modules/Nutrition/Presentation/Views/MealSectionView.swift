@@ -47,6 +47,8 @@ struct MealSectionView: View {
                         .font(.vitalH2)
                         .foregroundStyle(mealColor)
                 }
+                .accessibilityLabel("Add food to \(meal.rawValue)")
+                .accessibilityHint("Double tap to search for food")
             }
 
             // Entries
@@ -145,6 +147,7 @@ private struct FoodEntryRowView: View {
                             .foregroundStyle(Color.vitalSuccess)
                     }
                     .buttonStyle(.plain)
+                    .accessibilityLabel("Re-log this food entry")
                 }
 
                 if onEdit != nil {
@@ -156,6 +159,7 @@ private struct FoodEntryRowView: View {
                             .foregroundStyle(Color.vitalPrimary)
                     }
                     .buttonStyle(.plain)
+                    .accessibilityLabel("Edit quantity")
                 }
 
                 Button(role: .destructive) {
@@ -166,6 +170,7 @@ private struct FoodEntryRowView: View {
                         .foregroundStyle(Color.vitalDanger)
                 }
                 .buttonStyle(.plain)
+                .accessibilityLabel("Delete food entry")
             }
         }
         .padding(.vertical, Spacing.xs)
@@ -209,6 +214,9 @@ private struct MealTotalsView: View {
             }
             .font(.vitalBody)
         }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Meal total")
+        .accessibilityValue("\(Int(totals.calories)) calories, \(Int(totals.protein))g protein, \(Int(totals.carbs))g carbs, \(Int(totals.fat))g fat")
     }
 }
 

@@ -210,7 +210,7 @@ struct CreateMesocycleView: View {
                                 Text(option.short)
                                     .font(.vitalLabelSmall)
                                     .foregroundStyle(selectedDayOfWeek == option.value ? .white : Color.vitalAdaptiveTextPrimary)
-                                    .frame(width: 40, height: 40)
+                                    .frame(width: Spacing.avatarSmall, height: Spacing.avatarSmall)
                                     .background(selectedDayOfWeek == option.value ? Color.vitalPrimary : Color.vitalAdaptiveSurface)
                                     .cornerRadius(Spacing.radiusSmall)
                             }

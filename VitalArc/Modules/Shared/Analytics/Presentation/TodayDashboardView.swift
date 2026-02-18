@@ -103,6 +103,7 @@ struct TodayDashboardView: View {
                         .font(.vitalIconSmall)
                         .foregroundStyle(Color.vitalPrimaryV2)
                 }
+                .accessibilityLabel("Previous day")
 
                 if !vm.isToday {
                     Button {
@@ -112,6 +113,7 @@ struct TodayDashboardView: View {
                             .font(.vitalCaptionV2)
                             .foregroundStyle(Color.vitalPrimaryV2)
                     }
+                    .accessibilityLabel("Go to today")
                 }
 
                 Button {
@@ -122,6 +124,7 @@ struct TodayDashboardView: View {
                         .foregroundStyle(vm.isToday ? Color.vitalAdaptiveTextTertiaryV2 : Color.vitalPrimaryV2)
                 }
                 .disabled(vm.isToday)
+                .accessibilityLabel("Next day")
             }
         }
     }
@@ -214,6 +217,16 @@ struct TodayDashboardView: View {
             }
         }
         .frame(maxWidth: .infinity)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Recovery")
+        .accessibilityValue({
+            if let recovery = vm.recoveryScore, recovery.score > 0 {
+                return "\(recovery.score), \(recovery.readiness.rawValue)"
+            } else if let metrics = vm.healthMetrics, let sleep = metrics.sleepHours {
+                return "\(Int(sleep)) hours \(Int(sleep.truncatingRemainder(dividingBy: 1) * 60)) minutes sleep"
+            }
+            return "No data"
+        }())
     }
 
     private func strainCard(_ vm: TodayDashboardViewModel) -> some View {
@@ -254,6 +267,16 @@ struct TodayDashboardView: View {
             }
         }
         .frame(maxWidth: .infinity)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Strain")
+        .accessibilityValue({
+            if let strain = vm.strainResult {
+                return String(format: "%.1f, %@", strain.strainScore, strain.strainLevel.rawValue)
+            } else if let metrics = vm.healthMetrics {
+                return "\(Int(metrics.activeEnergy ?? 0)) kilocalories active"
+            }
+            return "No data"
+        }())
     }
 
     // MARK: - Activity Section
@@ -335,6 +358,8 @@ struct TodayDashboardView: View {
             }
         }
         .buttonStyle(.plain)
+        .accessibilityLabel("No workout logged")
+        .accessibilityHint("Double tap to start a workout")
     }
 
     // MARK: - Nutrition Section
@@ -433,6 +458,9 @@ struct TodayDashboardView: View {
                 .font(.vitalUnitV2)
                 .foregroundStyle(Color.vitalAdaptiveTextTertiaryV2)
         }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(label)
+        .accessibilityValue("\(Int(current)) of \(Int(target)) grams")
     }
 
     // MARK: - Quick Actions Section
@@ -471,6 +499,8 @@ struct TodayDashboardView: View {
             }
         }
         .buttonStyle(.plain)
+        .accessibilityLabel(label)
+        .accessibilityHint("Double tap to navigate to \(label)")
     }
 
     // MARK: - Helper Views

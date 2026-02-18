@@ -33,6 +33,8 @@ struct SetRowView: View {
                         .keyboardType(.decimalPad)
                         .textFieldStyle(.roundedBorder)
                         .frame(width: Spacing.illustrationSmall)
+                        .accessibilityLabel("Weight for set \(setData.setNumber)")
+                        .accessibilityValue("\(setData.weight) kilograms")
                 }
 
                 // Reps Input
@@ -45,6 +47,8 @@ struct SetRowView: View {
                         .keyboardType(.numberPad)
                         .textFieldStyle(.roundedBorder)
                         .frame(width: Spacing.iconGiant)
+                        .accessibilityLabel("Reps for set \(setData.setNumber)")
+                        .accessibilityValue("\(setData.reps) reps")
                 }
 
                 // RIR Input (Optional)
@@ -57,6 +61,8 @@ struct SetRowView: View {
                         .keyboardType(.numberPad)
                         .textFieldStyle(.roundedBorder)
                         .frame(width: 50)
+                        .accessibilityLabel("Reps in reserve for set \(setData.setNumber)")
+                        .accessibilityValue(setData.rir.map { "\($0)" } ?? "empty")
                 }
 
                 Spacer()
@@ -70,6 +76,7 @@ struct SetRowView: View {
                         .foregroundStyle(setData.notes?.isEmpty == false ? Color.vitalPrimary : .secondary)
                 }
                 .buttonStyle(.plain)
+                .accessibilityLabel(setData.notes?.isEmpty == false ? "Edit set notes" : "Add set notes")
 
                 // Completed Checkbox
                 Button {
@@ -84,6 +91,8 @@ struct SetRowView: View {
                         .foregroundStyle(setData.completed ? Color.vitalSuccess : .secondary)
                 }
                 .buttonStyle(.plain)
+                .accessibilityLabel("Set \(setData.setNumber) \(setData.completed ? "completed" : "not completed")")
+                .accessibilityHint("Double tap to \(setData.completed ? "mark incomplete" : "mark complete")")
 
                 // Delete Button
                 Button(role: .destructive, action: onDelete) {
@@ -92,6 +101,7 @@ struct SetRowView: View {
                         .foregroundStyle(Color.vitalDanger)
                 }
                 .buttonStyle(.plain)
+                .accessibilityLabel("Delete set \(setData.setNumber)")
             }
 
             // Notes Field (shown when toggled or has content)

@@ -333,7 +333,7 @@ struct MetricDetailSheet: View {
                 ZStack {
                     Circle()
                         .fill(metricColor.opacity(0.15))
-                        .frame(width: 80, height: 80)
+                        .frame(width: Spacing.frameLarge, height: Spacing.frameLarge)
 
                     Image(systemName: metricType.icon)
                         .font(.vitalIcon2XLarge)
