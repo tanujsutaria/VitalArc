@@ -1,5 +1,72 @@
 # VitalArc Development Session Log
 
+## Session 22.0 - February 18, 2026 (Workstation)
+
+### Session Start
+- **Time**: Morning PST
+- **Platform**: macOS
+- **Focus**: Parallel feature implementation (nutrition, workout, design system)
+- **Branch**: dev/mac-session-22.0-2026-02-18
+- **Base**: main @ b6bad68
+
+### Environment
+- **Build Capable**: Yes
+- **Test Capable**: Yes (unit + UI)
+
+### Pre-Session Status
+- **Build**: SUCCEEDED
+- **Design Violations**: ~88 (frame dimensions, spacing)
+- **Tests**: 623 passing
+- **Uncommitted Changes**: None
+
+### Session Goals
+1. Nutrition: Add fiber/sugar micronutrients, fix recent foods usage tracking
+2. Workout: Custom category persistence, testable HealthKit imports, PR detection tests
+3. Design System: Fix ~28 hardcoded .frame() violations with Spacing tokens
+4. Tests: Add HealthKit import + PR detection + nutrition use case tests
+
+### Work Log
+| Time | Action | Files | Notes |
+|------|--------|-------|-------|
+| - | Session started | - | Build verified, 3 worktrees created |
+| - | Nutrition: fiber/sugar entities + models | FoodEntry, FoodEntryModel, DailyNutrition, DailyNutritionModel | Added optional fiber/sugar fields |
+| - | Nutrition: use case propagation | LogFoodUseCase, CalculateNutritionUseCase | Fiber/sugar aggregation + try? → do/catch fix |
+| - | Nutrition: DI wiring | DependencyContainer.swift | saveFoodEntry + saveDailyNutrition update branches |
+| - | Nutrition: UI display | FoodResultRowView, FoodLoggingView, NutritionTabContentView | Micronutrient bars + labels |
+| - | Nutrition: tests | LogFoodUseCaseTests (5), CalculateNutritionUseCaseTests (3) | 8 new tests |
+| - | Nutrition worktree committed | 12 files | feat(nutrition): add fiber/sugar micronutrients |
+| - | Workout: CustomCategory entity + model | CustomCategory.swift, CustomCategoryModel.swift | New SwiftData model |
+| - | Workout: WorkoutImportSource protocol | WorkoutImportSource.swift | Testable HealthKit abstraction |
+| - | Workout: Protocol conformances | MockWorkoutRepository, PreviewRepositories, DummyWorkoutRepository | 3 locations updated |
+| - | Workout: HealthKit adapter | HealthKitManager.swift, WorkoutContainer.swift | HealthKitWorkoutImportSource class |
+| - | Workout: ExerciseLibrary persistence | ExerciseLibraryView.swift | Load/save/delete custom categories |
+| - | Workout: tests | ImportHealthKitWorkoutsUseCaseTests (8), DetectPersonalRecordUseCaseTests (12) | 20 new tests |
+| - | Workout worktree committed | 14 files | feat(workout): custom categories + testable import |
+| - | Design: Spacing token migration | 16 view files | ~25 .frame() violations fixed |
+| - | Design worktree committed | 18 files | style(ui): replace hardcoded frame dimensions |
+| - | Merge: Design → main | - | Fast-forward, clean |
+| - | Merge: Workout → main | - | pbxproj conflict resolved via XcodeGen |
+| - | Merge: Nutrition → main | - | Auto-merged cleanly |
+| - | Full build + tests | - | BUILD SUCCEEDED, 740 tests, 0 failures |
+| - | Worktree cleanup | - | All 3 worktrees removed |
+| - | Session end pipeline | PROJECT_STATUS.md, README.md | Docs updated, tests verified |
+
+### Session End
+- **Status**: All goals achieved
+- **Build**: SUCCEEDED
+- **Tests**: 740 passing (was 623, +117 new)
+- **Design Violations**: Reduced by ~25 frame dimension violations
+- **Changes**: 43 files modified, 6 new files created across 3 worktrees
+
+### Features Delivered
+1. **Fiber/Sugar Micronutrients** — End-to-end: entity → model → use case → DI → UI
+2. **Custom Category Persistence** — SwiftData model with load/save/delete in ExerciseLibrary
+3. **Testable HealthKit Import** — WorkoutImportSource protocol + adapter pattern
+4. **Design System Polish** — 25 hardcoded .frame() → Spacing tokens across 16 views
+5. **Test Coverage** — 117 new tests (8 nutrition + 20 workout import/PR + 89 existing)
+
+---
+
 ## Session 21.1 - February 17, 2026 (Cloud)
 
 ### Session Start

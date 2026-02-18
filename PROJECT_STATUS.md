@@ -1,8 +1,8 @@
 # VitalArc Project Status
 
-**Last Updated**: February 17, 2026 (Session 21.0)
+**Last Updated**: February 18, 2026 (Session 22.0)
 **Build**: Passing (verified locally)
-**Tests**: 712 passing
+**Tests**: 740 passing
 **Stage**: MVP-Ready
 
 ---
@@ -68,6 +68,11 @@ The app compiles and runs with core MVP requirements addressed:
   - Dashboard: Extracted TodayDashboardViewModel, fixed recovery card fallback, tappable empty states, volume units (lbs)
   - Design: 4 icon size violations fixed (PersonalRecordBadgeView, MacroGoalEditSheet, AboutView)
   - Tests: 74 new tests (638→712) across 5 new test files covering all new features
+- Session 22.0: 3-worktree parallel development (nutrition, workout, design):
+  - Nutrition: Fiber/sugar micronutrients end-to-end (entity → model → use case → DI → UI), usage tracking fix (try? → do/catch)
+  - Workout: Custom category persistence (SwiftData), testable HealthKit imports (WorkoutImportSource protocol + adapter), ExerciseLibrary load/save/delete
+  - Design: 25 hardcoded .frame() dimensions → Spacing tokens across 16 views (violations reduced 88→32)
+  - Tests: 28 new tests (712→740): HealthKit import (8), PR detection (12), nutrition use cases (8)
 
 **Ready for beta testing.**
 
@@ -86,7 +91,7 @@ The app compiles and runs with core MVP requirements addressed:
 | Recovery Score | Ready | HRV + HealthKit HR integration, 22 bugs fixed (Session 19.0) |
 | Strain Tracking | Ready | TRIMP + HealthKit HR, custom settings |
 | Nutrition Tracking | Ready | **API keys not configured** |
-| Design System | Ready | ~98% adoption, 4 icon violations fixed (Session 21.0) |
+| Design System | Ready | ~96% adoption, 25 frame violations fixed (Session 22.0), 32 remaining |
 | Profile/Settings | Ready | - |
 
 ### Partially Implemented
@@ -115,9 +120,9 @@ The app compiles and runs with core MVP requirements addressed:
    - `NutritionixAPI.swift`: placeholder keys
    - `USDAFoodAPI.swift`: demo key (rate-limited)
 
-2. **Design System Gaps**: Near complete (~98% adoption)
-   - 55 total violations (54 frame dimensions, 1 typography)
-   - Most are component-specific sizes with no exact token match (icon frames, custom widths)
+2. **Design System Gaps**: Near complete (~96% adoption)
+   - 32 remaining violations (mostly values without exact tokens: 44, 50, 70, 72, 280)
+   - Would require new Spacing tokens to fix remaining violations
 
 ---
 
@@ -138,7 +143,7 @@ The app compiles and runs with core MVP requirements addressed:
 | ViewModels | 12 |
 | Use cases | 25 |
 | Test files | 31 (in project) |
-| Unit tests | 712 (passing) |
+| Unit tests | 740 (passing) |
 
 ### Test Coverage by ViewModel
 
