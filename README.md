@@ -17,11 +17,14 @@ VitalArc integrates workout tracking, nutrition logging, and health analytics in
 | Nutrition Tracking | ✅ Ready |
 | Food Search (API) | ⚠️ API keys not configured |
 | Analytics Dashboard | ✅ Ready |
-| Design System | ✅ ~98% adoption |
+| Design System | ✅ ~99% adoption |
 | Recovery Score | ✅ HRV algorithm + HealthKit integration |
-| Sleep Analysis | ✅ Stage breakdown + quality scoring |
+| Sleep Analysis | ✅ Stage breakdown + quality scoring + consistency |
 | Macro Goal Editing | ✅ TDEE-based recommendations |
-| Notifications | ✅ Complete architecture |
+| Notifications | ✅ Complete architecture + goal/streak/PR types |
+| Blood Oxygen (SpO2) | ✅ HealthKit integration |
+| VO2 Max | ✅ HealthKit integration |
+| VoiceOver Accessibility | ✅ Labels, hints, values across all views |
 
 See `PROJECT_STATUS.md` for detailed status.
 
@@ -40,9 +43,10 @@ See `PROJECT_STATUS.md` for detailed status.
 ### In Progress
 | Feature | Status | Remaining |
 |---------|--------|-----------|
-| Workout History & Trends | PR tracking, rest timer, supersets | Charts polish |
+| Workout History & Trends | PR tracking, rest timer, supersets, progressive overload charts | Charts polish |
 | Water Tracking | Manual logging with daily goals | HealthKit sync |
 | Body Composition | Body fat %, lean mass from HealthKit | Trend charts |
+| Sleep Consistency | Bedtime/wake variance scoring | - |
 
 ### Planned
 | Feature | Priority | Description |
@@ -59,18 +63,23 @@ See `PROJECT_STATUS.md` for detailed status.
 - Mesocycle-based periodization with progression
 - RIR (Reps in Reserve) tracking and volume autoregulation
 - Feedback-driven adjustments based on pump, soreness, performance
-- Day-by-day template editor
+- Day-by-day template editor with day scheduling
+- Per-exercise progressive overload charts (weight/volume/1RM)
+- Per-set notes, rest timer, superset/circuit support
 - 960+ exercise library organized by equipment type
 
 ### Nutrition Tracking
 - Timeline-based food logging
 - Multi-API food search (Nutritionix, OpenFoodFacts, USDA)
-- Macro and calorie tracking
+- Macro and calorie tracking with fiber/sugar micronutrients
+- Edit food entry quantity with proportional macro recalculation
+- Quick re-log from history
 - Cached API responses for performance
 
 ### Health Analytics
 - Recovery score based on HRV trends
-- Sleep stage analysis (deep/REM/light/awake) with quality scoring
+- Sleep stage analysis (deep/REM/light/awake) with quality scoring and consistency
+- Blood oxygen (SpO2) and VO2 Max tracking via HealthKit
 - 7-day sleep trend visualization
 - Weight and body metrics tracking
 - PDF/CSV export for analytics data
@@ -152,12 +161,12 @@ xcodebuild -scheme VitalArc -destination 'platform=iOS Simulator,name=iPhone 17 
 
 | Metric | Value |
 |--------|-------|
-| Swift files | ~201 |
-| Lines of code | ~47,000 |
-| Views | 75 |
-| ViewModels | 12 |
-| Use cases | 25 |
-| Unit tests | 740 |
+| Swift files | ~230 |
+| Lines of code | ~51,600 |
+| Views | ~80 |
+| ViewModels | 14 |
+| Use cases | 27 |
+| Unit tests | 786 |
 | Exercises | 960+ |
 
 ## Author

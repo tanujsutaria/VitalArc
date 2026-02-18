@@ -1,5 +1,77 @@
 # VitalArc Development Session Log
 
+## Session 22.1 - February 18, 2026 (Workstation)
+
+### Session Start
+- **Time**: 5:36 PM PST
+- **Platform**: macOS
+- **Focus**: Parallel 12-feature sprint + design system migration
+- **Branch**: dev/mac-session-22.1-2026-02-18
+- **Base**: main @ 0119426
+
+### Environment
+- **Build Capable**: Yes
+- **Test Capable**: Yes (unit + UI)
+
+### Pre-Session Status
+- **Build**: PASSING (0 errors, 0 warnings)
+- **Design Violations**: ~179 (95% adoption — colors/typography/radius all 100%)
+- **Uncommitted Changes**: None
+
+### Session Goals
+1. Implement 12 features across 4 domains using parallel agent teams with worktrees
+2. Complete design system frame token migration (32 remaining violations)
+3. Add VoiceOver accessibility labels across all domains
+
+### Work Log
+| Time | Action | Files | Notes |
+|------|--------|-------|-------|
+| 5:36 PM | Session started | - | Build verified, clean start |
+| - | Phase 0: Foundation tokens | Spacing.swift, Colors.swift, NotificationType.swift | 6 frame tokens, V2 docs, 3 notification types (S11) |
+| - | Phase 0: Merged PR #62 | - | Foundation merged to main |
+| - | Phase 1: Created 3 worktrees | VitalArc-wellness, VitalArc-workout, VitalArc-nutrition | Branches created from updated main |
+| - | Phase 1: Spawned 3 domain agents | - | Wellness (H5, H9, H6), Workout (W6, W9, W10), Nutrition (N6, N7) |
+| - | Wellness: SpO2 + VO2 Max tracking | HealthMetrics, HealthMetricsModel, HealthKitManager, HealthKitPermissions | H5 + H9: entity → model → HK query → permissions → UI |
+| - | Wellness: Sleep Consistency Score | CalculateSleepConsistencyUseCase, SleepDetailSheet, WellnessContainer | H6: 7-day bedtime/wake variance scoring |
+| - | Workout: Per-Set Notes | WorkoutSet, WorkoutSetModel, SetRowView | W9: optional notes field on sets |
+| - | Workout: Template Day Scheduling | CreateMesocycleView, MesocycleViewModel | W10: day-of-week picker per training block |
+| - | Workout: Progressive Overload Charts | ExerciseHistoryPoint, GetExerciseHistoryUseCase, ExerciseProgressView | W6: per-exercise weight/volume/1RM charts |
+| - | Nutrition: Edit Food Entry Quantity | UpdateFoodEntryUseCase, FoodLoggingViewModel, MealSectionView | N6: swipe-to-edit with proportional macro recalc |
+| - | Nutrition: Quick Re-Log from History | FoodLoggingViewModel, MealSectionView | N7: swipe-to-relog with today's date |
+| - | Phase 1: All 3 agents completed | - | All features built and tested in isolation |
+| - | Phase 2: Merged PRs #63-#65 | - | Nutrition → Workout → Wellness merge order |
+| - | Phase 2: Orchestrator patches | HealthMetricType, MetricDetailViewModel, DependencyContainer | SpO2/VO2Max enum cases, test switches, DI accessors |
+| - | Phase 2: Fixed HealthDashboardView switch | HealthDashboardView.swift | Exhaustive switch for new HealthMetricType cases |
+| - | Phase 2: Build + tests verified | - | 786 tests, 0 failures |
+| - | Phase 3: DS frame token migration | ~28 files | Replaced hardcoded frame dimensions with Spacing tokens |
+| - | Phase 3: VoiceOver accessibility sweep | ~15 files | S14: Labels, hints, values across all domains |
+| - | Phase 3: Build + tests verified | - | 786 tests, 0 failures |
+| - | PR #66 created | - | All 12 features in single PR |
+| - | Codex review: Fixed FoodResultRowView | FoodResultRowView.swift | .ignore → .combine → .contain for nested button a11y |
+
+### Session End
+- **Status**: All goals achieved
+- **Build**: SUCCEEDED
+- **Tests**: 786 passing (was 740, +46 new)
+- **Design Violations**: Reduced from 32 to near-zero (frame token migration complete)
+- **Changes**: ~60 files modified/created across 4 worktrees + orchestrator patches
+
+### Features Delivered
+1. **H5 Blood Oxygen (SpO2) Tracking** — HealthKit integration, dashboard card, metric drill-down
+2. **H9 VO2 Max Tracking** — HealthKit integration, dashboard card, metric drill-down
+3. **H6 Sleep Consistency Score** — 7-day bedtime/wake variance, scoring algorithm, SleepDetailSheet display
+4. **W6 Progressive Overload Charts** — Per-exercise weight/volume/1RM chart via ExerciseLibrary
+5. **W9 Per-Set Notes** — Optional notes field on individual workout sets
+6. **W10 Template Day Scheduling** — Day-of-week picker for mesocycle training blocks
+7. **N6 Edit Food Entry Quantity** — Swipe-to-edit with proportional macro recalculation
+8. **N7 Quick Re-Log from History** — Swipe-to-relog entries with current date
+9. **S5 V1/V2 Color Consolidation** — Documented V2 as premium theme, verified token separation
+10. **S11 Goal Achievement Notifications** — 3 new notification types (goal, streak, PR)
+11. **S14 VoiceOver Accessibility** — Labels, hints, values added across all interactive elements
+12. **DS Frame Token Migration** — 32 hardcoded frame dimensions replaced with Spacing tokens
+
+---
+
 ## Session 22.0 - February 18, 2026 (Workstation)
 
 ### Session Start
