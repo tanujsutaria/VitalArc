@@ -12,6 +12,7 @@ struct SleepDetailSheet: View {
     let sleepHours: Double
     let sleepStages: SleepStages?
     let sleepTrend: [SleepTrendData]
+    var sleepConsistency: SleepConsistencyScore?
 
     @Environment(\.dismiss) private var dismiss
     @State private var hasAppeared = false
@@ -39,6 +40,11 @@ struct SleepDetailSheet: View {
                     // Weekly trend chart
                     if !sleepTrend.isEmpty {
                         weeklyTrendSection
+                    }
+
+                    // Sleep consistency score
+                    if let consistency = sleepConsistency {
+                        sleepConsistencyCard(consistency)
                     }
 
                     // Sleep quality insights
@@ -421,6 +427,90 @@ struct SleepDetailSheet: View {
             return "Below recommended duration. Aim for 7-9 hours."
         } else {
             return "Above typical range. Monitor daytime energy levels."
+        }
+    }
+
+    // MARK: - Sleep Consistency Card
+
+    private func sleepConsistencyCard(_ consistency: SleepConsistencyScore) -> some View {
+        VitalCard {
+            VStack(alignment: .leading, spacing: Spacing.md) {
+                HStack {
+                    Text("Sleep Consistency")
+                        .font(.vitalH3)
+                        .foregroundStyle(Color.vitalAdaptiveTextPrimary)
+
+                    Spacer()
+
+                    Text("\(consistency.consistencyScore)/100")
+                        .font(.vitalH2)
+                        .foregroundStyle(consistencyColor(for: consistency.consistencyScore))
+                }
+
+                Divider()
+
+                HStack(spacing: Spacing.xl) {
+                    VStack(spacing: Spacing.xs) {
+                        Image(systemName: "moon.fill")
+                            .font(.vitalIconMedium)
+                            .foregroundStyle(Color.vitalInfo)
+
+                        Text(String(format: "%.0f min", consistency.bedtimeVariance))
+                            .font(.vitalLabel)
+                            .foregroundStyle(Color.vitalAdaptiveTextPrimary)
+
+                        Text("Bedtime Variance")
+                            .font(.vitalCaption)
+                            .foregroundStyle(Color.vitalAdaptiveTextSecondary)
+                    }
+                    .frame(maxWidth: .infinity)
+
+                    VStack(spacing: Spacing.xs) {
+                        Image(systemName: "sunrise.fill")
+                            .font(.vitalIconMedium)
+                            .foregroundStyle(Color.vitalWarning)
+
+                        Text(String(format: "%.0f min", consistency.wakeVariance))
+                            .font(.vitalLabel)
+                            .foregroundStyle(Color.vitalAdaptiveTextPrimary)
+
+                        Text("Wake Variance")
+                            .font(.vitalCaption)
+                            .foregroundStyle(Color.vitalAdaptiveTextSecondary)
+                    }
+                    .frame(maxWidth: .infinity)
+                }
+
+                Text(consistencyInsight(for: consistency.consistencyScore))
+                    .font(.vitalBody)
+                    .foregroundStyle(Color.vitalAdaptiveTextSecondary)
+            }
+            .padding(Spacing.cardPadding)
+        }
+        .scaleEffect(hasAppeared ? 1 : 0.95)
+        .opacity(hasAppeared ? 1 : 0)
+        .animation(.vitalSpring.delay(0.25), value: hasAppeared)
+    }
+
+    private func consistencyColor(for score: Int) -> Color {
+        switch score {
+        case 80...100: return .vitalSuccess
+        case 60..<80: return .vitalInfo
+        case 40..<60: return .vitalWarning
+        default: return .vitalDanger
+        }
+    }
+
+    private func consistencyInsight(for score: Int) -> String {
+        switch score {
+        case 80...100:
+            return "Excellent sleep consistency. Your regular schedule supports circadian rhythm health."
+        case 60..<80:
+            return "Good consistency. Try to keep bedtime within a 30-minute window for best results."
+        case 40..<60:
+            return "Moderate consistency. Irregular sleep times can affect sleep quality and energy."
+        default:
+            return "Low consistency. Establishing a regular sleep schedule can significantly improve rest quality."
         }
     }
 

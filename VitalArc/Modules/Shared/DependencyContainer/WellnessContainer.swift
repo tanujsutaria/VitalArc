@@ -15,12 +15,14 @@ final class WellnessContainer {
     let healthKitManager: HealthKitManager
     let calculateReadinessScoreUseCase: CalculateReadinessScoreUseCase
     let calculateRecoveryScoreUseCase: CalculateRecoveryScoreUseCase
+    let calculateSleepConsistencyUseCase: CalculateSleepConsistencyUseCase
 
     init(modelContext: ModelContext, healthKitManager: HealthKitManager = HealthKitManager()) {
         self.healthKitManager = healthKitManager
         self.healthRepository = SwiftDataHealthRepository(modelContext: modelContext, healthKitManager: healthKitManager)
         self.calculateReadinessScoreUseCase = CalculateReadinessScoreUseCase()
         self.calculateRecoveryScoreUseCase = CalculateRecoveryScoreUseCase(healthRepository: healthRepository)
+        self.calculateSleepConsistencyUseCase = CalculateSleepConsistencyUseCase()
     }
 }
 

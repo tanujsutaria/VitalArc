@@ -78,6 +78,13 @@ struct SleepStages: Equatable {
     static let zero = SleepStages(deepSleep: 0, remSleep: 0, coreSleep: 0, awake: 0)
 }
 
+/// Sleep consistency score based on 7-day bedtime/wake time analysis
+struct SleepConsistencyScore: Equatable {
+    let bedtimeVariance: Double // standard deviation of bedtimes in minutes
+    let wakeVariance: Double // standard deviation of wake times in minutes
+    let consistencyScore: Int // 0-100, higher is more consistent
+}
+
 /// Domain entity representing health metrics from HealthKit
 struct HealthMetrics: Identifiable, Equatable {
     let id: UUID
@@ -92,6 +99,8 @@ struct HealthMetrics: Identifiable, Equatable {
     let bodyFatPercentage: Double? // percentage (0-100)
     let leanBodyMass: Double? // in kg
     let respiratoryRate: Double? // breaths per minute
+    let oxygenSaturation: Double? // percentage (0-100)
+    let vo2Max: Double? // mL/kg/min
 
     init(
         id: UUID = UUID(),
@@ -105,7 +114,9 @@ struct HealthMetrics: Identifiable, Equatable {
         weight: Double? = nil,
         bodyFatPercentage: Double? = nil,
         leanBodyMass: Double? = nil,
-        respiratoryRate: Double? = nil
+        respiratoryRate: Double? = nil,
+        oxygenSaturation: Double? = nil,
+        vo2Max: Double? = nil
     ) {
         self.id = id
         self.date = date
@@ -119,6 +130,8 @@ struct HealthMetrics: Identifiable, Equatable {
         self.bodyFatPercentage = bodyFatPercentage
         self.leanBodyMass = leanBodyMass
         self.respiratoryRate = respiratoryRate
+        self.oxygenSaturation = oxygenSaturation
+        self.vo2Max = vo2Max
     }
 
     /// Simple recovery indicator based on HRV (higher is better)

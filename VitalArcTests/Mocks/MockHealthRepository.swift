@@ -120,7 +120,9 @@ class MockHealthRepository: HealthRepository {
         energy: Double = 450.0,
         steps: Int = 10000,
         sleep: Double = 7.5,
-        weight: Double = 75.0
+        weight: Double = 75.0,
+        oxygenSaturation: Double? = 98.0,
+        vo2Max: Double? = 42.5
     ) -> HealthMetrics {
         return HealthMetrics(
             date: date,
@@ -129,7 +131,9 @@ class MockHealthRepository: HealthRepository {
             activeEnergy: energy,
             steps: steps,
             sleepHours: sleep,
-            weight: weight
+            weight: weight,
+            oxygenSaturation: oxygenSaturation,
+            vo2Max: vo2Max
         )
     }
 

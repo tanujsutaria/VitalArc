@@ -57,14 +57,16 @@ final class HealthKitManager {
         async let bodyFat = fetchBodyFatPercentage(start: dateRange.start, end: dateRange.end)
         async let leanMass = fetchLeanBodyMass(start: dateRange.start, end: dateRange.end)
         async let respRate = fetchRespiratoryRate(start: dateRange.start, end: dateRange.end)
+        async let spo2 = fetchOxygenSaturation(start: dateRange.start, end: dateRange.end)
+        async let vo2 = fetchVO2Max(start: dateRange.start, end: dateRange.end)
 
         // Intentional `try?`: individual metric failures (e.g., user lacks a sensor for
         // respiratory rate, or a specific HealthKit type is unauthorized) should not block
         // the entire sync. We collect whatever data IS available and return nil for the rest.
         let (hrvValue, hrValue, energyValue, stepsValue, sleepValue, sleepStagesValue, weightValue,
-             bodyFatValue, leanMassValue, respRateValue) =
+             bodyFatValue, leanMassValue, respRateValue, spo2Value, vo2Value) =
             await (try? hrv, try? heartRate, try? activeEnergy, try? steps, try? sleep, try? sleepStages, try? weight,
-                   try? bodyFat, try? leanMass, try? respRate)
+                   try? bodyFat, try? leanMass, try? respRate, try? spo2, try? vo2)
 
         return HealthMetrics(
             date: date,
@@ -77,7 +79,9 @@ final class HealthKitManager {
             weight: weightValue,
             bodyFatPercentage: bodyFatValue,
             leanBodyMass: leanMassValue,
-            respiratoryRate: respRateValue
+            respiratoryRate: respRateValue,
+            oxygenSaturation: spo2Value,
+            vo2Max: vo2Value
         )
     }
 
@@ -533,6 +537,70 @@ final class HealthKitManager {
                 }
 
                 let value = sample.quantity.doubleValue(for: HKUnit.count().unitDivided(by: .minute()))
+                continuation.resume(returning: value)
+            }
+
+            healthStore.execute(query)
+        }
+    }
+
+    /// Fetch blood oxygen saturation (SpO2) as percentage 0-100
+    private func fetchOxygenSaturation(start: Date, end: Date) async throws -> Double? {
+        guard let spo2Type = HKQuantityType.quantityType(forIdentifier: .oxygenSaturation) else {
+            throw HealthKitError.queryFailed
+        }
+
+        return try await withCheckedThrowingContinuation { continuation in
+            let query = HealthKitQuery.sampleQuery(
+                for: spo2Type,
+                start: start,
+                end: end,
+                limit: 1
+            ) { samples, error in
+                if let error = error {
+                    continuation.resume(throwing: error)
+                    return
+                }
+
+                guard let sample = samples?.first as? HKQuantitySample else {
+                    continuation.resume(returning: nil)
+                    return
+                }
+
+                // HealthKit stores SpO2 as a fraction (0.0-1.0), convert to percentage
+                let value = sample.quantity.doubleValue(for: .percent()) * 100
+                continuation.resume(returning: value)
+            }
+
+            healthStore.execute(query)
+        }
+    }
+
+    /// Fetch VO2 Max (mL/kg/min)
+    private func fetchVO2Max(start: Date, end: Date) async throws -> Double? {
+        guard let vo2MaxType = HKQuantityType.quantityType(forIdentifier: .vo2Max) else {
+            throw HealthKitError.queryFailed
+        }
+
+        return try await withCheckedThrowingContinuation { continuation in
+            let query = HealthKitQuery.sampleQuery(
+                for: vo2MaxType,
+                start: start,
+                end: end,
+                limit: 1
+            ) { samples, error in
+                if let error = error {
+                    continuation.resume(throwing: error)
+                    return
+                }
+
+                guard let sample = samples?.first as? HKQuantitySample else {
+                    continuation.resume(returning: nil)
+                    return
+                }
+
+                let unit = HKUnit(from: "mL/kg/min")
+                let value = sample.quantity.doubleValue(for: unit)
                 continuation.resume(returning: value)
             }
 
