@@ -18,6 +18,7 @@ struct WorkoutSet: Identifiable, Equatable {
     let mesocycleId: UUID? // Link to active mesocycle
     let setNumber: Int
     let completed: Bool
+    let notes: String?
 
     init(
         id: UUID = UUID(),
@@ -28,7 +29,8 @@ struct WorkoutSet: Identifiable, Equatable {
         rpe: Double? = nil,
         mesocycleId: UUID? = nil,
         setNumber: Int,
-        completed: Bool = true
+        completed: Bool = true,
+        notes: String? = nil
     ) {
         self.id = id
         self.exerciseId = exerciseId
@@ -39,6 +41,7 @@ struct WorkoutSet: Identifiable, Equatable {
         self.mesocycleId = mesocycleId
         self.setNumber = setNumber
         self.completed = completed
+        self.notes = notes
     }
 
     /// Volume for this set (weight × reps)

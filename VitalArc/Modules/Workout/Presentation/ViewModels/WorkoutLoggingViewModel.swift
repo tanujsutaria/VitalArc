@@ -249,7 +249,8 @@ final class WorkoutLoggingViewModel {
                         reps: setData.reps,
                         rir: setData.rir,
                         setNumber: setData.setNumber,
-                        completed: setData.completed
+                        completed: setData.completed,
+                        notes: setData.notes
                     )
                 }
                 allSets.append(contentsOf: workoutSets)
@@ -350,4 +351,5 @@ struct WorkoutSetData: Identifiable {
     var rir: Int?
     var setNumber: Int
     var completed: Bool
+    var notes: String?
 }

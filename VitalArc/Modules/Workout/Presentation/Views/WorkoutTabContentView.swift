@@ -66,7 +66,8 @@ struct WorkoutTabContentView: View {
                         ExerciseLibraryView(
                             getExercisesUseCase: GetExercisesUseCase(
                                 repository: container.workoutRepository
-                            )
+                            ),
+                            getExerciseHistoryUseCase: container.workout.getExerciseHistoryUseCase
                         ) { _ in
                             // Exercise selected from library
                         }

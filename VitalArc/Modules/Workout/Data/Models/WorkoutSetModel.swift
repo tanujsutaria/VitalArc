@@ -19,6 +19,7 @@ final class WorkoutSetModel {
     var mesocycleId: UUID?
     var setNumber: Int
     var completed: Bool
+    var notes: String?
 
     init(
         id: UUID = UUID(),
@@ -29,7 +30,8 @@ final class WorkoutSetModel {
         rpe: Double? = nil,
         mesocycleId: UUID? = nil,
         setNumber: Int,
-        completed: Bool = true
+        completed: Bool = true,
+        notes: String? = nil
     ) {
         self.id = id
         self.exerciseId = exerciseId
@@ -40,6 +42,7 @@ final class WorkoutSetModel {
         self.mesocycleId = mesocycleId
         self.setNumber = setNumber
         self.completed = completed
+        self.notes = notes
     }
 
     /// Convert to domain entity
@@ -53,7 +56,8 @@ final class WorkoutSetModel {
             rpe: rpe,
             mesocycleId: mesocycleId,
             setNumber: setNumber,
-            completed: completed
+            completed: completed,
+            notes: notes
         )
     }
 
@@ -68,7 +72,8 @@ final class WorkoutSetModel {
             rpe: set.rpe,
             mesocycleId: set.mesocycleId,
             setNumber: set.setNumber,
-            completed: set.completed
+            completed: set.completed,
+            notes: set.notes
         )
     }
 }
