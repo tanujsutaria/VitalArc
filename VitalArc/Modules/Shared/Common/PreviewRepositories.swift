@@ -67,6 +67,18 @@ final class PreviewWorkoutRepository: WorkoutRepository {
     func getLastWorkoutForExercise(_ exerciseId: UUID) async throws -> Workout? {
         nil
     }
+
+    func getCustomCategories() async throws -> [CustomCategory] {
+        []
+    }
+
+    func saveCustomCategory(_ category: CustomCategory) async throws {
+        // No-op for preview
+    }
+
+    func deleteCustomCategory(id: UUID) async throws {
+        // No-op for preview
+    }
 }
 
 // MARK: - Preview Mesocycle Repository
