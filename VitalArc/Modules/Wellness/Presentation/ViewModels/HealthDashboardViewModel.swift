@@ -26,6 +26,7 @@ final class HealthDashboardViewModel {
     var isLoading = false
     var error: Error?
     var showingPermissionAlert = false
+    var authorizationDenied = false
 
     // MARK: - Initialization
 
@@ -126,13 +127,30 @@ final class HealthDashboardViewModel {
         do {
             let authorized = try await healthRepository.requestHealthKitAuthorization()
             if authorized {
+                authorizationDenied = false
                 await syncFromHealthKit()
                 await importWorkoutsFromHealthKit()
                 await loadAllMetrics()
+
+                // If sync returned no data, the user may have denied access
+                if todayMetrics == nil && weekMetrics.isEmpty {
+                    authorizationDenied = true
+                    showingPermissionAlert = true
+                }
             }
         } catch {
             self.error = error
+            authorizationDenied = true
             showingPermissionAlert = true
+        }
+    }
+
+    /// Guide user to Settings to re-enable HealthKit access after denial
+    func openHealthSettings() {
+        if let url = URL(string: "x-apple-health://") {
+            UIApplication.shared.open(url)
+        } else if let url = URL(string: UIApplication.openSettingsURLString) {
+            UIApplication.shared.open(url)
         }
     }
 
@@ -161,6 +179,25 @@ final class HealthDashboardViewModel {
         }
 
         isLoading = false
+    }
+
+    // MARK: - SpO2 Thresholds
+
+    /// SpO2 below this threshold is considered abnormally low and warrants attention
+    static let spo2WarningThreshold: Double = 95
+    /// SpO2 below this threshold is critically low and needs immediate medical attention
+    static let spo2CriticalThreshold: Double = 90
+
+    /// Returns true if today's SpO2 reading is below the warning threshold
+    var isSpO2Low: Bool {
+        guard let spo2 = todayMetrics?.oxygenSaturation else { return false }
+        return spo2 < Self.spo2WarningThreshold
+    }
+
+    /// Returns true if today's SpO2 reading is critically low
+    var isSpO2Critical: Bool {
+        guard let spo2 = todayMetrics?.oxygenSaturation else { return false }
+        return spo2 < Self.spo2CriticalThreshold
     }
 
     // MARK: - Computed Properties

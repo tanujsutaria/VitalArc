@@ -38,6 +38,30 @@ final class HealthKitManager {
         return HealthKitPermissions.isHealthKitAvailable()
     }
 
+    /// Check if authorization was previously requested but may have been denied.
+    /// After initial denial, iOS won't show the prompt again — the user must go to Settings.
+    var authorizationPreviouslyRequested: Bool {
+        HealthKitPermissions.hasRequiredAuthorization(healthStore: healthStore)
+    }
+
+    /// Retry authorization after a previous denial.
+    /// If the system prompt was already shown, clears the flag and re-requests.
+    /// Returns `true` if the system showed the authorization prompt,
+    /// `false` if the user must be directed to Settings instead.
+    func retryAuthorization() async throws -> Bool {
+        guard isHealthKitAvailable() else {
+            throw HealthKitError.notAvailable
+        }
+
+        // Clear the tracked flag so we can re-request
+        HealthKitPermissions.clearAuthorizationFlag()
+
+        // Re-request authorization. iOS will only show the prompt if it hasn't been
+        // shown before for these types. If already shown, this is a no-op and the
+        // user must go to Settings → Privacy → Health to grant access.
+        return try await HealthKitPermissions.requestAuthorization(healthStore: healthStore)
+    }
+
     // MARK: - Fetch Data
 
     /// Fetch health metrics for a specific date
@@ -46,13 +70,15 @@ final class HealthKitManager {
             throw HealthKitError.notAvailable
         }
         let dateRange = HealthKitQuery.dateRangeForDate(date)
+        // Use wider window for sleep to capture overnight sessions (6 PM prev → noon current)
+        let sleepRange = HealthKitQuery.sleepDateRangeForDate(date)
 
         async let hrv = fetchHRV(start: dateRange.start, end: dateRange.end)
         async let heartRate = fetchRestingHeartRate(start: dateRange.start, end: dateRange.end)
         async let activeEnergy = fetchActiveEnergy(start: dateRange.start, end: dateRange.end)
         async let steps = fetchSteps(start: dateRange.start, end: dateRange.end)
-        async let sleep = fetchSleepHours(start: dateRange.start, end: dateRange.end)
-        async let sleepStages = fetchSleepStages(start: dateRange.start, end: dateRange.end)
+        async let sleep = fetchSleepHours(start: sleepRange.start, end: sleepRange.end)
+        async let sleepStages = fetchSleepStages(start: sleepRange.start, end: sleepRange.end)
         async let weight = fetchWeight(start: dateRange.start, end: dateRange.end)
         async let bodyFat = fetchBodyFatPercentage(start: dateRange.start, end: dateRange.end)
         async let leanMass = fetchLeanBodyMass(start: dateRange.start, end: dateRange.end)
@@ -577,6 +603,8 @@ final class HealthKitManager {
     }
 
     /// Fetch VO2 Max (mL/kg/min)
+    /// Physiological range: ~15 mL/kg/min (sedentary) to ~97 mL/kg/min (elite athletes).
+    /// Values outside 5-100 are clamped to prevent overflow in downstream calculations.
     private func fetchVO2Max(start: Date, end: Date) async throws -> Double? {
         guard let vo2MaxType = HKQuantityType.quantityType(forIdentifier: .vo2Max) else {
             throw HealthKitError.queryFailed
@@ -600,8 +628,15 @@ final class HealthKitManager {
                 }
 
                 let unit = HKUnit(from: "mL/kg/min")
-                let value = sample.quantity.doubleValue(for: unit)
-                continuation.resume(returning: value)
+                let rawValue = sample.quantity.doubleValue(for: unit)
+
+                // Clamp to physiologically plausible range to prevent overflow
+                guard rawValue.isFinite else {
+                    continuation.resume(returning: nil)
+                    return
+                }
+                let clampedValue = min(100, max(5, rawValue))
+                continuation.resume(returning: clampedValue)
             }
 
             healthStore.execute(query)

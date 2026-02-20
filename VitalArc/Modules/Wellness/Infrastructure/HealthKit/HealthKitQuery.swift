@@ -46,6 +46,22 @@ struct HealthKitQuery {
         return (startOfDay, endOfDay(from: startOfDay))
     }
 
+    /// Returns an extended date range for sleep queries to capture overnight sessions.
+    /// Sleep that starts the previous evening (e.g., 10 PM) and ends the current morning
+    /// (e.g., 6 AM) should be attributed to the waking day.
+    /// Window: 6 PM previous day → 12 PM (noon) current day.
+    static func sleepDateRangeForDate(_ date: Date) -> (start: Date, end: Date) {
+        let calendar = Calendar.current
+        let startOfDay = calendar.startOfDay(for: date)
+        // Start at 6 PM the previous day to capture bedtime
+        let sleepWindowStart = calendar.date(byAdding: .hour, value: -6, to: startOfDay)
+            ?? startOfDay.addingTimeInterval(-6 * 3600)
+        // End at noon current day to avoid capturing next night's sleep
+        let sleepWindowEnd = calendar.date(byAdding: .hour, value: 12, to: startOfDay)
+            ?? startOfDay.addingTimeInterval(12 * 3600)
+        return (sleepWindowStart, sleepWindowEnd)
+    }
+
     /// Creates a predicate for date range
     /// Uses empty options to include samples that overlap the range (important for overnight sleep)
     static func predicateForDateRange(start: Date, end: Date) -> NSPredicate {

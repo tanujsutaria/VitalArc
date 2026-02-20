@@ -15,6 +15,63 @@ protocol CalculateReadinessScoreUseCaseProtocol {
 /// Weights: HRV 40%, RHR 25%, Sleep Quality 20%, Sleep Duration 15%.
 final class CalculateReadinessScoreUseCase: CalculateReadinessScoreUseCaseProtocol {
 
+    // MARK: - Scoring Constants
+
+    /// Component weight allocations (must sum to 100)
+    private enum Weight {
+        /// HRV is the strongest recovery signal from autonomic nervous system
+        static let hrv: Double = 40
+        /// Resting heart rate reflects cardiovascular recovery
+        static let rhr: Double = 25
+        /// Sleep stage composition affects recovery quality
+        static let sleepQuality: Double = 20
+        /// Total sleep duration affects recovery completeness
+        static let sleepDuration: Double = 15
+    }
+
+    /// Baseline-relative scoring parameters
+    private enum BaselineScoring {
+        /// HRV: score at baseline ratio (1.0) — 85% of max weight
+        static let hrvAtBaseline: Double = 34
+        /// HRV: sensitivity multiplier for ratio deviations
+        static let hrvSensitivity: Double = 60
+
+        /// RHR: score at baseline ratio (1.0) — 84% of max weight
+        static let rhrAtBaseline: Double = 21
+        /// RHR: sensitivity multiplier for ratio deviations
+        static let rhrSensitivity: Double = 40
+    }
+
+    /// Neutral scores returned when no data is available (50% of each weight)
+    private enum NeutralScore {
+        static let hrv: Double = 20          // 50% of 40
+        static let rhr: Double = 12.5        // 50% of 25
+        static let sleepQuality: Double = 10 // 50% of 20
+        static let sleepDuration: Double = 7.5 // 50% of 15
+    }
+
+    /// Sleep duration thresholds (hours)
+    private enum SleepDuration {
+        static let optimalMin: Double = 7
+        static let optimalMax: Double = 9
+        static let acceptableMin: Double = 6
+        static let acceptableMax: Double = 10
+        /// Points awarded in the acceptable-but-suboptimal range
+        static let suboptimalScore: Double = 10
+        static let slightOverScore: Double = 12
+        /// Penalty per hour deviation from 8h target
+        static let penaltyPerHour: Double = 3
+        /// Target hours used as center of the scoring curve
+        static let targetHours: Double = 8
+    }
+
+    /// Recommendation score thresholds
+    private enum Threshold {
+        static let highReadiness: Double = 80
+        static let moderateReadiness: Double = 60
+        static let belowAverage: Double = 40
+    }
+
     func execute(todayMetrics: HealthMetrics, weekMetrics: [HealthMetrics]) -> ReadinessScore {
         // Compute 7-day baselines
         let baselineHRV = average(weekMetrics.compactMap { $0.heartRateVariability })
@@ -22,39 +79,39 @@ final class CalculateReadinessScoreUseCase: CalculateReadinessScoreUseCaseProtoc
         let baselineSleepQuality = average(weekMetrics.compactMap { $0.sleepStages?.qualityScore })
         let baselineSleepDuration = average(weekMetrics.compactMap { $0.sleepHours })
 
-        // HRV contribution (40% weight) - higher relative to baseline is better
+        // HRV contribution — higher relative to baseline is better
         let hrvContribution: Double = {
             guard let todayHRV = todayMetrics.heartRateVariability, let baseline = baselineHRV, baseline > 0 else {
-                return 20 // neutral if no data
+                return NeutralScore.hrv
             }
             let ratio = todayHRV / baseline
-            // Baseline (ratio=1.0) → 34/40 (85%); ratio 1.1 → 40; ratio 0.5 → 4
-            return min(40, max(0, 34 + (ratio - 1.0) * 60))
+            return min(Weight.hrv, max(0,
+                BaselineScoring.hrvAtBaseline + (ratio - 1.0) * BaselineScoring.hrvSensitivity))
         }()
 
-        // RHR contribution (25% weight) - lower relative to baseline is better
+        // RHR contribution — lower relative to baseline is better
         let rhrContribution: Double = {
             guard let todayRHR = todayMetrics.restingHeartRate, let baseline = baselineRHR,
                   baseline > 0, todayRHR > 0 else {
-                return 12.5 // neutral if no data
+                return NeutralScore.rhr
             }
             let ratio = baseline / todayRHR
-            // Baseline (ratio=1.0) → 21/25 (84%); ratio 1.1 → 25; ratio 0.5 → 1
-            return min(25, max(0, 21 + (ratio - 1.0) * 40))
+            return min(Weight.rhr, max(0,
+                BaselineScoring.rhrAtBaseline + (ratio - 1.0) * BaselineScoring.rhrSensitivity))
         }()
 
-        // Sleep quality contribution (20% weight) - based on stage composition score
+        // Sleep quality contribution — based on stage composition score (0-100)
         let sleepQualityContribution: Double = {
             guard let todayQuality = todayMetrics.sleepStages?.qualityScore else {
                 if let baseline = baselineSleepQuality {
-                    return min(20, max(0, baseline / 100 * 20))
+                    return min(Weight.sleepQuality, max(0, baseline / 100 * Weight.sleepQuality))
                 }
-                return 10 // neutral if no data
+                return NeutralScore.sleepQuality
             }
-            return min(20, max(0, todayQuality / 100 * 20))
+            return min(Weight.sleepQuality, max(0, todayQuality / 100 * Weight.sleepQuality))
         }()
 
-        // Sleep duration contribution (15% weight) - 7-9 hours optimal
+        // Sleep duration contribution — 7-9 hours optimal
         // Prefer sleepStages.total (excludes awake time) over raw sleepHours
         let sleepDurationContribution: Double = {
             let actualSleep = todayMetrics.sleepStages?.total ?? todayMetrics.sleepHours
@@ -62,7 +119,7 @@ final class CalculateReadinessScoreUseCase: CalculateReadinessScoreUseCaseProtoc
                 if let baseline = baselineSleepDuration {
                     return sleepDurationScore(baseline)
                 }
-                return 7.5 // neutral if no data
+                return NeutralScore.sleepDuration
             }
             return sleepDurationScore(todaySleep)
         }()
@@ -97,14 +154,14 @@ final class CalculateReadinessScoreUseCase: CalculateReadinessScoreUseCaseProtoc
     }
 
     private func sleepDurationScore(_ hours: Double) -> Double {
-        if hours >= 7 && hours <= 9 {
-            return 15
-        } else if hours >= 6 && hours < 7 {
-            return 10
-        } else if hours > 9 && hours <= 10 {
-            return 12
+        if hours >= SleepDuration.optimalMin && hours <= SleepDuration.optimalMax {
+            return Weight.sleepDuration
+        } else if hours >= SleepDuration.acceptableMin && hours < SleepDuration.optimalMin {
+            return SleepDuration.suboptimalScore
+        } else if hours > SleepDuration.optimalMax && hours <= SleepDuration.acceptableMax {
+            return SleepDuration.slightOverScore
         } else {
-            return max(0, 15 - abs(hours - 8) * 3)
+            return max(0, Weight.sleepDuration - abs(hours - SleepDuration.targetHours) * SleepDuration.penaltyPerHour)
         }
     }
 
@@ -115,15 +172,15 @@ final class CalculateReadinessScoreUseCase: CalculateReadinessScoreUseCaseProtoc
         sleepQualityContribution: Double,
         sleepDurationContribution: Double
     ) -> String {
-        if score >= 80 {
+        if score >= Threshold.highReadiness {
             return "Great recovery. You're ready for high-intensity training."
-        } else if score >= 60 {
+        } else if score >= Threshold.moderateReadiness {
             // Find the weakest area using explicit tracking to avoid float equality issues
             let normalized: [(key: String, value: Double)] = [
-                ("hrv", hrvContribution / 40),
-                ("rhr", rhrContribution / 25),
-                ("sleepQuality", sleepQualityContribution / 20),
-                ("sleepDuration", sleepDurationContribution / 15)
+                ("hrv", hrvContribution / Weight.hrv),
+                ("rhr", rhrContribution / Weight.rhr),
+                ("sleepQuality", sleepQualityContribution / Weight.sleepQuality),
+                ("sleepDuration", sleepDurationContribution / Weight.sleepDuration)
             ]
             let weakestKey = normalized.min(by: { $0.value < $1.value })?.key ?? "sleepDuration"
             switch weakestKey {
@@ -136,7 +193,7 @@ final class CalculateReadinessScoreUseCase: CalculateReadinessScoreUseCaseProtoc
             default:
                 return "Moderate recovery. Sleep duration was short - aim for 7-9 hours."
             }
-        } else if score >= 40 {
+        } else if score >= Threshold.belowAverage {
             return "Below average recovery. Focus on rest and light activity today."
         } else {
             return "Low recovery. Prioritize rest, hydration, and an early bedtime."

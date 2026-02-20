@@ -152,6 +152,12 @@ struct HealthDashboardView: View {
                     .transition(.vitalScale)
             }
 
+            // SpO2 warning banner
+            if viewModel.isSpO2Low {
+                spo2WarningBanner
+                    .transition(.vitalScale)
+            }
+
             // Today's metrics section
             if let today = viewModel.todayMetrics {
                 todayMetricsSection(today)
@@ -442,9 +448,10 @@ struct HealthDashboardView: View {
                         title: "Blood Oxygen",
                         value: String(format: "%.0f", spo2),
                         unit: "%",
-                        icon: "lungs.fill",
-                        color: .vitalInfo,
-                        sparklineData: getSparklineData(for: \.oxygenSaturation)
+                        icon: viewModel.isSpO2Low ? "exclamationmark.triangle.fill" : "lungs.fill",
+                        color: viewModel.isSpO2Critical ? .vitalDanger : (viewModel.isSpO2Low ? .vitalWarning : .vitalInfo),
+                        sparklineData: getSparklineData(for: \.oxygenSaturation),
+                        onTap: { selectedMetric = .spo2 }
                     )
                 }
 
@@ -466,6 +473,41 @@ struct HealthDashboardView: View {
                     .transition(.vitalScale)
             }
         }
+    }
+
+    // MARK: - SpO2 Warning
+
+    private var spo2WarningBanner: some View {
+        let isCritical = viewModel.isSpO2Critical
+        let spo2Value = viewModel.todayMetrics?.oxygenSaturation ?? 0
+
+        return VitalCard {
+            HStack(spacing: Spacing.md) {
+                ZStack {
+                    Circle()
+                        .fill((isCritical ? Color.vitalDanger : Color.vitalWarning).opacity(0.15))
+                        .frame(width: 44, height: 44)
+
+                    Image(systemName: "exclamationmark.triangle.fill")
+                        .font(.vitalIconMedium)
+                        .foregroundStyle(isCritical ? Color.vitalDanger : Color.vitalWarning)
+                }
+
+                VStack(alignment: .leading, spacing: Spacing.xs) {
+                    Text(isCritical ? "Critically Low Blood Oxygen" : "Low Blood Oxygen")
+                        .font(.vitalLabel)
+                        .foregroundStyle(Color.vitalAdaptiveTextPrimary)
+
+                    Text("SpO2 is \(String(format: "%.0f", spo2Value))% — \(isCritical ? "seek medical attention if symptoms persist" : "normal range is 95-100%")")
+                        .font(.vitalBodySmall)
+                        .foregroundStyle(Color.vitalAdaptiveTextSecondary)
+                }
+
+                Spacer()
+            }
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(isCritical ? "Critical: Blood oxygen is \(String(format: "%.0f", spo2Value)) percent" : "Warning: Blood oxygen is \(String(format: "%.0f", spo2Value)) percent")
     }
 
     // MARK: - Weekly Trends
