@@ -10,7 +10,7 @@ import Foundation
 /// Loads workout templates from the repository
 final class LoadWorkoutTemplateUseCase {
     private let templateRepository: TemplateRepository
-    private let workoutRepository: WorkoutRepository
+    let workoutRepository: WorkoutRepository
 
     init(templateRepository: TemplateRepository, workoutRepository: WorkoutRepository) {
         self.templateRepository = templateRepository

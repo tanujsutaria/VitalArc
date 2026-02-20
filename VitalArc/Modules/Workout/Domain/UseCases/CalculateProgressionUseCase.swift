@@ -26,11 +26,13 @@ final class CalculateProgressionUseCase {
 
         // Find the highest weight used for this exercise in the last workout
         let setsForExercise = lastWorkout.sets.filter { $0.exerciseId == exerciseId }
-        guard let maxWeight = setsForExercise.map({ $0.weight }).max() else {
+        guard let maxWeight = setsForExercise.map({ $0.weight }).max(),
+              maxWeight > 0 else {
             return startingWeight
         }
 
-        // Return weight + 5%
-        return maxWeight * progressionRate
+        // Apply progression and round to nearest 0.5 kg for practical plate loading
+        let progressed = maxWeight * progressionRate
+        return (progressed * 2).rounded() / 2
     }
 }

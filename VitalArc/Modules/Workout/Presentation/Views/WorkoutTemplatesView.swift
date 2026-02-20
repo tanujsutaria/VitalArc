@@ -55,6 +55,21 @@ struct WorkoutTemplatesView: View {
                 .sheet(item: $selectedTemplate) { template in
                     startWorkoutSheet(for: template)
                 }
+                .alert("Schedule Conflict", isPresented: .init(
+                    get: { viewModel.scheduleConflictMessage != nil },
+                    set: { if !$0 { viewModel.cancelConflictStart() } }
+                )) {
+                    Button("Start Anyway") {
+                        Task { await viewModel.confirmConflictStart() }
+                    }
+                    Button("Cancel", role: .cancel) {
+                        viewModel.cancelConflictStart()
+                    }
+                } message: {
+                    if let msg = viewModel.scheduleConflictMessage {
+                        Text(msg)
+                    }
+                }
                 .overlay {
                     if viewModel.isLoading {
                         ProgressView()
@@ -157,7 +172,7 @@ struct WorkoutTemplatesView: View {
             template: template,
             onStart: { workout in
                 Task {
-                    await viewModel.startWorkout(from: template)
+                    await viewModel.checkConflictsAndStart(from: template)
                 }
             }
         )
@@ -328,6 +343,8 @@ final class WorkoutTemplatesViewModel {
     var isLoading = false
     var errorMessage: String?
     var createdWorkout: Workout?
+    var scheduleConflictMessage: String?
+    var pendingConflictTemplate: WorkoutTemplate?
 
     init(
         loadTemplateUseCase: LoadWorkoutTemplateUseCase,
@@ -367,7 +384,30 @@ final class WorkoutTemplatesViewModel {
         }
     }
 
+    /// Check if there's already a workout logged today before starting
+    func checkConflictsAndStart(from template: WorkoutTemplate) async {
+        do {
+            let calendar = Calendar.current
+            let startOfDay = calendar.startOfDay(for: Date())
+            let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) ?? Date()
+            let todaysWorkouts = try await loadTemplateUseCase.workoutRepository.getWorkouts(from: startOfDay, to: endOfDay)
+
+            if !todaysWorkouts.isEmpty {
+                let workoutNames = todaysWorkouts.compactMap { $0.name ?? "Workout" }.joined(separator: ", ")
+                scheduleConflictMessage = "You already have \(todaysWorkouts.count) workout\(todaysWorkouts.count > 1 ? "s" : "") today (\(workoutNames)). Start another?"
+                pendingConflictTemplate = template
+            } else {
+                await startWorkout(from: template)
+            }
+        } catch {
+            // If we can't check, proceed without warning
+            await startWorkout(from: template)
+        }
+    }
+
     func startWorkout(from template: WorkoutTemplate) async {
+        scheduleConflictMessage = nil
+        pendingConflictTemplate = nil
         do {
             let workout = try await loadTemplateUseCase.createWorkoutFromTemplate(template)
             createdWorkout = workout
@@ -375,5 +415,15 @@ final class WorkoutTemplatesViewModel {
         } catch {
             errorMessage = UserFacingError.message(for: error, context: .saving)
         }
+    }
+
+    func confirmConflictStart() async {
+        guard let template = pendingConflictTemplate else { return }
+        await startWorkout(from: template)
+    }
+
+    func cancelConflictStart() {
+        scheduleConflictMessage = nil
+        pendingConflictTemplate = nil
     }
 }
