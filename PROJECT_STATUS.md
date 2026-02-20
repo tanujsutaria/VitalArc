@@ -1,8 +1,8 @@
 # VitalArc Project Status
 
-**Last Updated**: February 18, 2026 (Session 22.1)
+**Last Updated**: February 19, 2026 (Session 23.1)
 **Build**: Passing (verified locally)
-**Tests**: 786 passing
+**Tests**: 1096 passing
 **Stage**: MVP-Ready
 
 ---
@@ -82,6 +82,18 @@ The app compiles and runs with core MVP requirements addressed:
   - Design System: Frame token migration complete — 32 remaining violations replaced with Spacing tokens (DS)
   - Tests: 46 new tests (740→786): sleep consistency, exercise history, food entry update use cases
   - Orchestrator patches: HealthMetricType enum (SpO2, VO2 Max), MetricDetailViewModel, DI accessors
+- Session 23.0: Parallel bug fix sprint across 4 worktrees (20 bugs, 117 regression tests):
+  - Wellness: 6 bugs fixed (empty data crash, HealthKit auth retry, sleep timezone, recovery magic numbers, SpO2 alerting, VO2 Max overflow)
+  - Workout: 7 bugs fixed (force unwrap crash, negative reps/weight, progression miscalc, duplicate names, hardcoded chart range, template conflicts, per-set notes in history)
+  - Nutrition: 4 bugs fixed (water timezone midnight reset, re-log serving sizes, edit quantity refresh, hardcoded meal categorization)
+  - Shared: 3 bugs fixed (analytics stale data, today dashboard foreground refresh, goal notification cancellation)
+  - Tests: 117 new regression tests (786→903)
+- Session 23.1: Parallel 4-feature sprint across 4 worktrees:
+  - Wellness: Recovery Score v2 (configurable weights, component breakdown), HRV trend tracking with 7/30/90-day windows
+  - Workout: Supersets/circuits (SetGroup entity + UI), rest timer auto-progression, plate calculator utility
+  - Nutrition: Body composition tracking (waist/hip/chest/arm/thigh measurements + trends), configurable meal time ranges
+  - Shared: Muscle group heat maps (training frequency visualization), volume/frequency analysis per muscle group
+  - Tests: 193 new tests (903→1096): readiness v2, HRV, workout features, body composition, muscle heat maps, volume analysis
 
 **Ready for beta testing.**
 
@@ -91,18 +103,18 @@ The app compiles and runs with core MVP requirements addressed:
 
 | Feature | Status | Notes |
 |---------|--------|-------|
-| Health Dashboard | Ready | SpO2, VO2 Max, sleep consistency added (Session 22.1) |
-| Workout Tracking | Ready | Detail view, live timer, 1RM, progressive overload charts, per-set notes |
+| Health Dashboard | Ready | SpO2, VO2 Max, sleep consistency, HRV trends (Session 23.1) |
+| Workout Tracking | Ready | Supersets/circuits, rest timer, plate calc, 7 bugs fixed (Session 23.0-23.1) |
 | Exercise Library | Ready | 960+ exercises, progressive overload charts |
-| Templates System | Ready | Day-by-day editor, day scheduling (Session 22.1) |
-| Mesocycle System | Ready | Template day scheduling added (Session 22.1) |
-| Analytics Dashboard | Ready | TRIMP integrated, gender-aware |
-| Recovery Score | Ready | HRV + HealthKit HR integration, 22 bugs fixed (Session 19.0) |
+| Templates System | Ready | Day-by-day editor, day scheduling, conflict detection fixed |
+| Mesocycle System | Ready | Template day scheduling, progression calc fixed (Session 23.0) |
+| Analytics Dashboard | Ready | Muscle heat maps, volume analysis, stale data fix (Session 23.0-23.1) |
+| Recovery Score | Ready | V2 with configurable weights, component breakdown (Session 23.1) |
 | Strain Tracking | Ready | TRIMP + HealthKit HR, custom settings |
-| Nutrition Tracking | Ready | Edit quantity, quick re-log added (Session 22.1). **API keys not configured** |
-| Design System | Ready | ~99% adoption, frame token migration complete (Session 22.1) |
+| Nutrition Tracking | Ready | Body composition, configurable meals, 4 bugs fixed (Session 23.0-23.1). **API keys not configured** |
+| Design System | Ready | ~87% adoption (191 violations, mostly intentional chart/plate colors) |
 | VoiceOver Accessibility | Ready | Labels, hints, values across all domains (Session 22.1) |
-| Notifications | Ready | Goal achievement, streak milestone, personal record types added (Session 22.1) |
+| Notifications | Ready | Goal notification cancellation fixed (Session 23.0) |
 | Profile/Settings | Ready | - |
 
 ### Partially Implemented
@@ -147,13 +159,13 @@ The app compiles and runs with core MVP requirements addressed:
 
 | Metric | Value |
 |--------|-------|
-| Swift files | ~230 |
-| Lines of code | ~51,600 |
-| Views | ~80 |
-| ViewModels | 14 |
-| Use cases | 27 |
-| Test files | 56 (in project) |
-| Unit tests | 786 (passing) |
+| Swift files | ~248 |
+| Lines of code | ~56,200 |
+| Views | ~90 |
+| ViewModels | 18 |
+| Use cases | 31 |
+| Test files | 64 (in project) |
+| Unit tests | 1096 (passing) |
 
 ### Test Coverage by ViewModel
 
@@ -181,4 +193,4 @@ The app compiles and runs with core MVP requirements addressed:
 | USDAFoodAPI | Tested | 12 | In project ✅ |
 | FoodAPICoordinator | Tested | 18 | In project ✅ |
 
-**Note**: All 786 tests passing. Test files properly integrated in Xcode project.
+**Note**: All 1096 tests passing. Test files properly integrated in Xcode project.
