@@ -75,6 +75,10 @@ final class AnalyticsDashboardViewModel {
     var carbsTarget: Double = 250
     var fatsTarget: Double = 70
 
+    // Sub-ViewModels for new analytics features
+    var muscleHeatMapViewModel: MuscleHeatMapViewModel?
+    var volumeAnalysisViewModel: VolumeAnalysisViewModel?
+
     // Task handles for cancellation
     private var recoveryScoreTask: Task<Void, Never>?
     private var strainScoreTask: Task<Void, Never>?

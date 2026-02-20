@@ -361,11 +361,21 @@ struct AnalyticsDashboardView: View {
                 title: "Training Activity"
             )
 
+            // Muscle heat map
+            if let heatMapVM = viewModel.muscleHeatMapViewModel {
+                MuscleHeatMapView(viewModel: heatMapVM)
+            }
+
             // Volume by muscle group
             MuscleVolumeChartView(
                 weeklyData: viewModel.weeklyMuscleVolume,
                 monthlyData: viewModel.monthlyMuscleVolume
             )
+
+            // Volume analysis
+            if let volumeAnalysisVM = viewModel.volumeAnalysisViewModel {
+                VolumeAnalysisView(viewModel: volumeAnalysisVM)
+            }
 
             // Strength progression
             if !viewModel.strengthProgression.isEmpty {

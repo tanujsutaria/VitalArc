@@ -77,6 +77,14 @@ struct ProgressTabContentView: View {
             nutritionRepository: container.nutritionRepository
         )
 
+        // Wire sub-ViewModels for muscle heat map and volume analysis
+        vm.muscleHeatMapViewModel = MuscleHeatMapViewModel(
+            workoutRepository: container.workoutRepository
+        )
+        vm.volumeAnalysisViewModel = VolumeAnalysisViewModel(
+            workoutRepository: container.workoutRepository
+        )
+
         viewModel = vm
         await vm.loadData()
     }
