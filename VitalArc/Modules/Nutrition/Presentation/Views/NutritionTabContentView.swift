@@ -51,6 +51,7 @@ private struct NutritionUnifiedView: View {
     @State private var showingQuantitySheet = false
     @State private var showingGoalEditSheet = false
     @State private var editingEntry: FoodEntry?
+    @State private var bodyCompViewModel: BodyCompositionViewModel?
 
     var body: some View {
         ScrollView {
@@ -80,6 +81,12 @@ private struct NutritionUnifiedView: View {
                     deleteWaterEntryUseCase: container.nutrition.deleteWaterEntryUseCase,
                     date: viewModel.selectedDate,
                     dailyGoal: viewModel.dailyWaterGoal
+                )
+
+                // Body Composition & Settings
+                NutritionQuickLinksRow(
+                    bodyCompViewModel: $bodyCompViewModel,
+                    container: container
                 )
 
                 // Meal Sections
@@ -683,6 +690,78 @@ final class NutritionTabViewModel {
         } catch {
             self.error = error
             Log.error("Failed to update goals", error: error, category: .nutrition)
+        }
+    }
+}
+
+// MARK: - Nutrition Quick Links Row
+
+private struct NutritionQuickLinksRow: View {
+    @Binding var bodyCompViewModel: BodyCompositionViewModel?
+    let container: DependencyContainer
+
+    var body: some View {
+        HStack(spacing: Spacing.md) {
+            NavigationLink {
+                if let vm = bodyCompViewModel {
+                    BodyCompositionView(viewModel: vm)
+                } else {
+                    ProgressView()
+                }
+            } label: {
+                QuickLinkCard(
+                    icon: "figure.arms.open",
+                    title: "Body Comp",
+                    color: .vitalPrimary
+                )
+            }
+            .buttonStyle(.plain)
+
+            NavigationLink {
+                MealTimeSettingsView()
+            } label: {
+                QuickLinkCard(
+                    icon: "clock.fill",
+                    title: "Meal Times",
+                    color: .vitalInfo
+                )
+            }
+            .buttonStyle(.plain)
+        }
+        .task {
+            if bodyCompViewModel == nil {
+                bodyCompViewModel = BodyCompositionViewModel(
+                    saveUseCase: container.nutrition.saveBodyCompositionEntryUseCase,
+                    getUseCase: container.nutrition.getBodyCompositionEntriesUseCase,
+                    repository: container.nutrition.bodyMeasurementRepository
+                )
+            }
+        }
+    }
+}
+
+// MARK: - Quick Link Card
+
+private struct QuickLinkCard: View {
+    let icon: String
+    let title: String
+    let color: Color
+
+    var body: some View {
+        VitalCard {
+            HStack(spacing: Spacing.sm) {
+                Image(systemName: icon)
+                    .font(.system(size: Spacing.iconMedium))
+                    .foregroundStyle(color)
+                Text(title)
+                    .font(.vitalBody)
+                    .fontWeight(.medium)
+                    .foregroundStyle(Color.vitalAdaptiveTextPrimary)
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .font(.system(size: Spacing.iconXSmall))
+                    .foregroundStyle(Color.vitalAdaptiveTextSecondary)
+            }
         }
     }
 }
