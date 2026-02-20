@@ -33,6 +33,7 @@ struct VitalArcApp: App {
             FoodEntryModel.self,
             DailyNutritionModel.self,
             WaterEntryModel.self,
+            BodyCompositionEntryModel.self,
 
             // Health Domain Models
             HealthMetricsModel.self,

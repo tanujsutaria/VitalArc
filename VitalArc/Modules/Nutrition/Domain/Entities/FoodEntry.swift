@@ -85,4 +85,27 @@ enum MealType: String, Codable, CaseIterable {
             return .breakfast
         }
     }
+
+    /// Returns the appropriate meal type using a MealTimeConfiguration
+    static func forCurrentTime(config: MealTimeConfiguration) -> MealType {
+        return forCurrentTime(
+            breakfastStart: config.breakfastStart,
+            lunchStart: config.lunchStart,
+            dinnerStart: config.dinnerStart,
+            snackStart: config.snackStart
+        )
+    }
+
+    /// Returns the meal type for a specific hour using a configuration
+    static func forHour(_ hour: Int, config: MealTimeConfiguration = MealTimeConfiguration()) -> MealType {
+        if hour >= config.snackStart || hour < config.breakfastStart {
+            return .snack
+        } else if hour >= config.dinnerStart {
+            return .dinner
+        } else if hour >= config.lunchStart {
+            return .lunch
+        } else {
+            return .breakfast
+        }
+    }
 }
