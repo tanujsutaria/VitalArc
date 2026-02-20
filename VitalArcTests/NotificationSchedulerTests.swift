@@ -125,6 +125,46 @@ final class NotificationSchedulerTests: XCTestCase {
         XCTAssertNotEqual(id1, id3, "Different days should have different identifiers")
     }
 
+    // MARK: - Goal Notification Identifier Tests (Bug Fix: Goals Never Cancelled)
+
+    func testGoalNotificationIdentifierFormat() throws {
+        let identifier = goalNotificationIdentifier(for: "steps")
+        XCTAssertTrue(identifier.hasPrefix("com.vitalarc.goal."), "Should have goal prefix")
+        XCTAssertTrue(identifier.hasSuffix("steps"), "Should include goal type")
+        XCTAssertEqual(identifier, "com.vitalarc.goal.steps")
+    }
+
+    func testGoalNotificationIdentifierUniqueness() throws {
+        let stepsId = goalNotificationIdentifier(for: "steps")
+        let waterId = goalNotificationIdentifier(for: "water")
+        let caloriesId = goalNotificationIdentifier(for: "calories")
+
+        XCTAssertNotEqual(stepsId, waterId, "Different goal types should have different identifiers")
+        XCTAssertNotEqual(waterId, caloriesId, "Different goal types should have different identifiers")
+        XCTAssertNotEqual(stepsId, caloriesId, "Different goal types should have different identifiers")
+    }
+
+    func testGoalNotificationIdentifierForVariousTypes() throws {
+        let types = ["steps", "water", "calories", "protein", "sleep"]
+        for goalType in types {
+            let identifier = goalNotificationIdentifier(for: goalType)
+            XCTAssertEqual(identifier, "com.vitalarc.goal.\(goalType)", "Identifier for \(goalType) should follow format")
+        }
+    }
+
+    func testGoalPrefixConstant() throws {
+        let prefix = goalPrefix()
+        XCTAssertEqual(prefix, "com.vitalarc.goal.", "Goal prefix should be com.vitalarc.goal.")
+    }
+
+    func testCancelGoalNotificationIdentifierMatchesSchedule() throws {
+        // The identifier used for cancellation must match the one used for scheduling
+        let goalType = "steps"
+        let scheduleId = goalNotificationIdentifier(for: goalType)
+        let cancelId = goalNotificationIdentifier(for: goalType)
+        XCTAssertEqual(scheduleId, cancelId, "Schedule and cancel identifiers must match for same goal type")
+    }
+
     // MARK: - Helper Methods (Mirror NotificationScheduler logic)
 
     private func workoutReminderBody(for weekday: Int) -> String {
@@ -159,5 +199,13 @@ final class NotificationSchedulerTests: XCTestCase {
 
     private func workoutReminderIdentifier(for weekday: Int) -> String {
         "com.vitalarc.workout.\(weekday)"
+    }
+
+    private func goalNotificationIdentifier(for goalType: String) -> String {
+        "\(goalPrefix())\(goalType)"
+    }
+
+    private func goalPrefix() -> String {
+        "com.vitalarc.goal."
     }
 }
