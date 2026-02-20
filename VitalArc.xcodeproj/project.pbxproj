@@ -1635,6 +1635,34 @@
 			path = Data;
 			sourceTree = "<group>";
 		};
+		"TEMP_19708EDC-FBEB-405D-922F-8CCD969E5DB9" /* Common */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Common;
+			sourceTree = "<group>";
+		};
+		"TEMP_4DDC643E-4106-4E53-8859-7211D5CE5BBC" /* Data */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Data;
+			sourceTree = "<group>";
+		};
+		"TEMP_5C33F8BE-6B6E-4151-BA99-314373FF713C" /* Infrastructure */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Infrastructure;
+			sourceTree = "<group>";
+		};
+		"TEMP_8D33CEF3-4497-44F9-83F4-3AA7A29B3915" /* Presentation */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Presentation;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
