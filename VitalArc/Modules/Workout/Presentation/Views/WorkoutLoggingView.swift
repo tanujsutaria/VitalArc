@@ -68,6 +68,12 @@ struct WorkoutLoggingView: View {
                     HStack(spacing: Spacing.sm) {
                         if !viewModel.selectedExercises.isEmpty {
                             Button {
+                                viewModel.showingPlateCalculator = true
+                            } label: {
+                                Image(systemName: "scalemass")
+                            }
+
+                            Button {
                                 viewModel.toggleGroupingMode()
                             } label: {
                                 Image(systemName: viewModel.isGroupingMode ? "link.circle.fill" : "link.circle")
@@ -112,6 +118,19 @@ struct WorkoutLoggingView: View {
                     }
                 )
                 .presentationDetents([.medium])
+            }
+            .sheet(isPresented: $viewModel.showingPlateCalculator) {
+                NavigationStack {
+                    PlateCalculatorView()
+                        .toolbar {
+                            ToolbarItem(placement: .cancellationAction) {
+                                Button("Done") {
+                                    viewModel.showingPlateCalculator = false
+                                }
+                            }
+                        }
+                }
+                .presentationDetents([.medium, .large])
             }
         }
     }
@@ -262,7 +281,10 @@ struct WorkoutLoggingView: View {
                                 viewModel.removeExercise(exercise)
                             },
                             onSetCompleted: {
-                                viewModel.startRestTimer(duration: 90, for: exercise.id)
+                                viewModel.startRestTimer(
+                                    duration: viewModel.restDurationForExercise(exercise.id),
+                                    for: exercise.id
+                                )
                             },
                             estimated1RM: viewModel.currentEstimated1RM(for: exercise.id),
                             historicalBest1RM: viewModel.historicalBest(for: exercise.id)

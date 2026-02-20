@@ -31,6 +31,10 @@ final class WorkoutLoggingViewModel {
     var restTimerDuration: Int = 90 // default rest seconds
     var restTimerExerciseId: UUID? = nil
     var exerciseRestDurations: [UUID: Int] = [:]  // per-exercise overrides
+    var progressiveRestIncrement: Int = 0  // seconds added per set (0 = disabled)
+    var exerciseSetCounts: [UUID: Int] = [:]  // track completed sets per exercise for progressive rest
+    var showingPlateCalculator: Bool = false
+    var plateCalculatorExerciseId: UUID? = nil
 
     // MARK: - Superset/Circuit State
     var setGroups: [SetGroup] = []
@@ -59,9 +63,17 @@ final class WorkoutLoggingViewModel {
     // MARK: - Rest Timer
 
     func startRestTimer(duration: Int, for exerciseId: UUID) {
-        restTimerDuration = duration
+        // Track completed set count for progressive rest
+        let completedCount = (exerciseSetCounts[exerciseId] ?? 0) + 1
+        exerciseSetCounts[exerciseId] = completedCount
+
+        // Calculate progressive rest: base + (increment * completed sets beyond first)
+        let progressiveExtra = progressiveRestIncrement > 0 ? progressiveRestIncrement * max(0, completedCount - 1) : 0
+        let effectiveDuration = duration + progressiveExtra
+
+        restTimerDuration = effectiveDuration
         restTimerExerciseId = exerciseId
-        restTimerEndDate = Date().addingTimeInterval(TimeInterval(duration))
+        restTimerEndDate = Date().addingTimeInterval(TimeInterval(effectiveDuration))
         restTimerActive = true
     }
 
@@ -80,9 +92,12 @@ final class WorkoutLoggingViewModel {
     func restDurationForExercise(_ exerciseId: UUID) -> Int {
         // Per-exercise override
         if let custom = exerciseRestDurations[exerciseId] { return custom }
-        // Superset-aware: short rest between exercises in same group, full rest after last
-        if let _ = groupForExercise(exerciseId), !isLastInGroup(exerciseId) {
-            return 30
+        // Group-aware rest: use group's configured rest intervals
+        if let group = groupForExercise(exerciseId) {
+            if !isLastInGroup(exerciseId) {
+                return Int(group.restBetweenExercises)
+            }
+            return Int(group.restAfterGroup)
         }
         return restTimerDuration  // global default (90s)
     }
@@ -324,6 +339,9 @@ final class WorkoutLoggingViewModel {
         selectedExerciseIdsForGrouping = []
         isGroupingMode = false
         historicalBest1RM = [:]
+        exerciseSetCounts = [:]
+        showingPlateCalculator = false
+        plateCalculatorExerciseId = nil
     }
 
     // MARK: - Computed Properties
