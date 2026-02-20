@@ -137,7 +137,16 @@ final class MetricDetailViewModel {
         let firstAvg = firstHalf.reduce(0, +) / Double(firstHalf.count)
         let secondAvg = secondHalf.reduce(0, +) / Double(secondHalf.count)
 
+        // Guard against divide-by-zero when firstAvg is 0
+        guard firstAvg.isFinite, firstAvg != 0 else {
+            // If first half is zero but second half has values, trending up
+            if secondAvg > 0 { return .up }
+            return .stable
+        }
+
         let percentChange = (secondAvg - firstAvg) / firstAvg * 100
+
+        guard percentChange.isFinite else { return .stable }
 
         if percentChange > 5 {
             return .up
