@@ -214,7 +214,8 @@ final class WorkoutLoggingViewModel {
     }
 
     func removeSet(for exerciseId: UUID, at index: Int) {
-        guard var sets = exerciseSets[exerciseId] else { return }
+        guard var sets = exerciseSets[exerciseId],
+              sets.indices.contains(index) else { return }
         sets.remove(at: index)
 
         // Renumber remaining sets
@@ -227,8 +228,13 @@ final class WorkoutLoggingViewModel {
     }
 
     func updateSet(_ updatedSet: WorkoutSetData, for exerciseId: UUID, at index: Int) {
-        guard var sets = exerciseSets[exerciseId] else { return }
-        sets[index] = updatedSet
+        guard var sets = exerciseSets[exerciseId],
+              sets.indices.contains(index) else { return }
+        // Clamp weight and reps to non-negative values
+        var sanitized = updatedSet
+        sanitized.weight = max(0, sanitized.weight)
+        sanitized.reps = max(0, sanitized.reps)
+        sets[index] = sanitized
         exerciseSets[exerciseId] = sets
     }
 
@@ -239,14 +245,14 @@ final class WorkoutLoggingViewModel {
         errorMessage = nil
 
         do {
-            // Convert all sets to WorkoutSet entities
+            // Convert all sets to WorkoutSet entities, clamping negative values
             var allSets: [WorkoutSet] = []
             for (exerciseId, setDataArray) in exerciseSets {
                 let workoutSets = setDataArray.map { setData in
                     WorkoutSet(
                         exerciseId: exerciseId,
-                        weight: setData.weight,
-                        reps: setData.reps,
+                        weight: max(0, setData.weight),
+                        reps: max(0, setData.reps),
                         rir: setData.rir,
                         setNumber: setData.setNumber,
                         completed: setData.completed,

@@ -521,10 +521,11 @@ struct AddCustomExerciseView: View {
     private func saveExercise() {
         isSaving = true
 
+        let trimmedName = name.trimmingCharacters(in: .whitespaces)
         let muscleGroup = muscleGroupFor(bodyPart: selectedBodyPart)
 
         let exercise = Exercise(
-            name: name.trimmingCharacters(in: .whitespaces),
+            name: trimmedName,
             category: .custom,
             primaryMuscles: [muscleGroup],
             secondaryMuscles: [],
@@ -536,6 +537,17 @@ struct AddCustomExerciseView: View {
         Task {
             do {
                 if let container = container {
+                    // Check for duplicate exercise name (case-insensitive)
+                    let existingExercises = try await container.workoutRepository.getExercises()
+                    let isDuplicate = existingExercises.contains { existing in
+                        existing.name.localizedCaseInsensitiveCompare(trimmedName) == .orderedSame
+                    }
+                    if isDuplicate {
+                        saveError = "An exercise named \"\(trimmedName)\" already exists."
+                        isSaving = false
+                        return
+                    }
+
                     try await container.workoutRepository.saveExercise(exercise)
                 }
                 onSave(exercise)

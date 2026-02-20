@@ -208,20 +208,33 @@ struct WorkoutDetailView: View {
     private func setRow(_ workoutSet: WorkoutSet) -> some View {
         let isBest = viewModel.bestSet(for: workoutSet.exerciseId)?.id == workoutSet.id
 
-        return HStack {
-            Text("\(workoutSet.setNumber)")
-                .frame(width: Spacing.xl, alignment: .leading)
-            Text(String(format: "%.1f lbs", UnitConversion.kgToLbs(workoutSet.weight)))
-                .frame(maxWidth: .infinity, alignment: .trailing)
-            Text("\(workoutSet.reps)")
-                .frame(width: Spacing.xxl, alignment: .trailing)
-            Text(workoutSet.rir.map { "\($0)" } ?? "-")
-                .frame(width: 36, alignment: .trailing)
-            Text(String(format: "%.0f", workoutSet.volume))
-                .frame(width: 72, alignment: .trailing)
+        return VStack(alignment: .leading, spacing: Spacing.xs) {
+            HStack {
+                Text("\(workoutSet.setNumber)")
+                    .frame(width: Spacing.xl, alignment: .leading)
+                Text(String(format: "%.1f lbs", UnitConversion.kgToLbs(workoutSet.weight)))
+                    .frame(maxWidth: .infinity, alignment: .trailing)
+                Text("\(workoutSet.reps)")
+                    .frame(width: Spacing.xxl, alignment: .trailing)
+                Text(workoutSet.rir.map { "\($0)" } ?? "-")
+                    .frame(width: 36, alignment: .trailing)
+                Text(String(format: "%.0f", workoutSet.volume))
+                    .frame(width: 72, alignment: .trailing)
+            }
+            .font(.vitalBody)
+            .foregroundStyle(isBest ? Color.vitalPrimary : Color.vitalAdaptiveTextPrimary)
+
+            if let notes = workoutSet.notes, !notes.isEmpty {
+                HStack(spacing: Spacing.xs) {
+                    Image(systemName: "note.text")
+                        .font(.vitalCaptionSmall)
+                    Text(notes)
+                        .font(.vitalCaption)
+                }
+                .foregroundStyle(Color.vitalAdaptiveTextSecondary)
+                .padding(.leading, Spacing.xl)
+            }
         }
-        .font(.vitalBody)
-        .foregroundStyle(isBest ? Color.vitalPrimary : Color.vitalAdaptiveTextPrimary)
     }
 
     // MARK: - Formatters
