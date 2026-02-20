@@ -158,6 +158,23 @@ struct HealthDashboardView: View {
                     .transition(.vitalScale)
             }
 
+            // HRV Tracking section
+            if viewModel.todayMetrics?.heartRateVariability != nil || !viewModel.hrvTrendData7Day.isEmpty {
+                VitalCard {
+                    HRVTrendView(
+                        currentHRV: viewModel.todayMetrics?.heartRateVariability,
+                        baseline: viewModel.hrvBaseline,
+                        isAboveBaseline: viewModel.isHRVAboveBaseline,
+                        deviationSignificant: viewModel.hrvDeviationSignificant,
+                        statusText: viewModel.hrvStatusText,
+                        trendData7Day: viewModel.hrvTrendData7Day,
+                        trendData30Day: viewModel.hrvTrendData30Day,
+                        sleepCorrelationHint: viewModel.hrvSleepCorrelationHint
+                    )
+                }
+                .transition(.vitalSlideUp)
+            }
+
             // Today's metrics section
             if let today = viewModel.todayMetrics {
                 todayMetricsSection(today)
@@ -238,9 +255,25 @@ struct HealthDashboardView: View {
                     Text("Readiness Insight")
                         .font(.vitalLabel)
                         .foregroundStyle(Color.vitalAdaptiveTextPrimary)
+
+                    Spacer()
+
+                    // Level badge
+                    Text(readiness.level.rawValue)
+                        .font(.vitalCaptionSmall)
+                        .foregroundStyle(.white)
+                        .padding(.horizontal, Spacing.sm)
+                        .padding(.vertical, Spacing.xxs)
+                        .background(readinessColor(readiness.level))
+                        .cornerRadius(Spacing.radiusSmall)
+
+                    // Trend arrow
+                    Image(systemName: trendIcon(readiness.trend))
+                        .font(.vitalCaptionSmall)
+                        .foregroundStyle(trendColor(readiness.trend))
                 }
 
-                Text(readiness.recommendation)
+                Text(readiness.result?.recommendation ?? readiness.recommendation)
                     .font(.vitalBody)
                     .foregroundStyle(Color.vitalAdaptiveTextSecondary)
 
@@ -253,6 +286,22 @@ struct HealthDashboardView: View {
                 }
                 .padding(.top, Spacing.xs)
             }
+        }
+    }
+
+    private func trendIcon(_ trend: ReadinessTrend) -> String {
+        switch trend {
+        case .improving: return "arrow.up.right"
+        case .stable: return "arrow.right"
+        case .declining: return "arrow.down.right"
+        }
+    }
+
+    private func trendColor(_ trend: ReadinessTrend) -> Color {
+        switch trend {
+        case .improving: return .vitalSuccess
+        case .stable: return .vitalAdaptiveTextSecondary
+        case .declining: return .vitalDanger
         }
     }
 
@@ -275,8 +324,8 @@ struct HealthDashboardView: View {
         case .optimal: return .vitalSuccess
         case .good: return .vitalInfo
         case .moderate: return .vitalWarning
-        case .fair: return .vitalWarning
-        case .poor: return .vitalDanger
+        case .low: return .vitalWarning
+        case .rest: return .vitalDanger
         }
     }
 

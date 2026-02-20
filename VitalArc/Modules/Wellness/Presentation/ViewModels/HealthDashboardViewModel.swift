@@ -22,11 +22,21 @@ final class HealthDashboardViewModel {
     var todayMetrics: HealthMetrics?
     var weekMetrics: [HealthMetrics] = []
     var readinessScore: ReadinessScore?
+    var readinessResult: ReadinessResult?
     var sleepConsistency: SleepConsistencyScore?
+    var readinessConfiguration: ReadinessConfiguration = .default
     var isLoading = false
     var error: Error?
     var showingPermissionAlert = false
     var authorizationDenied = false
+
+    // MARK: - HRV Tracking Properties
+
+    var hrvBaseline: Double?
+    var hrvDeviationSignificant = false
+    var hrvTrendData7Day: [ChartDataPoint] = []
+    var hrvTrendData30Day: [ChartDataPoint] = []
+    var monthMetrics: [HealthMetrics] = []
 
     // MARK: - Initialization
 
@@ -77,7 +87,19 @@ final class HealthDashboardViewModel {
         }
     }
 
-    /// Load all metrics (today + week) and compute readiness score
+    /// Load health metrics for the past 30 days (for HRV baseline)
+    func loadMonthMetrics() async {
+        do {
+            let calendar = Calendar.current
+            let today = calendar.startOfDay(for: Date())
+            guard let monthAgo = calendar.date(byAdding: .day, value: -29, to: today) else { return }
+            monthMetrics = try await healthRepository.getHealthMetrics(from: monthAgo, to: today)
+        } catch {
+            // Non-critical - don't set error
+        }
+    }
+
+    /// Load all metrics (today + week + month) and compute readiness score + HRV data
     func loadAllMetrics() async {
         isLoading = true
         error = nil
@@ -91,26 +113,77 @@ final class HealthDashboardViewModel {
             if let weekAgo = calendar.date(byAdding: .day, value: -6, to: today) {
                 weekMetrics = try await healthRepository.getHealthMetrics(from: weekAgo, to: today)
             }
+
+            if let monthAgo = calendar.date(byAdding: .day, value: -29, to: today) {
+                monthMetrics = try await healthRepository.getHealthMetrics(from: monthAgo, to: today)
+            }
         } catch {
             self.error = error
         }
 
         updateReadinessScore()
         updateSleepConsistency()
+        updateHRVData()
     }
 
     /// Compute readiness score from today's metrics and weekly baselines
     private func updateReadinessScore() {
         guard let today = todayMetrics else {
             readinessScore = nil
+            readinessResult = nil
             return
         }
+
+        // Legacy score (backward compatible)
         readinessScore = calculateReadinessScore.execute(todayMetrics: today, weekMetrics: weekMetrics)
+
+        // V2 structured result with trend detection
+        let historicalScores = weekMetrics.compactMap { metrics -> Double? in
+            let score = calculateReadinessScore.execute(todayMetrics: metrics, weekMetrics: weekMetrics)
+            return score.overallScore
+        }
+        readinessResult = calculateReadinessScore.executeV2(
+            todayMetrics: today,
+            weekMetrics: weekMetrics,
+            historicalScores: historicalScores,
+            configuration: readinessConfiguration
+        )
     }
 
     /// Compute sleep consistency from week metrics
     private func updateSleepConsistency() {
         sleepConsistency = calculateSleepConsistency.execute(weekMetrics: weekMetrics)
+    }
+
+    /// Update HRV baseline and trend data
+    private func updateHRVData() {
+        // 30-day baseline
+        let allHRVValues = monthMetrics.compactMap { $0.heartRateVariability }
+        if !allHRVValues.isEmpty {
+            hrvBaseline = allHRVValues.reduce(0, +) / Double(allHRVValues.count)
+        } else {
+            hrvBaseline = nil
+        }
+
+        // Deviation detection (>15% from baseline)
+        if let baseline = hrvBaseline, let todayHRV = todayMetrics?.heartRateVariability, baseline > 0 {
+            let deviationPercent = abs(todayHRV - baseline) / baseline * 100
+            hrvDeviationSignificant = deviationPercent > 15
+        } else {
+            hrvDeviationSignificant = false
+        }
+
+        // 7-day trend chart data
+        hrvTrendData7Day = weekMetrics.compactMap { metrics in
+            guard let hrv = metrics.heartRateVariability else { return nil }
+            return ChartDataPoint(date: metrics.date, value: hrv)
+        }.sorted { $0.date < $1.date }
+
+        // 30-day trend chart data
+        hrvTrendData30Day = monthMetrics.compactMap { metrics in
+            guard let hrv = metrics.heartRateVariability else { return nil }
+            return ChartDataPoint(date: metrics.date, value: hrv)
+        }.sorted { $0.date < $1.date }
     }
 
     /// Refresh all metrics and import new workouts
@@ -238,5 +311,53 @@ final class HealthDashboardViewModel {
         let values = weekMetrics.compactMap { $0.sleepHours }
         guard !values.isEmpty else { return nil }
         return values.reduce(0, +) / Double(values.count)
+    }
+
+    // MARK: - HRV Computed Properties
+
+    /// Whether today's HRV is above baseline
+    var isHRVAboveBaseline: Bool {
+        guard let baseline = hrvBaseline, let todayHRV = todayMetrics?.heartRateVariability else { return false }
+        return todayHRV > baseline
+    }
+
+    /// HRV status description
+    var hrvStatusText: String {
+        guard let baseline = hrvBaseline, let todayHRV = todayMetrics?.heartRateVariability else {
+            return "No data"
+        }
+        let diff = todayHRV - baseline
+        let percent = abs(diff / baseline * 100)
+        if percent < 5 {
+            return "At baseline"
+        } else if diff > 0 {
+            return String(format: "%.0f%% above baseline", percent)
+        } else {
+            return String(format: "%.0f%% below baseline", percent)
+        }
+    }
+
+    /// Correlation hint between HRV and sleep
+    var hrvSleepCorrelationHint: String? {
+        guard weekMetrics.count >= 3 else { return nil }
+        let paired = weekMetrics.compactMap { m -> (Double, Double)? in
+            guard let hrv = m.heartRateVariability, let sleep = m.sleepHours else { return nil }
+            return (hrv, sleep)
+        }
+        guard paired.count >= 3 else { return nil }
+
+        // Simple correlation direction check
+        let highSleepHRV = paired.filter { $0.1 >= 7 }.map { $0.0 }
+        let lowSleepHRV = paired.filter { $0.1 < 7 }.map { $0.0 }
+
+        guard !highSleepHRV.isEmpty, !lowSleepHRV.isEmpty else { return nil }
+
+        let avgHighSleep = highSleepHRV.reduce(0, +) / Double(highSleepHRV.count)
+        let avgLowSleep = lowSleepHRV.reduce(0, +) / Double(lowSleepHRV.count)
+
+        if avgHighSleep > avgLowSleep * 1.1 {
+            return "Your HRV tends to be higher on nights with 7+ hours of sleep."
+        }
+        return nil
     }
 }
