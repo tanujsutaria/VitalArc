@@ -152,6 +152,29 @@ struct HealthDashboardView: View {
                     .transition(.vitalScale)
             }
 
+            // SpO2 warning banner
+            if viewModel.isSpO2Low {
+                spo2WarningBanner
+                    .transition(.vitalScale)
+            }
+
+            // HRV Tracking section
+            if viewModel.todayMetrics?.heartRateVariability != nil || !viewModel.hrvTrendData7Day.isEmpty {
+                VitalCard {
+                    HRVTrendView(
+                        currentHRV: viewModel.todayMetrics?.heartRateVariability,
+                        baseline: viewModel.hrvBaseline,
+                        isAboveBaseline: viewModel.isHRVAboveBaseline,
+                        deviationSignificant: viewModel.hrvDeviationSignificant,
+                        statusText: viewModel.hrvStatusText,
+                        trendData7Day: viewModel.hrvTrendData7Day,
+                        trendData30Day: viewModel.hrvTrendData30Day,
+                        sleepCorrelationHint: viewModel.hrvSleepCorrelationHint
+                    )
+                }
+                .transition(.vitalSlideUp)
+            }
+
             // Today's metrics section
             if let today = viewModel.todayMetrics {
                 todayMetricsSection(today)
@@ -232,9 +255,25 @@ struct HealthDashboardView: View {
                     Text("Readiness Insight")
                         .font(.vitalLabel)
                         .foregroundStyle(Color.vitalAdaptiveTextPrimary)
+
+                    Spacer()
+
+                    // Level badge
+                    Text(readiness.level.rawValue)
+                        .font(.vitalCaptionSmall)
+                        .foregroundStyle(.white)
+                        .padding(.horizontal, Spacing.sm)
+                        .padding(.vertical, Spacing.xxs)
+                        .background(readinessColor(readiness.level))
+                        .cornerRadius(Spacing.radiusSmall)
+
+                    // Trend arrow
+                    Image(systemName: trendIcon(readiness.trend))
+                        .font(.vitalCaptionSmall)
+                        .foregroundStyle(trendColor(readiness.trend))
                 }
 
-                Text(readiness.recommendation)
+                Text(readiness.result?.recommendation ?? readiness.recommendation)
                     .font(.vitalBody)
                     .foregroundStyle(Color.vitalAdaptiveTextSecondary)
 
@@ -247,6 +286,22 @@ struct HealthDashboardView: View {
                 }
                 .padding(.top, Spacing.xs)
             }
+        }
+    }
+
+    private func trendIcon(_ trend: ReadinessTrend) -> String {
+        switch trend {
+        case .improving: return "arrow.up.right"
+        case .stable: return "arrow.right"
+        case .declining: return "arrow.down.right"
+        }
+    }
+
+    private func trendColor(_ trend: ReadinessTrend) -> Color {
+        switch trend {
+        case .improving: return .vitalSuccess
+        case .stable: return .vitalAdaptiveTextSecondary
+        case .declining: return .vitalDanger
         }
     }
 
@@ -269,8 +324,8 @@ struct HealthDashboardView: View {
         case .optimal: return .vitalSuccess
         case .good: return .vitalInfo
         case .moderate: return .vitalWarning
-        case .fair: return .vitalWarning
-        case .poor: return .vitalDanger
+        case .low: return .vitalWarning
+        case .rest: return .vitalDanger
         }
     }
 
@@ -442,9 +497,10 @@ struct HealthDashboardView: View {
                         title: "Blood Oxygen",
                         value: String(format: "%.0f", spo2),
                         unit: "%",
-                        icon: "lungs.fill",
-                        color: .vitalInfo,
-                        sparklineData: getSparklineData(for: \.oxygenSaturation)
+                        icon: viewModel.isSpO2Low ? "exclamationmark.triangle.fill" : "lungs.fill",
+                        color: viewModel.isSpO2Critical ? .vitalDanger : (viewModel.isSpO2Low ? .vitalWarning : .vitalInfo),
+                        sparklineData: getSparklineData(for: \.oxygenSaturation),
+                        onTap: { selectedMetric = .spo2 }
                     )
                 }
 
@@ -466,6 +522,41 @@ struct HealthDashboardView: View {
                     .transition(.vitalScale)
             }
         }
+    }
+
+    // MARK: - SpO2 Warning
+
+    private var spo2WarningBanner: some View {
+        let isCritical = viewModel.isSpO2Critical
+        let spo2Value = viewModel.todayMetrics?.oxygenSaturation ?? 0
+
+        return VitalCard {
+            HStack(spacing: Spacing.md) {
+                ZStack {
+                    Circle()
+                        .fill((isCritical ? Color.vitalDanger : Color.vitalWarning).opacity(0.15))
+                        .frame(width: 44, height: 44)
+
+                    Image(systemName: "exclamationmark.triangle.fill")
+                        .font(.vitalIconMedium)
+                        .foregroundStyle(isCritical ? Color.vitalDanger : Color.vitalWarning)
+                }
+
+                VStack(alignment: .leading, spacing: Spacing.xs) {
+                    Text(isCritical ? "Critically Low Blood Oxygen" : "Low Blood Oxygen")
+                        .font(.vitalLabel)
+                        .foregroundStyle(Color.vitalAdaptiveTextPrimary)
+
+                    Text("SpO2 is \(String(format: "%.0f", spo2Value))% — \(isCritical ? "seek medical attention if symptoms persist" : "normal range is 95-100%")")
+                        .font(.vitalBodySmall)
+                        .foregroundStyle(Color.vitalAdaptiveTextSecondary)
+                }
+
+                Spacer()
+            }
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(isCritical ? "Critical: Blood oxygen is \(String(format: "%.0f", spo2Value)) percent" : "Warning: Blood oxygen is \(String(format: "%.0f", spo2Value)) percent")
     }
 
     // MARK: - Weekly Trends

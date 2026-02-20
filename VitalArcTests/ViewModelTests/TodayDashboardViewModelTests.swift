@@ -264,6 +264,83 @@ final class TodayDashboardViewModelTests: XCTestCase {
         }
     }
 
+    // MARK: - Foreground Refresh Regression Tests (Bug Fix: No Refresh on Resume)
+
+    func testLoadTodayDataRefreshesOnSubsequentCall() async {
+        // First load with initial health data
+        let initialMetrics = HealthMetrics(
+            date: Date(),
+            heartRateVariability: 65,
+            restingHeartRate: 60,
+            activeEnergy: 300,
+            steps: 5000,
+            sleepHours: 7.0
+        )
+        mockHealthRepo.mockTodayMetrics = initialMetrics
+
+        await viewModel.loadTodayData()
+        XCTAssertEqual(viewModel.healthMetrics?.steps, 5000)
+
+        // Update mock data (simulates new data arriving while app was backgrounded)
+        let updatedMetrics = HealthMetrics(
+            date: Date(),
+            heartRateVariability: 70,
+            restingHeartRate: 58,
+            activeEnergy: 500,
+            steps: 10000,
+            sleepHours: 7.0
+        )
+        mockHealthRepo.mockTodayMetrics = updatedMetrics
+
+        // Second call (simulates scenePhase returning to .active)
+        await viewModel.loadTodayData()
+
+        XCTAssertEqual(viewModel.healthMetrics?.steps, 10000)
+        XCTAssertEqual(viewModel.healthMetrics?.activeEnergy, 500)
+    }
+
+    func testLoadTodayDataReloadsAfterDateNavigation() async {
+        // Load today's data
+        let todayMetrics = HealthMetrics(
+            date: Date(),
+            heartRateVariability: 65,
+            restingHeartRate: 60,
+            steps: 8000,
+            sleepHours: 7.5
+        )
+        mockHealthRepo.mockTodayMetrics = todayMetrics
+
+        await viewModel.loadTodayData()
+        XCTAssertEqual(viewModel.healthMetrics?.steps, 8000)
+
+        // Navigate to previous day
+        viewModel.previousDay()
+        XCTAssertFalse(viewModel.isToday)
+
+        // Reload should fetch for the new selectedDate
+        await viewModel.loadTodayData()
+        XCTAssertFalse(viewModel.isLoading)
+    }
+
+    func testLoadTodayDataSetsLoadingFalseAfterRefresh() async {
+        let metrics = HealthMetrics(
+            date: Date(),
+            heartRateVariability: 65,
+            restingHeartRate: 60,
+            steps: 8000,
+            sleepHours: 7.5
+        )
+        mockHealthRepo.mockTodayMetrics = metrics
+
+        await viewModel.loadTodayData()
+        XCTAssertFalse(viewModel.isLoading)
+
+        // Second refresh
+        await viewModel.loadTodayData()
+        XCTAssertFalse(viewModel.isLoading)
+        XCTAssertNotNil(viewModel.healthMetrics)
+    }
+
     // MARK: - Formatting Tests
 
     func testFormatDuration() {

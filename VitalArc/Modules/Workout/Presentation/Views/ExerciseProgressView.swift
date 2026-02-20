@@ -15,11 +15,36 @@ struct ExerciseProgressView: View {
     @State private var historyPoints: [ExerciseHistoryPoint] = []
     @State private var isLoading = true
     @State private var selectedMetric: ProgressMetric = .maxWeight
+    @State private var selectedTimeRange: TimeRange = .all
 
     enum ProgressMetric: String, CaseIterable {
         case maxWeight = "Max Weight"
         case totalVolume = "Volume"
         case estimated1RM = "Est. 1RM"
+    }
+
+    enum TimeRange: String, CaseIterable {
+        case week = "7D"
+        case month = "30D"
+        case threeMonths = "90D"
+        case all = "All"
+
+        var cutoffDate: Date? {
+            let calendar = Calendar.current
+            switch self {
+            case .week: return calendar.date(byAdding: .day, value: -7, to: Date())
+            case .month: return calendar.date(byAdding: .day, value: -30, to: Date())
+            case .threeMonths: return calendar.date(byAdding: .day, value: -90, to: Date())
+            case .all: return nil
+            }
+        }
+    }
+
+    private var filteredPoints: [ExerciseHistoryPoint] {
+        guard let cutoff = selectedTimeRange.cutoffDate else {
+            return historyPoints
+        }
+        return historyPoints.filter { $0.date >= cutoff }
     }
 
     var body: some View {
@@ -31,6 +56,7 @@ struct ExerciseProgressView: View {
                 } else if historyPoints.isEmpty {
                     emptyState
                 } else {
+                    timeRangePicker
                     metricPicker
                     chartView
                     statsSection
@@ -68,6 +94,17 @@ struct ExerciseProgressView: View {
         .padding(.vertical, Spacing.xxl)
     }
 
+    // MARK: - Time Range Picker
+
+    private var timeRangePicker: some View {
+        Picker("Time Range", selection: $selectedTimeRange) {
+            ForEach(TimeRange.allCases, id: \.self) { range in
+                Text(range.rawValue).tag(range)
+            }
+        }
+        .pickerStyle(.segmented)
+    }
+
     // MARK: - Metric Picker
 
     private var metricPicker: some View {
@@ -88,7 +125,7 @@ struct ExerciseProgressView: View {
                     .font(.vitalLabel)
                     .foregroundStyle(Color.vitalAdaptiveTextSecondary)
 
-                Chart(historyPoints) { point in
+                Chart(filteredPoints) { point in
                     LineMark(
                         x: .value("Date", point.date),
                         y: .value(selectedMetric.rawValue, valueForMetric(point))
@@ -152,8 +189,8 @@ struct ExerciseProgressView: View {
 
             VitalCard {
                 VStack(spacing: Spacing.md) {
-                    if let first = historyPoints.first, let last = historyPoints.last, historyPoints.count > 1 {
-                        statRow("Sessions", "\(historyPoints.count)")
+                    if let first = filteredPoints.first, let last = filteredPoints.last, filteredPoints.count > 1 {
+                        statRow("Sessions", "\(filteredPoints.count)")
                         Divider()
                         statRow("First Recorded", first.date.formatted(date: .abbreviated, time: .omitted))
                         Divider()
@@ -168,7 +205,7 @@ struct ExerciseProgressView: View {
                         let e1rmChange = last.estimated1RM - first.estimated1RM
                         let e1rmFormatted = String(format: "%+.1f kg", e1rmChange)
                         statRow("Est. 1RM Change", e1rmFormatted)
-                    } else if let only = historyPoints.first {
+                    } else if let only = filteredPoints.first {
                         statRow("Sessions", "1")
                         Divider()
                         statRow("Max Weight", String(format: "%.1f kg", only.maxWeight))

@@ -393,6 +393,55 @@ final class AnalyticsDashboardViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.weeklyTrainingVolume, 10000)
     }
 
+    // MARK: - Reload Regression Tests (Bug Fix: Stale Data on Tab Reselection)
+
+    func testLoadDataCanBeCalledMultipleTimes() async {
+        setupMockData()
+
+        await viewModel.loadData()
+        XCTAssertFalse(viewModel.isLoading)
+
+        // Second call should succeed without crash
+        await viewModel.loadData()
+        XCTAssertFalse(viewModel.isLoading)
+        XCTAssertNil(viewModel.errorMessage)
+    }
+
+    func testLoadDataClearsAndReloadsState() async {
+        // First load with initial data
+        let initialRecords = [
+            MockAnalyticsRepository.createSamplePersonalRecord(exerciseName: "Squat", value: 150)
+        ]
+        mockAnalyticsRepository.mockPersonalRecords = initialRecords
+        setupMockData()
+
+        await viewModel.loadData()
+        XCTAssertEqual(viewModel.personalRecords.count, 1)
+        XCTAssertEqual(viewModel.personalRecords.first?.exerciseName, "Squat")
+
+        // Update mock data and reload (simulates tab reselection refresh)
+        let updatedRecords = [
+            MockAnalyticsRepository.createSamplePersonalRecord(exerciseName: "Squat", value: 160),
+            MockAnalyticsRepository.createSamplePersonalRecord(exerciseName: "Deadlift", value: 200)
+        ]
+        mockAnalyticsRepository.mockPersonalRecords = updatedRecords
+
+        await viewModel.loadData()
+
+        XCTAssertEqual(viewModel.personalRecords.count, 2)
+    }
+
+    func testLoadDataSetsIsLoadingFalseAfterReload() async {
+        setupMockData()
+
+        await viewModel.loadData()
+        XCTAssertFalse(viewModel.isLoading)
+
+        // Reload
+        await viewModel.loadData()
+        XCTAssertFalse(viewModel.isLoading)
+    }
+
     // MARK: - Weight Trend Tests
 
     func testWeightTrendFromProgressSnapshots() async {

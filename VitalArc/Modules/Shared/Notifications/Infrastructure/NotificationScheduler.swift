@@ -36,6 +36,7 @@ final class NotificationScheduler: NotificationSchedulerProtocol {
         static let workoutReminderPrefix = "com.vitalarc.workout."
         static let recoveryAlert = "com.vitalarc.recovery.alert"
         static let nutritionReminder = "com.vitalarc.nutrition.reminder"
+        static let goalPrefix = "com.vitalarc.goal."
     }
 
     // MARK: - Properties
@@ -246,6 +247,50 @@ final class NotificationScheduler: NotificationSchedulerProtocol {
         notificationCenter.removePendingNotificationRequests(
             withIdentifiers: [NotificationID.nutritionReminder]
         )
+    }
+
+    // MARK: - Goal Notifications
+
+    /// Schedule a reminder for an incomplete goal (e.g., daily steps, water intake)
+    func scheduleGoalReminder(
+        goalType: String,
+        title: String,
+        body: String,
+        at dateComponents: DateComponents
+    ) async throws {
+        let content = UNMutableNotificationContent()
+        content.title = title
+        content.body = body
+        content.sound = .default
+
+        let trigger = UNCalendarNotificationTrigger(
+            dateMatching: dateComponents,
+            repeats: false
+        )
+
+        let identifier = "\(NotificationID.goalPrefix)\(goalType)"
+        let request = UNNotificationRequest(
+            identifier: identifier,
+            content: content,
+            trigger: trigger
+        )
+
+        try await notificationCenter.add(request)
+    }
+
+    /// Cancel the pending notification for a specific goal type when the goal is met
+    func cancelGoalNotification(goalType: String) {
+        let identifier = "\(NotificationID.goalPrefix)\(goalType)"
+        notificationCenter.removePendingNotificationRequests(withIdentifiers: [identifier])
+    }
+
+    /// Cancel all pending goal notifications
+    func cancelAllGoalNotifications() async {
+        let pending = await notificationCenter.pendingNotificationRequests()
+        let goalIDs = pending
+            .map(\.identifier)
+            .filter { $0.hasPrefix(NotificationID.goalPrefix) }
+        notificationCenter.removePendingNotificationRequests(withIdentifiers: goalIDs)
     }
 
     // MARK: - Badge Management
