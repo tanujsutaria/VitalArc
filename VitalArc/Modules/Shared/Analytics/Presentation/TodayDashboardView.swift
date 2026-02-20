@@ -10,6 +10,7 @@ import SwiftUI
 struct TodayDashboardView: View {
     @Environment(\.dependencyContainer) private var container
     @Environment(\.selectedTab) private var selectedTab
+    @Environment(\.scenePhase) private var scenePhase
     @State private var viewModel: TodayDashboardViewModel?
 
     var body: some View {
@@ -34,6 +35,13 @@ struct TodayDashboardView: View {
                 viewModel = TodayDashboardViewModel(container: container)
             }
             await viewModel?.loadTodayData()
+        }
+        .onChange(of: scenePhase) { _, newPhase in
+            if newPhase == .active {
+                Task {
+                    await viewModel?.loadTodayData()
+                }
+            }
         }
     }
 
