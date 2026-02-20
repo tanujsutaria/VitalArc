@@ -16,7 +16,7 @@ final class FoodLoggingViewModel {
     var isLoading = false
     var errorMessage: String?
     var showingFoodSearch = false
-    var selectedMeal: MealType = .breakfast
+    var selectedMeal: MealType = MealType.forCurrentTime()
     var isLoggingFood = false
     var isDeletingEntry = false
     var isUpdatingEntry = false
@@ -92,8 +92,12 @@ final class FoodLoggingViewModel {
         isUpdatingEntry = true
 
         do {
-            _ = try await updateFoodEntryUseCase.execute(entry: entry, newQuantity: newQuantity)
-            await loadEntries()
+            let updatedEntry = try await updateFoodEntryUseCase.execute(entry: entry, newQuantity: newQuantity)
+
+            // Immediately update the local entry for instant UI feedback
+            if let index = foodEntries.firstIndex(where: { $0.id == entry.id }) {
+                foodEntries[index] = updatedEntry
+            }
         } catch {
             errorMessage = UserFacingError.message(for: error, context: .saving)
         }
@@ -101,26 +105,38 @@ final class FoodLoggingViewModel {
         isUpdatingEntry = false
     }
 
-    /// Re-log an existing food entry with today's date
+    /// Re-log an existing food entry with the selected date, preserving original serving size
     func relogEntry(_ entry: FoodEntry) async {
         guard !isLoggingFood else { return }
         isLoggingFood = true
 
         do {
-            // Create a new entry with the same food data but current date
-            let newEntry = FoodEntry(
-                foodId: entry.foodId,
-                date: selectedDate,
-                meal: entry.meal,
-                quantity: entry.quantity,
-                calories: entry.calories,
-                protein: entry.protein,
-                carbs: entry.carbs,
-                fat: entry.fat,
-                fiber: entry.fiber,
-                sugar: entry.sugar
-            )
-            try await repository.saveFoodEntry(newEntry)
+            // Look up the food to get current nutritional data, preserving original quantity
+            if let food = try await repository.getFood(id: entry.foodId) {
+                // Use logFoodUseCase to properly scale macros from current food data,
+                // update daily nutrition totals, and track food usage
+                _ = try await logFoodUseCase.execute(
+                    food: food,
+                    quantity: entry.quantity,
+                    meal: entry.meal,
+                    date: selectedDate
+                )
+            } else {
+                // Food no longer in DB; fall back to stored macro data
+                let newEntry = FoodEntry(
+                    foodId: entry.foodId,
+                    date: selectedDate,
+                    meal: entry.meal,
+                    quantity: entry.quantity,
+                    calories: entry.calories,
+                    protein: entry.protein,
+                    carbs: entry.carbs,
+                    fat: entry.fat,
+                    fiber: entry.fiber,
+                    sugar: entry.sugar
+                )
+                try await repository.saveFoodEntry(newEntry)
+            }
             await loadEntries()
         } catch {
             errorMessage = UserFacingError.message(for: error, context: .saving)

@@ -46,7 +46,7 @@ private struct NutritionUnifiedView: View {
     @Bindable var viewModel: NutritionTabViewModel
     let container: DependencyContainer
     @State private var showingFoodSearch = false
-    @State private var selectedMeal: MealType = .breakfast
+    @State private var selectedMeal: MealType = MealType.forCurrentTime()
     @State private var selectedFood: Food?
     @State private var showingQuantitySheet = false
     @State private var showingGoalEditSheet = false
@@ -573,8 +573,16 @@ final class NutritionTabViewModel {
     func updateEntry(_ entry: FoodEntry, newQuantity: Double) async {
         do {
             let updateUseCase = UpdateFoodEntryUseCase(repository: nutritionRepository)
-            _ = try await updateUseCase.execute(entry: entry, newQuantity: newQuantity)
-            await loadData()
+            let updatedEntry = try await updateUseCase.execute(entry: entry, newQuantity: newQuantity)
+
+            // Immediately update the local entry for instant UI feedback
+            if let index = foodEntries.firstIndex(where: { $0.id == entry.id }) {
+                foodEntries[index] = updatedEntry
+            }
+
+            // Recalculate daily nutrition totals immediately
+            let calculateUseCase = CalculateNutritionUseCase(repository: nutritionRepository)
+            dailyNutrition = try await calculateUseCase.execute(for: selectedDate)
         } catch {
             self.error = error
             Log.error("Failed to update entry", error: error, category: .nutrition)
@@ -583,19 +591,33 @@ final class NutritionTabViewModel {
 
     func relogEntry(_ entry: FoodEntry) async {
         do {
-            let newEntry = FoodEntry(
-                foodId: entry.foodId,
-                date: selectedDate,
-                meal: entry.meal,
-                quantity: entry.quantity,
-                calories: entry.calories,
-                protein: entry.protein,
-                carbs: entry.carbs,
-                fat: entry.fat,
-                fiber: entry.fiber,
-                sugar: entry.sugar
-            )
-            try await nutritionRepository.saveFoodEntry(newEntry)
+            // Look up the food to get current nutritional data, preserving original quantity
+            if let food = try await nutritionRepository.getFood(id: entry.foodId) {
+                // Use LogFoodUseCase to properly scale macros from current food data,
+                // update daily nutrition totals, and track food usage
+                let logUseCase = LogFoodUseCase(repository: nutritionRepository)
+                _ = try await logUseCase.execute(
+                    food: food,
+                    quantity: entry.quantity,
+                    meal: entry.meal,
+                    date: selectedDate
+                )
+            } else {
+                // Food no longer in DB; fall back to stored macro data
+                let newEntry = FoodEntry(
+                    foodId: entry.foodId,
+                    date: selectedDate,
+                    meal: entry.meal,
+                    quantity: entry.quantity,
+                    calories: entry.calories,
+                    protein: entry.protein,
+                    carbs: entry.carbs,
+                    fat: entry.fat,
+                    fiber: entry.fiber,
+                    sugar: entry.sugar
+                )
+                try await nutritionRepository.saveFoodEntry(newEntry)
+            }
             await loadData()
         } catch {
             self.error = error

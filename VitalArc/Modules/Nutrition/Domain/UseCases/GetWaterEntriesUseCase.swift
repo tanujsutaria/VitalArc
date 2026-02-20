@@ -19,6 +19,8 @@ final class GetWaterEntriesUseCase: GetWaterEntriesUseCaseProtocol {
     }
 
     func execute(for date: Date) async throws -> [WaterEntry] {
-        try await repository.getWaterEntries(for: date)
+        // Normalize to start of day using local timezone for consistent day boundaries
+        let normalizedDate = Calendar.current.startOfDay(for: date)
+        return try await repository.getWaterEntries(for: normalizedDate)
     }
 }

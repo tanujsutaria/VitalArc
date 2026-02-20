@@ -11,6 +11,7 @@ struct WaterTrackingCard: View {
     @State private var waterEntries: [WaterEntry] = []
     @State private var customAmount = ""
     @State private var showingCustomInput = false
+    @Environment(\.scenePhase) private var scenePhase
 
     private let logWaterUseCase: LogWaterUseCaseProtocol
     private let getWaterEntriesUseCase: GetWaterEntriesUseCaseProtocol
@@ -189,11 +190,20 @@ struct WaterTrackingCard: View {
         .task {
             await loadWaterEntries()
         }
+        .onChange(of: scenePhase) { _, newPhase in
+            // Refresh water entries when app returns to foreground
+            // to handle timezone-aware day boundary changes
+            if newPhase == .active {
+                Task { await loadWaterEntries() }
+            }
+        }
     }
 
     private func loadWaterEntries() async {
         do {
-            waterEntries = try await getWaterEntriesUseCase.execute(for: date)
+            // Use timezone-aware day boundary for consistent water tracking
+            let normalizedDate = Calendar.current.startOfDay(for: date)
+            waterEntries = try await getWaterEntriesUseCase.execute(for: normalizedDate)
         } catch {
             // Non-critical
         }
