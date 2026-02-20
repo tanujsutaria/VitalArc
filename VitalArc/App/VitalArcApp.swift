@@ -23,6 +23,7 @@ struct VitalArcApp: App {
             WorkoutModel.self,
             ExerciseModel.self,
             WorkoutSetModel.self,
+            SetGroupModel.self,
 
             // Training Domain Models
             MesocycleModel.self,
