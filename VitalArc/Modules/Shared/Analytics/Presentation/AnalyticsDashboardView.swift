@@ -83,6 +83,12 @@ struct AnalyticsDashboardView: View {
                     hasAppeared = true
                 }
             }
+            .onAppear {
+                guard hasAppeared else { return }
+                Task {
+                    await viewModel.loadData()
+                }
+            }
             .onChange(of: viewModel.selectedTimeRange) { _, _ in
                 Task {
                     await viewModel.loadData()

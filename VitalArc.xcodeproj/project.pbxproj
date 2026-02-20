@@ -1555,28 +1555,28 @@
 			path = Data;
 			sourceTree = "<group>";
 		};
-		"TEMP_7045DCCC-EB4F-4A81-9965-345DB4DC6C1F" /* Data */ = {
+		"TEMP_2661FF43-EE02-4CD5-8D00-63C321AFF31C" /* Data */ = {
 			isa = PBXGroup;
 			children = (
 			);
 			path = Data;
 			sourceTree = "<group>";
 		};
-		"TEMP_9306DC46-03FF-4230-9E2C-712BE5DD82B7" /* Common */ = {
+		"TEMP_35FC8A73-6872-4042-AD9A-38EC8C1032C9" /* Common */ = {
 			isa = PBXGroup;
 			children = (
 			);
 			path = Common;
 			sourceTree = "<group>";
 		};
-		"TEMP_C454FE12-F520-4469-B88E-B1082F3A912B" /* Presentation */ = {
+		"TEMP_8D9300E4-A672-4A47-B96B-9CEFD1C89C68" /* Presentation */ = {
 			isa = PBXGroup;
 			children = (
 			);
 			path = Presentation;
 			sourceTree = "<group>";
 		};
-		"TEMP_D2F3A496-1670-47D7-B870-46CFDBEEBD5E" /* Infrastructure */ = {
+		"TEMP_CE1BA8A8-3902-4B15-B532-D78BF6C360C4" /* Infrastructure */ = {
 			isa = PBXGroup;
 			children = (
 			);
