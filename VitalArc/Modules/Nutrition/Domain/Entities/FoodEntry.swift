@@ -57,4 +57,32 @@ enum MealType: String, Codable, CaseIterable {
     var displayName: String {
         rawValue
     }
+
+    // MARK: - Time-Based Meal Selection
+
+    /// Default meal time boundaries (hour of day, 0-23)
+    static let breakfastStartHour = 5   // 5 AM
+    static let lunchStartHour = 11      // 11 AM
+    static let dinnerStartHour = 17     // 5 PM
+    static let snackStartHour = 21      // 9 PM
+
+    /// Returns the appropriate meal type for the current time of day
+    static func forCurrentTime(
+        breakfastStart: Int = breakfastStartHour,
+        lunchStart: Int = lunchStartHour,
+        dinnerStart: Int = dinnerStartHour,
+        snackStart: Int = snackStartHour
+    ) -> MealType {
+        let hour = Calendar.current.component(.hour, from: Date())
+
+        if hour >= snackStart || hour < breakfastStart {
+            return .snack
+        } else if hour >= dinnerStart {
+            return .dinner
+        } else if hour >= lunchStart {
+            return .lunch
+        } else {
+            return .breakfast
+        }
+    }
 }
