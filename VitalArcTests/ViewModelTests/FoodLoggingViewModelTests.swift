@@ -80,7 +80,7 @@ final class FoodLoggingViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isLoading)
         XCTAssertNil(viewModel.errorMessage)
         XCTAssertFalse(viewModel.showingFoodSearch)
-        XCTAssertEqual(viewModel.selectedMeal, .breakfast)
+        XCTAssertEqual(viewModel.selectedMeal, MealType.forCurrentTime())
     }
 
     func testInitialDateIsToday() {
@@ -424,7 +424,7 @@ final class FoodLoggingViewModelTests: XCTestCase {
 
     func testSelectedMealChange() {
         // Given
-        XCTAssertEqual(viewModel.selectedMeal, .breakfast)
+        XCTAssertEqual(viewModel.selectedMeal, MealType.forCurrentTime())
 
         // When
         viewModel.selectedMeal = .dinner
