@@ -33,20 +33,24 @@ See `PROJECT_STATUS.md` for detailed status.
 ### Completed
 | Feature | Status |
 |---------|--------|
-| Recovery Score | ✅ HRV algorithm + HealthKit integration + 22 bug fixes |
+| Recovery Score | ✅ V2 with configurable weights + component breakdown |
 | Strain Tracking | ✅ TRIMP calculation + custom settings |
 | Nutrition Algorithm | ✅ TDEE estimation + UI integration + macro goal editing |
-| Notifications | ✅ UI, ViewModel, use cases, infrastructure |
-| Sleep Analysis | ✅ Stage breakdown, quality scoring, 7-day trends, overnight fix |
+| Notifications | ✅ UI, ViewModel, use cases, goal notification cancellation |
+| Sleep Analysis | ✅ Stage breakdown, quality scoring, 7-day trends, consistency |
 | Wellness Accessibility | ✅ VoiceOver labels across all wellness views |
+| Workout History & Trends | ✅ PR tracking, rest timer, supersets, plate calculator, progressive overload charts |
+| Water Tracking | ✅ Manual logging with daily goals, timezone-aware reset |
+| Body Composition | ✅ Body fat %, lean mass, waist/hip/chest/arm/thigh measurements + trends |
+| HRV Tracking | ✅ Trend visualization with 7/30/90-day windows |
+| Muscle Heat Maps | ✅ Training frequency visualization per muscle group |
+| Volume Analysis | ✅ Per-muscle-group volume breakdown + weekly/monthly trends |
+| Configurable Meal Times | ✅ User-defined breakfast/lunch/dinner/snack ranges |
 
 ### In Progress
 | Feature | Status | Remaining |
 |---------|--------|-----------|
-| Workout History & Trends | PR tracking, rest timer, supersets, progressive overload charts | Charts polish |
-| Water Tracking | Manual logging with daily goals | HealthKit sync |
-| Body Composition | Body fat %, lean mass from HealthKit | Trend charts |
-| Sleep Consistency | Bedtime/wake variance scoring | - |
+| Body Composition | Waist/hip/chest/arm/thigh measurements + trends | HealthKit body fat sync |
 
 ### Planned
 | Feature | Priority | Description |
@@ -166,7 +170,7 @@ xcodebuild -scheme VitalArc -destination 'platform=iOS Simulator,name=iPhone 17 
 | Views | ~80 |
 | ViewModels | 14 |
 | Use cases | 27 |
-| Unit tests | 786 |
+| Unit tests | 1096 |
 | Exercises | 960+ |
 
 ## Author
