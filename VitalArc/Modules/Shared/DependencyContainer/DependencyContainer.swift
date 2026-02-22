@@ -637,6 +637,7 @@ final class SwiftDataHealthRepository: HealthRepository {
             existingModel.awakeHours = metrics.sleepStages?.awake
             existingModel.weight = metrics.weight
             existingModel.bodyFatPercentage = metrics.bodyFatPercentage
+            existingModel.waterIntake = metrics.waterIntake
             existingModel.leanBodyMass = metrics.leanBodyMass
             existingModel.respiratoryRate = metrics.respiratoryRate
             existingModel.oxygenSaturation = metrics.oxygenSaturation

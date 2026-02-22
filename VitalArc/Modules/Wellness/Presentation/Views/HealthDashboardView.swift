@@ -138,6 +138,9 @@ struct HealthDashboardView: View {
             return today.oxygenSaturation ?? -1
         case .vo2Max:
             return today.vo2Max ?? -1
+        case .hydration:
+            guard let water = today.waterIntake else { return -1 }
+            return water * 0.033814 // mL to fl oz
         }
     }
 
@@ -171,6 +174,14 @@ struct HealthDashboardView: View {
                         trendData30Day: viewModel.hrvTrendData30Day,
                         sleepCorrelationHint: viewModel.hrvSleepCorrelationHint
                     )
+                }
+                .transition(.vitalSlideUp)
+            }
+
+            // Stress Analysis section
+            if let stress = viewModel.stressAnalysis {
+                VitalCard {
+                    StressAnalysisView(analysis: stress)
                 }
                 .transition(.vitalSlideUp)
             }
@@ -214,24 +225,28 @@ struct HealthDashboardView: View {
                 }
 
                 // Sleep Score
-                ScoreRingView(
-                    score: calculateSleepScore(metrics),
-                    title: "Sleep",
-                    subtitle: sleepLabel(calculateSleepScore(metrics)),
-                    gradient: Color.vitalAccentGradient,
-                    size: 90,
-                    lineWidth: 8
-                )
+                if let sleep = viewModel.sleepScore {
+                    ScoreRingView(
+                        score: sleep.value,
+                        title: "Sleep",
+                        subtitle: sleep.label,
+                        gradient: Color.vitalAccentGradient,
+                        size: 90,
+                        lineWidth: 8
+                    )
+                }
 
                 // Activity Score
-                ScoreRingView(
-                    score: calculateActivityScore(metrics),
-                    title: "Activity",
-                    subtitle: activityLabel(calculateActivityScore(metrics)),
-                    gradient: Color.vitalInfoGradient,
-                    size: 90,
-                    lineWidth: 8
-                )
+                if let activity = viewModel.activityScore {
+                    ScoreRingView(
+                        score: activity.value,
+                        title: "Activity",
+                        subtitle: activity.label,
+                        gradient: Color.vitalInfoGradient,
+                        size: 90,
+                        lineWidth: 8
+                    )
+                }
             }
             .frame(maxWidth: .infinity)
 
@@ -326,52 +341,6 @@ struct HealthDashboardView: View {
         case .moderate: return .vitalWarning
         case .low: return .vitalWarning
         case .rest: return .vitalDanger
-        }
-    }
-
-    // MARK: - Score Calculations
-
-    private func calculateSleepScore(_ metrics: HealthMetrics) -> Double {
-        guard let sleepHours = metrics.sleepHours else { return 0 }
-        if sleepHours >= 7 && sleepHours <= 9 {
-            return min(100, 80 + (sleepHours - 7) * 10)
-        } else if sleepHours < 7 {
-            return max(0, (sleepHours / 7) * 80)
-        } else {
-            return max(70, 90 - (sleepHours - 9) * 10)
-        }
-    }
-
-    private func calculateActivityScore(_ metrics: HealthMetrics) -> Double {
-        var score: Double = 0
-
-        if let steps = metrics.steps {
-            score += min(Double(steps) / 10000 * 50, 50)
-        }
-
-        if let energy = metrics.activeEnergy {
-            score += min(energy / 500 * 50, 50)
-        }
-
-        return min(score, 100)
-    }
-
-    private func sleepLabel(_ score: Double) -> String {
-        switch score {
-        case 0..<50: return "Poor"
-        case 50..<70: return "Fair"
-        case 70..<85: return "Good"
-        default: return "Excellent"
-        }
-    }
-
-    private func activityLabel(_ score: Double) -> String {
-        switch score {
-        case 0..<30: return "Low"
-        case 30..<50: return "Light"
-        case 50..<70: return "Moderate"
-        case 70..<85: return "Active"
-        default: return "High"
         }
     }
 
@@ -512,6 +481,18 @@ struct HealthDashboardView: View {
                         icon: "figure.run",
                         color: .vitalSuccess,
                         sparklineData: getSparklineData(for: \.vo2Max)
+                    )
+                }
+
+                if let water = metrics.waterIntake {
+                    MetricCard(
+                        title: "Hydration",
+                        value: String(format: "%.0f", water * 0.033814),
+                        unit: "fl oz",
+                        icon: "drop.fill",
+                        color: .vitalInfo,
+                        sparklineData: viewModel.weekMetrics.compactMap { $0.waterIntake.map { $0 * 0.033814 } },
+                        onTap: { selectedMetric = .hydration }
                     )
                 }
             }
