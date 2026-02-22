@@ -68,6 +68,14 @@ final class OnboardingViewModelTests: XCTestCase {
 
         viewModel.nextStep()
 
+        XCTAssertEqual(viewModel.currentStep, .goalSetup)
+    }
+
+    func testNextStepFromGoalSetup() {
+        viewModel.currentStep = .goalSetup
+
+        viewModel.nextStep()
+
         XCTAssertEqual(viewModel.currentStep, .healthKitPermission)
     }
 
@@ -87,12 +95,20 @@ final class OnboardingViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.currentStep, .welcome)
     }
 
+    func testPreviousStepFromGoalSetup() {
+        viewModel.currentStep = .goalSetup
+
+        viewModel.previousStep()
+
+        XCTAssertEqual(viewModel.currentStep, .profileSetup)
+    }
+
     func testPreviousStepFromHealthKit() {
         viewModel.currentStep = .healthKitPermission
 
         viewModel.previousStep()
 
-        XCTAssertEqual(viewModel.currentStep, .profileSetup)
+        XCTAssertEqual(viewModel.currentStep, .goalSetup)
     }
 
     func testPreviousStepFromFirstStepDoesNothing() {
@@ -267,6 +283,58 @@ final class OnboardingViewModelTests: XCTestCase {
         await viewModel.skipHealthKitSetup()
 
         XCTAssertNotNil(viewModel.errorMessage)
+    }
+
+    // MARK: - TDEE Computation Tests
+
+    func testComputeTDEEResultReturnsValidResult() {
+        viewModel.userName = "Test User"
+        viewModel.heightFeet = 5
+        viewModel.heightInches = 10
+        viewModel.weightLbs = 165.0
+        viewModel.selectedSex = .male
+        viewModel.selectedActivityLevel = .moderate
+        viewModel.selectedWeightGoal = .maintain
+
+        let result = viewModel.computeTDEEResult()
+
+        XCTAssertGreaterThan(result.bmr, 0)
+        XCTAssertGreaterThan(result.tdee, 0)
+        XCTAssertEqual(result.adjustedCalories, result.tdee) // maintain = no adjustment
+        XCTAssertEqual(result.deficit, 0)
+        XCTAssertGreaterThan(result.proteinGoal, 0)
+        XCTAssertGreaterThan(result.fatGoal, 0)
+        XCTAssertGreaterThan(result.carbGoal, 0)
+    }
+
+    func testComputeTDEEResultWithWeightLossGoal() {
+        viewModel.userName = "Test User"
+        viewModel.heightFeet = 5
+        viewModel.heightInches = 10
+        viewModel.weightLbs = 165.0
+        viewModel.selectedSex = .male
+        viewModel.selectedActivityLevel = .moderate
+        viewModel.selectedWeightGoal = .lose
+
+        let result = viewModel.computeTDEEResult()
+
+        XCTAssertLessThan(result.adjustedCalories, result.tdee)
+        XCTAssertLessThan(result.deficit, 0)
+    }
+
+    func testComputeTDEEResultWithWeightGainGoal() {
+        viewModel.userName = "Test User"
+        viewModel.heightFeet = 5
+        viewModel.heightInches = 10
+        viewModel.weightLbs = 165.0
+        viewModel.selectedSex = .male
+        viewModel.selectedActivityLevel = .moderate
+        viewModel.selectedWeightGoal = .gain
+
+        let result = viewModel.computeTDEEResult()
+
+        XCTAssertGreaterThan(result.adjustedCalories, result.tdee)
+        XCTAssertGreaterThan(result.deficit, 0)
     }
 
     // MARK: - Loading State Tests

@@ -283,6 +283,7 @@
 		D93F5D1BA7000AD95C4612C9 /* TodayDashboardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC7F568EDC1BBEBC3B9BD9B4 /* TodayDashboardViewModel.swift */; };
 		DB74678DC8B4C4A489614CC1 /* WaterTrackingUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2318A4E2CBCD74BDA4458D63 /* WaterTrackingUseCaseTests.swift */; };
 		DBDECEE0ECD1F2D25ABF11FA /* HRVTrackingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C05E1B73FC796B03B3B11D8 /* HRVTrackingTests.swift */; };
+		DC34F87B13D983EB69593295 /* GoalSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 670BBBDA25E9FA0AB86B659B /* GoalSetupView.swift */; };
 		DD3C623F2892D669C1CF9689 /* ScheduleNotificationsUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C16B2124D37B02D7F9EE89C /* ScheduleNotificationsUseCase.swift */; };
 		DE5DDCDAC0B5C93BDFCEBF70 /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 949EED8DAD7C29DE38CD496C /* WelcomeView.swift */; };
 		DFDC6B009E7725C41F70E45E /* Food.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116BCACF69043AEF572C68C0 /* Food.swift */; };
@@ -487,6 +488,7 @@
 		64239EB9B0DC76866C428B7D /* EditCustomExerciseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditCustomExerciseView.swift; sourceTree = "<group>"; };
 		6454AEDC63935BDB5E52EC5B /* CalculateStrainScoreUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalculateStrainScoreUseCase.swift; sourceTree = "<group>"; };
 		661502FB2A505A384E4B04D5 /* WorkoutRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutRepository.swift; sourceTree = "<group>"; };
+		670BBBDA25E9FA0AB86B659B /* GoalSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalSetupView.swift; sourceTree = "<group>"; };
 		6741575CC45FBD5A51A967C3 /* LogFoodUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogFoodUseCaseTests.swift; sourceTree = "<group>"; };
 		67A42091E0ECEEB81CE17654 /* MockAnalyticsUseCases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAnalyticsUseCases.swift; sourceTree = "<group>"; };
 		67F653A21FFE9445618407DF /* HealthDashboardViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthDashboardViewModelTests.swift; sourceTree = "<group>"; };
@@ -1496,6 +1498,7 @@
 			isa = PBXGroup;
 			children = (
 				C14ABB26273278176D839415 /* AboutView.swift */,
+				670BBBDA25E9FA0AB86B659B /* GoalSetupView.swift */,
 				DEE9C37F9825E01C26320F0F /* HealthKitPermissionView.swift */,
 				203C25CBEBBCD832AE7717B5 /* OnboardingCoordinator.swift */,
 				A520C629B6F74F4A9CCDEC25 /* OnboardingViewModel.swift */,
@@ -1633,34 +1636,6 @@
 				4A5CAB1432E51BE8586E8F3A /* VolumeMetricsModel.swift */,
 			);
 			path = Data;
-			sourceTree = "<group>";
-		};
-		"TEMP_19708EDC-FBEB-405D-922F-8CCD969E5DB9" /* Common */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Common;
-			sourceTree = "<group>";
-		};
-		"TEMP_4DDC643E-4106-4E53-8859-7211D5CE5BBC" /* Data */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Data;
-			sourceTree = "<group>";
-		};
-		"TEMP_5C33F8BE-6B6E-4151-BA99-314373FF713C" /* Infrastructure */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Infrastructure;
-			sourceTree = "<group>";
-		};
-		"TEMP_8D33CEF3-4497-44F9-83F4-3AA7A29B3915" /* Presentation */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Presentation;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1840,6 +1815,7 @@
 				948A2AFAFDFA5949902B69B5 /* GetPersonalRecordsUseCase.swift in Sources */,
 				F7EE4E963041FE6CFD72F6DC /* GetTodayWorkoutsUseCase.swift in Sources */,
 				3FEBAB3B98C7F71CDDFB434A /* GetWaterEntriesUseCase.swift in Sources */,
+				DC34F87B13D983EB69593295 /* GoalSetupView.swift in Sources */,
 				822CAF545A6D2B9957FD6478 /* HRVTrendView.swift in Sources */,
 				F68C094D48686914ED32EE5D /* HealthDashboardView.swift in Sources */,
 				0860A04CF34DB5BABA52F413 /* HealthDashboardViewModel.swift in Sources */,
