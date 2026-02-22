@@ -45,8 +45,9 @@ final class CalculateNutritionStreakUseCase {
         let todayOffset = calendar.dateComponents([.day], from: startDate, to: today).day ?? 0
 
         // Calculate current streak (counting backward from today)
+        // If today has no entries yet, start from yesterday to avoid breaking streaks early in the day
         var currentStreak = 0
-        var dayToCheck = todayOffset
+        var dayToCheck = daysWithEntries.contains(todayOffset) ? todayOffset : todayOffset - 1
         while dayToCheck >= 0 && daysWithEntries.contains(dayToCheck) {
             currentStreak += 1
             dayToCheck -= 1
