@@ -40,6 +40,4 @@ final class SharedContainer {
     }
 }
 
-// MARK: - UserProfileProviding Conformance
-
-extension SwiftDataUserRepository: UserProfileProviding {}
+// UserProfileProviding conformance inherited from UserRepository

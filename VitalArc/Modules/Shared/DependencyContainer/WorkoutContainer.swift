@@ -32,9 +32,9 @@ final class WorkoutContainer {
     }
 }
 
-// MARK: - WorkoutDataProviding Conformance
+// MARK: - WorkoutDataProviding Methods
 
-extension SwiftDataWorkoutRepository: WorkoutDataProviding {
+extension SwiftDataWorkoutRepository {
     func getTodayWorkouts() async throws -> [Workout] {
         let calendar = Calendar.current
         let startOfDay = calendar.startOfDay(for: Date())

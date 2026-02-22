@@ -351,7 +351,7 @@ struct VolumeAnalysisView: View {
     ScrollView {
         VolumeAnalysisView(
             viewModel: VolumeAnalysisViewModel(
-                workoutRepository: PreviewWorkoutRepository()
+                workoutDataProvider: PreviewWorkoutRepository()
             )
         )
         .padding()

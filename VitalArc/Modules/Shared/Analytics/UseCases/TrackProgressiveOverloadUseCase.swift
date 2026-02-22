@@ -9,10 +9,10 @@ import Foundation
 
 /// Tracks progressive overload for exercises
 class TrackProgressiveOverloadUseCase {
-    private let workoutRepository: WorkoutRepository
+    private let workoutDataProvider: WorkoutDataProviding
 
-    init(workoutRepository: WorkoutRepository) {
-        self.workoutRepository = workoutRepository
+    init(workoutDataProvider: WorkoutDataProviding) {
+        self.workoutDataProvider = workoutDataProvider
     }
 
     /// Analyze progressive overload for an exercise over time
@@ -24,7 +24,7 @@ class TrackProgressiveOverloadUseCase {
         }
 
         // Fetch workouts in date range
-        let workouts = try await workoutRepository.getWorkouts(from: startDate, to: endDate)
+        let workouts = try await workoutDataProvider.getWorkouts(from: startDate, to: endDate)
 
         // Group by week and calculate volume
         var weeklyVolumes: [(Date, Double)] = []

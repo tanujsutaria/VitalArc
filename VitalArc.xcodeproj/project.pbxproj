@@ -56,6 +56,7 @@
 		24E3E3B94894F04E0E602669 /* FoodCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35ED95DD269738D01D81085D /* FoodCard.swift */; };
 		25545995EBF8C1D17FCE4896 /* WorkoutDetailViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB71115A6133BEC3B9E10446 /* WorkoutDetailViewModelTests.swift */; };
 		25A2C15B9BC8E1727E058D44 /* NutritionSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DBEC4246EF2DA4F5E272581 /* NutritionSummaryView.swift */; };
+		26193485A2D6794EC429159E /* JSONExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A13512F8EC99F6A060FF6604 /* JSONExporter.swift */; };
 		26DF6F41A3785C5965556593 /* WellnessRegressionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FC6FA7749B0EFFC026B0E2C /* WellnessRegressionTests.swift */; };
 		28048B6FD8343613A61D4F5F /* DependencyContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D117C307D48193C316CEB5F /* DependencyContainer.swift */; };
 		292434487EC37997EEE78204 /* HealthKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3E40B8AE8E2B34C771A0AFD /* HealthKitManager.swift */; };
@@ -286,6 +287,7 @@
 		D93F5D1BA7000AD95C4612C9 /* TodayDashboardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC7F568EDC1BBEBC3B9BD9B4 /* TodayDashboardViewModel.swift */; };
 		DB74678DC8B4C4A489614CC1 /* WaterTrackingUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2318A4E2CBCD74BDA4458D63 /* WaterTrackingUseCaseTests.swift */; };
 		DBDECEE0ECD1F2D25ABF11FA /* HRVTrackingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C05E1B73FC796B03B3B11D8 /* HRVTrackingTests.swift */; };
+		DC34F87B13D983EB69593295 /* GoalSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 670BBBDA25E9FA0AB86B659B /* GoalSetupView.swift */; };
 		DD3C623F2892D669C1CF9689 /* ScheduleNotificationsUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C16B2124D37B02D7F9EE89C /* ScheduleNotificationsUseCase.swift */; };
 		DE5DDCDAC0B5C93BDFCEBF70 /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 949EED8DAD7C29DE38CD496C /* WelcomeView.swift */; };
 		DFDC6B009E7725C41F70E45E /* Food.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116BCACF69043AEF572C68C0 /* Food.swift */; };
@@ -495,6 +497,7 @@
 		64239EB9B0DC76866C428B7D /* EditCustomExerciseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditCustomExerciseView.swift; sourceTree = "<group>"; };
 		6454AEDC63935BDB5E52EC5B /* CalculateStrainScoreUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalculateStrainScoreUseCase.swift; sourceTree = "<group>"; };
 		661502FB2A505A384E4B04D5 /* WorkoutRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutRepository.swift; sourceTree = "<group>"; };
+		670BBBDA25E9FA0AB86B659B /* GoalSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalSetupView.swift; sourceTree = "<group>"; };
 		6741575CC45FBD5A51A967C3 /* LogFoodUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogFoodUseCaseTests.swift; sourceTree = "<group>"; };
 		67A42091E0ECEEB81CE17654 /* MockAnalyticsUseCases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAnalyticsUseCases.swift; sourceTree = "<group>"; };
 		67F653A21FFE9445618407DF /* HealthDashboardViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthDashboardViewModelTests.swift; sourceTree = "<group>"; };
@@ -574,6 +577,7 @@
 		9EC13034164C39B53937FADD /* ExerciseCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseCard.swift; sourceTree = "<group>"; };
 		9F4B58D09315F6932241C95B /* CalculateHealthScoresUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalculateHealthScoresUseCase.swift; sourceTree = "<group>"; };
 		9FD3746DF1336077CF19294E /* DailyNutritionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyNutritionModel.swift; sourceTree = "<group>"; };
+		A13512F8EC99F6A060FF6604 /* JSONExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONExporter.swift; sourceTree = "<group>"; };
 		A1AEF211C26EA8B094E605BF /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		A22F5063749878A369847651 /* FoodLoggingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodLoggingView.swift; sourceTree = "<group>"; };
 		A2B4D3E8FAE0CE932EE8A286 /* SaveWorkoutTemplateUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveWorkoutTemplateUseCase.swift; sourceTree = "<group>"; };
@@ -833,6 +837,7 @@
 			isa = PBXGroup;
 			children = (
 				42B29F080250E3108849C3F4 /* CSVExporter.swift */,
+				A13512F8EC99F6A060FF6604 /* JSONExporter.swift */,
 				DBD5C06FDDB8118E026ADC21 /* PDFExporter.swift */,
 			);
 			path = Export;
@@ -1512,6 +1517,7 @@
 			isa = PBXGroup;
 			children = (
 				C14ABB26273278176D839415 /* AboutView.swift */,
+				670BBBDA25E9FA0AB86B659B /* GoalSetupView.swift */,
 				DEE9C37F9825E01C26320F0F /* HealthKitPermissionView.swift */,
 				203C25CBEBBCD832AE7717B5 /* OnboardingCoordinator.swift */,
 				A520C629B6F74F4A9CCDEC25 /* OnboardingViewModel.swift */,
@@ -1832,6 +1838,7 @@
 				948A2AFAFDFA5949902B69B5 /* GetPersonalRecordsUseCase.swift in Sources */,
 				F7EE4E963041FE6CFD72F6DC /* GetTodayWorkoutsUseCase.swift in Sources */,
 				3FEBAB3B98C7F71CDDFB434A /* GetWaterEntriesUseCase.swift in Sources */,
+				DC34F87B13D983EB69593295 /* GoalSetupView.swift in Sources */,
 				822CAF545A6D2B9957FD6478 /* HRVTrendView.swift in Sources */,
 				F68C094D48686914ED32EE5D /* HealthDashboardView.swift in Sources */,
 				0860A04CF34DB5BABA52F413 /* HealthDashboardViewModel.swift in Sources */,
@@ -1847,6 +1854,7 @@
 				8408A6FB3145315436AD3D9A /* HealthRepository.swift in Sources */,
 				777D4A0F4323E9D7F11C41F6 /* HealthTrendsView.swift in Sources */,
 				04B91316E2FBBFD61F8810AE /* ImportHealthKitWorkoutsUseCase.swift in Sources */,
+				26193485A2D6794EC429159E /* JSONExporter.swift in Sources */,
 				C9BBD2B81C47A373CA58D47A /* LoadWorkoutTemplateUseCase.swift in Sources */,
 				1B57912F74896E94EB8B5D84 /* LogFoodUseCase.swift in Sources */,
 				7467061928C593C453E99261 /* LogWaterUseCase.swift in Sources */,

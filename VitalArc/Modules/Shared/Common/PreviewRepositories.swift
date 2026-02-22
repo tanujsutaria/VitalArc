@@ -40,6 +40,10 @@ final class PreviewWorkoutRepository: WorkoutRepository {
         false
     }
 
+    func getTodayWorkouts() async throws -> [Workout] {
+        []
+    }
+
     func getWorkouts() async throws -> [Workout] {
         []
     }

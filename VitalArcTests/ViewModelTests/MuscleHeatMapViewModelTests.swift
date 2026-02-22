@@ -24,7 +24,7 @@ final class MuscleHeatMapViewModelTests: XCTestCase {
     override func setUp() {
         super.setUp()
         mockRepository = MockWorkoutRepository()
-        viewModel = MuscleHeatMapViewModel(workoutRepository: mockRepository)
+        viewModel = MuscleHeatMapViewModel(workoutDataProvider: mockRepository)
         setupExercises()
     }
 

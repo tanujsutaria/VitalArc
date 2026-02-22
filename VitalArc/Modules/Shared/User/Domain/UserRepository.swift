@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol UserRepository {
+protocol UserRepository: UserProfileProviding {
     // User profile operations
     func getUserProfile() async throws -> UserProfile?
     func saveUserProfile(_ profile: UserProfile) async throws

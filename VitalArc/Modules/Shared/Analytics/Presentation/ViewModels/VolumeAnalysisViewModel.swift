@@ -123,7 +123,7 @@ struct VolumeAnalysisSummary {
 final class VolumeAnalysisViewModel {
     // MARK: - Dependencies
 
-    private let workoutRepository: WorkoutRepository
+    private let workoutDataProvider: WorkoutDataProviding
 
     // MARK: - State
 
@@ -135,8 +135,8 @@ final class VolumeAnalysisViewModel {
 
     // MARK: - Init
 
-    init(workoutRepository: WorkoutRepository) {
-        self.workoutRepository = workoutRepository
+    init(workoutDataProvider: WorkoutDataProviding) {
+        self.workoutDataProvider = workoutDataProvider
     }
 
     // MARK: - Data Loading
@@ -153,7 +153,7 @@ final class VolumeAnalysisViewModel {
                 return
             }
 
-            let workouts = try await workoutRepository.getWorkouts(from: startDate, to: endDate)
+            let workouts = try await workoutDataProvider.getWorkouts(from: startDate, to: endDate)
             analyses = try await buildAnalyses(from: workouts, startDate: startDate, endDate: endDate, weeks: weeksToAnalyze)
         } catch {
             errorMessage = UserFacingError.message(for: error, context: .loading)
@@ -171,7 +171,7 @@ final class VolumeAnalysisViewModel {
         let allExerciseIds = Set(workouts.flatMap { $0.sets.map { $0.exerciseId } })
         var exerciseCache: [UUID: Exercise] = [:]
         for exerciseId in allExerciseIds {
-            if let exercise = try await workoutRepository.getExercise(id: exerciseId) {
+            if let exercise = try await workoutDataProvider.getExercise(id: exerciseId) {
                 exerciseCache[exerciseId] = exercise
             }
         }

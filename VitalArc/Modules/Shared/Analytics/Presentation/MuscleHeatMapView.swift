@@ -23,13 +23,8 @@ struct MuscleHeatMapView: View {
                 legend
             }
         }
-        .task {
+        .task(id: viewModel.selectedTimeRange) {
             await viewModel.loadData()
-        }
-        .onChange(of: viewModel.selectedTimeRange) { _, _ in
-            Task {
-                await viewModel.loadData()
-            }
         }
         .sheet(item: $viewModel.selectedMuscle) { muscle in
             MuscleDetailSheet(data: muscle)
@@ -282,7 +277,7 @@ extension MuscleHeatMapData: @retroactive Equatable {
     ScrollView {
         MuscleHeatMapView(
             viewModel: MuscleHeatMapViewModel(
-                workoutRepository: PreviewWorkoutRepository()
+                workoutDataProvider: PreviewWorkoutRepository()
             )
         )
         .padding()

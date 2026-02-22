@@ -21,11 +21,9 @@ final class WellnessContainer {
         self.healthKitManager = healthKitManager
         self.healthRepository = SwiftDataHealthRepository(modelContext: modelContext, healthKitManager: healthKitManager)
         self.calculateReadinessScoreUseCase = CalculateReadinessScoreUseCase()
-        self.calculateRecoveryScoreUseCase = CalculateRecoveryScoreUseCase(healthRepository: healthRepository)
+        self.calculateRecoveryScoreUseCase = CalculateRecoveryScoreUseCase(healthDataProvider: healthRepository)
         self.calculateSleepConsistencyUseCase = CalculateSleepConsistencyUseCase()
     }
 }
 
-// MARK: - HealthDataProviding Conformance
-
-extension SwiftDataHealthRepository: HealthDataProviding {}
+// HealthDataProviding conformance inherited from HealthRepository

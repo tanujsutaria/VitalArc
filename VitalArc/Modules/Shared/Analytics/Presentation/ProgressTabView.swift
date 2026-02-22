@@ -50,39 +50,38 @@ struct ProgressTabContentView: View {
         guard viewModel == nil else { return }
 
         let calculateVolumeUseCase = CalculateVolumeUseCase(
-            workoutRepository: container.workoutRepository
+            workoutDataProvider: container.workoutRepository
         )
 
         let vm = AnalyticsDashboardViewModel(
             calculateVolumeUseCase: calculateVolumeUseCase,
             trackProgressiveOverloadUseCase: TrackProgressiveOverloadUseCase(
-                workoutRepository: container.workoutRepository
+                workoutDataProvider: container.workoutRepository
             ),
             generateProgressReportUseCase: GenerateProgressReportUseCase(
-                workoutRepository: container.workoutRepository,
-                healthRepository: container.healthRepository,
-                nutritionRepository: container.nutritionRepository,
+                workoutDataProvider: container.workoutRepository,
+                healthDataProvider: container.healthRepository,
+                nutritionDataProvider: container.nutritionRepository,
                 analyticsRepository: container.analyticsRepository,
                 calculateVolumeUseCase: calculateVolumeUseCase
             ),
             calculateRecoveryScoreUseCase: CalculateRecoveryScoreUseCase(
-                healthRepository: container.healthRepository
+                healthDataProvider: container.healthRepository
             ),
             calculateStrainScoreUseCase: CalculateStrainScoreUseCase(
-                healthRepository: container.healthRepository,
-                userRepository: container.userRepository
+                userProfileProvider: container.userRepository
             ),
             analyticsRepository: container.analyticsRepository,
-            healthRepository: container.healthRepository,
-            nutritionRepository: container.nutritionRepository
+            healthDataProvider: container.healthRepository,
+            nutritionDataProvider: container.nutritionRepository
         )
 
         // Wire sub-ViewModels for muscle heat map and volume analysis
         vm.muscleHeatMapViewModel = MuscleHeatMapViewModel(
-            workoutRepository: container.workoutRepository
+            workoutDataProvider: container.workoutRepository
         )
         vm.volumeAnalysisViewModel = VolumeAnalysisViewModel(
-            workoutRepository: container.workoutRepository
+            workoutDataProvider: container.workoutRepository
         )
 
         viewModel = vm
