@@ -14,9 +14,10 @@ final class GetExercisesUseCase {
         self.repository = repository
     }
 
-    /// Get all exercises, optionally filtered by category and search query
+    /// Get all exercises, optionally filtered by category, muscle group, and search query
     func execute(
         category: ExerciseCategory? = nil,
+        muscleGroup: MuscleGroup? = nil,
         searchQuery: String? = nil
     ) async throws -> [Exercise] {
         var exercises = try await repository.getExercises()
@@ -32,6 +33,13 @@ final class GetExercisesUseCase {
             // Apply category filter after search
             if let category = category {
                 exercises = exercises.filter { $0.category == category }
+            }
+        }
+
+        // Filter by muscle group if provided (matches primary or secondary)
+        if let muscleGroup = muscleGroup {
+            exercises = exercises.filter {
+                $0.primaryMuscles.contains(muscleGroup) || $0.secondaryMuscles.contains(muscleGroup)
             }
         }
 
