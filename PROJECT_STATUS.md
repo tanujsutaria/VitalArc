@@ -1,6 +1,6 @@
 # VitalArc Project Status
 
-**Last Updated**: February 19, 2026 (Session 23.1)
+**Last Updated**: February 21, 2026 (Session 24.0)
 **Build**: Passing (verified locally)
 **Tests**: 1096 passing
 **Stage**: MVP-Ready
@@ -94,6 +94,13 @@ The app compiles and runs with core MVP requirements addressed:
   - Nutrition: Body composition tracking (waist/hip/chest/arm/thigh measurements + trends), configurable meal time ranges
   - Shared: Muscle group heat maps (training frequency visualization), volume/frequency analysis per muscle group
   - Tests: 193 new tests (903→1096): readiness v2, HRV, workout features, body composition, muscle heat maps, volume analysis
+- Session 24.0: Migrated feature backlog to beads issue tracker:
+  - 61 features from FEATURE_BACKLOG.md → 4 domain epics (Workout 64%, Nutrition 41%, Wellness 46%, Shared 28%)
+  - 30 completed features created and closed with session references
+  - 31 open features with priority, labels, and dependency tracking
+  - 8 bonus findings (bugs, tasks, chores) for technical debt
+  - Dependency chains: cross-domain protocol conformance blocks correlation features, CloudKit blocks backup
+  - FEATURE_BACKLOG.md deprecated in favor of `bd epic status` / `bd ready`
 
 **Ready for beta testing.**
 
@@ -112,7 +119,7 @@ The app compiles and runs with core MVP requirements addressed:
 | Recovery Score | Ready | V2 with configurable weights, component breakdown (Session 23.1) |
 | Strain Tracking | Ready | TRIMP + HealthKit HR, custom settings |
 | Nutrition Tracking | Ready | Body composition, configurable meals, 4 bugs fixed (Session 23.0-23.1). **API keys not configured** |
-| Design System | Ready | ~87% adoption (191 violations, mostly intentional chart/plate colors) |
+| Design System | Ready | ~95% adoption (21 violations, mostly chart frame dimensions + plate colors) |
 | VoiceOver Accessibility | Ready | Labels, hints, values across all domains (Session 22.1) |
 | Notifications | Ready | Goal notification cancellation fixed (Session 23.0) |
 | Profile/Settings | Ready | - |
@@ -143,8 +150,9 @@ The app compiles and runs with core MVP requirements addressed:
    - `NutritionixAPI.swift`: placeholder keys
    - `USDAFoodAPI.swift`: demo key (rate-limited)
 
-2. **Design System**: Near complete (~99% adoption)
-   - Frame token migration complete (Session 22.1), minimal remaining violations
+2. **Design System**: ~95% adoption (21 violations)
+   - 3 color violations (PlateCalculatorView system grays for plate colors)
+   - 18 spacing violations (chart heights, input field widths — context-specific)
 
 ---
 
