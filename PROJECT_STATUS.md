@@ -1,8 +1,8 @@
 # VitalArc Project Status
 
-**Last Updated**: February 21, 2026 (Session 24.0)
-**Build**: Passing (verified locally)
-**Tests**: 1096 passing
+**Last Updated**: February 21, 2026 (Session 24.2)
+**Build**: Passing (verified locally per worktree)
+**Tests**: ~1146 passing (1096 + 50 new)
 **Stage**: MVP-Ready
 
 ---
@@ -101,6 +101,12 @@ The app compiles and runs with core MVP requirements addressed:
   - 8 bonus findings (bugs, tasks, chores) for technical debt
   - Dependency chains: cross-domain protocol conformance blocks correlation features, CloudKit blocks backup
   - FEATURE_BACKLOG.md deprecated in favor of `bd epic status` / `bd ready`
+- Session 24.2: 16-feature parallel sprint across 4 worktrees (16 beads, 50 new tests):
+  - Workout: RPE in WorkoutSetData DTO, muscle group filtering, training goal selection, workout sharing/export
+  - Nutrition: Food name on FoodEntry, copy previous day's meals, nutrition streak tracking, macro detail summary
+  - Wellness: Score calculation refactor to use cases, hydration tracking (HealthKit), legacy view cleanup, stress/HRV analysis
+  - Shared: Cross-domain protocol conformance, TDEE goal setup onboarding step, PDF branding improvements, JSON export format
+  - Tests: 50 new tests (GetExercisesUseCase 14, ExerciseLibraryVM 5, NutritionStreak 8, StressAnalysis 13, onboarding fix)
 
 **Ready for beta testing.**
 
@@ -110,15 +116,15 @@ The app compiles and runs with core MVP requirements addressed:
 
 | Feature | Status | Notes |
 |---------|--------|-------|
-| Health Dashboard | Ready | SpO2, VO2 Max, sleep consistency, HRV trends (Session 23.1) |
+| Health Dashboard | Ready | SpO2, VO2 Max, sleep consistency, HRV trends, stress/HRV analysis, hydration tracking |
 | Workout Tracking | Ready | Supersets/circuits, rest timer, plate calc, 7 bugs fixed (Session 23.0-23.1) |
-| Exercise Library | Ready | 960+ exercises, progressive overload charts |
+| Exercise Library | Ready | 960+ exercises, progressive overload charts, muscle group filtering |
 | Templates System | Ready | Day-by-day editor, day scheduling, conflict detection fixed |
-| Mesocycle System | Ready | Template day scheduling, progression calc fixed (Session 23.0) |
+| Mesocycle System | Ready | Template day scheduling, training goal selection, progression calc fixed |
 | Analytics Dashboard | Ready | Muscle heat maps, volume analysis, stale data fix (Session 23.0-23.1) |
 | Recovery Score | Ready | V2 with configurable weights, component breakdown (Session 23.1) |
 | Strain Tracking | Ready | TRIMP + HealthKit HR, custom settings |
-| Nutrition Tracking | Ready | Body composition, configurable meals, 4 bugs fixed (Session 23.0-23.1). **API keys not configured** |
+| Nutrition Tracking | Ready | Body composition, configurable meals, streaks, copy meals, macro detail. **API keys not configured** |
 | Design System | Ready | ~95% adoption (21 violations, mostly chart frame dimensions + plate colors) |
 | VoiceOver Accessibility | Ready | Labels, hints, values across all domains (Session 22.1) |
 | Notifications | Ready | Goal notification cancellation fixed (Session 23.0) |
@@ -173,7 +179,7 @@ The app compiles and runs with core MVP requirements addressed:
 | ViewModels | 18 |
 | Use cases | 31 |
 | Test files | 64 (in project) |
-| Unit tests | 1096 (passing) |
+| Unit tests | ~1146 (passing) |
 
 ### Test Coverage by ViewModel
 
@@ -185,7 +191,7 @@ The app compiles and runs with core MVP requirements addressed:
 | FoodLoggingViewModel | Tested | 15 | In project ✅ |
 | WorkoutLoggingViewModel | Tested | 34 | In project ✅ |
 | MetricDetailViewModel | Tested | 14 | In project ✅ |
-| ExerciseLibraryViewModel | Tested | 10 | In project ✅ (debouncing fixed) |
+| ExerciseLibraryViewModel | Tested | 15 | In project ✅ (muscle group, cancellation) |
 | WorkoutHistoryViewModel | Tested | 29 | In project ✅ |
 | HealthDashboardViewModel | Tested | 21 | In project ✅ |
 | MesocycleViewModel | Tested | 22 | In project ✅ |
@@ -201,4 +207,4 @@ The app compiles and runs with core MVP requirements addressed:
 | USDAFoodAPI | Tested | 12 | In project ✅ |
 | FoodAPICoordinator | Tested | 18 | In project ✅ |
 
-**Note**: All 1096 tests passing. Test files properly integrated in Xcode project.
+**Note**: ~1146 tests passing (1096 base + 50 new from Session 24.2). Exact count pending post-merge verification.
