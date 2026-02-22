@@ -22,6 +22,22 @@ struct NutritionTabContentView: View {
                     }
                 }
                 .navigationTitle("Nutrition")
+                .toolbar {
+                    ToolbarItem(placement: .primaryAction) {
+                        Menu {
+                            Button {
+                                if let vm = viewModel {
+                                    Task { await vm.copyPreviousDay() }
+                                }
+                            } label: {
+                                Label("Copy Previous Day", systemImage: "doc.on.doc")
+                            }
+                        } label: {
+                            Image(systemName: "ellipsis.circle")
+                                .foregroundStyle(Color.vitalPrimary)
+                        }
+                    }
+                }
                 .task {
                     // Guard against re-creating ViewModel on every view appearance
                     guard viewModel == nil else { return }
@@ -52,6 +68,7 @@ private struct NutritionUnifiedView: View {
     @State private var showingGoalEditSheet = false
     @State private var editingEntry: FoodEntry?
     @State private var bodyCompViewModel: BodyCompositionViewModel?
+    @State private var showingCopyConfirmation = false
 
     var body: some View {
         ScrollView {
@@ -653,6 +670,56 @@ final class NutritionTabViewModel {
 
     func goToToday() {
         selectedDate = Date()
+    }
+
+    /// Copy all food entries from the previous day to the selected date
+    func copyPreviousDay() async {
+        guard !isLoading else { return }
+        isLoading = true
+        defer { isLoading = false }
+
+        do {
+            let calendar = Calendar.current
+            guard let previousDay = calendar.date(byAdding: .day, value: -1, to: selectedDate) else { return }
+
+            let previousEntries = try await getFoodEntriesUseCase.execute(for: previousDay)
+            guard !previousEntries.isEmpty else { return }
+
+            let logUseCase = LogFoodUseCase(repository: nutritionRepository)
+
+            for entry in previousEntries {
+                // Try to look up the food for current nutritional data
+                if let food = try? await nutritionRepository.getFood(id: entry.foodId) {
+                    _ = try await logUseCase.execute(
+                        food: food,
+                        quantity: entry.quantity,
+                        meal: entry.meal,
+                        date: selectedDate
+                    )
+                } else {
+                    // Food no longer in DB; re-create entry from stored data
+                    let newEntry = FoodEntry(
+                        foodId: entry.foodId,
+                        foodName: entry.foodName,
+                        date: selectedDate,
+                        meal: entry.meal,
+                        quantity: entry.quantity,
+                        calories: entry.calories,
+                        protein: entry.protein,
+                        carbs: entry.carbs,
+                        fat: entry.fat,
+                        fiber: entry.fiber,
+                        sugar: entry.sugar
+                    )
+                    try await nutritionRepository.saveFoodEntry(newEntry)
+                }
+            }
+
+            await loadData()
+        } catch {
+            self.error = error
+            Log.error("Failed to copy previous day's meals", error: error, category: .nutrition)
+        }
     }
 
     /// Update macro goals for the current date
