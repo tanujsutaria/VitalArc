@@ -44,6 +44,7 @@ struct WorkoutDetailView: View {
                 ShareLink(item: viewModel.shareText()) {
                     Image(systemName: "square.and.arrow.up")
                 }
+                .disabled(viewModel.isLoading)
             }
         }
         .task {

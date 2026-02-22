@@ -35,11 +35,18 @@ final class ExerciseLibraryViewModel {
         errorMessage = nil
 
         do {
-            exercises = try await getExercisesUseCase.execute(
+            let result = try await getExercisesUseCase.execute(
                 category: selectedCategory,
                 muscleGroup: selectedMuscleGroup,
                 searchQuery: searchText.isEmpty ? nil : searchText
             )
+
+            // Don't overwrite if this task was cancelled (stale results)
+            guard !Task.isCancelled else { return }
+
+            exercises = result
+        } catch is CancellationError {
+            return
         } catch {
             errorMessage = UserFacingError.message(for: error, context: .loading)
         }
