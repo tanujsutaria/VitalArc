@@ -178,6 +178,14 @@ struct HealthDashboardView: View {
                 .transition(.vitalSlideUp)
             }
 
+            // Stress Analysis section
+            if let stress = viewModel.stressAnalysis {
+                VitalCard {
+                    StressAnalysisView(analysis: stress)
+                }
+                .transition(.vitalSlideUp)
+            }
+
             // Today's metrics section
             if let today = viewModel.todayMetrics {
                 todayMetricsSection(today)

@@ -645,6 +645,51 @@ final class HealthKitManager {
         }
     }
 
+    /// Fetch all HRV samples for a date, tagged as daytime or sleep context
+    func fetchHRVReadings(for date: Date) async throws -> [HRVReading] {
+        guard isHealthKitAvailable() else { throw HealthKitError.notAvailable }
+
+        guard let hrvType = HKQuantityType.quantityType(forIdentifier: .heartRateVariabilitySDNN) else {
+            throw HealthKitError.queryFailed
+        }
+
+        let dateRange = HealthKitQuery.dateRangeForDate(date)
+        let sleepRange = HealthKitQuery.sleepDateRangeForDate(date)
+
+        // Fetch sleep periods and all HRV samples concurrently
+        async let sleepPeriodsTask = fetchSleepPeriods(start: sleepRange.start, end: sleepRange.end)
+        async let hrvSamplesTask: [HKQuantitySample] = withCheckedThrowingContinuation { continuation in
+            let query = HealthKitQuery.sampleQuery(
+                for: hrvType,
+                start: dateRange.start,
+                end: dateRange.end
+            ) { samples, error in
+                if let error = error {
+                    continuation.resume(throwing: error)
+                    return
+                }
+                let quantitySamples = (samples as? [HKQuantitySample]) ?? []
+                continuation.resume(returning: quantitySamples)
+            }
+            healthStore.execute(query)
+        }
+
+        let (sleepPeriods, hrvSamples) = try await (sleepPeriodsTask, hrvSamplesTask)
+
+        return hrvSamples.map { sample in
+            let timestamp = sample.startDate
+            let value = sample.quantity.doubleValue(for: HKUnit.secondUnit(with: .milli))
+            let isDuringSleep = sleepPeriods.contains { period in
+                timestamp >= period.start && timestamp <= period.end
+            }
+            return HRVReading(
+                timestamp: timestamp,
+                value: value,
+                context: isDuringSleep ? .sleep : .daytime
+            )
+        }.sorted { $0.timestamp < $1.timestamp }
+    }
+
     /// Fetch dietary water intake (in mL) for the day
     private func fetchWaterIntake(start: Date, end: Date) async throws -> Double? {
         guard let waterType = HKQuantityType.quantityType(forIdentifier: .dietaryWater) else {

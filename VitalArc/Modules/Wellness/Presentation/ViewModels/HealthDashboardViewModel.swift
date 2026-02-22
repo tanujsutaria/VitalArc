@@ -18,6 +18,7 @@ final class HealthDashboardViewModel {
     private let calculateReadinessScore: CalculateReadinessScoreUseCaseProtocol
     private let calculateSleepConsistency: CalculateSleepConsistencyUseCase
     private let calculateHealthScores: CalculateHealthScoresUseCase
+    private let calculateStressAnalysis: CalculateStressAnalysisUseCase
     private let importHealthKitWorkoutsUseCase: ImportHealthKitWorkoutsUseCase?
 
     var todayMetrics: HealthMetrics?
@@ -39,6 +40,11 @@ final class HealthDashboardViewModel {
     var hrvTrendData30Day: [ChartDataPoint] = []
     var monthMetrics: [HealthMetrics] = []
 
+    // MARK: - Stress Analysis Properties
+
+    var stressAnalysis: StressAnalysis?
+    private let healthKitManager: HealthKitManager?
+
     // MARK: - Initialization
 
     init(
@@ -46,13 +52,17 @@ final class HealthDashboardViewModel {
         calculateReadinessScore: CalculateReadinessScoreUseCaseProtocol = CalculateReadinessScoreUseCase(),
         calculateSleepConsistency: CalculateSleepConsistencyUseCase = CalculateSleepConsistencyUseCase(),
         calculateHealthScores: CalculateHealthScoresUseCase = CalculateHealthScoresUseCase(),
-        importHealthKitWorkoutsUseCase: ImportHealthKitWorkoutsUseCase? = nil
+        calculateStressAnalysis: CalculateStressAnalysisUseCase = CalculateStressAnalysisUseCase(),
+        importHealthKitWorkoutsUseCase: ImportHealthKitWorkoutsUseCase? = nil,
+        healthKitManager: HealthKitManager? = nil
     ) {
         self.healthRepository = healthRepository
         self.calculateReadinessScore = calculateReadinessScore
         self.calculateSleepConsistency = calculateSleepConsistency
         self.calculateHealthScores = calculateHealthScores
+        self.calculateStressAnalysis = calculateStressAnalysis
         self.importHealthKitWorkoutsUseCase = importHealthKitWorkoutsUseCase
+        self.healthKitManager = healthKitManager
     }
 
     // MARK: - Data Loading
@@ -127,6 +137,7 @@ final class HealthDashboardViewModel {
         updateReadinessScore()
         updateSleepConsistency()
         updateHRVData()
+        await updateStressAnalysis()
     }
 
     /// Compute readiness score from today's metrics and weekly baselines
@@ -187,6 +198,31 @@ final class HealthDashboardViewModel {
             guard let hrv = metrics.heartRateVariability else { return nil }
             return ChartDataPoint(date: metrics.date, value: hrv)
         }.sorted { $0.date < $1.date }
+    }
+
+    /// Update stress analysis from intra-day HRV readings
+    private func updateStressAnalysis() async {
+        guard let manager = healthKitManager else {
+            stressAnalysis = nil
+            return
+        }
+
+        do {
+            let today = Calendar.current.startOfDay(for: Date())
+            let readings = try await manager.fetchHRVReadings(for: today)
+            guard !readings.isEmpty else {
+                stressAnalysis = nil
+                return
+            }
+            stressAnalysis = calculateStressAnalysis.execute(
+                readings: readings,
+                baseline: hrvBaseline,
+                date: today
+            )
+        } catch {
+            // Non-critical — don't set error
+            stressAnalysis = nil
+        }
     }
 
     /// Refresh all metrics and import new workouts
