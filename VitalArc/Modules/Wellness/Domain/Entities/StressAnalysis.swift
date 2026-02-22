@@ -43,7 +43,7 @@ struct StressAnalysis: Equatable {
     let sleepHRV: Double? // Average sleep HRV (ms)
     let overallHRV: Double? // Combined average
     let stressLevel: StressLevel
-    let hrvCoeffientOfVariation: Double? // CV% — higher means more variable
+    let hrvCoefficientOfVariation: Double? // CV% — higher means more variable
     let daytimeReadingCount: Int
     let sleepReadingCount: Int
     let insight: String

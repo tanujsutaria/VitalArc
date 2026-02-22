@@ -48,7 +48,7 @@ struct CalculateStressAnalysisUseCase {
             sleepHRV: sleepHRV,
             overallHRV: overallHRV,
             stressLevel: stressLevel,
-            hrvCoeffientOfVariation: cv,
+            hrvCoefficientOfVariation: cv,
             daytimeReadingCount: daytimeReadings.count,
             sleepReadingCount: sleepReadings.count,
             insight: insight
@@ -78,7 +78,7 @@ struct CalculateStressAnalysisUseCase {
         baseline: Double?,
         cv: Double?
     ) -> StressLevel {
-        guard let overall = overallHRV else { return .moderate }
+        guard let overall = overallHRV else { return .low }
 
         var stressScore: Double = 0
 

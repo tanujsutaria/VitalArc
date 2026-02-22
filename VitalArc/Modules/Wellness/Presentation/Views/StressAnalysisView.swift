@@ -52,7 +52,7 @@ struct StressAnalysisView: View {
             }
 
             // Variability indicator
-            if let cv = analysis.hrvCoeffientOfVariation {
+            if let cv = analysis.hrvCoefficientOfVariation {
                 variabilityIndicator(cv)
             }
 
@@ -179,7 +179,7 @@ struct StressAnalysisView: View {
                     sleepHRV: 68,
                     overallHRV: 55,
                     stressLevel: .elevated,
-                    hrvCoeffientOfVariation: 32,
+                    hrvCoefficientOfVariation: 32,
                     daytimeReadingCount: 12,
                     sleepReadingCount: 8,
                     insight: "Daytime HRV is significantly below your baseline. Consider reducing intense activity and prioritizing recovery."
