@@ -139,6 +139,16 @@ final class MockWorkoutRepository: WorkoutRepository {
         mockWorkouts.removeAll { $0.id == id }
     }
 
+    // MARK: - WorkoutDataProviding
+
+    func getTodayWorkouts() async throws -> [Workout] {
+        if shouldThrowOnGet {
+            throw MockError.getFailed
+        }
+        let calendar = Calendar.current
+        return mockWorkouts.filter { calendar.isDateInToday($0.date) }
+    }
+
     // MARK: - Progression
 
     func getLastWorkoutForExercise(_ exerciseId: UUID) async throws -> Workout? {

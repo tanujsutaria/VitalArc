@@ -19,8 +19,8 @@ final class AnalyticsDashboardViewModel {
     private let calculateRecoveryScoreUseCase: CalculateRecoveryScoreUseCase
     private let calculateStrainScoreUseCase: CalculateStrainScoreUseCase
     private let analyticsRepository: AnalyticsRepository
-    private let healthRepository: HealthRepository
-    private let nutritionRepository: NutritionRepository
+    private let healthDataProvider: HealthDataProviding
+    private let nutritionDataProvider: NutritionDataProviding
 
     // MARK: - State
 
@@ -93,8 +93,8 @@ final class AnalyticsDashboardViewModel {
         calculateRecoveryScoreUseCase: CalculateRecoveryScoreUseCase,
         calculateStrainScoreUseCase: CalculateStrainScoreUseCase,
         analyticsRepository: AnalyticsRepository,
-        healthRepository: HealthRepository,
-        nutritionRepository: NutritionRepository
+        healthDataProvider: HealthDataProviding,
+        nutritionDataProvider: NutritionDataProviding
     ) {
         self.calculateVolumeUseCase = calculateVolumeUseCase
         self.trackProgressiveOverloadUseCase = trackProgressiveOverloadUseCase
@@ -102,8 +102,8 @@ final class AnalyticsDashboardViewModel {
         self.calculateRecoveryScoreUseCase = calculateRecoveryScoreUseCase
         self.calculateStrainScoreUseCase = calculateStrainScoreUseCase
         self.analyticsRepository = analyticsRepository
-        self.healthRepository = healthRepository
-        self.nutritionRepository = nutritionRepository
+        self.healthDataProvider = healthDataProvider
+        self.nutritionDataProvider = nutritionDataProvider
     }
 
     // MARK: - Data Loading
@@ -159,7 +159,7 @@ final class AnalyticsDashboardViewModel {
         let healthStartDate = min(startDate, thirtyDaysAgo)
 
         // Load health metrics from repository
-        let metrics = try await healthRepository.getHealthMetrics(from: healthStartDate, to: endDate)
+        let metrics = try await healthDataProvider.getHealthMetrics(from: healthStartDate, to: endDate)
 
         // Sort metrics by date to ensure correct ordering
         let sortedMetrics = metrics.sorted { $0.date < $1.date }
@@ -220,7 +220,7 @@ final class AnalyticsDashboardViewModel {
         for dayOffset in 0..<7 {
             guard let date = calendar.date(byAdding: .day, value: -6 + dayOffset, to: Date()) else { continue }
 
-            if let nutrition = try await nutritionRepository.getDailyNutrition(for: date) {
+            if let nutrition = try await nutritionDataProvider.getDailyNutrition(for: date) {
                 // Calorie adherence
                 calorieData.append(CalorieAdherenceData(
                     date: date,

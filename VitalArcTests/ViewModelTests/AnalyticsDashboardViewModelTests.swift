@@ -56,8 +56,8 @@ final class AnalyticsDashboardViewModelTests: XCTestCase {
             calculateRecoveryScoreUseCase: MockCalculateRecoveryScoreUseCaseAdapter(mock: mockCalculateRecoveryScoreUseCase),
             calculateStrainScoreUseCase: MockCalculateStrainScoreUseCaseAdapter(mock: mockCalculateStrainScoreUseCase),
             analyticsRepository: mockAnalyticsRepository,
-            healthRepository: mockHealthRepository,
-            nutritionRepository: mockNutritionRepository
+            healthDataProvider: mockHealthRepository,
+            nutritionDataProvider: mockNutritionRepository
         )
     }
 
@@ -504,8 +504,8 @@ private final class MockCalculateVolumeUseCaseAdapter: CalculateVolumeUseCase {
 
     init(mock: MockCalculateVolumeUseCase) {
         self.mock = mock
-        // Use a dummy repository since we're overriding methods
-        super.init(workoutRepository: DummyWorkoutRepository())
+        // Use a dummy provider since we're overriding methods
+        super.init(workoutDataProvider: DummyWorkoutRepository())
     }
 
     override func execute(startDate: Date, endDate: Date) async throws -> VolumeMetrics {
@@ -523,7 +523,7 @@ private final class MockTrackProgressiveOverloadUseCaseAdapter: TrackProgressive
 
     init(mock: MockTrackProgressiveOverloadUseCase) {
         self.mock = mock
-        super.init(workoutRepository: DummyWorkoutRepository())
+        super.init(workoutDataProvider: DummyWorkoutRepository())
     }
 
     override func execute(exerciseId: UUID, weeks: Int = 12) async throws -> ProgressiveOverloadData {
@@ -538,11 +538,11 @@ private final class MockGenerateProgressReportUseCaseAdapter: GenerateProgressRe
     init(mock: MockGenerateProgressReportUseCase) {
         self.mock = mock
         super.init(
-            workoutRepository: DummyWorkoutRepository(),
-            healthRepository: MockHealthRepository(),
-            nutritionRepository: MockNutritionRepository(),
+            workoutDataProvider: DummyWorkoutRepository(),
+            healthDataProvider: MockHealthRepository(),
+            nutritionDataProvider: MockNutritionRepository(),
             analyticsRepository: MockAnalyticsRepository(),
-            calculateVolumeUseCase: CalculateVolumeUseCase(workoutRepository: DummyWorkoutRepository())
+            calculateVolumeUseCase: CalculateVolumeUseCase(workoutDataProvider: DummyWorkoutRepository())
         )
     }
 
@@ -557,7 +557,7 @@ private final class MockCalculateRecoveryScoreUseCaseAdapter: CalculateRecoveryS
 
     init(mock: MockCalculateRecoveryScoreUseCase) {
         self.mock = mock
-        super.init(healthRepository: MockHealthRepository())
+        super.init(healthDataProvider: MockHealthRepository())
     }
 
     override func execute(for date: Date = Date()) async throws -> RecoveryScoreResult {
@@ -572,8 +572,7 @@ private final class MockCalculateStrainScoreUseCaseAdapter: CalculateStrainScore
     init(mock: MockCalculateStrainScoreUseCase) {
         self.mock = mock
         super.init(
-            healthRepository: MockHealthRepository(),
-            userRepository: MockUserRepository()
+            userProfileProvider: MockUserRepository()
         )
     }
 
@@ -592,6 +591,7 @@ private final class DummyWorkoutRepository: WorkoutRepository {
     func updateExercise(_ exercise: Exercise) async throws {}
     func deleteExercise(id: UUID) async throws {}
     func isExerciseUsedInWorkouts(_ exerciseId: UUID) async throws -> Bool { false }
+    func getTodayWorkouts() async throws -> [Workout] { [] }
     func getWorkouts() async throws -> [Workout] { [] }
     func getWorkout(id: UUID) async throws -> Workout? { nil }
     func getWorkouts(from startDate: Date, to endDate: Date) async throws -> [Workout] { [] }

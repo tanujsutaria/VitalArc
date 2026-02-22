@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol WorkoutRepository {
+protocol WorkoutRepository: WorkoutDataProviding {
     // Exercise operations
     func getExercises() async throws -> [Exercise]
     func getExercise(id: UUID) async throws -> Exercise?

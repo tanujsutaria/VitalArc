@@ -15,7 +15,7 @@ final class CalculateVolumeUseCaseTests: XCTestCase {
 
     override func setUp() async throws {
         repository = MockWorkoutRepository()
-        useCase = CalculateVolumeUseCase(workoutRepository: repository)
+        useCase = CalculateVolumeUseCase(workoutDataProvider: repository)
     }
 
     override func tearDown() async throws {

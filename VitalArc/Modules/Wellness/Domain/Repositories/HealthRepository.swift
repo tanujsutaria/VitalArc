@@ -18,7 +18,7 @@ import Foundation
 /// performing all HealthKit I/O on background cooperative threads. Only the final
 /// SwiftData save hops back to the main actor.
 @MainActor
-protocol HealthRepository {
+protocol HealthRepository: HealthDataProviding {
     // Health metrics operations (SwiftData reads/writes — require main actor)
     func getHealthMetrics(for date: Date) async throws -> HealthMetrics?
     func getHealthMetrics(from startDate: Date, to endDate: Date) async throws -> [HealthMetrics]

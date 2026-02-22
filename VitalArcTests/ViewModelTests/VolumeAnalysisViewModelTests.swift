@@ -24,7 +24,7 @@ final class VolumeAnalysisViewModelTests: XCTestCase {
     override func setUp() {
         super.setUp()
         mockRepository = MockWorkoutRepository()
-        viewModel = VolumeAnalysisViewModel(workoutRepository: mockRepository)
+        viewModel = VolumeAnalysisViewModel(workoutDataProvider: mockRepository)
         setupExercises()
     }
 

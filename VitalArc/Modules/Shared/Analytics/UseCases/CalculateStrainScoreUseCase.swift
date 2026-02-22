@@ -31,8 +31,7 @@ struct HeartRateSample: Equatable {
 
 @MainActor
 class CalculateStrainScoreUseCase {
-    private let healthRepository: HealthRepository
-    private let userRepository: UserRepository
+    private let userProfileProvider: UserProfileProviding
     private let healthKitManager: HealthKitManager
 
     /// Scaling factor for converting raw TRIMP to 0-21 strain score
@@ -40,12 +39,10 @@ class CalculateStrainScoreUseCase {
     private let trimpToStrainScaleFactor: Double = 21.0 / 250.0
 
     init(
-        healthRepository: HealthRepository,
-        userRepository: UserRepository,
+        userProfileProvider: UserProfileProviding,
         healthKitManager: HealthKitManager = HealthKitManager()
     ) {
-        self.healthRepository = healthRepository
-        self.userRepository = userRepository
+        self.userProfileProvider = userProfileProvider
         self.healthKitManager = healthKitManager
     }
 
@@ -337,7 +334,7 @@ class CalculateStrainScoreUseCase {
     // MARK: - Heart Rate Parameters
 
     private func getHeartRateParameters() async throws -> (hrMax: Double, hrRest: Double, sex: BiologicalSex) {
-        if let profile = try await userRepository.getUserProfile() {
+        if let profile = try await userProfileProvider.getUserProfile() {
             // Use custom HR max if set, otherwise estimate from age
             let hrMax = Double(profile.effectiveHRMax)
 

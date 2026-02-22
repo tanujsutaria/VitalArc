@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol NutritionRepository {
+protocol NutritionRepository: NutritionDataProviding {
     // Food operations
     func searchFoods(query: String) async throws -> [Food]
     func getFood(id: UUID) async throws -> Food?

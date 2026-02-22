@@ -80,7 +80,7 @@ enum HeatMapTimeRange: String, CaseIterable {
 final class MuscleHeatMapViewModel {
     // MARK: - Dependencies
 
-    private let workoutRepository: WorkoutRepository
+    private let workoutDataProvider: WorkoutDataProviding
 
     // MARK: - State
 
@@ -92,8 +92,8 @@ final class MuscleHeatMapViewModel {
 
     // MARK: - Init
 
-    init(workoutRepository: WorkoutRepository) {
-        self.workoutRepository = workoutRepository
+    init(workoutDataProvider: WorkoutDataProviding) {
+        self.workoutDataProvider = workoutDataProvider
     }
 
     // MARK: - Data Loading
@@ -110,7 +110,7 @@ final class MuscleHeatMapViewModel {
                 return
             }
 
-            let workouts = try await workoutRepository.getWorkouts(from: startDate, to: endDate)
+            let workouts = try await workoutDataProvider.getWorkouts(from: startDate, to: endDate)
             muscleData = try await buildMuscleData(from: workouts, weeks: Double(selectedTimeRange.days) / 7.0)
         } catch {
             errorMessage = UserFacingError.message(for: error, context: .loading)
@@ -127,7 +127,7 @@ final class MuscleHeatMapViewModel {
         var exerciseCache: [UUID: Exercise] = [:]
 
         for exerciseId in allExerciseIds {
-            if let exercise = try await workoutRepository.getExercise(id: exerciseId) {
+            if let exercise = try await workoutDataProvider.getExercise(id: exerciseId) {
                 exerciseCache[exerciseId] = exercise
             }
         }

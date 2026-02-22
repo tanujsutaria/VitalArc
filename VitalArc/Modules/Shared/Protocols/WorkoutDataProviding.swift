@@ -14,4 +14,5 @@ protocol WorkoutDataProviding {
     func getWorkouts(from startDate: Date, to endDate: Date) async throws -> [Workout]
     func getTodayWorkouts() async throws -> [Workout]
     func getLastWorkoutForExercise(_ exerciseId: UUID) async throws -> Workout?
+    func getExercise(id: UUID) async throws -> Exercise?
 }

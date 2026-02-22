@@ -282,7 +282,7 @@ extension MuscleHeatMapData: @retroactive Equatable {
     ScrollView {
         MuscleHeatMapView(
             viewModel: MuscleHeatMapViewModel(
-                workoutRepository: PreviewWorkoutRepository()
+                workoutDataProvider: PreviewWorkoutRepository()
             )
         )
         .padding()

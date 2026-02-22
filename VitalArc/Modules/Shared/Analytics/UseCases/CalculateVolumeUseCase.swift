@@ -9,16 +9,16 @@ import Foundation
 
 /// Calculates training volume metrics for a given time period
 class CalculateVolumeUseCase {
-    private let workoutRepository: WorkoutRepository
+    private let workoutDataProvider: WorkoutDataProviding
 
-    init(workoutRepository: WorkoutRepository) {
-        self.workoutRepository = workoutRepository
+    init(workoutDataProvider: WorkoutDataProviding) {
+        self.workoutDataProvider = workoutDataProvider
     }
 
     /// Execute volume calculation for a date range
     func execute(startDate: Date, endDate: Date) async throws -> VolumeMetrics {
         // Fetch all workouts in date range
-        let workouts = try await workoutRepository.getWorkouts(from: startDate, to: endDate)
+        let workouts = try await workoutDataProvider.getWorkouts(from: startDate, to: endDate)
 
         // Group sets by exercise
         var exerciseData: [UUID: ExerciseVolumeData] = [:]
@@ -112,7 +112,7 @@ class CalculateVolumeUseCase {
 
         for (exerciseId, data) in exerciseData {
             // Fetch exercise name
-            let exercise = try await workoutRepository.getExercise(id: exerciseId)
+            let exercise = try await workoutDataProvider.getExercise(id: exerciseId)
             let exerciseName = exercise?.name ?? Strings.Fallback.unknownExercise
 
             let avgWeight = data.weights.isEmpty ? 0 : data.weights.reduce(0, +) / Double(data.weights.count)

@@ -45,7 +45,7 @@ struct RecoveryScoreResult {
 
 @MainActor
 class CalculateRecoveryScoreUseCase {
-    private let healthRepository: HealthRepository
+    private let healthDataProvider: HealthDataProviding
 
     /// Weights for each factor in the recovery score
     private let hrvWeight: Double = 0.50  // HRV is the primary indicator
@@ -55,8 +55,8 @@ class CalculateRecoveryScoreUseCase {
     /// Number of days to use for baseline calculation
     private let baselineDays: Int = 60
 
-    init(healthRepository: HealthRepository) {
-        self.healthRepository = healthRepository
+    init(healthDataProvider: HealthDataProviding) {
+        self.healthDataProvider = healthDataProvider
     }
 
     /// Calculate recovery score for a given date based on health data
@@ -65,7 +65,7 @@ class CalculateRecoveryScoreUseCase {
         let startDate = calendar.date(byAdding: .day, value: -baselineDays, to: date) ?? date
 
         // Fetch health metrics for baseline period up to the target date
-        let metrics = try await healthRepository.getHealthMetrics(from: startDate, to: date)
+        let metrics = try await healthDataProvider.getHealthMetrics(from: startDate, to: date)
 
         guard !metrics.isEmpty else {
             return createDefaultResult(message: "Not enough health data available")

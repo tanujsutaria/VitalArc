@@ -117,7 +117,7 @@ final class TodayDashboardViewModel {
 
         // Load recovery score for the selected date
         do {
-            let recoveryUseCase = CalculateRecoveryScoreUseCase(healthRepository: healthRepository)
+            let recoveryUseCase = CalculateRecoveryScoreUseCase(healthDataProvider: healthRepository)
             let recovery = try await recoveryUseCase.execute(for: date)
             guard selectedDate == date else { return }
             recoveryScore = recovery
@@ -130,8 +130,7 @@ final class TodayDashboardViewModel {
         // Load strain score
         do {
             let strainUseCase = CalculateStrainScoreUseCase(
-                healthRepository: healthRepository,
-                userRepository: userRepository
+                userProfileProvider: userRepository
             )
             let strain = try await strainUseCase.execute(for: date)
             guard selectedDate == date else { return }

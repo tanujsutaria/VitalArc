@@ -9,22 +9,22 @@ import Foundation
 
 /// Generates comprehensive progress reports
 class GenerateProgressReportUseCase {
-    private let workoutRepository: WorkoutRepository
-    private let healthRepository: HealthRepository
-    private let nutritionRepository: NutritionRepository
+    private let workoutDataProvider: WorkoutDataProviding
+    private let healthDataProvider: HealthDataProviding
+    private let nutritionDataProvider: NutritionDataProviding
     private let analyticsRepository: AnalyticsRepository
     private let calculateVolumeUseCase: CalculateVolumeUseCase
 
     init(
-        workoutRepository: WorkoutRepository,
-        healthRepository: HealthRepository,
-        nutritionRepository: NutritionRepository,
+        workoutDataProvider: WorkoutDataProviding,
+        healthDataProvider: HealthDataProviding,
+        nutritionDataProvider: NutritionDataProviding,
         analyticsRepository: AnalyticsRepository,
         calculateVolumeUseCase: CalculateVolumeUseCase
     ) {
-        self.workoutRepository = workoutRepository
-        self.healthRepository = healthRepository
-        self.nutritionRepository = nutritionRepository
+        self.workoutDataProvider = workoutDataProvider
+        self.healthDataProvider = healthDataProvider
+        self.nutritionDataProvider = nutritionDataProvider
         self.analyticsRepository = analyticsRepository
         self.calculateVolumeUseCase = calculateVolumeUseCase
     }
@@ -34,8 +34,8 @@ class GenerateProgressReportUseCase {
         let period = DateInterval(start: startDate, end: endDate)
 
         // Fetch all necessary data in parallel
-        async let workouts = workoutRepository.getWorkouts(from: startDate, to: endDate)
-        async let healthMetrics = healthRepository.getHealthMetrics(from: startDate, to: endDate)
+        async let workouts = workoutDataProvider.getWorkouts(from: startDate, to: endDate)
+        async let healthMetrics = healthDataProvider.getHealthMetrics(from: startDate, to: endDate)
         async let snapshots = analyticsRepository.getProgressSnapshots(from: startDate, to: endDate)
         async let records = analyticsRepository.getPersonalRecords()
 
@@ -150,7 +150,7 @@ class GenerateProgressReportUseCase {
 
         var currentDate = startDate
         while currentDate <= endDate {
-            if let nutrition = try await nutritionRepository.getDailyNutrition(for: currentDate) {
+            if let nutrition = try await nutritionDataProvider.getDailyNutrition(for: currentDate) {
                 let adherence = calculateDayAdherence(nutrition)
                 totalAdherence += adherence
                 daysWithData += 1

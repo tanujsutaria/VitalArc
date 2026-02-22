@@ -32,6 +32,4 @@ final class NutritionContainer {
     }
 }
 
-// MARK: - NutritionDataProviding Conformance
-
-extension SwiftDataNutritionRepository: NutritionDataProviding {}
+// NutritionDataProviding conformance inherited from NutritionRepository
