@@ -42,10 +42,14 @@ final class ExerciseLibraryViewModel {
             )
 
             // Don't overwrite if this task was cancelled (stale results)
-            guard !Task.isCancelled else { return }
+            guard !Task.isCancelled else {
+                isLoading = false
+                return
+            }
 
             exercises = result
         } catch is CancellationError {
+            isLoading = false
             return
         } catch {
             errorMessage = UserFacingError.message(for: error, context: .loading)
