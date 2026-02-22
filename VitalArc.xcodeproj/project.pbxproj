@@ -79,6 +79,7 @@
 		35E74F7F94103E049B5256BE /* GetHealthMetricsUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = D80F6568178A09A3B28B91A6 /* GetHealthMetricsUseCase.swift */; };
 		38C3A6B8D34517A4782982B9 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1ACCC0BC5A5FAE8B2A5E0DA0 /* SwiftUI.framework */; };
 		394ABD164F42B0211A3E2187 /* ErrorHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AA58C4F3BF2D8A088EAEAF1 /* ErrorHandling.swift */; };
+		39F86E662549FA5BF0BE3F4F /* GetExercisesUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B6706CC39834C9599E76F6A /* GetExercisesUseCaseTests.swift */; };
 		3A4D525A27D447DE7D063388 /* CreateMesocycleUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = C83717526D9CA4436F443936 /* CreateMesocycleUseCase.swift */; };
 		3A58616DAA9D71FF08B2E66B /* FoodSearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FF15476235A9A77A682F3F0 /* FoodSearchViewModel.swift */; };
 		3A709A8776B9CA17D06A71A1 /* CalculateProgressionUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EE6CBC195999C9E40ADE7BA /* CalculateProgressionUseCase.swift */; };
@@ -433,6 +434,7 @@
 		39B0DBE3650949FBEC0F7F08 /* GetExerciseHistoryUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetExerciseHistoryUseCaseTests.swift; sourceTree = "<group>"; };
 		3ABE687639D994FE1FEE4659 /* OpenFoodFactsAPITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenFoodFactsAPITests.swift; sourceTree = "<group>"; };
 		3AEFBA31EDB8B264F4A0A6D9 /* SpringAnimations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpringAnimations.swift; sourceTree = "<group>"; };
+		3B6706CC39834C9599E76F6A /* GetExercisesUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetExercisesUseCaseTests.swift; sourceTree = "<group>"; };
 		3BF205ECCFD8D82456A13F47 /* CreateWorkoutUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateWorkoutUseCaseTests.swift; sourceTree = "<group>"; };
 		3C16B2124D37B02D7F9EE89C /* ScheduleNotificationsUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleNotificationsUseCase.swift; sourceTree = "<group>"; };
 		3CA86B62D5FF573053930427 /* LogWaterUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogWaterUseCase.swift; sourceTree = "<group>"; };
@@ -726,6 +728,7 @@
 				3BF205ECCFD8D82456A13F47 /* CreateWorkoutUseCaseTests.swift */,
 				125FBD1AE2F341738B59323D /* DetectPersonalRecordUseCaseTests.swift */,
 				39B0DBE3650949FBEC0F7F08 /* GetExerciseHistoryUseCaseTests.swift */,
+				3B6706CC39834C9599E76F6A /* GetExercisesUseCaseTests.swift */,
 				9C05E1B73FC796B03B3B11D8 /* HRVTrackingTests.swift */,
 				7AAFEEB99B97BD63A8890DAE /* ImportHealthKitWorkoutsUseCaseTests.swift */,
 				6741575CC45FBD5A51A967C3 /* LogFoodUseCaseTests.swift */,
@@ -1635,34 +1638,6 @@
 			path = Data;
 			sourceTree = "<group>";
 		};
-		"TEMP_19708EDC-FBEB-405D-922F-8CCD969E5DB9" /* Common */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Common;
-			sourceTree = "<group>";
-		};
-		"TEMP_4DDC643E-4106-4E53-8859-7211D5CE5BBC" /* Data */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Data;
-			sourceTree = "<group>";
-		};
-		"TEMP_5C33F8BE-6B6E-4151-BA99-314373FF713C" /* Infrastructure */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Infrastructure;
-			sourceTree = "<group>";
-		};
-		"TEMP_8D33CEF3-4497-44F9-83F4-3AA7A29B3915" /* Presentation */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Presentation;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -2028,6 +2003,7 @@
 				F54F0E3F14851FB824EE8732 /* FoodSearchViewModelFavoritesTests.swift in Sources */,
 				C68CB59151E2444821D24B32 /* FoodSearchViewModelTests.swift in Sources */,
 				481EC7D0E086D3C590AE345C /* GetExerciseHistoryUseCaseTests.swift in Sources */,
+				39F86E662549FA5BF0BE3F4F /* GetExercisesUseCaseTests.swift in Sources */,
 				DBDECEE0ECD1F2D25ABF11FA /* HRVTrackingTests.swift in Sources */,
 				AC8B0952BDD7AF2C84BDDD60 /* HealthDashboardViewModelTests.swift in Sources */,
 				3EC7F8F3D2E7735357137756 /* HealthKitTests.swift in Sources */,
