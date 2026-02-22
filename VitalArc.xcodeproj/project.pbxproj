@@ -228,6 +228,7 @@
 		AD74EC32C65E514F6C8AB6C4 /* UserRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEABB023229AC10A30D4676F /* UserRepository.swift */; };
 		AD8852C2EB62C8631BF92E2F /* GetBodyMeasurementsUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60864E118266FAB99A85201F /* GetBodyMeasurementsUseCase.swift */; };
 		AE8620DACD58828C265384EB /* DailyNutrition.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF74BA33927E013590176491 /* DailyNutrition.swift */; };
+		AE9857E9189590D675524E43 /* CalculateStressAnalysisUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57234900B403478A5E2B1EEA /* CalculateStressAnalysisUseCaseTests.swift */; };
 		AEBAF07052BE34510D3EEC9E /* DeleteWaterEntryUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60B3AAAC7F0A5D5A98647269 /* DeleteWaterEntryUseCase.swift */; };
 		AFA02DDC99925265E63228A3 /* WorkoutTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9424058DB3BFA461A3ED1456 /* WorkoutTests.swift */; };
 		B0B87A76411C12C1863FC7E0 /* WorkoutHistoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52F80BEC279965DA0E8ED52C /* WorkoutHistoryViewModel.swift */; };
@@ -467,6 +468,7 @@
 		55C168AF1AEDE3EFA8EE221D /* CalculateOneRepMaxUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalculateOneRepMaxUseCaseTests.swift; sourceTree = "<group>"; };
 		55F6D25575AEE45EAFAFC1F1 /* UpdateMesocycleProgressUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateMesocycleProgressUseCase.swift; sourceTree = "<group>"; };
 		56AEA7C17FB02DC65BB816C7 /* JetBrainsMono-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "JetBrainsMono-Bold.ttf"; sourceTree = "<group>"; };
+		57234900B403478A5E2B1EEA /* CalculateStressAnalysisUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalculateStressAnalysisUseCaseTests.swift; sourceTree = "<group>"; };
 		5936B3192C0D9CBCFADC8A89 /* UserPreferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserPreferences.swift; sourceTree = "<group>"; };
 		5AF803AA0DE98DB800D8487E /* MealSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealSectionView.swift; sourceTree = "<group>"; };
 		5AFD41E5C7372D8AED2D6F0C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -726,6 +728,7 @@
 				55C168AF1AEDE3EFA8EE221D /* CalculateOneRepMaxUseCaseTests.swift */,
 				7BE127FCC1E18A792C0CB7D8 /* CalculateReadinessScoreUseCaseTests.swift */,
 				78E3526562C923855377FDB2 /* CalculateSleepConsistencyUseCaseTests.swift */,
+				57234900B403478A5E2B1EEA /* CalculateStressAnalysisUseCaseTests.swift */,
 				02E2D24312FE0978AA66DD24 /* CalculateVolumeUseCaseTests.swift */,
 				3BF205ECCFD8D82456A13F47 /* CreateWorkoutUseCaseTests.swift */,
 				125FBD1AE2F341738B59323D /* DetectPersonalRecordUseCaseTests.swift */,
@@ -1999,6 +2002,7 @@
 				91C2424D2A6A56D3E46AE524 /* CalculateOneRepMaxUseCaseTests.swift in Sources */,
 				D0625C27F9E60B11A87980F5 /* CalculateReadinessScoreUseCaseTests.swift in Sources */,
 				0861C7CFCE5CC129B7634118 /* CalculateSleepConsistencyUseCaseTests.swift in Sources */,
+				AE9857E9189590D675524E43 /* CalculateStressAnalysisUseCaseTests.swift in Sources */,
 				6D46BB1E4C450DD94595E9D2 /* CalculateVolumeUseCaseTests.swift in Sources */,
 				E5BC0C2721ADF20AF7F95934 /* CreateWorkoutUseCaseTests.swift in Sources */,
 				17F6FE1C22F4D2CBB6E4B71D /* DetectPersonalRecordUseCaseTests.swift in Sources */,
