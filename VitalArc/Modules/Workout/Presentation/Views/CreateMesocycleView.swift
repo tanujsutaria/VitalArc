@@ -23,6 +23,7 @@ struct CreateMesocycleView: View {
     @State private var programName = ""
     @State private var durationWeeks = 4
     @State private var startDate = Date()
+    @State private var selectedGoal: TrainingGoal = .hypertrophy
     @State private var autoProgressionEnabled = true
     @State private var weightIncrementLbs: Double = 5.0
     @State private var repIncrement: Int = 1
@@ -135,6 +136,45 @@ struct CreateMesocycleView: View {
                         .padding(Spacing.md)
                         .background(Color.vitalAdaptiveSurface)
                         .cornerRadius(Spacing.radiusMedium)
+                }
+                .padding(.horizontal, Spacing.screenPadding)
+
+                // Training Goal
+                VStack(alignment: .leading, spacing: Spacing.sm) {
+                    Text("TRAINING GOAL")
+                        .font(.vitalCaptionSmall)
+                        .foregroundStyle(Color.vitalAdaptiveTextTertiary)
+
+                    HStack(spacing: Spacing.sm) {
+                        ForEach(TrainingGoal.allCases, id: \.self) { goal in
+                            Button {
+                                selectedGoal = goal
+                            } label: {
+                                VStack(spacing: Spacing.xs) {
+                                    Image(systemName: goal.icon)
+                                        .font(.vitalH3)
+
+                                    Text(goal.rawValue)
+                                        .font(.vitalLabelSmall)
+                                        .lineLimit(1)
+                                }
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, Spacing.md)
+                                .background(selectedGoal == goal ? Color.vitalPrimary : Color.vitalAdaptiveSurface)
+                                .foregroundStyle(selectedGoal == goal ? .white : Color.vitalAdaptiveTextPrimary)
+                                .cornerRadius(Spacing.radiusMedium)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: Spacing.radiusMedium)
+                                        .stroke(selectedGoal == goal ? Color.clear : Color.vitalAdaptiveBorder, lineWidth: 1)
+                                )
+                            }
+                            .buttonStyle(.plain)
+                        }
+                    }
+
+                    Text(selectedGoal.description)
+                        .font(.vitalCaption)
+                        .foregroundStyle(Color.vitalAdaptiveTextSecondary)
                 }
                 .padding(.horizontal, Spacing.screenPadding)
 
@@ -330,6 +370,8 @@ struct CreateMesocycleView: View {
                         VStack(spacing: Spacing.md) {
                             summaryRow("Template", template.name)
                             Divider()
+                            summaryRow("Goal", selectedGoal.rawValue)
+                            Divider()
                             summaryRow("Duration", "\(durationWeeks) weeks")
                             Divider()
                             summaryRow("Start", startDate.formatted(date: .abbreviated, time: .omitted))
@@ -473,7 +515,7 @@ struct CreateMesocycleView: View {
                 name: programName,
                 startDate: startDate,
                 durationWeeks: durationWeeks,
-                goal: .hypertrophy,
+                goal: selectedGoal,
                 phaseTemplate: .standard,
                 trainingBlocks: trainingBlocks
             )
