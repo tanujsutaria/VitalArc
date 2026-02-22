@@ -312,6 +312,7 @@
 		EFE9124AE72C9FA5C9310443 /* StressAnalysisView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CAA10D677B0028A0F072FBB /* StressAnalysisView.swift */; };
 		F0A5B10F590893EF7118471B /* UpdateFoodEntryUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E551EDF909B4E31DF95966EA /* UpdateFoodEntryUseCase.swift */; };
 		F0C4056F2F611663CA655035 /* CalculateStrainScoreUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6454AEDC63935BDB5E52EC5B /* CalculateStrainScoreUseCase.swift */; };
+		F0F37BEDA05C8F5C5A19A819 /* CalculateNutritionStreakUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 907B8824627AF021C1BC935D /* CalculateNutritionStreakUseCase.swift */; };
 		F142869C7CDB3CBC36EADADE /* TrainingHeatmapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB44B1CB55F14F592A539AE3 /* TrainingHeatmapView.swift */; };
 		F1FB6C88B80C2C23ACBC7C81 /* MockMesocycleRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5B4CC55F58DB1F895FFB86A /* MockMesocycleRepository.swift */; };
 		F3D50A6F0380E436A27689DA /* HealthMetricsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9460A6DBC941A5FF62E7FEE /* HealthMetricsModel.swift */; };
@@ -549,6 +550,7 @@
 		8EF8D49D1A2E5FF345303A06 /* VitalArcTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = VitalArcTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8F8817D126E810B1B632AF66 /* GetWaterEntriesUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetWaterEntriesUseCase.swift; sourceTree = "<group>"; };
 		906FC3E45905B603D53E557F /* NutritionixAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NutritionixAPI.swift; sourceTree = "<group>"; };
+		907B8824627AF021C1BC935D /* CalculateNutritionStreakUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalculateNutritionStreakUseCase.swift; sourceTree = "<group>"; };
 		934B2536C8F8088BE045CDDD /* CreateMesocycleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateMesocycleView.swift; sourceTree = "<group>"; };
 		93C6823A60E5E8E0FE3A1021 /* CustomCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCategory.swift; sourceTree = "<group>"; };
 		93E0E765E3C46EF6D052DF84 /* OnboardingViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewModelTests.swift; sourceTree = "<group>"; };
@@ -1113,6 +1115,7 @@
 		6B877002F271E109EFD3F300 /* UseCases */ = {
 			isa = PBXGroup;
 			children = (
+				907B8824627AF021C1BC935D /* CalculateNutritionStreakUseCase.swift */,
 				8C275395C2759FAD77AEED2F /* CalculateNutritionUseCase.swift */,
 				6E3D72FD99A5AD676556A7F6 /* CalculateTDEEUseCase.swift */,
 				F225D8959CE6F089D027272A /* DeleteFoodEntryUseCase.swift */,
@@ -1754,6 +1757,7 @@
 				7246D61FB4B613B7E5DD4AE4 /* BodyMeasurementRepository.swift in Sources */,
 				6A1727DAAE9C516FFE7E44E9 /* CSVExporter.swift in Sources */,
 				2D69C5CAECD051AEC4B589C0 /* CalculateHealthScoresUseCase.swift in Sources */,
+				F0F37BEDA05C8F5C5A19A819 /* CalculateNutritionStreakUseCase.swift in Sources */,
 				4C51B1A9D307E4238147EC40 /* CalculateNutritionUseCase.swift in Sources */,
 				423554CF7E1073CCD7704B5A /* CalculateOneRepMaxUseCase.swift in Sources */,
 				3A709A8776B9CA17D06A71A1 /* CalculateProgressionUseCase.swift in Sources */,

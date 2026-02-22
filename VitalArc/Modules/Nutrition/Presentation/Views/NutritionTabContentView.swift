@@ -81,6 +81,11 @@ private struct NutritionUnifiedView: View {
                     onToday: { viewModel.goToToday() }
                 )
 
+                // Nutrition Streak
+                if let streak = viewModel.nutritionStreak, streak.currentStreak > 0 {
+                    NutritionStreakBanner(streak: streak)
+                }
+
                 // Always-visible Macro Summary
                 if let nutrition = viewModel.dailyNutrition {
                     CompactMacroSummaryView(
@@ -481,6 +486,7 @@ final class NutritionTabViewModel {
     var dailyNutrition: DailyNutrition?
     var tdeeResult: TDEEResult?
     var dailyWaterGoal: Double = 2500
+    var nutritionStreak: NutritionStreak?
     var isLoading = false
     var error: Error?
 
@@ -562,6 +568,10 @@ final class NutritionTabViewModel {
 
                 guard !Task.isCancelled else { return }
                 dailyNutrition = nutrition
+
+                // Calculate nutrition streak
+                let streakUseCase = CalculateNutritionStreakUseCase(repository: nutritionRepository)
+                nutritionStreak = try? await streakUseCase.execute()
             } catch {
                 guard !Task.isCancelled else { return }
                 self.error = error
@@ -805,6 +815,39 @@ private struct NutritionQuickLinksRow: View {
                 )
             }
         }
+    }
+}
+
+// MARK: - Nutrition Streak Banner
+
+private struct NutritionStreakBanner: View {
+    let streak: NutritionStreak
+
+    var body: some View {
+        HStack(spacing: Spacing.md) {
+            Image(systemName: "flame.fill")
+                .font(.vitalH2)
+                .foregroundStyle(Color.vitalWarning)
+
+            VStack(alignment: .leading, spacing: Spacing.xxs) {
+                Text("\(streak.currentStreak)-day streak")
+                    .font(.vitalBody)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(Color.vitalAdaptiveTextPrimary)
+
+                if streak.longestStreak > streak.currentStreak {
+                    Text("Best: \(streak.longestStreak) days")
+                        .font(.vitalCaption)
+                        .foregroundStyle(Color.vitalAdaptiveTextSecondary)
+                }
+            }
+
+            Spacer()
+        }
+        .padding(Spacing.cardPadding)
+        .background(Color.vitalAdaptiveSurface)
+        .clipShape(RoundedRectangle(cornerRadius: Spacing.radiusMedium))
+        .shadow(color: .black.opacity(0.05), radius: 5, x: 0, y: 2)
     }
 }
 
