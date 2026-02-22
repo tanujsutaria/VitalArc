@@ -121,6 +121,8 @@ final class MetricDetailViewModel {
             return metrics.oxygenSaturation
         case .vo2Max:
             return metrics.vo2Max
+        case .hydration:
+            return metrics.waterIntake.map { $0 * 0.033814 } // mL to fl oz
         }
     }
 

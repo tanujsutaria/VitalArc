@@ -36,6 +36,9 @@ final class HealthMetricsModel {
     var oxygenSaturation: Double?
     var vo2Max: Double?
 
+    // Hydration
+    var waterIntake: Double? // in mL
+
     init(
         id: UUID = UUID(),
         date: Date,
@@ -53,7 +56,8 @@ final class HealthMetricsModel {
         leanBodyMass: Double? = nil,
         respiratoryRate: Double? = nil,
         oxygenSaturation: Double? = nil,
-        vo2Max: Double? = nil
+        vo2Max: Double? = nil,
+        waterIntake: Double? = nil
     ) {
         self.id = id
         self.date = date
@@ -72,6 +76,7 @@ final class HealthMetricsModel {
         self.respiratoryRate = respiratoryRate
         self.oxygenSaturation = oxygenSaturation
         self.vo2Max = vo2Max
+        self.waterIntake = waterIntake
     }
 
     /// Convert to domain entity
@@ -103,7 +108,8 @@ final class HealthMetricsModel {
             leanBodyMass: leanBodyMass,
             respiratoryRate: respiratoryRate,
             oxygenSaturation: oxygenSaturation,
-            vo2Max: vo2Max
+            vo2Max: vo2Max,
+            waterIntake: waterIntake
         )
     }
 
@@ -126,7 +132,8 @@ final class HealthMetricsModel {
             leanBodyMass: metrics.leanBodyMass,
             respiratoryRate: metrics.respiratoryRate,
             oxygenSaturation: metrics.oxygenSaturation,
-            vo2Max: metrics.vo2Max
+            vo2Max: metrics.vo2Max,
+            waterIntake: metrics.waterIntake
         )
     }
 }

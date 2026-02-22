@@ -67,6 +67,11 @@ struct HealthKitPermissions {
             types.insert(vo2MaxType)
         }
 
+        // Hydration
+        if let waterType = HKObjectType.quantityType(forIdentifier: .dietaryWater) {
+            types.insert(waterType)
+        }
+
         // Workouts
         types.insert(HKObjectType.workoutType())
 

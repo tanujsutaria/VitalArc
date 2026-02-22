@@ -138,6 +138,9 @@ struct HealthDashboardView: View {
             return today.oxygenSaturation ?? -1
         case .vo2Max:
             return today.vo2Max ?? -1
+        case .hydration:
+            guard let water = today.waterIntake else { return -1 }
+            return water * 0.033814 // mL to fl oz
         }
     }
 
@@ -470,6 +473,18 @@ struct HealthDashboardView: View {
                         icon: "figure.run",
                         color: .vitalSuccess,
                         sparklineData: getSparklineData(for: \.vo2Max)
+                    )
+                }
+
+                if let water = metrics.waterIntake {
+                    MetricCard(
+                        title: "Hydration",
+                        value: String(format: "%.0f", water * 0.033814),
+                        unit: "fl oz",
+                        icon: "drop.fill",
+                        color: .vitalInfo,
+                        sparklineData: viewModel.weekMetrics.compactMap { $0.waterIntake.map { $0 * 0.033814 } },
+                        onTap: { selectedMetric = .hydration }
                     )
                 }
             }

@@ -101,6 +101,7 @@ struct HealthMetrics: Identifiable, Equatable {
     let respiratoryRate: Double? // breaths per minute
     let oxygenSaturation: Double? // percentage (0-100)
     let vo2Max: Double? // mL/kg/min
+    let waterIntake: Double? // in mL (from HealthKit dietaryWater)
 
     init(
         id: UUID = UUID(),
@@ -116,7 +117,8 @@ struct HealthMetrics: Identifiable, Equatable {
         leanBodyMass: Double? = nil,
         respiratoryRate: Double? = nil,
         oxygenSaturation: Double? = nil,
-        vo2Max: Double? = nil
+        vo2Max: Double? = nil,
+        waterIntake: Double? = nil
     ) {
         self.id = id
         self.date = date
@@ -132,6 +134,7 @@ struct HealthMetrics: Identifiable, Equatable {
         self.respiratoryRate = respiratoryRate
         self.oxygenSaturation = oxygenSaturation
         self.vo2Max = vo2Max
+        self.waterIntake = waterIntake
     }
 
     /// Simple recovery indicator based on HRV (higher is better)

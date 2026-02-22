@@ -85,14 +85,15 @@ final class HealthKitManager {
         async let respRate = fetchRespiratoryRate(start: dateRange.start, end: dateRange.end)
         async let spo2 = fetchOxygenSaturation(start: dateRange.start, end: dateRange.end)
         async let vo2 = fetchVO2Max(start: dateRange.start, end: dateRange.end)
+        async let water = fetchWaterIntake(start: dateRange.start, end: dateRange.end)
 
         // Intentional `try?`: individual metric failures (e.g., user lacks a sensor for
         // respiratory rate, or a specific HealthKit type is unauthorized) should not block
         // the entire sync. We collect whatever data IS available and return nil for the rest.
         let (hrvValue, hrValue, energyValue, stepsValue, sleepValue, sleepStagesValue, weightValue,
-             bodyFatValue, leanMassValue, respRateValue, spo2Value, vo2Value) =
+             bodyFatValue, leanMassValue, respRateValue, spo2Value, vo2Value, waterValue) =
             await (try? hrv, try? heartRate, try? activeEnergy, try? steps, try? sleep, try? sleepStages, try? weight,
-                   try? bodyFat, try? leanMass, try? respRate, try? spo2, try? vo2)
+                   try? bodyFat, try? leanMass, try? respRate, try? spo2, try? vo2, try? water)
 
         return HealthMetrics(
             date: date,
@@ -107,7 +108,8 @@ final class HealthKitManager {
             leanBodyMass: leanMassValue,
             respiratoryRate: respRateValue,
             oxygenSaturation: spo2Value,
-            vo2Max: vo2Value
+            vo2Max: vo2Value,
+            waterIntake: waterValue
         )
     }
 
@@ -637,6 +639,37 @@ final class HealthKitManager {
                 }
                 let clampedValue = min(100, max(5, rawValue))
                 continuation.resume(returning: clampedValue)
+            }
+
+            healthStore.execute(query)
+        }
+    }
+
+    /// Fetch dietary water intake (in mL) for the day
+    private func fetchWaterIntake(start: Date, end: Date) async throws -> Double? {
+        guard let waterType = HKQuantityType.quantityType(forIdentifier: .dietaryWater) else {
+            throw HealthKitError.queryFailed
+        }
+
+        return try await withCheckedThrowingContinuation { continuation in
+            let query = HealthKitQuery.statisticsQuery(
+                for: waterType,
+                start: start,
+                end: end,
+                options: .cumulativeSum
+            ) { statistics, error in
+                if let error = error {
+                    continuation.resume(throwing: error)
+                    return
+                }
+
+                guard let sum = statistics?.sumQuantity() else {
+                    continuation.resume(returning: nil)
+                    return
+                }
+
+                let value = sum.doubleValue(for: .literUnit(with: .milli))
+                continuation.resume(returning: value)
             }
 
             healthStore.execute(query)
