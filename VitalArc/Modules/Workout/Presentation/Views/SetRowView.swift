@@ -65,6 +65,20 @@ struct SetRowView: View {
                         .accessibilityValue(setData.rir.map { "\($0)" } ?? "empty")
                 }
 
+                // RPE Input (Optional)
+                VStack(alignment: .leading, spacing: Spacing.xxs) {
+                    Text("RPE")
+                        .font(.vitalCaptionSmall)
+                        .foregroundStyle(.secondary)
+
+                    TextField("", value: $setData.rpe, format: .number)
+                        .keyboardType(.decimalPad)
+                        .textFieldStyle(.roundedBorder)
+                        .frame(width: 50)
+                        .accessibilityLabel("RPE for set \(setData.setNumber)")
+                        .accessibilityValue(setData.rpe.map { String(format: "%.1f", $0) } ?? "empty")
+                }
+
                 Spacer()
 
                 // Notes Toggle

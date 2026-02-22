@@ -220,6 +220,7 @@ final class WorkoutLoggingViewModel {
             weight: lastSet?.weight ?? 20.0,
             reps: lastSet?.reps ?? 10,
             rir: lastSet?.rir,
+            rpe: lastSet?.rpe,
             setNumber: setNumber,
             completed: false
         )
@@ -269,6 +270,7 @@ final class WorkoutLoggingViewModel {
                         weight: max(0, setData.weight),
                         reps: max(0, setData.reps),
                         rir: setData.rir,
+                        rpe: setData.rpe,
                         setNumber: setData.setNumber,
                         completed: setData.completed,
                         notes: setData.notes
@@ -373,6 +375,7 @@ struct WorkoutSetData: Identifiable {
     var weight: Double
     var reps: Int
     var rir: Int?
+    var rpe: Double?
     var setNumber: Int
     var completed: Bool
     var notes: String?
