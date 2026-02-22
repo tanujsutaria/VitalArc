@@ -64,27 +64,29 @@ final class JSONExporter {
         foodEntries: [FoodEntry],
         foods: [UUID: Food]
     ) async throws -> URL {
+        let filteredEntries: [NutritionExport.NutritionEntry] = foodEntries.compactMap { entry in
+            guard let food = foods[entry.foodId] else { return nil }
+            return NutritionExport.NutritionEntry(
+                date: entry.date,
+                meal: entry.meal.displayName,
+                food: food.name,
+                brand: food.brand,
+                quantity: entry.quantity,
+                servingUnit: food.servingUnit,
+                calories: entry.calories,
+                protein: entry.protein,
+                carbs: entry.carbs,
+                fat: entry.fat,
+                fiber: food.fiber,
+                sugar: food.sugar
+            )
+        }
+
         let export = NutritionExport(
             exportDate: Date(),
             period: ExportPeriod(start: startDate, end: endDate),
-            entryCount: foodEntries.count,
-            entries: foodEntries.compactMap { entry in
-                guard let food = foods[entry.foodId] else { return nil }
-                return NutritionExport.NutritionEntry(
-                    date: entry.date,
-                    meal: entry.meal.displayName,
-                    food: food.name,
-                    brand: food.brand,
-                    quantity: entry.quantity,
-                    servingUnit: food.servingUnit,
-                    calories: entry.calories,
-                    protein: entry.protein,
-                    carbs: entry.carbs,
-                    fat: entry.fat,
-                    fiber: food.fiber,
-                    sugar: food.sugar
-                )
-            }
+            entryCount: filteredEntries.count,
+            entries: filteredEntries
         )
 
         let data = try encoder.encode(export)
