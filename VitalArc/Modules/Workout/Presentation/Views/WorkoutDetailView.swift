@@ -39,6 +39,14 @@ struct WorkoutDetailView: View {
         .background(Color.vitalAdaptiveBackground)
         .navigationTitle(viewModel.name)
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .primaryAction) {
+                ShareLink(item: viewModel.shareText()) {
+                    Image(systemName: "square.and.arrow.up")
+                }
+                .disabled(viewModel.isLoading)
+            }
+        }
         .task {
             await viewModel.loadExerciseDetails()
         }

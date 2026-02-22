@@ -17,6 +17,7 @@ final class ExerciseLibraryViewModel {
     var exercises: [Exercise] = []
     var searchText: String = ""
     var selectedCategory: ExerciseCategory? = nil
+    var selectedMuscleGroup: MuscleGroup? = nil
     var isLoading: Bool = false
     var errorMessage: String? = nil
 
@@ -34,10 +35,22 @@ final class ExerciseLibraryViewModel {
         errorMessage = nil
 
         do {
-            exercises = try await getExercisesUseCase.execute(
+            let result = try await getExercisesUseCase.execute(
                 category: selectedCategory,
+                muscleGroup: selectedMuscleGroup,
                 searchQuery: searchText.isEmpty ? nil : searchText
             )
+
+            // Don't overwrite if this task was cancelled (stale results)
+            guard !Task.isCancelled else {
+                isLoading = false
+                return
+            }
+
+            exercises = result
+        } catch is CancellationError {
+            isLoading = false
+            return
         } catch {
             errorMessage = UserFacingError.message(for: error, context: .loading)
         }
@@ -48,6 +61,12 @@ final class ExerciseLibraryViewModel {
     func selectCategory(_ category: ExerciseCategory?) async {
         selectedCategory = category
         // Cancel any pending search and load immediately for category changes
+        searchTask?.cancel()
+        await loadExercises()
+    }
+
+    func selectMuscleGroup(_ muscleGroup: MuscleGroup?) async {
+        selectedMuscleGroup = muscleGroup
         searchTask?.cancel()
         await loadExercises()
     }

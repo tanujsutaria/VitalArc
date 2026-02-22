@@ -166,6 +166,68 @@ final class ExerciseLibraryViewModelTests: XCTestCase {
         })
     }
 
+    // MARK: - Muscle Group Selection Tests
+
+    func testSelectMuscleGroupTriggersReload() async {
+        mockRepository.mockExercises = createSampleExercises()
+
+        await viewModel.selectMuscleGroup(.chest)
+
+        XCTAssertEqual(viewModel.selectedMuscleGroup, .chest)
+        XCTAssertTrue(viewModel.exercises.allSatisfy {
+            $0.primaryMuscles.contains(.chest) || $0.secondaryMuscles.contains(.chest)
+        })
+    }
+
+    func testSelectMuscleGroupFiltersExercises() async {
+        mockRepository.mockExercises = createSampleExercises()
+
+        await viewModel.selectMuscleGroup(.back)
+
+        XCTAssertEqual(viewModel.exercises.count, 2)
+        let names = Set(viewModel.exercises.map { $0.name })
+        XCTAssertTrue(names.contains("Deadlift"))
+        XCTAssertTrue(names.contains("Pull Up"))
+    }
+
+    func testSelectNilMuscleGroupClearsFilter() async {
+        mockRepository.mockExercises = createSampleExercises()
+        await viewModel.selectMuscleGroup(.chest)
+
+        await viewModel.selectMuscleGroup(nil)
+
+        XCTAssertNil(viewModel.selectedMuscleGroup)
+        XCTAssertEqual(viewModel.exercises.count, mockRepository.mockExercises.count)
+    }
+
+    // MARK: - Clear Search Tests
+
+    func testClearSearchResetsSearchTextAndReloads() async {
+        mockRepository.mockExercises = createSampleExercises()
+        await viewModel.updateSearch("Bench")
+        XCTAssertEqual(viewModel.exercises.count, 1)
+
+        viewModel.clearSearch()
+        try? await Task.sleep(for: .milliseconds(100))
+
+        XCTAssertEqual(viewModel.searchText, "")
+        XCTAssertEqual(viewModel.exercises.count, mockRepository.mockExercises.count)
+    }
+
+    // MARK: - Cancellation Tests
+
+    func testIsLoadingResetsOnCancellation() async {
+        mockRepository.mockExercises = createSampleExercises()
+
+        let task = Task {
+            await viewModel.loadExercises()
+        }
+        task.cancel()
+        await task.value
+
+        XCTAssertFalse(viewModel.isLoading)
+    }
+
     // MARK: - Helper Methods
 
     private func createSampleExercises() -> [Exercise] {

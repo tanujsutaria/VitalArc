@@ -103,6 +103,9 @@ struct ExerciseLibraryView: View {
 
     var body: some View {
         VStack(spacing: 0) {
+            // Muscle Group Filter Chips
+            muscleGroupFilterBar
+
             // Exercise List
             if viewModel.isLoading {
                 ProgressView()
@@ -232,6 +235,84 @@ struct ExerciseLibraryView: View {
                 viewModel.deleteError = "Failed to delete exercise. Please try again."
             }
         }
+    }
+
+    // MARK: - Muscle Group Filter
+
+    /// Muscle groups shown as filter chips, derived from BodyPartCategory for consistency
+    private var filterMuscleGroups: [(label: String, group: MuscleGroup)] {
+        [
+            ("Chest", .chest),
+            ("Back", .back),
+            ("Shoulders", .shoulders),
+            ("Biceps", .biceps),
+            ("Triceps", .triceps),
+            ("Quads", .quadriceps),
+            ("Hamstrings", .hamstrings),
+            ("Glutes", .glutes),
+            ("Calves", .calves),
+            ("Abs", .abs),
+            ("Forearms", .forearms)
+        ]
+    }
+
+    private var muscleGroupFilterBar: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: Spacing.sm) {
+                // "All" chip
+                Button {
+                    Task { await viewModel.selectMuscleGroup(nil) }
+                } label: {
+                    Text("All")
+                        .font(.vitalCaption)
+                        .fontWeight(viewModel.selectedMuscleGroup == nil ? .semibold : .regular)
+                        .padding(.horizontal, Spacing.md)
+                        .padding(.vertical, Spacing.xs)
+                        .background(
+                            viewModel.selectedMuscleGroup == nil
+                                ? Color.vitalPrimary
+                                : Color.vitalAdaptiveSurface
+                        )
+                        .foregroundStyle(
+                            viewModel.selectedMuscleGroup == nil
+                                ? .white
+                                : Color.vitalAdaptiveTextPrimary
+                        )
+                        .clipShape(Capsule())
+                }
+                .buttonStyle(.plain)
+
+                ForEach(filterMuscleGroups, id: \.group) { item in
+                    Button {
+                        Task {
+                            let newGroup: MuscleGroup? = viewModel.selectedMuscleGroup == item.group ? nil : item.group
+                            await viewModel.selectMuscleGroup(newGroup)
+                        }
+                    } label: {
+                        Text(item.label)
+                            .font(.vitalCaption)
+                            .fontWeight(viewModel.selectedMuscleGroup == item.group ? .semibold : .regular)
+                            .padding(.horizontal, Spacing.md)
+                            .padding(.vertical, Spacing.xs)
+                            .background(
+                                viewModel.selectedMuscleGroup == item.group
+                                    ? Color.vitalPrimary
+                                    : Color.vitalAdaptiveSurface
+                            )
+                            .foregroundStyle(
+                                viewModel.selectedMuscleGroup == item.group
+                                    ? .white
+                                    : Color.vitalAdaptiveTextPrimary
+                            )
+                            .clipShape(Capsule())
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+            .padding(.horizontal, Spacing.screenPadding)
+            .padding(.vertical, Spacing.sm)
+        }
+        .background(Color.vitalAdaptiveBackground)
     }
 
     // MARK: - Empty State

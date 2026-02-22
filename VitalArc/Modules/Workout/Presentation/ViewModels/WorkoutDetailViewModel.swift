@@ -101,4 +101,44 @@ final class WorkoutDetailViewModel {
     func bestSet(for exerciseId: UUID) -> WorkoutSet? {
         sets(for: exerciseId).max { $0.volume < $1.volume }
     }
+
+    // MARK: - Sharing
+
+    /// Generates a shareable text summary of the workout
+    func shareText() -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .medium
+        dateFormatter.timeStyle = .short
+
+        var text = "\(name)\n"
+        text += "\(dateFormatter.string(from: date))\n\n"
+
+        // Stats
+        let volumeLbs = UnitConversion.kgToLbs(totalVolume)
+        text += "\(totalSets) sets | \(String(format: "%.0f", volumeLbs)) lbs total volume"
+        if let duration = duration {
+            let minutes = Int(duration) / 60
+            text += " | \(minutes) min"
+        }
+        text += "\n\n"
+
+        // Exercises
+        for exerciseId in orderedExerciseIds {
+            let exerciseName = exerciseName(for: exerciseId)
+            let exerciseSets = sets(for: exerciseId)
+
+            text += "\(exerciseName)\n"
+            for set in exerciseSets {
+                let weightLbs = UnitConversion.kgToLbs(set.weight)
+                var setLine = "  Set \(set.setNumber): \(String(format: "%.1f", weightLbs)) lbs x \(set.reps)"
+                if let rir = set.rir { setLine += " @\(rir) RIR" }
+                if let rpe = set.rpe { setLine += " RPE \(String(format: "%.0f", rpe))" }
+                text += setLine + "\n"
+            }
+            text += "\n"
+        }
+
+        text += "Logged with VitalArc"
+        return text
+    }
 }
