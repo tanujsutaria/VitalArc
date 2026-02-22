@@ -17,6 +17,7 @@ final class HealthDashboardViewModel {
     private let healthRepository: HealthRepository
     private let calculateReadinessScore: CalculateReadinessScoreUseCaseProtocol
     private let calculateSleepConsistency: CalculateSleepConsistencyUseCase
+    private let calculateHealthScores: CalculateHealthScoresUseCase
     private let importHealthKitWorkoutsUseCase: ImportHealthKitWorkoutsUseCase?
 
     var todayMetrics: HealthMetrics?
@@ -44,11 +45,13 @@ final class HealthDashboardViewModel {
         healthRepository: HealthRepository,
         calculateReadinessScore: CalculateReadinessScoreUseCaseProtocol = CalculateReadinessScoreUseCase(),
         calculateSleepConsistency: CalculateSleepConsistencyUseCase = CalculateSleepConsistencyUseCase(),
+        calculateHealthScores: CalculateHealthScoresUseCase = CalculateHealthScoresUseCase(),
         importHealthKitWorkoutsUseCase: ImportHealthKitWorkoutsUseCase? = nil
     ) {
         self.healthRepository = healthRepository
         self.calculateReadinessScore = calculateReadinessScore
         self.calculateSleepConsistency = calculateSleepConsistency
+        self.calculateHealthScores = calculateHealthScores
         self.importHealthKitWorkoutsUseCase = importHealthKitWorkoutsUseCase
     }
 
@@ -335,6 +338,20 @@ final class HealthDashboardViewModel {
         } else {
             return String(format: "%.0f%% below baseline", percent)
         }
+    }
+
+    // MARK: - Health Scores
+
+    /// Sleep score computed from today's metrics via domain use case
+    var sleepScore: HealthScore? {
+        guard let today = todayMetrics else { return nil }
+        return calculateHealthScores.calculateSleepScore(today)
+    }
+
+    /// Activity score computed from today's metrics via domain use case
+    var activityScore: HealthScore? {
+        guard let today = todayMetrics else { return nil }
+        return calculateHealthScores.calculateActivityScore(today)
     }
 
     /// Correlation hint between HRV and sleep
