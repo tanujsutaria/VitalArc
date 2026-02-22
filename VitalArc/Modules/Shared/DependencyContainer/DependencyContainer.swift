@@ -407,6 +407,7 @@ final class SwiftDataNutritionRepository: NutritionRepository {
         if let existing = try modelContext.fetch(descriptor).first {
             // Update existing
             existing.foodId = entry.foodId
+            existing.foodName = entry.foodName
             existing.date = entry.date
             existing.meal = entry.meal.rawValue
             existing.quantity = entry.quantity

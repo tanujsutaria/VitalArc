@@ -33,6 +33,7 @@ final class LogFoodUseCase: LogFoodUseCaseProtocol {
         // Create food entry
         let entry = FoodEntry(
             foodId: food.id,
+            foodName: food.name,
             date: date,
             meal: meal,
             quantity: quantity,

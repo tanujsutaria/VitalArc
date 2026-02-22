@@ -125,6 +125,7 @@ final class FoodLoggingViewModel {
                 // Food no longer in DB; fall back to stored macro data
                 let newEntry = FoodEntry(
                     foodId: entry.foodId,
+                    foodName: entry.foodName,
                     date: selectedDate,
                     meal: entry.meal,
                     quantity: entry.quantity,
