@@ -12,6 +12,7 @@ import SwiftData
 final class FoodEntryModel {
     @Attribute(.unique) var id: UUID
     var foodId: UUID
+    var foodName: String
     var date: Date
     var meal: String
     var quantity: Double
@@ -25,6 +26,7 @@ final class FoodEntryModel {
     init(
         id: UUID = UUID(),
         foodId: UUID,
+        foodName: String = "",
         date: Date = Date(),
         meal: String,
         quantity: Double,
@@ -37,6 +39,7 @@ final class FoodEntryModel {
     ) {
         self.id = id
         self.foodId = foodId
+        self.foodName = foodName
         self.date = date
         self.meal = meal
         self.quantity = quantity
@@ -53,6 +56,7 @@ final class FoodEntryModel {
         FoodEntry(
             id: id,
             foodId: foodId,
+            foodName: foodName,
             date: date,
             meal: MealType(rawValue: meal) ?? .snack,
             quantity: quantity,
@@ -70,6 +74,7 @@ final class FoodEntryModel {
         FoodEntryModel(
             id: entry.id,
             foodId: entry.foodId,
+            foodName: entry.foodName,
             date: entry.date,
             meal: entry.meal.rawValue,
             quantity: entry.quantity,

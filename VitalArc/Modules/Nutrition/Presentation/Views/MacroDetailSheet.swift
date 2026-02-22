@@ -15,6 +15,7 @@ struct MacroDetailSheet: View {
     let nutritionRepository: NutritionRepository
 
     @State private var historyData: [MacroHistoryData] = []
+    @State private var goalHistory: [(date: Date, value: Double, goal: Double?)] = []
     @State private var isLoading = true
     @State private var hasAppeared = false
 
@@ -35,6 +36,16 @@ struct MacroDetailSheet: View {
                     // Summary statistics
                     if !historyData.isEmpty {
                         summaryStatsCard
+                    }
+
+                    // Goal adherence
+                    if !goalHistory.isEmpty, goalValue != nil {
+                        goalAdherenceCard
+                    }
+
+                    // Best/worst days
+                    if historyData.count > 1 {
+                        bestWorstDaysCard
                     }
 
                     // Goal progress if available
@@ -234,6 +245,101 @@ struct MacroDetailSheet: View {
         .opacity(hasAppeared ? 1 : 0)
     }
 
+    // MARK: - Goal Adherence Card
+
+    private var goalAdherenceCard: some View {
+        VitalCard {
+            VStack(alignment: .leading, spacing: Spacing.md) {
+                Text("Goal Adherence")
+                    .font(.vitalH3)
+                    .foregroundStyle(Color.vitalAdaptiveTextPrimary)
+
+                let daysWithGoals = goalHistory.filter { $0.goal != nil }
+                let daysMet = daysWithGoals.filter { entry in
+                    guard let goal = entry.goal, goal > 0 else { return false }
+                    return entry.value >= goal
+                }
+                let adherence = daysWithGoals.isEmpty ? 0 : Double(daysMet.count) / Double(daysWithGoals.count)
+
+                HStack(spacing: Spacing.lg) {
+                    statItem(
+                        title: "Days Met",
+                        value: "\(daysMet.count)/\(daysWithGoals.count)",
+                        color: adherence >= 0.7 ? .vitalSuccess : .vitalWarning
+                    )
+
+                    Divider().frame(height: Spacing.xl)
+
+                    statItem(
+                        title: "Adherence",
+                        value: String(format: "%.0f%%", adherence * 100),
+                        color: adherence >= 0.7 ? .vitalSuccess : .vitalWarning
+                    )
+
+                    Spacer()
+                }
+            }
+        }
+        .transition(.vitalSlideUp)
+        .opacity(hasAppeared ? 1 : 0)
+    }
+
+    // MARK: - Best/Worst Days Card
+
+    private var bestWorstDaysCard: some View {
+        let sorted = historyData.sorted { $0.value > $1.value }
+        let best = sorted.first
+        let worst = sorted.last
+
+        let dayFormatter: DateFormatter = {
+            let f = DateFormatter()
+            f.dateFormat = "EEE, MMM d"
+            return f
+        }()
+
+        return VitalCard {
+            VStack(alignment: .leading, spacing: Spacing.md) {
+                Text("Best & Worst Days")
+                    .font(.vitalH3)
+                    .foregroundStyle(Color.vitalAdaptiveTextPrimary)
+
+                if let best = best {
+                    HStack(spacing: Spacing.sm) {
+                        Image(systemName: "arrow.up.circle.fill")
+                            .foregroundStyle(Color.vitalSuccess)
+                        VStack(alignment: .leading, spacing: Spacing.xxs) {
+                            Text("Best")
+                                .font(.vitalCaptionSmall)
+                                .foregroundStyle(Color.vitalAdaptiveTextSecondary)
+                            Text("\(formatValue(best.value)) \(macroType.unit) — \(dayFormatter.string(from: best.date))")
+                                .font(.vitalBody)
+                                .foregroundStyle(Color.vitalAdaptiveTextPrimary)
+                        }
+                        Spacer()
+                    }
+                }
+
+                if let worst = worst, worst.id != best?.id {
+                    HStack(spacing: Spacing.sm) {
+                        Image(systemName: "arrow.down.circle.fill")
+                            .foregroundStyle(Color.vitalDanger)
+                        VStack(alignment: .leading, spacing: Spacing.xxs) {
+                            Text("Lowest")
+                                .font(.vitalCaptionSmall)
+                                .foregroundStyle(Color.vitalAdaptiveTextSecondary)
+                            Text("\(formatValue(worst.value)) \(macroType.unit) — \(dayFormatter.string(from: worst.date))")
+                                .font(.vitalBody)
+                                .foregroundStyle(Color.vitalAdaptiveTextPrimary)
+                        }
+                        Spacer()
+                    }
+                }
+            }
+        }
+        .transition(.vitalSlideUp)
+        .opacity(hasAppeared ? 1 : 0)
+    }
+
     // MARK: - Goal Progress Card
 
     private func goalProgressCard(goal: Double) -> some View {
@@ -321,6 +427,7 @@ struct MacroDetailSheet: View {
         let today = calendar.startOfDay(for: Date())
 
         var data: [MacroHistoryData] = []
+        var goals: [(date: Date, value: Double, goal: Double?)] = []
 
         for dayOffset in (0..<7).reversed() {
             guard let date = calendar.date(byAdding: .day, value: -dayOffset, to: today) else { continue }
@@ -329,25 +436,33 @@ struct MacroDetailSheet: View {
                 let nutrition = try await CalculateNutritionUseCase(repository: nutritionRepository).execute(for: date)
 
                 let value: Double
+                let goal: Double?
                 switch macroType {
                 case .calories:
                     value = nutrition.caloriesConsumed
+                    goal = nutrition.calorieGoal
                 case .protein:
                     value = nutrition.proteinConsumed
+                    goal = nutrition.proteinGoal
                 case .carbs:
                     value = nutrition.carbsConsumed
+                    goal = nutrition.carbsGoal
                 case .fat:
                     value = nutrition.fatConsumed
+                    goal = nutrition.fatGoal
                 }
 
                 data.append(MacroHistoryData(date: date, value: value))
+                goals.append((date: date, value: value, goal: goal))
             } catch {
                 // If no data for this day, use 0
                 data.append(MacroHistoryData(date: date, value: 0))
+                goals.append((date: date, value: 0, goal: nil))
             }
         }
 
         historyData = data
+        goalHistory = goals
         isLoading = false
     }
 

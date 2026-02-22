@@ -22,6 +22,22 @@ struct NutritionTabContentView: View {
                     }
                 }
                 .navigationTitle("Nutrition")
+                .toolbar {
+                    ToolbarItem(placement: .primaryAction) {
+                        Menu {
+                            Button {
+                                if let vm = viewModel {
+                                    Task { await vm.copyPreviousDay() }
+                                }
+                            } label: {
+                                Label("Copy Previous Day", systemImage: "doc.on.doc")
+                            }
+                        } label: {
+                            Image(systemName: "ellipsis.circle")
+                                .foregroundStyle(Color.vitalPrimary)
+                        }
+                    }
+                }
                 .task {
                     // Guard against re-creating ViewModel on every view appearance
                     guard viewModel == nil else { return }
@@ -52,6 +68,7 @@ private struct NutritionUnifiedView: View {
     @State private var showingGoalEditSheet = false
     @State private var editingEntry: FoodEntry?
     @State private var bodyCompViewModel: BodyCompositionViewModel?
+    @State private var showingCopyConfirmation = false
 
     var body: some View {
         ScrollView {
@@ -63,6 +80,11 @@ private struct NutritionUnifiedView: View {
                     onNext: { viewModel.nextDay() },
                     onToday: { viewModel.goToToday() }
                 )
+
+                // Nutrition Streak
+                if let streak = viewModel.nutritionStreak, streak.currentStreak > 0 {
+                    NutritionStreakBanner(streak: streak)
+                }
 
                 // Always-visible Macro Summary
                 if let nutrition = viewModel.dailyNutrition {
@@ -464,6 +486,7 @@ final class NutritionTabViewModel {
     var dailyNutrition: DailyNutrition?
     var tdeeResult: TDEEResult?
     var dailyWaterGoal: Double = 2500
+    var nutritionStreak: NutritionStreak?
     var isLoading = false
     var error: Error?
 
@@ -545,6 +568,10 @@ final class NutritionTabViewModel {
 
                 guard !Task.isCancelled else { return }
                 dailyNutrition = nutrition
+
+                // Calculate nutrition streak
+                let streakUseCase = CalculateNutritionStreakUseCase(repository: nutritionRepository)
+                nutritionStreak = try? await streakUseCase.execute()
             } catch {
                 guard !Task.isCancelled else { return }
                 self.error = error
@@ -613,6 +640,7 @@ final class NutritionTabViewModel {
                 // Food no longer in DB; fall back to stored macro data
                 let newEntry = FoodEntry(
                     foodId: entry.foodId,
+                    foodName: entry.foodName,
                     date: selectedDate,
                     meal: entry.meal,
                     quantity: entry.quantity,
@@ -652,6 +680,56 @@ final class NutritionTabViewModel {
 
     func goToToday() {
         selectedDate = Date()
+    }
+
+    /// Copy all food entries from the previous day to the selected date
+    func copyPreviousDay() async {
+        guard !isLoading else { return }
+        isLoading = true
+        defer { isLoading = false }
+
+        do {
+            let calendar = Calendar.current
+            guard let previousDay = calendar.date(byAdding: .day, value: -1, to: selectedDate) else { return }
+
+            let previousEntries = try await getFoodEntriesUseCase.execute(for: previousDay)
+            guard !previousEntries.isEmpty else { return }
+
+            let logUseCase = LogFoodUseCase(repository: nutritionRepository)
+
+            for entry in previousEntries {
+                // Try to look up the food for current nutritional data
+                if let food = try? await nutritionRepository.getFood(id: entry.foodId) {
+                    _ = try await logUseCase.execute(
+                        food: food,
+                        quantity: entry.quantity,
+                        meal: entry.meal,
+                        date: selectedDate
+                    )
+                } else {
+                    // Food no longer in DB; re-create entry from stored data
+                    let newEntry = FoodEntry(
+                        foodId: entry.foodId,
+                        foodName: entry.foodName,
+                        date: selectedDate,
+                        meal: entry.meal,
+                        quantity: entry.quantity,
+                        calories: entry.calories,
+                        protein: entry.protein,
+                        carbs: entry.carbs,
+                        fat: entry.fat,
+                        fiber: entry.fiber,
+                        sugar: entry.sugar
+                    )
+                    try await nutritionRepository.saveFoodEntry(newEntry)
+                }
+            }
+
+            await loadData()
+        } catch {
+            self.error = error
+            Log.error("Failed to copy previous day's meals", error: error, category: .nutrition)
+        }
     }
 
     /// Update macro goals for the current date
@@ -737,6 +815,39 @@ private struct NutritionQuickLinksRow: View {
                 )
             }
         }
+    }
+}
+
+// MARK: - Nutrition Streak Banner
+
+private struct NutritionStreakBanner: View {
+    let streak: NutritionStreak
+
+    var body: some View {
+        HStack(spacing: Spacing.md) {
+            Image(systemName: "flame.fill")
+                .font(.vitalH2)
+                .foregroundStyle(Color.vitalWarning)
+
+            VStack(alignment: .leading, spacing: Spacing.xxs) {
+                Text("\(streak.currentStreak)-day streak")
+                    .font(.vitalBody)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(Color.vitalAdaptiveTextPrimary)
+
+                if streak.longestStreak > streak.currentStreak {
+                    Text("Best: \(streak.longestStreak) days")
+                        .font(.vitalCaption)
+                        .foregroundStyle(Color.vitalAdaptiveTextSecondary)
+                }
+            }
+
+            Spacer()
+        }
+        .padding(Spacing.cardPadding)
+        .background(Color.vitalAdaptiveSurface)
+        .clipShape(RoundedRectangle(cornerRadius: Spacing.radiusMedium))
+        .shadow(color: .black.opacity(0.05), radius: 5, x: 0, y: 2)
     }
 }
 

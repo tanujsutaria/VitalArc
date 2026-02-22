@@ -95,6 +95,7 @@
 		3FEBAB3B98C7F71CDDFB434A /* GetWaterEntriesUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F8817D126E810B1B632AF66 /* GetWaterEntriesUseCase.swift */; };
 		409E5664C78CF3FA43757568 /* HealthKitPermissions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA0D54FBCA757278952D1F1 /* HealthKitPermissions.swift */; };
 		40A7BC93A29C7B15BEF30ED7 /* MetricDetailSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF402CF617B1B9B66B44B6F /* MetricDetailSheet.swift */; };
+		40E5A6B546BD5DB29D65040F /* CalculateNutritionStreakUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19EB9EE7280A54E22A4C3493 /* CalculateNutritionStreakUseCaseTests.swift */; };
 		423554CF7E1073CCD7704B5A /* CalculateOneRepMaxUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD20C23923F4D4462EC34A98 /* CalculateOneRepMaxUseCase.swift */; };
 		4313B38E0376ED0F16322E5F /* MockAnalyticsUseCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67A42091E0ECEEB81CE17654 /* MockAnalyticsUseCases.swift */; };
 		435D775BAB360285918A1515 /* MetricDetailViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71655085673D64A3729D728C /* MetricDetailViewModelTests.swift */; };
@@ -312,6 +313,7 @@
 		EFE9124AE72C9FA5C9310443 /* StressAnalysisView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CAA10D677B0028A0F072FBB /* StressAnalysisView.swift */; };
 		F0A5B10F590893EF7118471B /* UpdateFoodEntryUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E551EDF909B4E31DF95966EA /* UpdateFoodEntryUseCase.swift */; };
 		F0C4056F2F611663CA655035 /* CalculateStrainScoreUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6454AEDC63935BDB5E52EC5B /* CalculateStrainScoreUseCase.swift */; };
+		F0F37BEDA05C8F5C5A19A819 /* CalculateNutritionStreakUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 907B8824627AF021C1BC935D /* CalculateNutritionStreakUseCase.swift */; };
 		F142869C7CDB3CBC36EADADE /* TrainingHeatmapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB44B1CB55F14F592A539AE3 /* TrainingHeatmapView.swift */; };
 		F1FB6C88B80C2C23ACBC7C81 /* MockMesocycleRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5B4CC55F58DB1F895FFB86A /* MockMesocycleRepository.swift */; };
 		F3D50A6F0380E436A27689DA /* HealthMetricsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9460A6DBC941A5FF62E7FEE /* HealthMetricsModel.swift */; };
@@ -384,6 +386,7 @@
 		15CEEC45E5B535EA62331C4B /* FoodLoggingViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodLoggingViewModelTests.swift; sourceTree = "<group>"; };
 		16386B538FDEAAEE04D25E6C /* JetBrainsMono-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "JetBrainsMono-Medium.ttf"; sourceTree = "<group>"; };
 		18547D5100E844205BA8F7DB /* HealthKitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitTests.swift; sourceTree = "<group>"; };
+		19EB9EE7280A54E22A4C3493 /* CalculateNutritionStreakUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalculateNutritionStreakUseCaseTests.swift; sourceTree = "<group>"; };
 		1A096B644CEF161F50A3D03B /* TDEETests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TDEETests.swift; sourceTree = "<group>"; };
 		1A5341FD1B6244C655131F4F /* StrengthProgressionChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StrengthProgressionChartView.swift; sourceTree = "<group>"; };
 		1ACCC0BC5A5FAE8B2A5E0DA0 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
@@ -549,6 +552,7 @@
 		8EF8D49D1A2E5FF345303A06 /* VitalArcTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = VitalArcTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8F8817D126E810B1B632AF66 /* GetWaterEntriesUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetWaterEntriesUseCase.swift; sourceTree = "<group>"; };
 		906FC3E45905B603D53E557F /* NutritionixAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NutritionixAPI.swift; sourceTree = "<group>"; };
+		907B8824627AF021C1BC935D /* CalculateNutritionStreakUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalculateNutritionStreakUseCase.swift; sourceTree = "<group>"; };
 		934B2536C8F8088BE045CDDD /* CreateMesocycleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateMesocycleView.swift; sourceTree = "<group>"; };
 		93C6823A60E5E8E0FE3A1021 /* CustomCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCategory.swift; sourceTree = "<group>"; };
 		93E0E765E3C46EF6D052DF84 /* OnboardingViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewModelTests.swift; sourceTree = "<group>"; };
@@ -726,6 +730,7 @@
 		0A3E79F7C7BC62C74897E8DA /* UseCaseTests */ = {
 			isa = PBXGroup;
 			children = (
+				19EB9EE7280A54E22A4C3493 /* CalculateNutritionStreakUseCaseTests.swift */,
 				2CF141A2F85B0FAED380D2F3 /* CalculateNutritionUseCaseTests.swift */,
 				55C168AF1AEDE3EFA8EE221D /* CalculateOneRepMaxUseCaseTests.swift */,
 				7BE127FCC1E18A792C0CB7D8 /* CalculateReadinessScoreUseCaseTests.swift */,
@@ -1113,6 +1118,7 @@
 		6B877002F271E109EFD3F300 /* UseCases */ = {
 			isa = PBXGroup;
 			children = (
+				907B8824627AF021C1BC935D /* CalculateNutritionStreakUseCase.swift */,
 				8C275395C2759FAD77AEED2F /* CalculateNutritionUseCase.swift */,
 				6E3D72FD99A5AD676556A7F6 /* CalculateTDEEUseCase.swift */,
 				F225D8959CE6F089D027272A /* DeleteFoodEntryUseCase.swift */,
@@ -1754,6 +1760,7 @@
 				7246D61FB4B613B7E5DD4AE4 /* BodyMeasurementRepository.swift in Sources */,
 				6A1727DAAE9C516FFE7E44E9 /* CSVExporter.swift in Sources */,
 				2D69C5CAECD051AEC4B589C0 /* CalculateHealthScoresUseCase.swift in Sources */,
+				F0F37BEDA05C8F5C5A19A819 /* CalculateNutritionStreakUseCase.swift in Sources */,
 				4C51B1A9D307E4238147EC40 /* CalculateNutritionUseCase.swift in Sources */,
 				423554CF7E1073CCD7704B5A /* CalculateOneRepMaxUseCase.swift in Sources */,
 				3A709A8776B9CA17D06A71A1 /* CalculateProgressionUseCase.swift in Sources */,
@@ -2001,6 +2008,7 @@
 				83D8C9C0B4E5992D3F08B16F /* AnalyticsDashboardViewModelTests.swift in Sources */,
 				EB41E2AFBD5AB5C174DBE61F /* AnalyticsTests.swift in Sources */,
 				D001C756BBD89EC2002489B2 /* BodyCompositionTests.swift in Sources */,
+				40E5A6B546BD5DB29D65040F /* CalculateNutritionStreakUseCaseTests.swift in Sources */,
 				FF72615E412DAD63464DDABC /* CalculateNutritionUseCaseTests.swift in Sources */,
 				91C2424D2A6A56D3E46AE524 /* CalculateOneRepMaxUseCaseTests.swift in Sources */,
 				D0625C27F9E60B11A87980F5 /* CalculateReadinessScoreUseCaseTests.swift in Sources */,

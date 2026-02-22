@@ -11,6 +11,7 @@ import Foundation
 struct FoodEntry: Identifiable, Equatable {
     let id: UUID
     let foodId: UUID
+    let foodName: String
     let date: Date
     let meal: MealType
     let quantity: Double // in grams
@@ -24,6 +25,7 @@ struct FoodEntry: Identifiable, Equatable {
     init(
         id: UUID = UUID(),
         foodId: UUID,
+        foodName: String = "",
         date: Date = Date(),
         meal: MealType,
         quantity: Double,
@@ -36,6 +38,7 @@ struct FoodEntry: Identifiable, Equatable {
     ) {
         self.id = id
         self.foodId = foodId
+        self.foodName = foodName
         self.date = date
         self.meal = meal
         self.quantity = quantity

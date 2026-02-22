@@ -38,6 +38,7 @@ final class UpdateFoodEntryUseCase: UpdateFoodEntryUseCaseProtocol {
         let updatedEntry = FoodEntry(
             id: entry.id,
             foodId: entry.foodId,
+            foodName: entry.foodName,
             date: entry.date,
             meal: entry.meal,
             quantity: newQuantity,

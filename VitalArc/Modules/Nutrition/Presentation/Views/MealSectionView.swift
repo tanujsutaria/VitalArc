@@ -121,9 +121,15 @@ private struct FoodEntryRowView: View {
     var body: some View {
         HStack(alignment: .top, spacing: Spacing.md) {
             VStack(alignment: .leading, spacing: Spacing.xs) {
+                if !entry.foodName.isEmpty {
+                    Text(entry.foodName)
+                        .font(.vitalBody)
+                        .fontWeight(.medium)
+                }
+
                 Text("\(Int(entry.quantity))g")
-                    .font(.vitalBody)
-                    .fontWeight(.medium)
+                    .font(.vitalCaption)
+                    .foregroundStyle(Color.vitalAdaptiveTextSecondary)
 
                 // Macros
                 HStack(spacing: Spacing.sm) {
@@ -310,6 +316,7 @@ private struct NutritionPreviewRow: View {
                 entries: [
                     FoodEntry(
                         foodId: UUID(),
+                        foodName: "Chicken Breast",
                         meal: .breakfast,
                         quantity: 100,
                         calories: 165,
