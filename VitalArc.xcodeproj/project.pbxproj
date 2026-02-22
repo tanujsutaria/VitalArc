@@ -95,6 +95,7 @@
 		3FEBAB3B98C7F71CDDFB434A /* GetWaterEntriesUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F8817D126E810B1B632AF66 /* GetWaterEntriesUseCase.swift */; };
 		409E5664C78CF3FA43757568 /* HealthKitPermissions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA0D54FBCA757278952D1F1 /* HealthKitPermissions.swift */; };
 		40A7BC93A29C7B15BEF30ED7 /* MetricDetailSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF402CF617B1B9B66B44B6F /* MetricDetailSheet.swift */; };
+		40E5A6B546BD5DB29D65040F /* CalculateNutritionStreakUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19EB9EE7280A54E22A4C3493 /* CalculateNutritionStreakUseCaseTests.swift */; };
 		423554CF7E1073CCD7704B5A /* CalculateOneRepMaxUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD20C23923F4D4462EC34A98 /* CalculateOneRepMaxUseCase.swift */; };
 		4313B38E0376ED0F16322E5F /* MockAnalyticsUseCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67A42091E0ECEEB81CE17654 /* MockAnalyticsUseCases.swift */; };
 		435D775BAB360285918A1515 /* MetricDetailViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71655085673D64A3729D728C /* MetricDetailViewModelTests.swift */; };
@@ -385,6 +386,7 @@
 		15CEEC45E5B535EA62331C4B /* FoodLoggingViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodLoggingViewModelTests.swift; sourceTree = "<group>"; };
 		16386B538FDEAAEE04D25E6C /* JetBrainsMono-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "JetBrainsMono-Medium.ttf"; sourceTree = "<group>"; };
 		18547D5100E844205BA8F7DB /* HealthKitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitTests.swift; sourceTree = "<group>"; };
+		19EB9EE7280A54E22A4C3493 /* CalculateNutritionStreakUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalculateNutritionStreakUseCaseTests.swift; sourceTree = "<group>"; };
 		1A096B644CEF161F50A3D03B /* TDEETests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TDEETests.swift; sourceTree = "<group>"; };
 		1A5341FD1B6244C655131F4F /* StrengthProgressionChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StrengthProgressionChartView.swift; sourceTree = "<group>"; };
 		1ACCC0BC5A5FAE8B2A5E0DA0 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
@@ -728,6 +730,7 @@
 		0A3E79F7C7BC62C74897E8DA /* UseCaseTests */ = {
 			isa = PBXGroup;
 			children = (
+				19EB9EE7280A54E22A4C3493 /* CalculateNutritionStreakUseCaseTests.swift */,
 				2CF141A2F85B0FAED380D2F3 /* CalculateNutritionUseCaseTests.swift */,
 				55C168AF1AEDE3EFA8EE221D /* CalculateOneRepMaxUseCaseTests.swift */,
 				7BE127FCC1E18A792C0CB7D8 /* CalculateReadinessScoreUseCaseTests.swift */,
@@ -2005,6 +2008,7 @@
 				83D8C9C0B4E5992D3F08B16F /* AnalyticsDashboardViewModelTests.swift in Sources */,
 				EB41E2AFBD5AB5C174DBE61F /* AnalyticsTests.swift in Sources */,
 				D001C756BBD89EC2002489B2 /* BodyCompositionTests.swift in Sources */,
+				40E5A6B546BD5DB29D65040F /* CalculateNutritionStreakUseCaseTests.swift in Sources */,
 				FF72615E412DAD63464DDABC /* CalculateNutritionUseCaseTests.swift in Sources */,
 				91C2424D2A6A56D3E46AE524 /* CalculateOneRepMaxUseCaseTests.swift in Sources */,
 				D0625C27F9E60B11A87980F5 /* CalculateReadinessScoreUseCaseTests.swift in Sources */,
