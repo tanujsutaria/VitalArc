@@ -23,10 +23,10 @@ Start a full development session on Mac with Xcode builds and simulator access.
 │    └── Parse SESSION_LOG.md → Calculate number → Create branch      │
 │    ⚠️ MUST run inline - never delegate to subagent                  │
 │                                                                      │
-│  PHASE 3 - Parallel Skill Invocations:                              │
-│    ├── Skill('focus-suggester')       ─┐                            │
-│    ├── Skill('build-validator')        ├── ALL run in parallel      │
-│    └── Skill('design-system-scanner') ─┘                            │
+│  PHASE 3 - Beads Query + Parallel Skills:                            │
+│    ├── Inline bash: bd ready           ─┐                            │
+│    ├── Skill('build-validator')         ├── ALL run in parallel      │
+│    └── Skill('design-system-scanner')  ─┘                            │
 │                                                                      │
 │  PHASE 4 - Restore Stash (inline bash)                              │
 │                                                                      │
@@ -44,14 +44,14 @@ Every phase has a **binding execution method**. Do not deviate.
 |-------|--------|-----------|
 | 1 - Git Sync | Inline bash | Deterministic git commands |
 | 2 - Session Number + Branch | Inline bash | Deterministic; **must not delegate** |
-| 3 - Focus/Build/Scan | `Skill()` tool | Reuses existing skills with correct agent types |
+| 3 - Beads/Build/Scan | Inline bash + `Skill()` | `bd ready` inline; build/scan via Skills |
 | 4 - Restore Stash | Inline bash | Simple git command |
 | 5 - Session Log | Inline Write/Edit | Template fill from Phase 3 results |
 | 6 - Output Summary | Inline text | Display to user |
 
 **Prohibitions:**
-- **Do not use TaskCreate for operations that have dedicated skills.** Focus analysis, build validation, and design system scanning each have dedicated skills (`focus-suggester`, `build-validator`, `design-system-scanner`). Invoke them via `Skill()`.
-- **Do not delegate deterministic calculations to subagents.** Session number parsing and date arithmetic must run inline. Subagents (especially lighter models) can produce incorrect results for arithmetic and date logic.
+- **Do not use TaskCreate for operations that have dedicated skills.** Build validation and design system scanning have dedicated skills (`build-validator`, `design-system-scanner`). Invoke them via `Skill()`.
+- **Do not delegate deterministic calculations to subagents.** Session number parsing, date arithmetic, and beads queries must run inline. Subagents (especially lighter models) can produce incorrect results for arithmetic and date logic.
 
 ## Implementation
 
@@ -107,18 +107,42 @@ git checkout -b "$BRANCH"
 
 **Validation**: After running, echo `$FULL_SESSION` and `$BRANCH` to confirm correctness before proceeding.
 
-### Phase 3: Parallel Skill Invocations
+### Phase 3: Beads Query + Parallel Skills
 
-Invoke all three skills in a **single message** for parallel execution. Each skill has `context: fork` in its frontmatter and runs as an isolated subagent with the correct agent type.
+Query beads inline (fast, deterministic) and invoke build/scan skills in a **single message** for parallel execution.
+
+#### 3a. Inline Beads Query (bash)
+
+```bash
+FOCUS="${ARGUMENTS:-session}"
+
+# Query ready beads (exclude epics), sorted by priority
+BEADS_JSON=$(bd ready --json --sort=priority -n 8 2>/dev/null || echo "[]")
+
+# Filter out epics, extract top items for display
+BEADS=$(echo "$BEADS_JSON" | python3 -c "
+import json, sys
+data = json.load(sys.stdin)
+items = [b for b in data if b.get('issue_type') != 'epic'][:5]
+for b in items:
+    print(f\"  {b['id']} P{b['priority']} [{b['issue_type']}] {b['title']}\")
+" 2>/dev/null || echo "  No beads available")
+
+echo "Ready beads:"
+echo "$BEADS"
+```
+
+Save the beads output for Phase 5 (session log) and Phase 6 (summary).
+
+#### 3b. Parallel Skill Invocations
 
 ```javascript
-// In a SINGLE message, invoke all three:
-Skill('focus-suggester')        // agent: Explore - reads PROJECT_STATUS + SESSION_LOG
+// In a SINGLE message, invoke both:
 Skill('build-validator')        // agent: Bash - runs xcodebuild
 Skill('design-system-scanner')  // agent: Explore - scans Presentation/ for violations
 ```
 
-Wait for all three to complete before proceeding to Phase 5.
+Wait for beads query and both skills to complete before proceeding to Phase 5.
 
 ### Phase 4: Restore Stash (Inline Bash)
 
@@ -138,7 +162,7 @@ Use the Write or Edit tool to prepend/append the following template to SESSION_L
 ### Session Start
 - **Time**: [Time] PST
 - **Platform**: macOS
-- **Focus**: [FOCUS or suggested focus from focus-suggester]
+- **Focus**: [FOCUS from arguments or top bead title]
 - **Branch**: [BRANCH]
 - **Base**: main @ [latest commit]
 
@@ -152,9 +176,14 @@ Use the Write or Edit tool to prepend/append the following template to SESSION_L
 - **Uncommitted Changes**: None
 
 ### Session Goals
-1. [Based on focus area]
-2. [Secondary goal if applicable]
+1. [Top bead title] (bead ID)
+2. [Second bead title] (bead ID)
 3. General development as directed
+
+### Ready Beads
+| ID | Priority | Type | Title |
+|----|----------|------|-------|
+| ... from bd ready output ... |
 
 ### Work Log
 | Time | Action | Files | Notes |
@@ -171,7 +200,7 @@ Use the Write or Edit tool to prepend/append the following template to SESSION_L
 Branch:   [branch]
 Session:  [FULL_SESSION]
 Build:    [status from build-validator]
-Focus:    [focus]
+Focus:    [top bead title] + [N-1] more ready
 Violations: [count from design-system-scanner]
 ───────────────────────────────────────────────────────────────
 Full builds, simulator, and testing available

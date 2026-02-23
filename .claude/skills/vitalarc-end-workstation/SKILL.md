@@ -265,7 +265,7 @@ Tests:    Passing ([N] tests)
 Lint:     [N] warnings (0 errors)
 PR:       [URL if created]
 ───────────────────────────────────────────────────────────────
-Next:     [priorities from focus-suggester]
+Next:     [top ready beads from bd ready]
 ═══════════════════════════════════════════════════════════════
 ```
 
