@@ -1,8 +1,8 @@
 # VitalArc Project Status
 
-**Last Updated**: February 21, 2026 (Session 24.2)
-**Build**: Passing (verified locally per worktree)
-**Tests**: ~1146 passing (1096 + 50 new)
+**Last Updated**: February 22, 2026 (Session 25.0)
+**Build**: Passing
+**Tests**: 1141 passing
 **Stage**: MVP-Ready
 
 ---
@@ -101,6 +101,12 @@ The app compiles and runs with core MVP requirements addressed:
   - 8 bonus findings (bugs, tasks, chores) for technical debt
   - Dependency chains: cross-domain protocol conformance blocks correlation features, CloudKit blocks backup
   - FEATURE_BACKLOG.md deprecated in favor of `bd epic status` / `bd ready`
+- Session 25.0: Replaced focus-suggester with beads in session skills:
+  - Deleted focus-suggester skill (stale, read outdated docs)
+  - Updated vitalarc-start-workstation Phase 3: inline `bd ready` replaces `Skill('focus-suggester')`
+  - Updated vitalarc-start-cloud Phase 5: same bd ready pattern
+  - Updated vitalarc-end-workstation: next priorities from `bd ready`
+  - Removed 3 focus-suggester references from CLAUDE.md
 - Session 24.2: 16-feature parallel sprint across 4 worktrees (16 beads, 50 new tests):
   - Workout: RPE in WorkoutSetData DTO, muscle group filtering, training goal selection, workout sharing/export
   - Nutrition: Food name on FoodEntry, copy previous day's meals, nutrition streak tracking, macro detail summary
@@ -179,7 +185,7 @@ The app compiles and runs with core MVP requirements addressed:
 | ViewModels | 18 |
 | Use cases | 31 |
 | Test files | 64 (in project) |
-| Unit tests | ~1146 (passing) |
+| Unit tests | 1141 (passing) |
 
 ### Test Coverage by ViewModel
 
@@ -207,4 +213,4 @@ The app compiles and runs with core MVP requirements addressed:
 | USDAFoodAPI | Tested | 12 | In project ✅ |
 | FoodAPICoordinator | Tested | 18 | In project ✅ |
 
-**Note**: ~1146 tests passing (1096 base + 50 new from Session 24.2). Exact count pending post-merge verification.
+**Note**: 1141 tests passing (verified Session 25.0).
