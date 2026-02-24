@@ -20,7 +20,7 @@ Applies automatic fixes for design token violations. **Workstation only** - requ
 ## Default Behavior (No Arguments)
 
 When invoked without arguments:
-- **Mode**: Dry-run first, then apply all fixes across `VitalArc/Presentation/`
+- **Mode**: Dry-run first, then apply all fixes across `VitalArc/Modules/`
 - **Scope**: All violation categories (colors, spacing, typography, icon sizes)
 - **Verification**: Run build after applying fixes
 
@@ -178,7 +178,7 @@ Run without --dry-run to apply fixes.
 Fix only a specific file:
 
 ```bash
-design-system-fixer --file=VitalArc/Presentation/Tabs/Profile/ProfileView.swift
+design-system-fixer --file=VitalArc/Modules/Tabs/Profile/ProfileView.swift
 ```
 
 ### --all

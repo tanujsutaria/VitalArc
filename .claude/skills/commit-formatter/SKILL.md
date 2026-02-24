@@ -77,9 +77,9 @@ git diff --staged --name-only
 ### 3. Determine Scope
 
 Based on primary files changed:
-- `Presentation/Tabs/Workout/*` → `workout`
-- `Presentation/Common/DesignSystem/*` → `ui`
-- `Domain/UseCases/*Recovery*` → `health`
+- `Modules/Workout/Presentation/Views/*` → `workout`
+- `Modules/Shared/DesignSystem/*` → `ui`
+- `Modules/Wellness/Domain/UseCases/*Recovery*` → `health`
 - `SESSION_LOG.md`, `.claude/*` → `session`
 
 If multiple scopes, use the dominant one or most significant change.
@@ -141,7 +141,7 @@ EOF
 
 **Design system migration:**
 ```bash
-git add VitalArc/Presentation/Tabs/Workout/*.swift
+git add VitalArc/Modules/Workout/Presentation/Views/*.swift
 git commit -m "$(cat <<'EOF'
 refactor(ui): migrate workout views to typography tokens
 

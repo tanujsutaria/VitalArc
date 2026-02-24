@@ -68,13 +68,13 @@ Check for design token violations:
 
 ```bash
 # Hardcoded colors
-grep -rn "Color\.\(red\|blue\|green\|gray\|black\|white\)" VitalArc/Presentation/ --include="*.swift"
+grep -rn "Color\.\(red\|blue\|green\|gray\|black\|white\)" VitalArc/Modules/ --include="*.swift"
 
 # Hardcoded padding values
-grep -rn "\.padding([0-9]" VitalArc/Presentation/ --include="*.swift"
+grep -rn "\.padding([0-9]" VitalArc/Modules/ --include="*.swift"
 
 # System fonts instead of design tokens
-grep -rn "\.font(.system" VitalArc/Presentation/ --include="*.swift"
+grep -rn "\.font(.system" VitalArc/Modules/ --include="*.swift"
 ```
 
 ### 4. Import Consistency
@@ -83,7 +83,7 @@ Check for import issues:
 
 ```bash
 # UIKit in SwiftUI views (should use SwiftUI)
-grep -rn "^import UIKit" VitalArc/Presentation/ --include="*.swift"
+grep -rn "^import UIKit" VitalArc/Modules/ --include="*.swift"
 
 # UIKit in Domain layer (architecture violation)
 grep -rn "^import UIKit" VitalArc/Domain/ --include="*.swift"

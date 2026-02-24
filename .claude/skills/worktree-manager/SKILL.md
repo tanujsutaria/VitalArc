@@ -221,8 +221,8 @@ done
 - **Status**: 2 files modified
 - **Ahead of main**: 3 commits
 - **Files**:
-  - M VitalArc/Presentation/Tabs/Nutrition/NutritionView.swift
-  - M VitalArc/Domain/UseCases/NutritionUseCases.swift
+  - M VitalArc/Modules/Nutrition/Presentation/Views/NutritionView.swift
+  - M VitalArc/Modules/Nutrition/Domain/UseCases/NutritionUseCases.swift
 
 ### VitalArc-ui-bugs
 - **Branch**: dev/mac-ui-16.1-2026-02-01

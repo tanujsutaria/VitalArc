@@ -83,18 +83,18 @@ Auto-invoke when:
 
 ```bash
 # Colors
-grep -rn "Color\.blue\|Color\.red\|Color\.green\|\.blue\|\.red\|\.green" Presentation/
-grep -rn "Color(.system" Presentation/
-grep -rn "Color\.primary\|Color\.secondary" Presentation/
+grep -rn "Color\.blue\|Color\.red\|Color\.green\|\.blue\|\.red\|\.green" VitalArc/Modules/
+grep -rn "Color(.system" VitalArc/Modules/
+grep -rn "Color\.primary\|Color\.secondary" VitalArc/Modules/
 
 # Spacing
-grep -rn "\.padding([0-9]" Presentation/
-grep -rn "spacing: [0-9]" Presentation/
-grep -rn "\.cornerRadius([0-9]" Presentation/
+grep -rn "\.padding([0-9]" VitalArc/Modules/
+grep -rn "spacing: [0-9]" VitalArc/Modules/
+grep -rn "\.cornerRadius([0-9]" VitalArc/Modules/
 
 # Typography
-grep -rn "\.font(.largeTitle)\|\.font(.title)\|\.font(.body)" Presentation/
-grep -rn "\.font(.system(size:" Presentation/
+grep -rn "\.font(.largeTitle)\|\.font(.title)\|\.font(.body)" VitalArc/Modules/
+grep -rn "\.font(.system(size:" VitalArc/Modules/
 ```
 
 ### 2. Categorize Results
@@ -165,7 +165,7 @@ Ready to commit!
 ## Example Report
 
 ```markdown
-## Design System Audit: Presentation/Tabs/Workout/
+## Design System Audit: Modules/Workout/Presentation/
 
 ### Summary
 Files: 12 | Violations: 5 | Auto-fixable: 5

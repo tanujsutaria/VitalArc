@@ -42,7 +42,7 @@ Launch both tasks in a single message for parallel execution:
 TaskCreate({
   subject: "Final design system scan (report only)",
   description: `Run design-system-scanner in report-only mode:
-    1. Scan VitalArc/Presentation/ for violations
+    1. Scan VitalArc/Modules/ for violations
     2. Report summary for session log
     3. NOTE: Cloud session - report only, no fixing available`,
   activeForm: "Scanning design system"

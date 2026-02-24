@@ -1,6 +1,6 @@
 # VitalArc Project Status
 
-**Last Updated**: February 22, 2026 (Session 25.0)
+**Last Updated**: February 23, 2026 (Session 26.0)
 **Build**: Passing
 **Tests**: 1141 passing
 **Stage**: MVP-Ready
@@ -11,7 +11,7 @@
 
 The app compiles and runs with core MVP requirements addressed:
 - American units enforced across all screens
-- Design system ~95% adopted
+- Design system ~90% adopted
 - Settings/About features implemented
 - Standardized error handling
 - Analytics export (PDF/CSV) functional
@@ -107,6 +107,12 @@ The app compiles and runs with core MVP requirements addressed:
   - Updated vitalarc-start-cloud Phase 5: same bd ready pattern
   - Updated vitalarc-end-workstation: next priorities from `bd ready`
   - Removed 3 focus-suggester references from CLAUDE.md
+  - Added sprint-status skill and test-engineer agent from beads migration
+- Session 26.0: Fixed broken skills (beads pipeline + design system scanner):
+  - Fixed beads pipeline zsh bug: python3 -c with `!=` caused history expansion, replaced with heredoc + env var
+  - Fixed stale paths in 8 skills: `VitalArc/Presentation/` → `VitalArc/Modules/` (stale since Session 18.3 reorg)
+  - Strengthened design-system-scanner auto-execution directive to prevent Explore agent fallback
+  - Design violation count corrected: 21 → 60 (scanner was targeting empty directory)
 - Session 24.2: 16-feature parallel sprint across 4 worktrees (16 beads, 50 new tests):
   - Workout: RPE in WorkoutSetData DTO, muscle group filtering, training goal selection, workout sharing/export
   - Nutrition: Food name on FoodEntry, copy previous day's meals, nutrition streak tracking, macro detail summary
@@ -131,7 +137,7 @@ The app compiles and runs with core MVP requirements addressed:
 | Recovery Score | Ready | V2 with configurable weights, component breakdown (Session 23.1) |
 | Strain Tracking | Ready | TRIMP + HealthKit HR, custom settings |
 | Nutrition Tracking | Ready | Body composition, configurable meals, streaks, copy meals, macro detail. **API keys not configured** |
-| Design System | Ready | ~95% adoption (21 violations, mostly chart frame dimensions + plate colors) |
+| Design System | Ready | ~90% adoption (60 violations: 54 frame dimensions, 4 stack spacing, 2 typography) |
 | VoiceOver Accessibility | Ready | Labels, hints, values across all domains (Session 22.1) |
 | Notifications | Ready | Goal notification cancellation fixed (Session 23.0) |
 | Profile/Settings | Ready | - |
@@ -162,9 +168,11 @@ The app compiles and runs with core MVP requirements addressed:
    - `NutritionixAPI.swift`: placeholder keys
    - `USDAFoodAPI.swift`: demo key (rate-limited)
 
-2. **Design System**: ~95% adoption (21 violations)
-   - 3 color violations (PlateCalculatorView system grays for plate colors)
-   - 18 spacing violations (chart heights, input field widths — context-specific)
+2. **Design System**: ~90% adoption (60 violations)
+   - 54 frame dimension violations (chart heights, input field widths, decorative elements — mostly in VitalEmptyState, WorkoutDetailView, SleepDetailSheet)
+   - 4 stack spacing violations (hardcoded 2-6pt gaps)
+   - 2 typography violations (hardcoded font sizes in VitalEmptyState)
+   - Note: Previous count (21) was underreported due to scanner targeting empty `VitalArc/Presentation/` path; true count revealed after path fix to `VitalArc/Modules/`
 
 ---
 

@@ -120,13 +120,18 @@ FOCUS="${ARGUMENTS:-session}"
 BEADS_JSON=$(bd ready --json --sort=priority -n 8 2>/dev/null || echo "[]")
 
 # Filter out epics, extract top items for display
-BEADS=$(echo "$BEADS_JSON" | python3 -c "
-import json, sys
-data = json.load(sys.stdin)
+# Uses env var for JSON (can't pipe + heredoc simultaneously) and single-quoted
+# heredoc delimiter to prevent shell expansion of != and {} in Python code
+BEADS=$(BEADS_INPUT="$BEADS_JSON" python3 << 'PYEOF'
+import json, os
+data = json.loads(os.environ.get('BEADS_INPUT', '[]'))
 items = [b for b in data if b.get('issue_type') != 'epic'][:5]
 for b in items:
-    print(f\"  {b['id']} P{b['priority']} [{b['issue_type']}] {b['title']}\")
-" 2>/dev/null || echo "  No beads available")
+    print(f"  {b['id']} P{b['priority']} [{b['issue_type']}] {b['title']}")
+if not items:
+    print("  No beads available")
+PYEOF
+)
 
 echo "Ready beads:"
 echo "$BEADS"
