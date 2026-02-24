@@ -112,7 +112,7 @@ The app compiles and runs with core MVP requirements addressed:
   - Fixed beads pipeline zsh bug: python3 -c with `!=` caused history expansion, replaced with heredoc + env var
   - Fixed stale paths in 8 skills: `VitalArc/Presentation/` → `VitalArc/Modules/` (stale since Session 18.3 reorg)
   - Strengthened design-system-scanner auto-execution directive to prevent Explore agent fallback
-  - Design violation count corrected: 21 → 53 (scanner was targeting empty directory)
+  - Design violation count corrected: 21 → 60 (scanner was targeting empty directory)
 - Session 24.2: 16-feature parallel sprint across 4 worktrees (16 beads, 50 new tests):
   - Workout: RPE in WorkoutSetData DTO, muscle group filtering, training goal selection, workout sharing/export
   - Nutrition: Food name on FoodEntry, copy previous day's meals, nutrition streak tracking, macro detail summary
@@ -137,7 +137,7 @@ The app compiles and runs with core MVP requirements addressed:
 | Recovery Score | Ready | V2 with configurable weights, component breakdown (Session 23.1) |
 | Strain Tracking | Ready | TRIMP + HealthKit HR, custom settings |
 | Nutrition Tracking | Ready | Body composition, configurable meals, streaks, copy meals, macro detail. **API keys not configured** |
-| Design System | Ready | ~90% adoption (53 violations: 10 color in PlateCalculatorView, 27 frame dimensions, 16 stack spacing:0) |
+| Design System | Ready | ~90% adoption (60 violations: 54 frame dimensions, 4 stack spacing, 2 typography) |
 | VoiceOver Accessibility | Ready | Labels, hints, values across all domains (Session 22.1) |
 | Notifications | Ready | Goal notification cancellation fixed (Session 23.0) |
 | Profile/Settings | Ready | - |
@@ -168,10 +168,10 @@ The app compiles and runs with core MVP requirements addressed:
    - `NutritionixAPI.swift`: placeholder keys
    - `USDAFoodAPI.swift`: demo key (rate-limited)
 
-2. **Design System**: ~90% adoption (53 violations)
-   - 10 color violations (PlateCalculatorView plate color mapping)
-   - 27 frame dimension violations (chart heights, input field widths — context-specific)
-   - 16 stack spacing:0 violations (explicit zero spacing in stacks)
+2. **Design System**: ~90% adoption (60 violations)
+   - 54 frame dimension violations (chart heights, input field widths, decorative elements — mostly in VitalEmptyState, WorkoutDetailView, SleepDetailSheet)
+   - 4 stack spacing violations (hardcoded 2-6pt gaps)
+   - 2 typography violations (hardcoded font sizes in VitalEmptyState)
    - Note: Previous count (21) was underreported due to scanner targeting empty `VitalArc/Presentation/` path; true count revealed after path fix to `VitalArc/Modules/`
 
 ---
