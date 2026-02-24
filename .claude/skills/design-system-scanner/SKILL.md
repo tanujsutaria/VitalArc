@@ -8,20 +8,19 @@ allowed-tools: Read, Glob, Grep
 
 # Design System Scanner
 
-Read-only audit agent that finds design token violations without modifying files.
+**YOU MUST execute immediately.** Do not ask for clarification. Do not ask what to explore. Run the scan below and produce the report.
 
-**Execution**: Runs in forked context with Explore agent for read-only analysis.
+## Scan Execution
 
-**IMPORTANT**: When invoked without arguments, execute immediately with default settings. Never ask for clarification - use defaults and produce results.
+1. Search `VitalArc/Modules/` for all `*.swift` files in `Presentation/` directories
+2. Run grep patterns from the "Scan Patterns" section below
+3. Exclude: Preview blocks, test files, design system definition files, comments
+4. Output the report in the format specified in "Output Format"
 
-## Default Behavior (No Arguments)
-
-When invoked without arguments:
-- **Scan path**: `VitalArc/Presentation/` (full presentation layer)
+## Default Settings
+- **Scan path**: `VitalArc/Modules/` (all Presentation directories)
 - **Output**: Summary report (not verbose)
 - **Scope**: All violation categories (colors, spacing, typography, icon sizes)
-
-Execute the full default scan immediately. Do not ask for clarification.
 
 ### Optional Arguments (documented for reference)
 
@@ -96,44 +95,44 @@ Image(systemName: "star").font(.system(size: Spacing.iconMedium))
 ### Color Patterns (Grep)
 ```bash
 # Direct Color references
-grep -rn "Color\.\(red\|blue\|green\|yellow\|orange\|purple\|pink\|gray\|white\|black\)" VitalArc/Presentation/
+grep -rn "Color\.\(red\|blue\|green\|yellow\|orange\|purple\|pink\|gray\|white\|black\)" VitalArc/Modules/
 
 # System colors
-grep -rn "Color(\.system" VitalArc/Presentation/
+grep -rn "Color(\.system" VitalArc/Modules/
 
 # RGB colors
-grep -rn "Color(red:" VitalArc/Presentation/
+grep -rn "Color(red:" VitalArc/Modules/
 
 # UIColor
-grep -rn "UIColor\." VitalArc/Presentation/
+grep -rn "UIColor\." VitalArc/Modules/
 ```
 
 ### Spacing Patterns (Grep)
 ```bash
 # Hardcoded padding
-grep -rn "\.padding([0-9]" VitalArc/Presentation/
+grep -rn "\.padding([0-9]" VitalArc/Modules/
 
 # Hardcoded frame dimensions
-grep -rn "\.frame(width: [0-9]" VitalArc/Presentation/
-grep -rn "\.frame(height: [0-9]" VitalArc/Presentation/
+grep -rn "\.frame(width: [0-9]" VitalArc/Modules/
+grep -rn "\.frame(height: [0-9]" VitalArc/Modules/
 
 # Hardcoded corner radius
-grep -rn "\.cornerRadius([0-9]" VitalArc/Presentation/
+grep -rn "\.cornerRadius([0-9]" VitalArc/Modules/
 
 # Hardcoded spacing in stacks
-grep -rn "spacing: [0-9]" VitalArc/Presentation/
+grep -rn "spacing: [0-9]" VitalArc/Modules/
 ```
 
 ### Typography Patterns (Grep)
 ```bash
 # System fonts with size
-grep -rn "\.font(\.system(size: [0-9]" VitalArc/Presentation/
+grep -rn "\.font(\.system(size: [0-9]" VitalArc/Modules/
 
 # Standard fonts
-grep -rn "\.font(\.title)" VitalArc/Presentation/
-grep -rn "\.font(\.headline)" VitalArc/Presentation/
-grep -rn "\.font(\.body)" VitalArc/Presentation/
-grep -rn "\.font(\.caption)" VitalArc/Presentation/
+grep -rn "\.font(\.title)" VitalArc/Modules/
+grep -rn "\.font(\.headline)" VitalArc/Modules/
+grep -rn "\.font(\.body)" VitalArc/Modules/
+grep -rn "\.font(\.caption)" VitalArc/Modules/
 ```
 
 ## Exclusions
@@ -245,7 +244,7 @@ ZStack {
 
 No violations found!
 
-Scanned 70 files in VitalArc/Presentation/
+Scanned 70 files in VitalArc/Modules/
 All views comply with design system tokens.
 ```
 
@@ -255,7 +254,7 @@ All views comply with design system tokens.
 ## Scan Incomplete
 
 Some files could not be scanned:
-- VitalArc/Presentation/SomeView.swift: Permission denied
+- VitalArc/Modules/SomeView.swift: Permission denied
 
 Results below are partial.
 ```

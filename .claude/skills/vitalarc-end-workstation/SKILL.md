@@ -122,7 +122,7 @@ Launch all three quality check tasks in a single message for parallel execution.
 TaskCreate({
   subject: "Final design system scan",
   description: `Run final design-system-scanner:
-    1. Scan VitalArc/Presentation/ for violations
+    1. Scan VitalArc/Modules/ for violations
     2. Report summary for session log
     3. Note any new violations introduced this session
     4. Report the design system adoption percentage (needed by docs-update)`,
