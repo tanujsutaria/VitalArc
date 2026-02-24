@@ -1,5 +1,78 @@
 # VitalArc Development Session Log
 
+## Session 26.0 - February 23, 2026
+
+### Session Start
+- **Time**: Morning PST
+- **Platform**: macOS
+- **Focus**: Fix broken skills (beads pipeline + design system scanner)
+- **Branch**: dev/mac-session-26.0-2026-02-23
+- **Base**: main @ dba902f
+
+### Environment
+- **Build Capable**: Yes
+- **Test Capable**: Yes (unit + UI)
+
+### Pre-Session Status
+- **Build**: PASSING (0 errors, 0 warnings)
+- **Design Violations**: Previously reported 49 (undercount — scanner was targeting empty VitalArc/Presentation/ path)
+- **Uncommitted Changes**: None
+
+### Session Goals
+1. Fix beads pipeline zsh history expansion bug in vitalarc-start-workstation
+2. Fix stale `VitalArc/Presentation/` paths across 8 skills (stale since Session 18.3)
+3. Strengthen design-system-scanner auto-execution directive
+
+### Ready Beads
+No beads available - open backlog.
+
+### Work Log
+| Time | Action | Files | Notes |
+|------|--------|-------|-------|
+| Morning | Session started | - | Build verified, clean start |
+| Morning | Fixed beads pipeline zsh bug | vitalarc-start-workstation/SKILL.md | Replaced python3 -c with heredoc + env var to prevent != history expansion |
+| Morning | Fixed stale paths in 8 skills | 8 SKILL.md files | VitalArc/Presentation/ → VitalArc/Modules/ (stale since Session 18.3 reorg) |
+| Morning | Strengthened scanner directive | design-system-scanner/SKILL.md | Imperative action sequence prevents Explore agent falling back to prompt |
+| Morning | Verified fixes | - | Beads pipeline: != works, epic filtering works. Scanner: 53 violations found in Modules/ (was returning 0 from empty Presentation/) |
+
+---
+
+## Session 25.0 - February 22, 2026
+
+### Session Start
+- **Time**: Evening PST
+- **Platform**: macOS
+- **Focus**: Replace focus-suggester with beads in session skills
+- **Branch**: dev/mac-session-25.0-2026-02-22
+- **Base**: main @ 5bcbf37
+
+### Environment
+- **Build Capable**: Yes
+- **Test Capable**: Yes (unit + UI)
+
+### Pre-Session Status
+- **Build**: PASSING
+- **Tests**: 1141 passing
+- **Uncommitted Changes**: None
+
+### Session Goals
+1. Delete stale focus-suggester skill
+2. Replace with inline `bd ready` queries in session start/end skills
+3. Add sprint skills and test-engineer agent from beads migration
+
+### Work Log
+| Time | Action | Files | Notes |
+|------|--------|-------|-------|
+| Evening | Session started | - | Clean start from main |
+| Evening | Deleted focus-suggester skill | focus-suggester/SKILL.md | Stale — read outdated README roadmap and PROJECT_STATUS |
+| Evening | Replaced with bd ready | start-workstation, start-cloud, end-workstation SKILL.md | Phase 3 rewritten with inline `bd ready --json` |
+| Evening | Cleaned CLAUDE.md | CLAUDE.md | Removed 3 focus-suggester references |
+| Evening | Added sprint skills | sprint-status SKILL.md, test-engineer agent | Beads migration infrastructure |
+| Evening | Updated test count | PROJECT_STATUS.md, README.md | 1096 → 1141 (verified) |
+| Evening | PR #79 created and merged | - | refactor(infra): replace focus-suggester with beads |
+
+---
+
 ## Session 24.2 - February 21, 2026 (Sprint)
 
 ### Session Start
