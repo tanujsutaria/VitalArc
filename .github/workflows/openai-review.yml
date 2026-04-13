@@ -32,7 +32,7 @@ jobs:
 
       - name: Review with GPT-5.2-Codex
         if: steps.changed-files.outputs.any_changed == 'true'
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         with:

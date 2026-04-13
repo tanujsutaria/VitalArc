@@ -11,7 +11,7 @@ jobs:
 
     steps:
       - name: Check branch naming convention
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
             const branchName = context.payload.pull_request.head.ref;
