@@ -270,7 +270,7 @@ echo "  /worktree-manager remove review-PR$PR_NUMBER"
 ```markdown
 ## PR Review Environment Created
 
-**PR**: #123 - feat(nutrition): add meal planning
+**PR**: #123 - feat(workout): add mesocycle planning
 **Worktree**: /Users/user/Development/VitalArc-review-PR123
 **Branch**: review/pr-123
 

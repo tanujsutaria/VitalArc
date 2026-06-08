@@ -52,14 +52,17 @@ grep -rn "print(" VitalArc/ --include="*.swift" | grep -v "Test" | grep -v "// d
 **CRITICAL**: Flag any potential credentials:
 
 ```bash
-# API keys
-grep -rniE "(api[_-]?key|apikey|secret|password|credential)" VitalArc/ --include="*.swift"
+# Literal credential assignments, e.g. `let apiKey = "abc123"`.
+# Match an assignment to a string literal, not any mention of the word, to
+# avoid false positives. Exclude the gitignored Secrets.swift (the legitimate
+# home for keys).
+grep -rniE "(api[_-]?key|apikey|secret|password|credential|token)[[:space:]]*=[[:space:]]*\"[^\"]+\"" VitalArc/ --include="*.swift" | grep -v "Secrets.swift"
 
 # Hardcoded URLs with potential tokens
-grep -rn "https://.*\?.*token=" VitalArc/ --include="*.swift"
+grep -rn "https://.*\?.*token=" VitalArc/ --include="*.swift" | grep -v "Secrets.swift"
 
 # Known placeholder patterns that should be replaced
-grep -rn "YOUR_.*_HERE\|DEMO_KEY\|changeme\|placeholder" VitalArc/ --include="*.swift"
+grep -rn "YOUR_.*_HERE\|changeme\|placeholder" VitalArc/ --include="*.swift" | grep -v "Secrets.swift"
 ```
 
 ### 3. Design System Compliance
@@ -86,7 +89,7 @@ Check for import issues:
 grep -rn "^import UIKit" VitalArc/Modules/ --include="*.swift"
 
 # UIKit in Domain layer (architecture violation)
-grep -rn "^import UIKit" VitalArc/Domain/ --include="*.swift"
+grep -rn "^import UIKit" VitalArc/Modules/*/Domain/ --include="*.swift"
 
 # Foundation where not needed
 # (heuristic: file uses only types available in Swift stdlib)
@@ -182,11 +185,11 @@ These MUST be fixed before pushing:
 
 #### Potential Secrets Detected
 
-**NutritionixAPI.swift:15**
+**WellnessSyncService.swift:15**
 ```swift
 private let apiKey = "abc123def456"  // Hardcoded API key!
 ```
-**Fix**: Move to environment variable or secure storage.
+**Fix**: Move to the gitignored Secrets.swift or secure storage.
 
 **ConfigManager.swift:8**
 ```swift

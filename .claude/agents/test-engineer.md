@@ -25,7 +25,6 @@ Spawn this agent after domain workers have finished implementing features in a s
 ## Key Files to Watch
 
 - `VitalArcTests/Mocks/MockWorkoutRepository.swift` — must match `WorkoutRepository` protocol
-- `VitalArcTests/Mocks/MockNutritionRepository.swift` — must match `NutritionRepository` protocol
 - `VitalArcTests/ViewModelTests/AnalyticsDashboardViewModelTests.swift` — contains `DummyWorkoutRepository`
 - Any file with `Dummy*` or `Mock*` prefix in `VitalArcTests/`
 

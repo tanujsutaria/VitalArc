@@ -41,12 +41,13 @@ Auto-invoke when:
 |-----------|---------------|
 | `.padding(4)` | `.padding(Spacing.xs)` |
 | `.padding(8)` | `.padding(Spacing.sm)` |
-| `.padding(12)` | `.padding(Spacing.md)` |
-| `.padding(16)` | `.padding(Spacing.lg)` |
+| `.padding(16)` | `.padding(Spacing.md)` |
 | `.padding(20)` | `.padding(Spacing.screenPadding)` |
-| `.padding(24)` | `.padding(Spacing.xl)` |
+| `.padding(24)` | `.padding(Spacing.lg)` |
+| `.padding(32)` | `.padding(Spacing.xl)` |
+| `.padding(12)` | Non-standard — flag (no exact token; nearest sm=8 / md=16) |
 | `spacing: 8` | `spacing: Spacing.sm` |
-| `spacing: 16` | `spacing: Spacing.lg` |
+| `spacing: 16` | `spacing: Spacing.md` |
 | `.cornerRadius(8)` | `.cornerRadius(Spacing.radiusSmall)` |
 | `.cornerRadius(12)` | `.cornerRadius(Spacing.radiusMedium)` |
 
@@ -65,17 +66,12 @@ Auto-invoke when:
 ### Icon Sizes (in Spacing.swift)
 | Size | Token |
 |------|-------|
-| 10 | `Spacing.iconTiny` |
-| 12 | `Spacing.iconXSmall` |
-| 14 | `Spacing.iconSmall` |
-| 16 | `Spacing.iconMedium` |
-| 20 | `Spacing.iconDefault` |
+| 16 | `Spacing.iconSmall` |
+| 20 | `Spacing.iconMedium` |
 | 24 | `Spacing.iconLarge` |
-| 32 | `Spacing.iconXLarge` |
-| 40 | `Spacing.icon2XLarge` |
 | 48 | `Spacing.iconHuge` |
-| 60 | `Spacing.iconGiant` |
-| 64 | `Spacing.iconHero` |
+
+> Only `iconSmall`(16), `iconMedium`(20), `iconLarge`(24), `iconHuge`(48) exist in `Spacing.swift`. Other sizes are non-standard — flag them, don't invent a token.
 
 ## Audit Process
 
@@ -139,7 +135,7 @@ grep -rn "\.font(.system(size:" VitalArc/Modules/
 
 | File | Line | Violation | Fix |
 |------|------|-----------|-----|
-| FeatureView.swift | 30 | `.padding(16)` | `.padding(Spacing.lg)` |
+| FeatureView.swift | 30 | `.padding(16)` | `.padding(Spacing.md)` |
 | ... | ... | ... | ... |
 
 ### Acceptable (4)

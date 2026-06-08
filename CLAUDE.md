@@ -37,21 +37,21 @@ Concrete verification produces significantly better results than assumption-base
 |-----------|-------------|----------|
 | `dev/` | Branch prefix | Yes |
 | `<platform>` | `mac` or `cloud` | Yes |
-| `<focus>` | Feature area (e.g., `nutrition`, `workout`) or `session` for general work | Yes |
+| `<focus>` | Feature area (e.g., `workout`, `wellness`) or `session` for general work | Yes |
 | `<session>` | Session number from SESSION_LOG.md | Yes |
 | `<minor>` | Sub-version for same day (0, 1, 2...) | Yes |
 | `<date>` | ISO date (YYYY-MM-DD) | Yes |
 
 **Valid examples**:
-- `dev/mac-nutrition-12.0-2026-01-27` - Working on nutrition feature on macOS
+- `dev/mac-wellness-12.0-2026-01-27` - Working on wellness feature on macOS
 - `dev/mac-session-12.0-2026-01-27` - General work on macOS
 - `dev/cloud-workout-12.0-2026-01-27` - Working on workout on cloud
 
 **Cloud session exception**: When using Claude Code platform (phone/browser), the platform controls the branch name using format `claude/<skill>-<sessionID>`. This is acceptable for cloud sessions since manual branch creation isn't available.
 
 **Invalid examples**:
-- `dev/nutrition-12.0-2026-01-27` - Missing platform
-- `feature/nutrition` - Wrong prefix, missing session info
+- `dev/wellness-12.0-2026-01-27` - Missing platform
+- `feature/wellness` - Wrong prefix, missing session info
 
 **Conventional Commits**: All commits must follow this format:
 
@@ -76,12 +76,12 @@ Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
 | `build` | Build system or dependency changes |
 | `chore` | Other maintenance tasks |
 
-**Scopes:** `workout`, `nutrition`, `health`, `analytics`, `ui`, `infra`, `session`
+**Scopes:** `workout`, `health`, `analytics`, `ui`, `infra`, `session`
 
 **Examples:**
 ```
 feat(workout): add custom exercise creation
-fix(nutrition): correct calorie calculation for meals
+fix(health): correct recovery score calculation
 docs(session): update session 8 documentation
 refactor(ui): migrate ProfileView to design tokens
 ```
@@ -239,11 +239,6 @@ VitalArc/
 │   │   ├── Data/                 # SwiftData Models, Seeds (200+ exercises)
 │   │   ├── Infrastructure/       # SwiftDataWorkoutRepository, etc.
 │   │   └── Presentation/         # Views, ViewModels
-│   ├── Nutrition/                # Nutrition domain (food search, logging, APIs)
-│   │   ├── Domain/               # Entities, Repositories, UseCases
-│   │   ├── Data/                 # SwiftData Models
-│   │   ├── Infrastructure/       # API clients, Cache, Repositories
-│   │   └── Presentation/         # Views, ViewModels
 │   ├── Wellness/                 # Health/Wellness domain (HealthKit, metrics, sleep)
 │   │   ├── Domain/               # Entities, Repositories, UseCases
 │   │   ├── Data/                 # SwiftData Models
@@ -335,8 +330,8 @@ Color.vitalAdaptiveTextSecondary // Secondary text
 
 ### Spacing
 ```swift
-Spacing.xs (4)    Spacing.sm (8)     Spacing.md (12)
-Spacing.lg (16)   Spacing.xl (24)    Spacing.xxl (48)
+Spacing.xs (4)    Spacing.sm (8)     Spacing.md (16)
+Spacing.lg (24)   Spacing.xl (32)    Spacing.xxl (48)
 Spacing.screenPadding (20)          Spacing.cardPadding (16)
 Spacing.radiusSmall (8)             Spacing.radiusMedium (12)
 ```
@@ -373,28 +368,24 @@ UnitConversion.feetInchesToCm(feet:inches:)       // ft/in → cm
 - `App/VitalArcApp.swift` - App entry, SwiftData schema, DependencyContainer setup
 - `Modules/Shared/DependencyContainer/DependencyContainer.swift` - Orchestrator DI container
 - `Modules/Shared/DependencyContainer/WorkoutContainer.swift` - Workout domain DI
-- `Modules/Shared/DependencyContainer/NutritionContainer.swift` - Nutrition domain DI
 - `Modules/Shared/DependencyContainer/WellnessContainer.swift` - Wellness domain DI
 - `Modules/Shared/DependencyContainer/SharedContainer.swift` - Shared/cross-domain DI
-- `App/MainTabView.swift` - Main app navigation (Today, Workout, Nutrition, Progress, Profile)
+- `App/MainTabView.swift` - Main app navigation (Today, Workout, Progress, Profile)
 - `Modules/Shared/DesignSystem/` - Colors, Typography, Spacing, Components
 - `Modules/Shared/Protocols/` - Cross-domain data access protocols
 
 ## Codebase Statistics
 
-- **160 Swift files**, ~38,000 lines of code
-- **70 presentation views**, 10 ViewModels, 16 use cases
-- **14 design system files** (complete), ~90% view adoption
-- **6 test files**, ~68% preview coverage
+- **~193 Swift files**, ~47,000 lines of code (app target, excludes tests)
+- **~63 presentation views**, ~19 ViewModels
+- **14 design system files**, high design-token adoption
+- **~49 test files**
+
+> Stats are approximate; regenerate from source rather than hand-editing.
 
 ## API Configuration
 
-Food APIs have placeholder keys that need to be configured:
-- `NutritionixAPI.swift`: `YOUR_APP_ID`, `YOUR_APP_KEY` → Get from nutritionix.com
-- `USDAFoodAPI.swift`: `DEMO_KEY` → Get from fdc.nal.usda.gov
-- `OpenFoodFactsAPI.swift`: No key required (public API)
-
-Food search will fail or be rate-limited until proper keys are set.
+No third-party API keys are required. (The food-tracking APIs — Nutritionix, USDA FoodData Central, OpenFoodFacts — were removed with the Nutrition module.) CI's "Generate Secrets file" step copies `Modules/Shared/Security/Secrets.template.txt` to a gitignored `Secrets.swift` at build time; the committed `project.pbxproj` references `Secrets.swift`, so after deleting/adding files run `xcodegen generate` with that file present.
 
 ## GitHub Workflows & CI/CD
 
@@ -426,7 +417,6 @@ The codebase is organized into **domain-bounded modules** for parallel agent tea
 | Module | Agent | Directory | Key Files |
 |--------|-------|-----------|-----------|
 | **Workout** | `workout-agent` | `Modules/Workout/` | Exercises, sets, mesocycles, templates |
-| **Nutrition** | `nutrition-agent` | `Modules/Nutrition/` | Food search, logging, API clients |
 | **Wellness** | `wellness-agent` | `Modules/Wellness/` | HealthKit, health metrics, sleep |
 | **Shared** | `orchestrator-agent` | `Modules/Shared/`, `App/` | User, analytics, DI, design system |
 
@@ -437,9 +427,8 @@ Domains communicate via read-only protocols in `Modules/Shared/Protocols/`:
 | Protocol | Purpose | Used By |
 |----------|---------|---------|
 | `WorkoutDataProviding` | Read-only workout data | Analytics |
-| `NutritionDataProviding` | Read-only nutrition data | Analytics, TDEE |
 | `HealthDataProviding` | Read-only health metrics | Analytics, Recovery |
-| `UserProfileProviding` | Read-only user profile | Nutrition (TDEE), Analytics |
+| `UserProfileProviding` | Read-only user profile | Analytics |
 
 ### Agent Team Skills
 
@@ -452,7 +441,6 @@ The main `DependencyContainer` delegates to domain sub-containers:
 ```swift
 DependencyContainer
 ├── workout: WorkoutContainer      (workoutRepository, mesocycleRepository, templateRepository)
-├── nutrition: NutritionContainer  (nutritionRepository)
 ├── wellness: WellnessContainer    (healthRepository)
 └── shared: SharedContainer        (userRepository, analyticsRepository, notifications, TDEE)
 ```

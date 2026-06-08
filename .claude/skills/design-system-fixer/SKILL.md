@@ -56,29 +56,46 @@ Execute the full default fix workflow immediately. Do not ask for clarification.
 
 ### Spacing
 
-| Violation | Fix |
+Only auto-fix values that have an **exact** token match (matching the values in `VitalArc/Modules/Shared/DesignSystem/Spacing.swift`). Values with no exact token must be FLAGGED for manual review, never silently snapped to a nearby token. These mappings are kept in sync with `design-system-scanner` and `design-system-auditor`.
+
+| Violation | Fix (exact match) |
 |-----------|-----|
 | `.padding(4)` | `.padding(Spacing.xs)` |
 | `.padding(8)` | `.padding(Spacing.sm)` |
-| `.padding(12)` | `.padding(Spacing.md)` |
 | `.padding(16)` | `.padding(Spacing.md)` |
 | `.padding(20)` | `.padding(Spacing.screenPadding)` |
 | `.padding(24)` | `.padding(Spacing.lg)` |
+| `.padding(32)` | `.padding(Spacing.xl)` |
+| `.padding(48)` | `.padding(Spacing.xxl)` |
 | `.cornerRadius(8)` | `.cornerRadius(Spacing.radiusSmall)` |
 | `.cornerRadius(12)` | `.cornerRadius(Spacing.radiusMedium)` |
 | `.cornerRadius(16)` | `.cornerRadius(Spacing.radiusLarge)` |
 
+**Flag, do NOT auto-fix (no exact base token — value would change):**
+
+| Violation | Why flagged |
+|-----------|-------------|
+| `.padding(12)` | No exact base-scale token (`Spacing.md` is `16`, so auto-fixing would change `12` → `16`). May be intended as `Spacing.itemSpacing` (`12`) depending on context — review manually. |
+
 ### Icon Sizes
 
-| Violation | Fix |
+Auto-fix only exact matches against the `iconXxx` tokens in `Spacing.swift`. Off-scale sizes (e.g. `14`, `18`) must be FLAGGED, not snapped to the nearest token.
+
+| Violation | Fix (exact match) |
 |-----------|-----|
-| `size: 10` | `size: Spacing.iconTiny` |
-| `size: 12` | `size: Spacing.iconXSmall` |
-| `size: 14`, `size: 16` | `size: Spacing.iconSmall` |
-| `size: 18`, `size: 20` | `size: Spacing.iconMedium` |
+| `size: 16` | `size: Spacing.iconSmall` |
+| `size: 20` | `size: Spacing.iconMedium` |
 | `size: 24` | `size: Spacing.iconLarge` |
-| `size: 32` | `size: Spacing.iconXLarge` |
-| `size: 40` | `size: Spacing.icon2XLarge` |
+| `size: 48` | `size: Spacing.iconHuge` |
+
+> Only `iconSmall`(16), `iconMedium`(20), `iconLarge`(24), `iconHuge`(48) exist in `Spacing.swift`.
+
+**Flag, do NOT auto-fix (off the icon scale — no exact token):**
+
+| Violation | Why flagged |
+|-----------|-------------|
+| `size: 10`, `12`, `14`, `18` | Below/between `iconSmall` (`16`) / `iconMedium` (`20`) — review manually. |
+| `size: 32`, `40` | Between `iconLarge` (`24`) and `iconHuge` (`48`) — review manually. |
 
 ### Typography
 
@@ -178,7 +195,7 @@ Run without --dry-run to apply fixes.
 Fix only a specific file:
 
 ```bash
-design-system-fixer --file=VitalArc/Modules/Tabs/Profile/ProfileView.swift
+design-system-fixer --file=VitalArc/Modules/Shared/User/Presentation/ProfileView.swift
 ```
 
 ### --all

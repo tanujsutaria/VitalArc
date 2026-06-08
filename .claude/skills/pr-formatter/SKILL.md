@@ -51,7 +51,6 @@ Follow conventional commits: `<type>(<scope>): <description>`
 | Scope | Area |
 |-------|------|
 | `workout` | Workout tracking |
-| `nutrition` | Food logging |
 | `health` | HealthKit, metrics |
 | `analytics` | Charts, insights |
 | `ui` | Design system, components |
@@ -127,8 +126,8 @@ FILES_CHANGED=$(git diff --name-only $BASE_BRANCH | wc -l)
 INSERTIONS=$(git diff --stat $BASE_BRANCH | tail -1 | grep -oE '[0-9]+ insertion' | grep -oE '[0-9]+')
 DELETIONS=$(git diff --stat $BASE_BRANCH | tail -1 | grep -oE '[0-9]+ deletion' | grep -oE '[0-9]+')
 
-# Get session info
-SESSION=$(cat .claude/session-state.json | grep -o '"current_session": "[^"]*"' | cut -d'"' -f4)
+# Get session info (latest session from SESSION_LOG.md)
+SESSION=$(grep -E '^## Session [0-9]+\.[0-9]+' SESSION_LOG.md | head -1 | grep -oE '[0-9]+\.[0-9]+' | head -1)
 ```
 
 ## Output Format

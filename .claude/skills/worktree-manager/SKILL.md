@@ -24,10 +24,10 @@ Manages git worktrees for parallel development sessions. Worktrees allow working
 
 | Command | Description | Example |
 |---------|-------------|---------|
-| `create <name>` | Create new worktree | `/worktree-manager create nutrition` |
+| `create <name>` | Create new worktree | `/worktree-manager create wellness` |
 | `list` | Show all worktrees | `/worktree-manager list` |
-| `remove <name>` | Remove worktree (after PR merge) | `/worktree-manager remove nutrition` |
-| `switch <name>` | Show path to worktree | `/worktree-manager switch nutrition` |
+| `remove <name>` | Remove worktree (after PR merge) | `/worktree-manager remove wellness` |
+| `switch <name>` | Show path to worktree | `/worktree-manager switch wellness` |
 | `status` | Show status of all worktrees | `/worktree-manager status` |
 
 ## Implementation
@@ -174,22 +174,22 @@ done
 ```markdown
 ## Worktree Created
 
-**Path**: /Users/user/Development/VitalArc-nutrition
-**Branch**: dev/mac-nutrition-17.0-2026-02-01
+**Path**: /Users/user/Development/VitalArc-wellness
+**Branch**: dev/mac-wellness-17.0-2026-02-01
 **Based on**: main @ 310ec55
 
 ### Next Steps
 
 1. Open new terminal/tab
-2. `cd /Users/user/Development/VitalArc-nutrition`
-3. Run `/vitalarc-start-workstation nutrition` in new session
+2. `cd /Users/user/Development/VitalArc-wellness`
+3. Run `/vitalarc-start-workstation wellness` in new session
 
 ### Current Worktrees
 
 | Name | Branch | Status |
 |------|--------|--------|
 | VitalArc (main) | main | Clean |
-| VitalArc-nutrition | dev/mac-nutrition-17.0-2026-02-01 | New |
+| VitalArc-wellness | dev/mac-wellness-17.0-2026-02-01 | New |
 ```
 
 ### List Output
@@ -200,7 +200,7 @@ done
 | Name | Path | Branch | Status |
 |------|------|--------|--------|
 | VitalArc | /Users/user/Dev/VitalArc | main | Clean |
-| VitalArc-nutrition | /Users/user/Dev/VitalArc-nutrition | dev/mac-nutrition-16.0 | 3 uncommitted |
+| VitalArc-wellness | /Users/user/Dev/VitalArc-wellness | dev/mac-wellness-16.0 | 3 uncommitted |
 | VitalArc-ui-bugs | /Users/user/Dev/VitalArc-ui-bugs | dev/mac-ui-16.1 | Clean |
 
 **Total**: 3 worktrees
@@ -216,13 +216,13 @@ done
 - **Status**: Clean
 - **Last commit**: 310ec55 (Merge pull request #44)
 
-### VitalArc-nutrition
-- **Branch**: dev/mac-nutrition-16.0-2026-02-01
+### VitalArc-wellness
+- **Branch**: dev/mac-wellness-16.0-2026-02-01
 - **Status**: 2 files modified
 - **Ahead of main**: 3 commits
 - **Files**:
-  - M VitalArc/Modules/Nutrition/Presentation/Views/NutritionView.swift
-  - M VitalArc/Modules/Nutrition/Domain/UseCases/NutritionUseCases.swift
+  - M VitalArc/Modules/Wellness/Presentation/Views/WellnessView.swift
+  - M VitalArc/Modules/Wellness/Domain/UseCases/WellnessUseCases.swift
 
 ### VitalArc-ui-bugs
 - **Branch**: dev/mac-ui-16.1-2026-02-01
@@ -239,12 +239,12 @@ Use `--worktree` flag to auto-create worktree:
 
 ```bash
 # This creates worktree + starts session
-/vitalarc-start-workstation nutrition --worktree
+/vitalarc-start-workstation wellness --worktree
 ```
 
 Internally calls:
-1. `/worktree-manager create nutrition`
-2. `cd ../VitalArc-nutrition`
+1. `/worktree-manager create wellness`
+2. `cd ../VitalArc-wellness`
 3. Normal session start
 
 ### With PR Workflow
@@ -269,7 +269,7 @@ After review:
 
 | Type | Naming | Example |
 |------|--------|---------|
-| Feature work | `VitalArc-<feature>` | VitalArc-nutrition |
+| Feature work | `VitalArc-<feature>` | VitalArc-wellness |
 | Bug fixes | `VitalArc-<area>-bugs` | VitalArc-ui-bugs |
 | PR review | `VitalArc-review-PR<num>` | VitalArc-review-PR123 |
 | Experiments | `VitalArc-exp-<name>` | VitalArc-exp-new-arch |
@@ -279,10 +279,10 @@ After review:
 After merging PR:
 ```bash
 # 1. Delete remote branch
-git push origin --delete dev/mac-nutrition-16.0-2026-02-01
+git push origin --delete dev/mac-wellness-16.0-2026-02-01
 
 # 2. Remove worktree
-/worktree-manager remove nutrition
+/worktree-manager remove wellness
 
 # 3. Prune local refs
 git fetch --prune
@@ -295,12 +295,12 @@ git fetch --prune
 ```markdown
 ## Worktree Exists
 
-**Path**: /Users/user/Development/VitalArc-nutrition
+**Path**: /Users/user/Development/VitalArc-wellness
 
 The worktree already exists. Options:
-1. Use existing: `cd /Users/user/Development/VitalArc-nutrition`
-2. Remove first: `/worktree-manager remove nutrition`
-3. Use different name: `/worktree-manager create nutrition-v2`
+1. Use existing: `cd /Users/user/Development/VitalArc-wellness`
+2. Remove first: `/worktree-manager remove wellness`
+3. Use different name: `/worktree-manager create wellness-v2`
 ```
 
 ### Uncommitted Changes on Remove
@@ -308,16 +308,16 @@ The worktree already exists. Options:
 ```markdown
 ## Cannot Remove Worktree
 
-**Path**: /Users/user/Development/VitalArc-nutrition
+**Path**: /Users/user/Development/VitalArc-wellness
 
 Worktree has uncommitted changes:
-- M NutritionView.swift
+- M WellnessView.swift
 - M FoodSearch.swift
 
 **Options**:
-1. Commit changes: `cd ../VitalArc-nutrition && git commit -am "WIP"`
-2. Stash changes: `cd ../VitalArc-nutrition && git stash`
-3. Force remove: `/worktree-manager remove nutrition --force`
+1. Commit changes: `cd ../VitalArc-wellness && git commit -am "WIP"`
+2. Stash changes: `cd ../VitalArc-wellness && git stash`
+3. Force remove: `/worktree-manager remove wellness --force`
 ```
 
 ### Branch Exists
@@ -325,10 +325,10 @@ Worktree has uncommitted changes:
 ```markdown
 ## Branch Conflict
 
-Branch `dev/mac-nutrition-17.0-2026-02-01` already exists.
+Branch `dev/mac-wellness-17.0-2026-02-01` already exists.
 
 **Options**:
-1. Use existing branch: `git worktree add ../VitalArc-nutrition dev/mac-nutrition-17.0-2026-02-01`
-2. Increment minor version: Creates `dev/mac-nutrition-17.1-2026-02-01`
-3. Choose different name: `/worktree-manager create nutrition-new`
+1. Use existing branch: `git worktree add ../VitalArc-wellness dev/mac-wellness-17.0-2026-02-01`
+2. Increment minor version: Creates `dev/mac-wellness-17.1-2026-02-01`
+3. Choose different name: `/worktree-manager create wellness-new`
 ```

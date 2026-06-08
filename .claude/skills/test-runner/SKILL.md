@@ -36,15 +36,29 @@ Executes VitalArc tests as a required quality gate. **Workstation only** - requi
 ### Full Test Run (Default)
 
 ```bash
-# Run all tests
+set -o pipefail
+
+# Optional pretty output. xcpretty is NOT installed in this environment, so
+# never pipe to it (the pipe would make $? report xcpretty's 127, not the build).
+# Use xcbeautify if present, otherwise pass output through unchanged.
+if command -v xcbeautify >/dev/null 2>&1; then
+    FORMATTER="xcbeautify"
+else
+    FORMATTER="cat"
+fi
+
+# Run all tests. PIPESTATUS preserves xcodebuild's exit code through the pipe.
 xcodebuild test \
     -scheme VitalArc \
     -destination 'platform=iOS Simulator,name=iPhone 17 Pro' \
     -resultBundlePath /tmp/test-results.xcresult \
-    2>&1 | xcpretty --color
+    -quiet \
+    2>&1 | $FORMATTER
+STATUS=${PIPESTATUS[0]}
 
-# Check exit code
-if [ $? -eq 0 ]; then
+# Pass/fail is xcodebuild's exit code (NOT the formatter's). The .xcresult
+# bundle at /tmp/test-results.xcresult has the authoritative per-test outcome.
+if [ "$STATUS" -eq 0 ]; then
     echo "ALL TESTS PASSED"
 else
     echo "TESTS FAILED"
@@ -57,12 +71,23 @@ fi
 Runs only fast unit tests, skipping UI and integration tests:
 
 ```bash
-# Run only unit tests (exclude UI tests)
+set -o pipefail
+
+# Run only unit tests (exclude UI tests). -quiet keeps output terse without
+# relying on an external formatter; no pipe means $? is xcodebuild's exit code.
 xcodebuild test \
     -scheme VitalArc \
     -destination 'platform=iOS Simulator,name=iPhone 17 Pro' \
     -only-testing:VitalArcTests \
-    2>&1 | grep -E "(Test Case|passed|failed|error:)"
+    -quiet
+STATUS=$?
+
+if [ "$STATUS" -eq 0 ]; then
+    echo "ALL TESTS PASSED"
+else
+    echo "TESTS FAILED"
+    exit 1
+fi
 ```
 
 ### Coverage Mode (`--coverage`)
@@ -70,15 +95,31 @@ xcodebuild test \
 Generates code coverage report:
 
 ```bash
-# Run with coverage enabled
+set -o pipefail
+
+# Optional pretty output (xcbeautify if installed; never xcpretty).
+if command -v xcbeautify >/dev/null 2>&1; then
+    FORMATTER="xcbeautify"
+else
+    FORMATTER="cat"
+fi
+
+# Run with coverage enabled. PIPESTATUS preserves xcodebuild's exit code.
 xcodebuild test \
     -scheme VitalArc \
     -destination 'platform=iOS Simulator,name=iPhone 17 Pro' \
     -enableCodeCoverage YES \
     -resultBundlePath /tmp/coverage-results.xcresult \
-    2>&1 | xcpretty --color
+    -quiet \
+    2>&1 | $FORMATTER
+STATUS=${PIPESTATUS[0]}
 
-# Extract coverage report
+if [ "$STATUS" -ne 0 ]; then
+    echo "TESTS FAILED"
+    exit 1
+fi
+
+# Extract coverage report from the result bundle
 xcrun xccov view --report /tmp/coverage-results.xcresult
 ```
 
@@ -87,6 +128,8 @@ xcrun xccov view --report /tmp/coverage-results.xcresult
 Only tests related to changed files:
 
 ```bash
+set -o pipefail
+
 # Get changed files
 CHANGED_FILES=$(git diff --name-only HEAD~1 -- '*.swift')
 
@@ -100,12 +143,21 @@ for file in $CHANGED_FILES; do
     fi
 done
 
-# Run only affected tests
+# Run only affected tests. -quiet avoids needing an external formatter; with no
+# pipe, $? is xcodebuild's own exit code.
 xcodebuild test \
     -scheme VitalArc \
     -destination 'platform=iOS Simulator,name=iPhone 17 Pro' \
     $TESTS_TO_RUN \
-    2>&1 | xcpretty --color
+    -quiet
+STATUS=$?
+
+if [ "$STATUS" -eq 0 ]; then
+    echo "ALL TESTS PASSED"
+else
+    echo "TESTS FAILED"
+    exit 1
+fi
 ```
 
 ### Filter Mode (`--filter=pattern`)
@@ -113,14 +165,28 @@ xcodebuild test \
 Run tests matching a pattern:
 
 ```bash
+set -o pipefail
+
 PATTERN="$1"
 
-# Run tests matching pattern
+# Run the unit-test bundle and write results to a bundle we can filter after.
+# -quiet keeps output terse; with no pipe, $? is xcodebuild's exit code.
 xcodebuild test \
     -scheme VitalArc \
     -destination 'platform=iOS Simulator,name=iPhone 17 Pro' \
     -only-testing:VitalArcTests \
-    2>&1 | grep -E "(Test Case.*$PATTERN|passed|failed)"
+    -resultBundlePath /tmp/filter-results.xcresult \
+    -quiet
+STATUS=$?
+
+if [ "$STATUS" -eq 0 ]; then
+    echo "ALL TESTS PASSED (filter: $PATTERN)"
+else
+    echo "TESTS FAILED (filter: $PATTERN)"
+    # Inspect matching cases in the result bundle:
+    #   xcrun xcresulttool get test-results tests --path /tmp/filter-results.xcresult
+    exit 1
+fi
 ```
 
 ## Output Format
@@ -135,20 +201,22 @@ xcodebuild test \
 **Duration**: 45 seconds
 
 ### Summary
-| Category | Tests | Passed | Failed |
-|----------|-------|--------|--------|
-| Unit Tests | 42 | 42 | 0 |
-| ViewModel Tests | 18 | 18 | 0 |
-| Integration Tests | 8 | 8 | 0 |
-| **Total** | **68** | **68** | **0** |
+| Category | Passed | Failed |
+|----------|--------|--------|
+| Unit Tests | all | 0 |
+| ViewModel Tests | all | 0 |
+| Integration Tests | all | 0 |
+
+> Read counts from the .xcresult bundle - do not hardcode totals (the suite
+> changes over time, so any fixed total goes stale).
 
 ### Test Suites
-- HealthKitTests: 12 tests, 12 passed
-- NutritionTests: 15 tests, 15 passed
-- ProfileTests: 10 tests, 10 passed
-- TemplateTests: 8 tests, 8 passed
-- BMITests: 5 tests, 5 passed
-- WorkoutTests: 18 tests, 18 passed
+- HealthKitTests: passed
+- SleepTests: passed
+- ProfileTests: passed
+- TemplateTests: passed
+- BMITests: passed
+- WorkoutTests: passed
 
 All tests passed. Ready for commit.
 ```
@@ -163,33 +231,34 @@ All tests passed. Ready for commit.
 **Duration**: 52 seconds
 
 ### Summary
-| Category | Tests | Passed | Failed |
-|----------|-------|--------|--------|
-| Unit Tests | 42 | 40 | 2 |
-| ViewModel Tests | 18 | 18 | 0 |
-| Integration Tests | 8 | 8 | 0 |
-| **Total** | **68** | **66** | **2** |
+| Category | Passed | Failed |
+|----------|--------|--------|
+| Unit Tests | most | 2 |
+| ViewModel Tests | all | 0 |
+| Integration Tests | all | 0 |
+
+> Read counts from the .xcresult bundle - do not hardcode totals.
 
 ### Failed Tests
 
-#### NutritionTests.swift
+#### WorkoutTests.swift
 
-**testCalorieCalculation_withZeroPortions_returnsZero**
+**testVolumeCalculation_withZeroSets_returnsZero**
 ```
 XCTAssertEqual failed: ("100.0") is not equal to ("0.0")
-Location: NutritionTests.swift:45
+Location: WorkoutTests.swift:45
 ```
 
-**testMealTotals_withEmptyMeal_returnsDefaults**
+**testWorkoutTotals_withEmptyWorkout_returnsDefaults**
 ```
-XCTAssertNil failed: "Optional(Meal)" - Expected nil
-Location: NutritionTests.swift:78
+XCTAssertNil failed: "Optional(Workout)" - Expected nil
+Location: WorkoutTests.swift:78
 ```
 
 ### Suggested Fixes
 
-1. **testCalorieCalculation**: Check portion handling in `calculateCalories()`
-2. **testMealTotals**: Verify empty state initialization in `Meal.swift`
+1. **testVolumeCalculation**: Check set handling in `calculateVolume()`
+2. **testWorkoutTotals**: Verify empty state initialization in `Workout.swift`
 
 ---
 
@@ -208,7 +277,7 @@ Location: NutritionTests.swift:78
 | File | Lines | Covered | % |
 |------|-------|---------|---|
 | ProfileViewModel.swift | 150 | 135 | 90% |
-| NutritionUseCase.swift | 89 | 78 | 88% |
+| LogWorkoutUseCase.swift | 89 | 78 | 88% |
 | WorkoutManager.swift | 210 | 168 | 80% |
 | HealthKitManager.swift | 180 | 108 | 60% |
 | NotificationService.swift | 120 | 48 | 40% |
@@ -273,8 +342,8 @@ If tests fail, session end is blocked:
 ═══════════════════════════════════════════════════════════════
 Failed Tests: 2
 
-1. NutritionTests.testCalorieCalculation
-2. NutritionTests.testMealTotals
+1. WorkoutTests.testVolumeCalculation
+2. WorkoutTests.testWorkoutTotals
 
 Fix failing tests, then re-run /vitalarc-end-workstation
 ═══════════════════════════════════════════════════════════════

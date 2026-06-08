@@ -2,7 +2,7 @@
 name: vitalarc-end-workstation
 description: Finalize a VitalArc workstation development session. Use when ending a session on Mac. Verifies build passes, commits documentation, and pushes changes.
 disable-model-invocation: true
-allowed-tools: Read, Grep, Glob, Bash, Write, Edit, Task, TaskCreate, TaskUpdate, TaskList
+allowed-tools: Read, Grep, Glob, Bash, Write, Edit, Skill, Task, TaskCreate, TaskUpdate, TaskList
 argument-hint: [summary]
 ---
 
@@ -17,21 +17,21 @@ Finalize a workstation session with build verification.
 │                    SESSION END PIPELINE                              │
 ├─────────────────────────────────────────────────────────────────────┤
 │  PHASE 1 - Build Validation (BLOCKING):                             │
-│    └── Task: build-check (MUST PASS)                                │
+│    └── Skill: build-validator (MUST PASS)                           │
 │                                                                      │
 │  PHASE 2 - Test Execution (BLOCKING - after build):                 │
-│    └── Task: test-run (MUST PASS)                                   │
+│    └── Skill: test-runner (MUST PASS)                               │
 │                                                                      │
 │  PHASE 3 - Parallel Quality Checks (after tests pass):              │
-│    ├── Task: design-scan    (blockedBy: test-run)                   │
-│    ├── Task: lint-check     (blockedBy: test-run)                   │
-│    └── Task: progress-update (NO DEPENDENCIES - starts immediately) │
+│    ├── Skill: design-system-scanner                                 │
+│    ├── Skill: lint-validator                                        │
+│    └── Skill: progress-tracker                                      │
 │                                                                      │
 │  PHASE 3.5 - Documentation Update (after Phase 2 + 3):             │
-│    └── Task: docs-update (blockedBy: test-run + design-scan)        │
+│    └── Task: docs-update                                            │
 │                                                                      │
 │  PHASE 4 - Commit Preparation (After Phase 3 + 3.5):               │
-│    └── Task: generate-commit (blockedBy: all above)                 │
+│    └── Skill: commit-formatter                                      │
 │                                                                      │
 │  PHASE 5 - Finalization (Sequential):                               │
 │    └── Commit → Push → (Optional) Create PR                         │
@@ -47,16 +47,12 @@ Finalize a workstation session with build verification.
 This must pass before proceeding. If build fails, stop and report.
 
 ```javascript
-TaskCreate({
-  subject: "Validate build before session end",
-  description: `BLOCKING BUILD CHECK:
-    1. Run: xcodebuild -scheme VitalArc -destination 'platform=iOS Simulator,name=iPhone 17 Pro' build 2>&1 | grep -E "(error:|warning:|BUILD SUCCEEDED|BUILD FAILED)"
-    2. If BUILD FAILED: Return immediately with error details
-    3. If BUILD SUCCEEDED: Return success confirmation`,
-  activeForm: "Validating build (blocking)"
+Skill({
+  skill: "build-validator"
 })
-// Returns: task-build-id
 ```
+
+> **BLOCKING**: `build-validator` runs the Xcode build and reports errors with suggested fixes. If it reports BUILD FAILED, STOP immediately and output the block below.
 
 **If build fails, STOP and output:**
 
@@ -75,20 +71,13 @@ Then: Re-run /vitalarc-end-workstation
 Tests must pass before proceeding. If tests fail, stop and report.
 
 ```javascript
-TaskCreate({
-  subject: "Run test suite before session end",
-  description: `BLOCKING TEST CHECK:
-    1. Run: /test-runner (full mode)
-    2. If any tests FAIL: Return immediately with failure details
-    3. If all tests PASS: Return success with test count summary
-
-    This is a required quality gate.
-    IMPORTANT: Save the actual test count (e.g. "535 tests") - it will be needed by docs-update.`,
-  activeForm: "Running tests (blocking)",
-  addBlockedBy: ["task-build-id"]
+Skill({
+  skill: "test-runner",
+  args: "full"
 })
-// Returns: task-test-id
 ```
+
+> **BLOCKING** (after build passes): `test-runner` is a required quality gate. If any test fails, STOP and output the block below. Save the actual test count (e.g. "535 tests") - it will be needed by docs-update.
 
 **If tests fail, STOP and output:**
 
@@ -110,51 +99,30 @@ Then: Re-run /vitalarc-end-workstation
 
 ### Phase 3: Parallel Quality Checks (After Tests Pass)
 
-Launch all three quality check tasks in a single message for parallel execution.
+Invoke the three quality-check skills after tests pass.
 
-> **Note**: `progress-update` does NOT depend on test results - it only summarizes work done.
-> `design-scan` and `lint-check` wait for tests to ensure they're checking valid, working code.
+> **Note**: `progress-tracker` does NOT depend on test results - it only summarizes work done.
+> `design-system-scanner` and `lint-validator` run after tests to ensure they're checking valid, working code.
 
 ```javascript
-// In a SINGLE message, create all three tasks:
-
-// design-scan blocked by tests (needs valid, tested code to scan)
-TaskCreate({
-  subject: "Final design system scan",
-  description: `Run final design-system-scanner:
-    1. Scan VitalArc/Modules/ for violations
-    2. Report summary for session log
-    3. Note any new violations introduced this session
-    4. Report the design system adoption percentage (needed by docs-update)`,
-  activeForm: "Scanning design system",
-  addBlockedBy: ["task-test-id"]
+// design-system-scanner: scans VitalArc/Modules/ for violations, reports a summary
+// for the session log, notes new violations, and reports the design system adoption
+// percentage (needed by docs-update).
+Skill({
+  skill: "design-system-scanner"
 })
-// Returns: task-scan-id
 
-// lint-check blocked by tests
-TaskCreate({
-  subject: "Run lint validation",
-  description: `Run lint-validator on changed files:
-    1. Identify changed Swift files
-    2. Run SwiftLint
-    3. Report errors (blocking) and warnings (advisory)`,
-  activeForm: "Running lint validation",
-  addBlockedBy: ["task-test-id"]
+// lint-validator: runs SwiftLint on the changed Swift files and reports
+// errors (blocking) and warnings (advisory).
+Skill({
+  skill: "lint-validator"
 })
-// Returns: task-lint-id
 
-// progress-update runs immediately (no dependency on build/tests)
-TaskCreate({
-  subject: "Update progress in session log",
-  description: `Run progress-tracker:
-    1. Read current session entry in SESSION_LOG.md
-    2. Add final Work Log entries
-    3. Add session end timestamp
-    4. Summarize work completed`,
-  activeForm: "Updating progress"
-  // NOTE: No blockedBy - can start immediately while tests run
+// progress-tracker: updates the SESSION_LOG.md Work Log with final entries, the
+// session end timestamp, and a summary of work completed. Independent of test results.
+Skill({
+  skill: "progress-tracker"
 })
-// Returns: task-progress-id
 ```
 
 ### Phase 3.5: Update Project Documentation (After Tests + Design Scan)
@@ -165,7 +133,7 @@ This task ensures all documentation files reflect actual session data. It must r
 TaskCreate({
   subject: "Update project documentation",
   description: `REQUIRED - Update all documentation files with verified data from this session.
-    Use actual results from the test run and design scan tasks - do NOT use stale values.
+    Use actual results from the test-runner and design-system-scanner skills - do NOT use stale values.
 
     **PROJECT_STATUS.md**:
     1. Update "Last Updated" line to current date and session number
@@ -184,28 +152,19 @@ TaskCreate({
     **SESSION_LOG.md**:
     1. Add "Session ended" row to Work Log with current time
     2. Note any deferred or incomplete session goals with status`,
-  activeForm: "Updating documentation",
-  addBlockedBy: ["task-test-id", "task-scan-id"]
+  activeForm: "Updating documentation"
 })
-// Returns: task-docs-id
 ```
 
 ### Phase 4: Generate Commit Message (After Phase 3 + 3.5)
 
 ```javascript
-TaskCreate({
-  subject: "Generate commit message",
-  description: `Run commit-formatter:
-    1. Analyze staged changes with git diff --staged
-    2. Determine type (feat/fix/refactor/docs/etc)
-    3. Determine scope (workout/nutrition/health/ui/infra/session)
-    4. Generate conventional commit message
-    5. Include Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>`,
-  activeForm: "Generating commit message",
-  addBlockedBy: ["task-scan-id", "task-lint-id", "task-progress-id", "task-docs-id"]
+Skill({
+  skill: "commit-formatter"
 })
-// Returns: task-commit-id
 ```
+
+> `commit-formatter` analyzes the staged changes (`git diff --staged`), determines the type (feat/fix/refactor/docs/etc) and scope (workout/health/ui/infra/session), generates a conventional commit message, and includes the `Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>` trailer.
 
 ### Phase 5: Finalization (Sequential)
 

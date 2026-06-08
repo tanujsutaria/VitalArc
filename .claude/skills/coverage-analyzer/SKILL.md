@@ -47,22 +47,28 @@ Since we can't run actual code coverage tools via CLI, this agent uses heuristic
 
 ### Find Source Files
 
-```bash
-# Domain layer
-find VitalArc/Domain -name "*.swift" -not -name "*Tests*"
+Use the Glob tool to discover source files across modules. Each domain module (`Workout`, `Wellness`) follows the `Domain / Data / Infrastructure / Presentation` layout, and `Shared` nests its sub-features (`User`, `Analytics`, `Notifications`, etc.) under those same layers.
+
+```
+# Domain layer (entities + use cases)
+Glob: VitalArc/Modules/*/Domain/**/*.swift
+Glob: VitalArc/Modules/Shared/*/Domain/**/*.swift
 
 # Presentation layer
-find VitalArc/Presentation -name "*ViewModel*.swift"
-find VitalArc/Presentation -name "*View.swift"
+Glob: VitalArc/Modules/*/Presentation/**/*ViewModel*.swift
+Glob: VitalArc/Modules/*/Presentation/**/*View.swift
+Glob: VitalArc/Modules/Shared/*/Presentation/**/*.swift
 
-# Infrastructure
-find VitalArc/Infrastructure -name "*.swift"
+# Infrastructure layer
+Glob: VitalArc/Modules/*/Infrastructure/**/*.swift
+Glob: VitalArc/Modules/Shared/*/Infrastructure/**/*.swift
 ```
 
 ### Find Test Files
 
-```bash
-find . -name "*Tests.swift" -o -name "*Test.swift"
+```
+Glob: **/*Tests.swift
+Glob: **/*Test.swift
 ```
 
 ### Match Source to Tests
@@ -93,10 +99,10 @@ For each source file, look for corresponding test:
 |----------|------|-------|-----|
 | 10 | CreateWorkoutUseCase.swift | UseCases | Core workout logic |
 | 10 | CalculateRecoveryScoreUseCase.swift | UseCases | Critical calculation |
-| 10 | LogFoodUseCase.swift | UseCases | Nutrition tracking |
+| 10 | UpdateMesocycleUseCase.swift | UseCases | Mesocycle progression |
 | 8 | Workout.swift | Entities | Complex validation |
 | 8 | WorkoutViewModel.swift | ViewModels | State management |
-| 8 | NutritionViewModel.swift | ViewModels | Async operations |
+| 8 | RecoveryViewModel.swift | ViewModels | Async operations |
 | 6 | SwiftDataWorkoutRepository.swift | Repositories | Data persistence |
 | 6 | HealthKitManager.swift | Infrastructure | HealthKit integration |
 | 3 | ProfileView.swift | Views | UI (preview exists) |
@@ -108,7 +114,7 @@ For each source file, look for corresponding test:
 |-----------|--------|
 | WorkoutTests.swift | Workout entity |
 | RecoveryScoreTests.swift | Recovery calculation |
-| FoodTests.swift | Food entity |
+| MesocycleTests.swift | Mesocycle entity |
 | UserProfileTests.swift | Profile entity |
 | HealthDashboardViewModelTests.swift | Dashboard VM |
 | ExerciseFilterTests.swift | Filter logic |
@@ -137,13 +143,13 @@ These code paths handle important logic and have no test coverage:
 - Test notification cancellation
 - Test permission handling
 
-#### 3. Food API Coordination
-**File**: `FoodAPICoordinator.swift`
-**Risk**: Search results missing or duplicated
+#### 3. HealthKit Data Sync
+**File**: `HealthKitManager.swift`
+**Risk**: Health metrics missing or stale
 **Suggested Tests**:
-- Test multi-source aggregation
-- Test error handling per source
-- Test caching behavior
+- Test authorization handling
+- Test metric fetch and domain mapping
+- Test error handling per query
 ```
 
 ## Layer-Specific Analysis
@@ -153,20 +159,20 @@ These code paths handle important logic and have no test coverage:
 ```markdown
 ## Domain Layer Coverage
 
-### Use Cases (16 files, 4 tested)
+### Use Cases
 | File | Status | Priority |
 |------|--------|----------|
 | CreateWorkoutUseCase.swift | Untested | High |
 | GetWorkoutsUseCase.swift | Untested | Medium |
 | CalculateRecoveryScoreUseCase.swift | Tested | - |
-| LogFoodUseCase.swift | Untested | High |
+| UpdateMesocycleUseCase.swift | Untested | High |
 ...
 
-### Entities (12 files, 2 tested)
+### Entities
 | File | Status | Priority |
 |------|--------|----------|
 | Workout.swift | Tested | - |
-| Food.swift | Tested | - |
+| HealthMetric.swift | Tested | - |
 | Exercise.swift | Untested | Medium |
 | UserProfile.swift | Tested | - |
 ...
@@ -177,18 +183,18 @@ These code paths handle important logic and have no test coverage:
 ```markdown
 ## Presentation Layer Coverage
 
-### ViewModels (10 files, 3 tested)
+### ViewModels
 | File | Status | Has Preview |
 |------|--------|-------------|
 | WorkoutViewModel.swift | Untested | Yes |
 | ProfileViewModel.swift | Untested | Yes |
 | HealthDashboardViewModel.swift | Tested | Yes |
-| NutritionViewModel.swift | Untested | Yes |
+| RecoveryViewModel.swift | Untested | Yes |
 ...
 
-### Views (70 files)
+### Views
 Views are primarily covered by SwiftUI Previews.
-**Preview Coverage**: 68% (48/70 have #Preview)
+**Preview Coverage**: Count views containing a #Preview block against the total number of view files.
 ```
 
 ## Recommendations
@@ -207,11 +213,10 @@ Views are primarily covered by SwiftUI Previews.
 3. **Integration tests** - End-to-end flows
 
 ### Suggested Test Sprint
-Week 1: All use cases (16 files)
-Week 2: All ViewModels (10 files)
-Week 3: Critical infrastructure (5 files)
+Week 1: All use cases
+Week 2: All ViewModels
+Week 3: Critical infrastructure
 
-**Estimated effort**: 31 test files
 **Target coverage**: 70%+
 ```
 

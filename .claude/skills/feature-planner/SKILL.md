@@ -82,9 +82,11 @@ Create ALL tasks upfront with proper dependencies. This allows the system to aut
 TaskCreate({
   subject: "Analyze domain patterns for $ARGUMENTS",
   description: `Analyze VitalArc domain layer patterns:
-  1. Read Domain/Entities/ - entity structure, protocols (Identifiable, Codable)
-  2. Read Domain/Repositories/ - repository protocol patterns
-  3. Read Domain/UseCases/ - use case structure, execute() methods
+  1. Read VitalArc/Modules/<Domain>/Domain/Entities/ - entity structure, protocols (Identifiable, Codable)
+  2. Read VitalArc/Modules/<Domain>/Domain/Repositories/ - repository protocol patterns
+  3. Read VitalArc/Modules/<Domain>/Domain/UseCases/ - use case structure, execute() methods
+
+  (<Domain> = owning module: Workout, Wellness, or Shared)
 
   Output: Domain pattern summary for $ARGUMENTS feature`,
   activeForm: "Analyzing domain patterns"
@@ -94,9 +96,11 @@ TaskCreate({
 TaskCreate({
   subject: "Analyze presentation patterns for $ARGUMENTS",
   description: `Analyze VitalArc presentation layer patterns:
-  1. Read Presentation/Tabs/ - view organization, tab structure
-  2. Read Presentation/Common/DesignSystem/ - available components
+  1. Read VitalArc/Modules/<Domain>/Presentation/ - view organization, view structure
+  2. Read VitalArc/Modules/Shared/DesignSystem/ - available components
   3. Identify ViewModel patterns (@Observable, state management)
+
+  (<Domain> = owning module: Workout, Wellness, or Shared)
 
   Output: Presentation pattern summary for $ARGUMENTS feature`,
   activeForm: "Analyzing presentation patterns"
@@ -106,9 +110,11 @@ TaskCreate({
 TaskCreate({
   subject: "Analyze DI patterns for $ARGUMENTS",
   description: `Analyze VitalArc dependency injection patterns:
-  1. Read Infrastructure/DependencyContainer.swift - DI setup
-  2. Read Data/Models/ - SwiftData model patterns
-  3. Understand repository-to-container wiring
+  1. Read VitalArc/Modules/Shared/DependencyContainer/DependencyContainer.swift - orchestrator DI (delegates to WorkoutContainer / WellnessContainer / SharedContainer sub-containers in that same folder)
+  2. Read VitalArc/Modules/<Domain>/Data/ - SwiftData model patterns
+  3. Understand repository-to-sub-container wiring (new repos/use cases go in the owning sub-container, then a backward-compatible computed accessor is added)
+
+  (<Domain> = owning module: Workout, Wellness, or Shared)
 
   Output: DI pattern summary for $ARGUMENTS feature`,
   activeForm: "Analyzing DI patterns"
@@ -284,7 +290,7 @@ struct Achievement: Identifiable, Codable {
 }
 
 enum AchievementCategory: String, CaseIterable, Codable {
-    case workout, nutrition, consistency, milestone
+    case workout, wellness, consistency, milestone
 }
 ```
 

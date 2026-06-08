@@ -78,9 +78,9 @@ Before including any "Known Issue" in recommendations, run verification:
 | Issue Type | Verification Command | Valid If |
 |------------|---------------------|----------|
 | Test integration | `xcodebuild test ... 2>&1 \| grep "Executed"` | Tests fail or files missing from project |
-| Design system violations | `grep -r "Color\.(red\|blue\|green)" Presentation/Tabs/` | Matches found outside DesignSystem/ |
+| Design system violations | `grep -r "Color\.(red\|blue\|green)" VitalArc/Modules/` | Matches found outside DesignSystem/ |
 | Build errors | `xcodebuild build ... 2>&1 \| grep "BUILD"` | BUILD FAILED |
-| API keys | `grep "YOUR_.*_HERE\|DEMO_KEY" Infrastructure/` | Placeholder keys found |
+| API keys | `grep "YOUR_.*_HERE\|DEMO_KEY" VitalArc/Modules/Shared/Security/` | Placeholder keys found |
 | Missing tests | Compare source files to test files | Test file doesn't exist |
 
 ### Validation Process
@@ -102,7 +102,7 @@ async function validateIssue(issue) {
       // Check for actual violations in app code
       const violations = await Grep({
         pattern: "Color\\.(red|blue|green|gray)",
-        path: "VitalArc/Presentation/Tabs"
+        path: "VitalArc/Modules"
       });
       if (violations.length === 0) {
         return { valid: false, reason: "No violations found - issue resolved" };

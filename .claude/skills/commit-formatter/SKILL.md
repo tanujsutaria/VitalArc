@@ -50,7 +50,6 @@ Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
 | Scope | Files/Areas |
 |-------|-------------|
 | `workout` | Workout tracking, exercise library, templates |
-| `nutrition` | Food logging, macros, meal tracking |
 | `health` | HealthKit, metrics, recovery score |
 | `analytics` | Analytics dashboard, charts, exports |
 | `ui` | Design system, shared components, general UI |
@@ -130,7 +129,7 @@ EOF
 
 **Single file feature:**
 ```bash
-git add VitalArc/Infrastructure/Notifications/NotificationManager.swift
+git add VitalArc/Modules/Shared/Notifications/NotificationManager.swift
 git commit -m "$(cat <<'EOF'
 feat(infra): add notification manager for local notifications
 
@@ -154,7 +153,7 @@ EOF
 
 **Bug fix:**
 ```bash
-git add VitalArc/Domain/UseCases/CalculateVolumeUseCase.swift
+git add VitalArc/Modules/Workout/Domain/UseCases/CalculateVolumeUseCase.swift
 git commit -m "$(cat <<'EOF'
 fix(workout): correct volume calculation for partial sets
 

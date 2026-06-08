@@ -24,17 +24,14 @@ Auto-invoke when:
 ## VitalArc UI Architecture
 
 ```
-Presentation/
-├── Common/
-│   ├── DesignSystem/    # Tokens and reusable components
-│   └── [SharedViews]    # Cross-feature components
-├── Onboarding/          # Welcome, setup flows
-└── Tabs/
-    ├── Health/          # Health dashboard
-    ├── Workout/         # Exercise, templates, logging
-    ├── Nutrition/       # Food logging, search
-    ├── Analytics/       # Charts, insights
-    └── Profile/         # Settings, user info
+VitalArc/Modules/
+├── Workout/Presentation/         # Exercises, templates, logging
+├── Wellness/Presentation/        # Health dashboard, metrics, sleep
+└── Shared/
+    ├── DesignSystem/             # Tokens and reusable components
+    ├── Common/                   # Cross-feature components
+    ├── User/Presentation/        # Onboarding, settings, profile
+    └── Analytics/Presentation/   # Charts, insights
 ```
 
 ### Key Patterns
@@ -114,13 +111,13 @@ var body: some View {
 
 ```bash
 # Find similar views
-ls Presentation/Tabs/[Area]/
+ls VitalArc/Modules/[Domain]/Presentation/
 
 # Check design system components
-ls Presentation/Common/DesignSystem/Components/
+ls VitalArc/Modules/Shared/DesignSystem/Components/
 
 # Find ViewModels
-grep -r "final class.*ViewModel" Presentation/
+grep -r "final class.*ViewModel" VitalArc/Modules/
 ```
 
 ### 3. Design View Hierarchy
@@ -151,7 +148,7 @@ Break down into:
 |------------|-----|
 | `Color.blue` | `Color.vitalPrimary` |
 | `Color.red` | `Color.vitalDanger` |
-| `.padding(16)` | `.padding(Spacing.lg)` |
+| `.padding(16)` | `.padding(Spacing.md)` |
 | `.font(.title)` | `.font(.vitalH1)` |
 | Custom card | `VitalCard { }` |
 | Custom button | `VitalButton()` |
@@ -184,7 +181,7 @@ FeatureView (Screen)
 
 ### ViewModel
 
-**File**: `Presentation/Tabs/[Area]/[Feature]ViewModel.swift`
+**File**: `VitalArc/Modules/[Domain]/Presentation/[Feature]ViewModel.swift`
 
 ```swift
 @MainActor
@@ -211,7 +208,7 @@ final class [Feature]ViewModel {
 ### Views
 
 #### [Feature]View (Screen)
-**File**: `Presentation/Tabs/[Area]/[Feature]View.swift`
+**File**: `VitalArc/Modules/[Domain]/Presentation/[Feature]View.swift`
 **Owns**: [Feature]ViewModel
 **Shows**: [Description of content]
 
@@ -242,7 +239,7 @@ struct [Feature]View: View {
 ```
 
 #### [Item]RowView (Component)
-**File**: `Presentation/Tabs/[Area]/[Item]RowView.swift`
+**File**: `VitalArc/Modules/[Domain]/Presentation/[Item]RowView.swift`
 **Purpose**: Single item in list
 
 ```swift
@@ -298,7 +295,7 @@ NotificationSettingsView (Screen)
 ├── ReminderTypesSection
 │   ├── NotificationTypeRow (Workout)
 │   ├── NotificationTypeRow (Recovery)
-│   └── NotificationTypeRow (Nutrition)
+│   └── NotificationTypeRow (Sleep)
 ├── ScheduleSection
 │   └── TimePickerRow
 └── PreviewSection
@@ -314,7 +311,7 @@ final class NotificationSettingsViewModel {
     var notificationsEnabled = false
     var workoutReminders = true
     var recoveryAlerts = true
-    var nutritionReminders = false
+    var sleepReminders = false
     var reminderTime = Date()
 
     private let scheduleUseCase: ScheduleNotificationUseCase
