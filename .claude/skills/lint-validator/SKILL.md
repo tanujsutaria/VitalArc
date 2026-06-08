@@ -2,7 +2,7 @@
 name: lint-validator
 description: Run SwiftLint on changed files and report violations. Use before commits or during code review to ensure code quality standards are met.
 context: fork
-agent: Bash
+agent: general-purpose
 allowed-tools: Bash, Read, Glob, Grep
 argument-hint: [--all] [--fix] [--strict]
 ---

@@ -95,7 +95,7 @@ git commit -m "$(cat <<'EOF'
 
 - Cloud session (build not verified)
 
-Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
+Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
 EOF
 )"
 git push -u origin "$(git rev-parse --abbrev-ref HEAD)"

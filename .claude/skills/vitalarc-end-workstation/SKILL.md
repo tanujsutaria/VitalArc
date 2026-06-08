@@ -200,7 +200,7 @@ TaskCreate({
     2. Determine type (feat/fix/refactor/docs/etc)
     3. Determine scope (workout/nutrition/health/ui/infra/session)
     4. Generate conventional commit message
-    5. Include Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>`,
+    5. Include Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>`,
   activeForm: "Generating commit message",
   addBlockedBy: ["task-scan-id", "task-lint-id", "task-progress-id", "task-docs-id"]
 })
@@ -218,7 +218,7 @@ git add SESSION_LOG.md PROJECT_STATUS.md README.md
 git commit -m "$(cat <<'EOF'
 [generated commit message]
 
-Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
+Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
 EOF
 )"
 git push -u origin "$(git rev-parse --abbrev-ref HEAD)"
@@ -265,7 +265,7 @@ Tests:    Passing ([N] tests)
 Lint:     [N] warnings (0 errors)
 PR:       [URL if created]
 ───────────────────────────────────────────────────────────────
-Next:     [top ready beads from bd ready]
+Next:     [top focus-suggester recommendations]
 ═══════════════════════════════════════════════════════════════
 ```
 

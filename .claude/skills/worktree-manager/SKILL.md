@@ -2,7 +2,7 @@
 name: worktree-manager
 description: Manage git worktrees for parallel development. Create, list, remove, and switch between isolated worktrees. Enables working on multiple features simultaneously without branch switching.
 context: fork
-agent: Bash
+agent: general-purpose
 allowed-tools: Bash, Read
 argument-hint: <create|list|remove|switch|status> [name]
 ---

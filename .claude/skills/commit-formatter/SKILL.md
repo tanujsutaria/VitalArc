@@ -28,7 +28,7 @@ User invokes when:
 
 [optional body]
 
-Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
+Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
 ```
 
 ## Types
@@ -107,7 +107,7 @@ feat(workout): add custom exercise creation
 - Custom exercises saved to SwiftData with isCustom flag
 - Accessible from exercise picker via "Create Custom" button
 
-Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
+Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
 ```
 
 ## Output Format
@@ -121,7 +121,7 @@ git commit -m "$(cat <<'EOF'
 
 [body if needed]
 
-Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
+Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
 EOF
 )"
 ```
@@ -134,7 +134,7 @@ git add VitalArc/Infrastructure/Notifications/NotificationManager.swift
 git commit -m "$(cat <<'EOF'
 feat(infra): add notification manager for local notifications
 
-Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
+Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
 EOF
 )"
 ```
@@ -147,7 +147,7 @@ refactor(ui): migrate workout views to typography tokens
 
 Replaced 12 instances of .font(.system()) with Typography tokens
 
-Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
+Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
 EOF
 )"
 ```
@@ -158,7 +158,7 @@ git add VitalArc/Domain/UseCases/CalculateVolumeUseCase.swift
 git commit -m "$(cat <<'EOF'
 fix(workout): correct volume calculation for partial sets
 
-Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
+Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
 EOF
 )"
 ```

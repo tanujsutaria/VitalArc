@@ -2,7 +2,7 @@
 name: test-runner
 description: Execute VitalArc tests with various options. Required quality gate at session end. Supports quick, coverage, and affected-only modes.
 context: fork
-agent: Bash
+agent: general-purpose
 allowed-tools: Bash, Read, Grep, Glob, TaskCreate, TaskUpdate, TaskList
 argument-hint: [--quick] [--coverage] [--affected] [--filter=pattern]
 ---

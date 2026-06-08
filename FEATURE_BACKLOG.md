@@ -1,8 +1,8 @@
 # VitalArc Feature Backlog
 
-> **DEPRECATED** (February 21, 2026): Migrated to beads. Use `bd epic status` for completion tracking, `bd ready` for available work, and `bd list` for full inventory. This file is retained as a historical reference only.
+> Active backlog for VitalArc. This is the authoritative feature/work inventory (there is no external issue-tracker CLI). Pair with GitHub issues/PRs for in-flight work.
 
-**Generated**: February 5, 2026 | **Updated**: February 18, 2026 (Session 22.1)
+**Generated**: February 5, 2026 | **Updated**: June 7, 2026 (Session 27.0 — restored as active backlog)
 **Method**: Agent team analysis (4 domain specialists explored all 201 Swift files)
 **Total Features**: 61 (18 High, 25 Medium, 18 Low) | **Implemented**: 30
 
