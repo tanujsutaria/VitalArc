@@ -75,7 +75,7 @@ const pending = tasks.filter(t => t.status === "pending").length
 
 **Session**: 17.0 - February 1, 2026
 **Duration**: 1h 45m (started 2:30 PM)
-**Focus**: Nutrition feature
+**Focus**: Workout feature
 
 ---
 
@@ -83,9 +83,9 @@ const pending = tasks.filter(t => t.status === "pending").length
 
 | # | Goal | Status | Notes |
 |---|------|--------|-------|
-| 1 | Implement meal logging | In Progress | Core logic done, UI pending |
-| 2 | Add calorie calculations | Complete | Verified with tests |
-| 3 | Connect to food API | Not Started | Blocked on API key |
+| 1 | Implement set logging | In Progress | Core logic done, UI pending |
+| 2 | Add volume calculations | Complete | Verified with tests |
+| 3 | Add mesocycle progression | Not Started | Blocked on design review |
 
 **Overall**: 1/3 goals complete (33%)
 
@@ -104,11 +104,11 @@ const pending = tasks.filter(t => t.status === "pending").length
 
 | Status | File | Notes |
 |--------|------|-------|
-| M | NutritionView.swift | Main UI |
-| M | NutritionViewModel.swift | State management |
-| M | MealLogUseCase.swift | Business logic |
-| A | FoodSearchView.swift | New view |
-| A | FoodSearchViewModel.swift | New ViewModel |
+| M | WorkoutLogView.swift | Main UI |
+| M | WorkoutLogViewModel.swift | State management |
+| M | LogSetUseCase.swift | Business logic |
+| A | ExercisePickerView.swift | New view |
+| A | ExercisePickerViewModel.swift | New ViewModel |
 
 ---
 
@@ -122,7 +122,7 @@ const pending = tasks.filter(t => t.status === "pending").length
 | 2:45 PM | Created domain models |
 | 3:15 PM | Implemented use cases |
 | 3:45 PM | Built UI components |
-| 4:00 PM | Added calorie calculations |
+| 4:00 PM | Added volume calculations |
 
 ---
 
@@ -133,7 +133,7 @@ const pending = tasks.filter(t => t.status === "pending").length
 ```
 
 **Active**: UI implementation
-**Next**: API integration
+**Next**: Mesocycle progression
 
 ---
 
@@ -163,7 +163,7 @@ For rapid status check:
 ```markdown
 ## Quick Checkpoint
 
-Session 17.0 | 1h 45m | Focus: Nutrition
+Session 17.0 | 1h 45m | Focus: Workout
 
 Goals: 1/3 complete | Build: Passing | Changes: 8 files (+450/-32)
 
@@ -203,7 +203,7 @@ Consider splitting into logical commits:
 Errors: 3
 
 1. ProfileView.swift:45 - Cannot find 'UserProfile' in scope
-2. NutritionVM.swift:89 - Missing argument for 'repository'
+2. WorkoutVM.swift:89 - Missing argument for 'repository'
 3. ...
 
 **Recommendation**: Fix build errors before continuing.
@@ -217,13 +217,13 @@ The longer you work with a broken build, the harder debugging becomes.
 
 **Warning: Work may be off-focus**
 
-**Session Focus**: Nutrition feature
+**Session Focus**: Workout feature
 **Recent Work**: Profile refactoring, Settings updates
 
 Recent work appears unrelated to session goals.
 
 **Options**:
-1. Return to nutrition focus
+1. Return to workout focus
 2. Update session goals to reflect actual work
 3. Create separate branch for side work
 ```

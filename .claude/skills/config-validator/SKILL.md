@@ -1,6 +1,6 @@
 ---
 name: config-validator
-description: Check API keys, entitlements, and build settings. Reports configuration status and missing requirements. Read-only, works on both platforms.
+description: Check entitlements and build settings. Reports configuration status and missing requirements. Read-only, works on both platforms.
 context: fork
 agent: Explore
 allowed-tools: Read, Glob, Grep, Bash
@@ -8,7 +8,7 @@ allowed-tools: Read, Glob, Grep, Bash
 
 # Config Validator
 
-Validates project configuration including API keys, entitlements, and build settings.
+Validates project configuration including entitlements and build settings.
 
 **Execution**: Runs in forked context with Explore agent for read-only analysis.
 
@@ -17,7 +17,7 @@ Validates project configuration including API keys, entitlements, and build sett
 ## Default Behavior (No Arguments)
 
 When invoked without arguments:
-- **Scope**: Check all configurations (API keys, entitlements, build settings)
+- **Scope**: Check all configurations (entitlements, build settings)
 - **Output**: Summary report (not verbose)
 - **Verbosity**: Show status table only; use `--verbose` for file locations and exact values
 
@@ -25,22 +25,14 @@ Execute the full configuration check immediately. Do not ask for clarification.
 
 ## What It Checks
 
-### 1. API Keys
-
-| Service | File | Key Pattern |
-|---------|------|-------------|
-| Nutritionix | `NutritionixAPI.swift` | `YOUR_APP_ID`, `YOUR_APP_KEY` |
-| USDA FoodData | `USDAFoodAPI.swift` | `DEMO_KEY` |
-| OpenFoodFacts | `OpenFoodFactsAPI.swift` | No key required |
-
-### 2. HealthKit Entitlements
+### 1. HealthKit Entitlements
 
 | Check | File | Expected |
 |-------|------|----------|
 | HealthKit capability | `*.entitlements` | `com.apple.developer.healthkit` = true |
 | Health records | `*.entitlements` | `com.apple.developer.healthkit.access` |
 
-### 3. Build Settings
+### 2. Build Settings
 
 | Setting | Expected |
 |---------|----------|
@@ -49,34 +41,6 @@ Execute the full configuration check immediately. Do not ask for clarification.
 | Code Signing | Valid team ID |
 
 ## Implementation
-
-### Check API Keys
-
-```bash
-echo "=== API Key Configuration ==="
-
-# Nutritionix
-NUTRITIONIX_APP_ID=$(grep -o 'appId.*=.*"[^"]*"' VitalArc/Infrastructure/Networking/NutritionixAPI.swift | head -1)
-NUTRITIONIX_APP_KEY=$(grep -o 'appKey.*=.*"[^"]*"' VitalArc/Infrastructure/Networking/NutritionixAPI.swift | head -1)
-
-if echo "$NUTRITIONIX_APP_ID" | grep -q "YOUR_APP_ID"; then
-    echo "Nutritionix: APP_ID not configured"
-else
-    echo "Nutritionix: APP_ID configured"
-fi
-
-# USDA
-USDA_KEY=$(grep -o 'apiKey.*=.*"[^"]*"' VitalArc/Infrastructure/Networking/USDAFoodAPI.swift | head -1)
-
-if echo "$USDA_KEY" | grep -q "DEMO_KEY"; then
-    echo "USDA: Using DEMO_KEY (rate limited)"
-else
-    echo "USDA: API key configured"
-fi
-
-# OpenFoodFacts
-echo "OpenFoodFacts: No key required (public API)"
-```
 
 ### Check HealthKit Entitlements
 
@@ -125,13 +89,6 @@ echo "Swift Version: ${SWIFT_VERSION:-5.0}"
 ```markdown
 ## Configuration Validation
 
-### API Keys
-| Service | Status | Notes |
-|---------|--------|-------|
-| Nutritionix | Configured | Ready for use |
-| USDA FoodData | Configured | Production key |
-| OpenFoodFacts | N/A | Public API |
-
 ### Entitlements
 | Capability | Status |
 |------------|--------|
@@ -153,13 +110,6 @@ echo "Swift Version: ${SWIFT_VERSION:-5.0}"
 ```markdown
 ## Configuration Validation
 
-### API Keys
-| Service | Status | Notes |
-|---------|--------|-------|
-| Nutritionix | Missing | Set YOUR_APP_ID and YOUR_APP_KEY |
-| USDA FoodData | Demo Key | Rate limited, get key from fdc.nal.usda.gov |
-| OpenFoodFacts | N/A | Public API |
-
 ### Entitlements
 | Capability | Status |
 |------------|--------|
@@ -173,10 +123,8 @@ echo "Swift Version: ${SWIFT_VERSION:-5.0}"
 ### Verdict: CONFIGURATION ISSUES FOUND
 
 ### Required Actions
-1. **Nutritionix API**: Register at nutritionix.com and add keys to NutritionixAPI.swift
-2. **USDA API**: Get production key from fdc.nal.usda.gov
-3. **HealthKit**: Add HealthKit capability in Xcode project settings
-4. **iOS Target**: Update deployment target to iOS 17.0+
+1. **HealthKit**: Add HealthKit capability in Xcode project settings
+2. **iOS Target**: Update deployment target to iOS 17.0+
 ```
 
 ## Verbose Mode
@@ -184,23 +132,15 @@ echo "Swift Version: ${SWIFT_VERSION:-5.0}"
 With `--verbose`, show file locations and exact values:
 
 ```markdown
-### API Key Details
-
-#### Nutritionix
-- **File**: `VitalArc/Infrastructure/Networking/NutritionixAPI.swift`
-- **Line 15**: `private let appId = "YOUR_APP_ID"`
-- **Line 16**: `private let appKey = "YOUR_APP_KEY"`
-- **Status**: Placeholder values detected
-
-#### USDA
-- **File**: `VitalArc/Infrastructure/Networking/USDAFoodAPI.swift`
-- **Line 12**: `private let apiKey = "DEMO_KEY"`
-- **Status**: Using demo key
-
 ### Entitlements Details
 - **File**: `VitalArc/VitalArc.entitlements`
 - **HealthKit**: Present
 - **Health Records Access**: Missing
+
+### Build Settings Details
+- **File**: `VitalArc.xcodeproj/project.pbxproj`
+- **IPHONEOS_DEPLOYMENT_TARGET**: 17.0
+- **SWIFT_VERSION**: 5.0
 ```
 
 ## Error Handling
@@ -211,7 +151,6 @@ With `--verbose`, show file locations and exact values:
 ## Configuration Check Incomplete
 
 Could not find:
-- NutritionixAPI.swift (API key check skipped)
 - *.entitlements (entitlements check skipped)
 
 Available checks completed. Some validations skipped.

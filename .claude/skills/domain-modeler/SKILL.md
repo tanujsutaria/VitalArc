@@ -22,12 +22,16 @@ Auto-invoke when:
 
 ## VitalArc Domain Architecture
 
+Domain code lives inside the owning module under `VitalArc/Modules/<Domain>/Domain/`:
+
 ```
-Domain/
+VitalArc/Modules/<Domain>/Domain/
 ├── Entities/        # Pure Swift structs, no framework dependencies
 ├── Repositories/    # Protocol definitions (interfaces)
 └── UseCases/        # Single-responsibility business operations
 ```
+
+`<Domain>` is one of the surviving modules: **Workout**, **Wellness**, or **Shared** (which owns User, Analytics, Notifications, etc.).
 
 ### Key Patterns
 
@@ -70,7 +74,17 @@ final class CreateWorkoutUseCase {
 
 ## Analysis Process
 
-### 1. Understand the Feature
+### 1. Pick the Owning Module
+
+Domain code is module-scoped, so decide which module owns the feature before designing anything:
+
+- **Workout** — exercises, sets, mesocycles, templates
+- **Wellness** — HealthKit, health metrics, sleep, recovery
+- **Shared** — cross-domain concerns (User, Analytics, Notifications, etc.)
+
+All paths below use `VitalArc/Modules/<Domain>/Domain/...` where `<Domain>` is the module you picked.
+
+### 2. Understand the Feature
 
 Questions to answer:
 - What data does this feature manage?
@@ -78,27 +92,27 @@ Questions to answer:
 - What existing entities does it relate to?
 - Does it need HealthKit integration?
 
-### 2. Analyze Existing Patterns
+### 3. Analyze Existing Patterns
 
 ```bash
-# Find similar entities
-ls Domain/Entities/
+# Find similar entities (replace <Domain> with the module you picked)
+ls VitalArc/Modules/<Domain>/Domain/Entities/
 
 # Find similar repositories
-ls Domain/Repositories/
+ls VitalArc/Modules/<Domain>/Domain/Repositories/
 
 # Find similar use cases
-ls Domain/UseCases/
+ls VitalArc/Modules/<Domain>/Domain/UseCases/
 ```
 
 Study existing implementations for consistency.
 
-### 3. Design Entities
+### 4. Design Entities
 
 For each new data type:
 
 ```swift
-// Domain/Entities/[Name].swift
+// VitalArc/Modules/<Domain>/Domain/Entities/[Name].swift
 
 import Foundation
 
@@ -123,10 +137,10 @@ struct [Name]: Identifiable, Codable, Hashable {
 - No UIKit/SwiftUI imports
 - No business logic (that goes in Use Cases)
 
-### 4. Design Repository Protocol
+### 5. Design Repository Protocol
 
 ```swift
-// Domain/Repositories/[Name]Repository.swift
+// VitalArc/Modules/<Domain>/Domain/Repositories/[Name]Repository.swift
 
 import Foundation
 
@@ -149,12 +163,12 @@ protocol [Name]Repository {
 - Return arrays for multi-item fetches
 - Add feature-specific query methods as needed
 
-### 5. Design Use Cases
+### 6. Design Use Cases
 
 One use case per operation:
 
 ```swift
-// Domain/UseCases/[Verb][Name]UseCase.swift
+// VitalArc/Modules/<Domain>/Domain/UseCases/[Verb][Name]UseCase.swift
 
 import Foundation
 
@@ -179,12 +193,12 @@ final class [Verb][Name]UseCase {
 - `Fetch[Name]UseCase` - Retrieve with business rules
 - `Calculate[Name]UseCase` - Compute derived values
 
-### 6. Consider Data Layer Needs
+### 7. Consider Data Layer Needs
 
 Note what SwiftData models will be needed:
-- `Data/Models/[Name]Model.swift` - `@Model` class
+- `VitalArc/Modules/<Domain>/Data/Models/[Name]Model.swift` - `@Model` class
 - Needs `fromDomain()` and `toDomain()` converters
-- Repository implementation in `DependencyContainer.swift`
+- Repository implementation lives in the owning sub-container (`WorkoutContainer` / `WellnessContainer` / `SharedContainer` in `VitalArc/Modules/Shared/DependencyContainer/`); then add a backward-compatible computed accessor on `DependencyContainer`
 
 ## Output Format
 
@@ -194,7 +208,7 @@ Note what SwiftData models will be needed:
 ### Entities
 
 #### [EntityName]
-**File**: `Domain/Entities/[EntityName].swift`
+**File**: `VitalArc/Modules/<Domain>/Domain/Entities/[EntityName].swift`
 **Purpose**: [What it represents]
 
 Properties:
@@ -208,7 +222,7 @@ Relationships:
 ### Repository
 
 #### [Name]Repository
-**File**: `Domain/Repositories/[Name]Repository.swift`
+**File**: `VitalArc/Modules/<Domain>/Domain/Repositories/[Name]Repository.swift`
 
 Methods:
 - `save(_:)` - Persist entity
@@ -220,7 +234,7 @@ Methods:
 ### Use Cases
 
 #### Create[Name]UseCase
-**File**: `Domain/UseCases/Create[Name]UseCase.swift`
+**File**: `VitalArc/Modules/<Domain>/Domain/UseCases/Create[Name]UseCase.swift`
 **Purpose**: [What it does]
 **Dependencies**: [Name]Repository
 **Returns**: [Name]
@@ -231,7 +245,7 @@ Methods:
 
 SwiftData model needed: `[Name]Model`
 - Converters: `fromDomain()`, `toDomain()`
-- Add to DependencyContainer.swift
+- Wire into the owning sub-container (WorkoutContainer / WellnessContainer / SharedContainer), then add a computed accessor on DependencyContainer
 ```
 
 ## Example: Notification Feature
@@ -242,11 +256,11 @@ SwiftData model needed: `[Name]Model`
 ### Entities
 
 #### ScheduledNotification
-**File**: `Domain/Entities/ScheduledNotification.swift`
+**File**: `VitalArc/Modules/Shared/Domain/Entities/ScheduledNotification.swift`
 
 Properties:
 - `id: UUID`
-- `type: NotificationType` (enum: workoutReminder, recoveryAlert, nutritionReminder)
+- `type: NotificationType` (enum: workoutReminder, recoveryAlert, sleepReminder)
 - `scheduledTime: Date`
 - `title: String`
 - `body: String`

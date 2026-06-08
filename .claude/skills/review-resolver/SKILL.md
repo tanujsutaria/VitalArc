@@ -150,7 +150,7 @@ do {
 
 #### Important (3 remaining)
 
-**#3: Add tests for CalorieCalculator**
+**#3: Add tests for VolumeCalculator**
 - Reviewer: @lead
 - Status: Pending
 - Task: #14

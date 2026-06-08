@@ -40,8 +40,8 @@ Modules/Shared/
 - Own the design system (Colors, Typography, Spacing, Components)
 
 ## Key Patterns
-- DependencyContainer orchestrates domain sub-containers (WorkoutContainer, NutritionContainer, etc.)
-- Cross-domain protocols (WorkoutDataProviding, NutritionDataProviding, HealthDataProviding) enable loose coupling
+- DependencyContainer orchestrates domain sub-containers (WorkoutContainer, WellnessContainer, SharedContainer)
+- Cross-domain protocols (WorkoutDataProviding, HealthDataProviding, UserProfileProviding) enable loose coupling
 - Analytics use cases consume data from multiple domains via protocols
 - All ViewModels use `@Observable` (not ObservableObject)
 - All repositories use `@MainActor` isolation for SwiftData thread safety

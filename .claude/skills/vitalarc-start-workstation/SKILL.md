@@ -220,39 +220,13 @@ If any skill doesn't complete within 2 minutes, proceed with available results a
 
 ### Worktree Mode (`--worktree`)
 
-When `--worktree` flag is provided, creates an isolated worktree before starting the session:
+When `--worktree` flag is provided, create the isolated worktree using native tooling **before** starting the session. Do not hand-roll `git worktree add` in inline shell — the session-number and branch-name logic already lives in Phase 2 and must not be duplicated as pseudo-code.
 
-```javascript
-// Step 0: Create worktree (before git sync)
-// This runs FIRST, before any other operations
+Run worktree creation FIRST (before Phase 1 git sync) using one of:
+- The native **`EnterWorktree`** tool — creates a new worktree (under `.claude/worktrees/`) and switches the session into it automatically.
+- The **`/worktree-manager`** skill — for explicit create/list/remove/switch operations with chosen paths and branches.
 
-FOCUS="${ARGUMENTS:-session}"
-BASE_DIR=$(dirname "$(pwd)")
-WORKTREE_PATH="$BASE_DIR/VitalArc-$FOCUS"
-
-// Check if worktree already exists
-if [ -d "$WORKTREE_PATH" ]; then
-    echo "Worktree exists at $WORKTREE_PATH"
-    echo "Use existing worktree or choose different focus name."
-    exit 1
-fi
-
-// Calculate session number first (needed for branch name)
-TODAY=$(date +%Y-%m-%d)
-SESSION_INFO=$(determine_session_number)  // From Phase 2 logic
-BRANCH="dev/mac-$FOCUS-${SESSION_INFO.session}.${SESSION_INFO.minor}-$TODAY"
-
-// Create worktree
-git worktree add "$WORKTREE_PATH" -b "$BRANCH" main
-
-// Output worktree info
-echo "Created worktree: $WORKTREE_PATH"
-echo "Branch: $BRANCH"
-echo ""
-echo "IMPORTANT: Open a new terminal and run:"
-echo "  cd $WORKTREE_PATH"
-echo "  # Then continue session init in new location"
-```
+The branch name still follows the Phase 2 convention: `dev/mac-<focus>-<session>.<minor>-<date>`. Once inside the new worktree, proceed with the normal session pipeline (Phases 1-6).
 
 **Worktree Output Summary**:
 
@@ -260,16 +234,15 @@ echo "  # Then continue session init in new location"
 ═══════════════════════════════════════════════════════════════
        VITALARC WORKTREE SESSION INITIALIZED
 ═══════════════════════════════════════════════════════════════
-Worktree: /Users/user/Development/VitalArc-nutrition
-Branch:   dev/mac-nutrition-17.0-2026-02-01
+Worktree: [worktree path]
+Branch:   dev/mac-workout-17.0-2026-02-01
 Session:  17.0
 Build:    [status]
-Focus:    nutrition
+Focus:    workout
 ───────────────────────────────────────────────────────────────
 NEXT STEPS:
-1. Open new terminal
-2. cd /Users/user/Development/VitalArc-nutrition
-3. Continue development in isolated worktree
+1. Continue development in the isolated worktree
+2. Run the normal session pipeline (Phases 1-6)
 ═══════════════════════════════════════════════════════════════
 ```
 

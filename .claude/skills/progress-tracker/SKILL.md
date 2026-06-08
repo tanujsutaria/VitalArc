@@ -77,7 +77,7 @@ Insert new row at the end of the Work Log table, before "Work Completed" section
 
 **After fixing a bug:**
 ```markdown
-| 9:00 PM | Fixed calorie calculation | NutritionUseCase.swift | Off-by-one error |
+| 9:00 PM | Fixed set volume calculation | WorkoutUseCase.swift | Off-by-one error |
 ```
 
 **After design system migration:**
@@ -202,7 +202,6 @@ const projectStatus = await Read("PROJECT_STATUS.md");
 const issuePatterns = [
   { pattern: /test.*integrat|cloud.*test/i, issue: "Cloud test files need integration" },
   { pattern: /design.*system.*violation|token.*migration/i, issue: "Design system violations" },
-  { pattern: /api.*key|nutritionix|usda/i, issue: "API keys not configured" },
   { pattern: /build.*fix|compile.*error/i, issue: "Build errors" },
 ];
 
@@ -258,10 +257,11 @@ async function resolveKnownIssue(issueSummary, resolution) {
     // 3. Add to Recent Accomplishments
     const accomplishment = `- ${resolution} (resolved Known Issue)`;
 
-    // 4. Write updates
+    // 4. Write updates (Known Issues removal, Accomplishments addition)
     await Edit({
       file_path: "PROJECT_STATUS.md",
-      // Remove from Known Issues, add to Accomplishments
+      old_string: knownIssuesSection[0],
+      new_string: updatedSection
     });
   }
 
@@ -277,7 +277,7 @@ Before marking an issue as resolved, VERIFY:
 | Issue Type | Verification Command |
 |------------|---------------------|
 | Test integration | `xcodebuild test ... \| grep "Executed .* tests"` |
-| Design system | `grep -r "Color\.(red\|blue)" Presentation/Tabs/` |
+| Design system | `grep -r "Color\.(red\|blue)" VitalArc/Modules/` |
 | Build errors | `xcodebuild build ... \| grep "BUILD SUCCEEDED"` |
 | API configuration | Check actual API response, not just file content |
 

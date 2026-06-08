@@ -22,25 +22,45 @@ Wires new components into VitalArc's dependency injection system.
 
 ## VitalArc DI Pattern
 
+`DependencyContainer` is an `@MainActor final class` that does NOT hold repositories
+inline. It delegates to per-domain sub-containers — `WorkoutContainer`,
+`WellnessContainer`, and `SharedContainer` (all in
+`VitalArc/Modules/Shared/DependencyContainer/`) — and exposes backward-compatible
+computed accessors so callers can still use `container.workoutRepository`.
+
+**To wire a new component:** add the repository/use case to the owning sub-container,
+then add a computed accessor on `DependencyContainer` that delegates to it.
+
 ```swift
 // DependencyContainer.swift structure
 @MainActor
-final class DependencyContainer: ObservableObject {
-    // Repositories
-    let workoutRepository: WorkoutRepository
-    let nutritionRepository: NutritionRepository
-    // ... add new repositories here
-
-    // Use Cases
-    let createWorkoutUseCase: CreateWorkoutUseCase
-    let getWorkoutsUseCase: GetWorkoutsUseCase
-    // ... add new use cases here
+final class DependencyContainer {
+    // Domain sub-containers
+    let workout: WorkoutContainer
+    let wellness: WellnessContainer
+    let shared: SharedContainer
 
     init(modelContext: ModelContext) {
-        // Initialize repositories
-        self.workoutRepository = SwiftDataWorkoutRepository(modelContext: modelContext)
+        self.workout = WorkoutContainer(modelContext: modelContext)
+        self.wellness = WellnessContainer(modelContext: modelContext)
+        self.shared = SharedContainer(modelContext: modelContext)
+    }
 
-        // Initialize use cases
+    // Backward-compatible computed accessors delegate to sub-containers
+    var workoutRepository: WorkoutRepository { workout.workoutRepository }
+    var createWorkoutUseCase: CreateWorkoutUseCase { workout.createWorkoutUseCase }
+    // ... add new accessors here
+}
+
+// WorkoutContainer.swift — the owning sub-container holds the real instances
+@MainActor
+final class WorkoutContainer {
+    let workoutRepository: WorkoutRepository
+    let createWorkoutUseCase: CreateWorkoutUseCase
+    // ... add new repositories / use cases here
+
+    init(modelContext: ModelContext) {
+        self.workoutRepository = SwiftDataWorkoutRepository(modelContext: modelContext)
         self.createWorkoutUseCase = CreateWorkoutUseCase(repository: workoutRepository)
     }
 }
@@ -77,43 +97,63 @@ This provides visibility when wiring complex features with multiple components.
 ### 1. Read Current Container
 
 ```bash
-# Get current DependencyContainer structure
-cat VitalArc/Infrastructure/DependencyContainer.swift
+# Get current DependencyContainer + sub-container structure
+cat VitalArc/Modules/Shared/DependencyContainer/DependencyContainer.swift
+cat VitalArc/Modules/Shared/DependencyContainer/WorkoutContainer.swift
 ```
 
-### 2. Identify Injection Points
+### 2. Identify the Owning Sub-Container
 
-Find where to add:
-- Repository property declaration
-- Repository initialization
-- Use case property declaration
-- Use case initialization
+Pick the sub-container that owns the domain:
+- `WorkoutContainer` — workout repositories and use cases
+- `WellnessContainer` — wellness / HealthKit repositories and use cases
+- `SharedContainer` — user, analytics, notifications, cross-domain services
+
+Then find where to add:
+- Repository property declaration (in the sub-container)
+- Repository initialization (in the sub-container `init`)
+- Use case property declaration + initialization (in the sub-container)
+- Backward-compatible computed accessor (on `DependencyContainer`)
 
 ### 3. Generate Wiring Code
 
-For a new feature like "Achievements":
+For a new workout feature like "Achievements" (owned by `WorkoutContainer`):
 
 ```swift
-// Add to properties section
+// In WorkoutContainer — add to properties section
 let achievementRepository: AchievementRepository
 let getAchievementsUseCase: GetAchievementsUseCase
 let unlockAchievementUseCase: UnlockAchievementUseCase
 
-// Add to init
+// In WorkoutContainer init
 self.achievementRepository = SwiftDataAchievementRepository(modelContext: modelContext)
 self.getAchievementsUseCase = GetAchievementsUseCase(repository: achievementRepository)
 self.unlockAchievementUseCase = UnlockAchievementUseCase(repository: achievementRepository)
+
+// On DependencyContainer — add backward-compatible accessors
+var achievementRepository: AchievementRepository { workout.achievementRepository }
+var getAchievementsUseCase: GetAchievementsUseCase { workout.getAchievementsUseCase }
+var unlockAchievementUseCase: UnlockAchievementUseCase { workout.unlockAchievementUseCase }
 ```
 
 ### 4. Apply Edits
 
-Use Edit tool to insert at correct locations:
+Use Edit tool to insert at correct locations in the owning sub-container:
 
 ```
-Edit file: VitalArc/Infrastructure/DependencyContainer.swift
-old_string: let nutritionRepository: NutritionRepository
-new_string: let nutritionRepository: NutritionRepository
+Edit file: VitalArc/Modules/Shared/DependencyContainer/WorkoutContainer.swift
+old_string: let workoutRepository: WorkoutRepository
+new_string: let workoutRepository: WorkoutRepository
     let achievementRepository: AchievementRepository
+```
+
+Then add the delegating accessor:
+
+```
+Edit file: VitalArc/Modules/Shared/DependencyContainer/DependencyContainer.swift
+old_string: var workoutRepository: WorkoutRepository { workout.workoutRepository }
+new_string: var workoutRepository: WorkoutRepository { workout.workoutRepository }
+    var achievementRepository: AchievementRepository { workout.achievementRepository }
 ```
 
 ## Input Parameters
@@ -142,12 +182,15 @@ new_string: let nutritionRepository: NutritionRepository
 
 ### Files to Modify
 
-1. **DependencyContainer.swift**
+1. **WorkoutContainer.swift** (owning sub-container)
    - Add repository property
    - Add use case properties
-   - Add initializations
+   - Add initializations in init()
 
-2. **Create SwiftData Model** (if needed)
+2. **DependencyContainer.swift**
+   - Add backward-compatible computed accessors delegating to the sub-container
+
+3. **Create SwiftData Model** (if needed)
    - AchievementModel.swift with @Model
 
 ### Generated Code
@@ -183,7 +226,8 @@ Confirm to apply these edits to DependencyContainer.swift
 
 | File | Change |
 |------|--------|
-| DependencyContainer.swift | +3 properties, +3 initializations |
+| WorkoutContainer.swift | +3 properties, +3 initializations |
+| DependencyContainer.swift | +3 computed accessors |
 
 ### Verification
 - [ ] Build passes
@@ -252,7 +296,7 @@ final class AchievementModel {
 
 Could not find DependencyContainer.swift at expected location.
 
-Expected: VitalArc/Infrastructure/DependencyContainer.swift
+Expected: VitalArc/Modules/Shared/DependencyContainer/DependencyContainer.swift
 
 Please verify project structure.
 ```

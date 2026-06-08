@@ -25,7 +25,7 @@ Auto-invoke when:
 ```
 VitalArcTests/
 ├── HealthKitTests.swift      # HealthKit integration tests
-├── NutritionTests.swift      # Food/nutrition tests
+├── WorkoutTests.swift        # Workout logging tests
 ├── ProfileTests.swift        # Profile/onboarding tests
 ├── TemplateTests.swift       # Workout template tests
 ├── BMITests.swift            # BMI calculation tests
