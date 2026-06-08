@@ -263,6 +263,7 @@
 		FD4FED33707ABC2FD45E4CD4 /* ReadinessScore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14560174A3E6EB9F82B825B9 /* ReadinessScore.swift */; };
 		FDC78F9DAE2F1AF29C511F3C /* NotificationPreferencesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9ED93D6A8F79EE508889DA6 /* NotificationPreferencesModel.swift */; };
 		FDDCA703A53E6FAC7BA0B410 /* CheckRecoveryAndNotifyUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1D4A535BC11FB41C45EB8C /* CheckRecoveryAndNotifyUseCase.swift */; };
+		FF7DE9DA2E6F31971B11F9EA /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78CD494AA555FCC77EE7AE58 /* Secrets.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -403,6 +404,7 @@
 		7532FFED3C7322F2D1DA63F4 /* TermsOfServiceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TermsOfServiceView.swift; sourceTree = "<group>"; };
 		756C2E273DC450E10C50A03A /* NotificationSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSettingsView.swift; sourceTree = "<group>"; };
 		787CB00A431620BCAC5268E4 /* TemplateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemplateTests.swift; sourceTree = "<group>"; };
+		78CD494AA555FCC77EE7AE58 /* Secrets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Secrets.swift; sourceTree = "<group>"; };
 		78E3526562C923855377FDB2 /* CalculateSleepConsistencyUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalculateSleepConsistencyUseCaseTests.swift; sourceTree = "<group>"; };
 		7AAFEEB99B97BD63A8890DAE /* ImportHealthKitWorkoutsUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportHealthKitWorkoutsUseCaseTests.swift; sourceTree = "<group>"; };
 		7BE127FCC1E18A792C0CB7D8 /* CalculateReadinessScoreUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalculateReadinessScoreUseCaseTests.swift; sourceTree = "<group>"; };
@@ -905,6 +907,7 @@
 			children = (
 				26449BB04DA06BE5263D79D3 /* APISecrets.swift */,
 				43DF6A058ADA9F3DA37B16D6 /* Logger.swift */,
+				78CD494AA555FCC77EE7AE58 /* Secrets.swift */,
 				8C198A9DF4C8718197153B3A /* Secrets.template.txt */,
 				1D22B8C24780C0784239FD52 /* UserFacingError.swift */,
 			);
@@ -1513,6 +1516,7 @@
 				A58A650F8C78851BAF199631 /* SaveWorkoutTemplateUseCase.swift in Sources */,
 				DD3C623F2892D669C1CF9689 /* ScheduleNotificationsUseCase.swift in Sources */,
 				C6ADE7EB3A30BE046D7706AE /* ScoreRingView.swift in Sources */,
+				FF7DE9DA2E6F31971B11F9EA /* Secrets.swift in Sources */,
 				9832D98BFF639ACF0625056A /* SetGroup.swift in Sources */,
 				2C4F3D6E3939F6E1EB1E01FE /* SetGroupModel.swift in Sources */,
 				EBFE5300EDE047FDFE93F873 /* SetRowView.swift in Sources */,
