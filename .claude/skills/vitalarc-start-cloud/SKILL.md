@@ -27,8 +27,8 @@ Start a cloud session optimized for phone/browser access. No Xcode builds availa
 │                                                                      │
 │  PHASE 4 - Restore Stash (inline bash)                              │
 │                                                                      │
-│  PHASE 5 - Beads Query + Parallel Skill:                             │
-│    ├── Inline bash: bd ready           ─┐                            │
+│  PHASE 5 - Focus + Parallel Skill:                             │
+│    ├── Skill: focus-suggester            ─┐                            │
 │    └── Skill('design-system-scanner') ─┘  Parallel                  │
 │                                                                      │
 │  PHASE 6 - Session Log (inline write, uses Phase 5 results)        │
@@ -49,13 +49,13 @@ Every phase has a **binding execution method**. Do not deviate.
 | 2 - Session Number | Inline bash | Deterministic; **must not delegate** |
 | 3 - Branch | Platform-provided | Cloud branch format: `claude/vitalarc-start-cloud-<sessionID>` |
 | 4 - Restore Stash | Inline bash | Simple git command |
-| 5 - Beads/Scan | Inline bash + `Skill()` | `bd ready` inline; scan via Skill |
+| 5 - Focus/Scan | `Skill()` | focus-suggester + scan via Skill |
 | 6 - Session Log | Inline Write/Edit | Template fill from Phase 5 results |
 | 7 - Output Summary | Inline text | Display to user |
 
 **Prohibitions:**
 - **Do not use TaskCreate for operations that have dedicated skills.** Design system scanning has a dedicated skill (`design-system-scanner`). Invoke it via `Skill()`.
-- **Do not delegate deterministic calculations to subagents.** Session number parsing, date arithmetic, and beads queries must run inline. Subagents (especially lighter models) can produce incorrect results for arithmetic and date logic.
+- **Do not delegate deterministic calculations to subagents.** Session number parsing, date arithmetic, and focus determination must run inline. Subagents (especially lighter models) can produce incorrect results for arithmetic and date logic.
 
 ## Implementation
 
@@ -111,46 +111,33 @@ FULL_SESSION="${SESSION}.${MINOR}"
 git stash list | grep -q "Auto-stash $(date +%Y-%m-%d)" && git stash pop
 ```
 
-### Phase 5: Beads Query + Parallel Skill
+### Phase 5: Focus + Parallel Skill
 
-Query beads inline (fast, deterministic) and invoke design scan skill in parallel.
+Determine the session focus and invoke the design scan skill in parallel.
 
-#### 5a. Inline Beads Query (bash)
+#### 5a. Focus (bash)
 
 ```bash
 FOCUS="${ARGUMENTS:-session}"
-
-# Query ready beads (exclude epics), sorted by priority
-BEADS_JSON=$(bd ready --json --sort=priority -n 8 2>/dev/null || echo "[]")
-
-# Filter out epics, extract top items for display
-BEADS=$(echo "$BEADS_JSON" | python3 -c "
-import json, sys
-data = json.load(sys.stdin)
-items = [b for b in data if b.get('issue_type') != 'epic'][:5]
-for b in items:
-    print(f\"  {b['id']} P{b['priority']} [{b['issue_type']}] {b['title']}\")
-" 2>/dev/null || echo "  No beads available")
-
-echo "Ready beads:"
-echo "$BEADS"
+echo "Requested focus: $FOCUS"
 ```
 
-Save the beads output for Phase 6 (session log) and Phase 7 (summary).
+If no explicit focus was given (`FOCUS=session`), let `focus-suggester` recommend the highest-value area from the roadmap and recent history.
 
 #### 5b. Parallel Skill Invocation
 
 ```javascript
-// Invoke in parallel with beads query:
-Skill('design-system-scanner')  // agent: Explore - scans Presentation/ for violations
+// In a SINGLE message, invoke:
+Skill('focus-suggester')        // agent: Explore - recommends focus from SESSION_LOG/PROJECT_STATUS/git
+Skill('design-system-scanner')  // agent: Explore - scans Modules/*/Presentation for violations
                                 // Report-only for cloud (awareness, no fixing)
 ```
 
-Wait for beads query and skill to complete before proceeding to Phase 6.
+Save the focus-suggester output for Phase 6 (session log) and Phase 7 (summary). Wait for both skills to complete before proceeding to Phase 6.
 
 ### Phase 6: Create Session Log (Inline Write/Edit)
 
-Using results from the beads query and design scan, write the session log entry directly. Do not delegate this to a TaskCreate.
+Using results from focus-suggester and design scan, write the session log entry directly. Do not delegate this to a TaskCreate.
 
 Use the Write or Edit tool to prepend/append the following template to SESSION_LOG.md, filled with actual values:
 
@@ -160,7 +147,7 @@ Use the Write or Edit tool to prepend/append the following template to SESSION_L
 ### Session Start
 - **Time**: [Time] UTC
 - **Platform**: cloud
-- **Focus**: [FOCUS from arguments or top bead title]
+- **Focus**: [FOCUS from arguments or focus-suggester recommendation]
 - **Branch**: [BRANCH]
 - **Base**: main @ [latest commit]
 
@@ -174,13 +161,8 @@ Use the Write or Edit tool to prepend/append the following template to SESSION_L
 - **Uncommitted Changes**: None
 
 ### Session Goals
-1. [Top bead title] (bead ID)
-2. [Second bead title] (bead ID)
-
-### Ready Beads
-| ID | Priority | Type | Title |
-|----|----------|------|-------|
-| ... from bd ready output ... |
+1. [Top focus-suggester recommendation]
+2. [Second recommendation, if any]
 
 ### Work Log
 | Time | Action | Files | Notes |
@@ -196,7 +178,7 @@ Use the Write or Edit tool to prepend/append the following template to SESSION_L
 ═══════════════════════════════════════════════════════════════
 Branch:   [branch]
 Session:  [FULL_SESSION]
-Focus:    [top bead title] + [N-1] more ready
+Focus:    [focus area] + [N-1] more
 ───────────────────────────────────────────────────────────────
 Best for: Bug fixes, docs, code review, small changes
 ═══════════════════════════════════════════════════════════════

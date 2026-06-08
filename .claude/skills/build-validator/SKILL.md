@@ -2,7 +2,7 @@
 name: build-validator
 description: Verify VitalArc Xcode project builds successfully. Use automatically before commits, after code changes, or when the user asks to check the build. Reports errors clearly and suggests fixes.
 context: fork
-agent: Bash
+agent: general-purpose
 allowed-tools: Bash, Read, Grep
 ---
 
