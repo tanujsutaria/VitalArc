@@ -153,7 +153,7 @@ Skills in `.claude/skills/` serve as **prompt templates** for specialized tasks.
 
 | Agent Type | Use For | Skills |
 |------------|---------|--------|
-| `Explore` | Read-only analysis | focus-suggester, design-system-scanner, design-system-auditor, coverage-analyzer, config-validator, cloud-quality-gate, session-checkpoint |
+| `Explore` | Read-only analysis | focus-suggester, design-system-scanner, coverage-analyzer, config-validator, cloud-quality-gate, session-checkpoint |
 | `Plan` | Architecture design | domain-modeler, swiftui-architect, dependency-wirer |
 | `general-purpose` | Read-write & command execution | build-validator, lint-validator, test-runner, worktree-manager, commit-formatter, test-scaffolder, progress-tracker, design-system-fixer, pr-formatter, task-dashboard, review-resolver |
 | `feature-dev:code-reviewer` | Code review | pr-reviewer |
@@ -164,7 +164,7 @@ Skills are classified by whether they can run autonomously (no arguments) or req
 
 | Type | Skills | Can Auto-invoke? |
 |------|--------|-------------------|
-| **Autonomous** (no args needed) | focus-suggester, build-validator, design-system-auditor, session-checkpoint, cloud-quality-gate, progress-tracker, task-dashboard | Yes - always |
+| **Autonomous** (no args needed) | focus-suggester, build-validator, session-checkpoint, cloud-quality-gate, progress-tracker, task-dashboard | Yes - always |
 | **Args Optional** (has defaults) | design-system-scanner, design-system-fixer, config-validator, lint-validator, test-runner, coverage-analyzer, pr-formatter, commit-formatter, test-scaffolder | Yes - uses defaults |
 | **Args Required** | dependency-wirer, worktree-manager, pr-reviewer, review-resolver, feature-planner, domain-modeler, swiftui-architect | No - needs user input |
 
@@ -209,9 +209,8 @@ TaskCreate({
 - `/build-validator` - Verify Xcode build passes
 - `/test-runner` - Execute tests (required gate at session end)
 - `/lint-validator` - Run SwiftLint on changed files
-- `/design-system-scanner` - Find design token violations (read-only)
+- `/design-system-scanner` - Find design token violations (read-only; `--deep` for full per-file audit)
 - `/design-system-fixer` - Fix design token violations (workstation only)
-- `/design-system-auditor` - Comprehensive design audit
 - `/config-validator` - Check API keys and entitlements
 - `/coverage-analyzer` - Identify untested code
 - `/cloud-quality-gate` - Validate without builds (cloud sessions)
@@ -222,7 +221,7 @@ TaskCreate({
 - `/review-resolver` - Track and resolve PR review findings
 
 **Worktree Management:**
-- `/worktree-manager` - Create/list/remove/switch git worktrees for parallel development
+- `/worktree-manager` - List/inspect/remove worktrees (create & switch via the native EnterWorktree/ExitWorktree tools)
 
 ## Architecture Overview
 

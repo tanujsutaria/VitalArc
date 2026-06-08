@@ -110,7 +110,7 @@ swift -parse VitalArc/**/*.swift 2>&1 | head -20
 
 This agent is part of the **Pre-Commit Quality Gate** swarm:
 1. `build-validator` (this) - Compilation check
-2. `design-system-auditor` - Design token compliance
+2. `design-system-scanner` - Design token compliance
 
 Both should pass before committing.
 
