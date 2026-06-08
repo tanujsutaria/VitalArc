@@ -26,7 +26,6 @@
 		0C73DAA628887EC662EE00BB /* MuscleHeatMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1471F2E0DB5568B187A1C49 /* MuscleHeatMapView.swift */; };
 		0D45CE03E7EDFDE096E45591 /* MicroInteractions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FEE6DE158C106EE9A62FC1 /* MicroInteractions.swift */; };
 		0E763CE34EAD42DD6D92BDBA /* MuscleVolumeChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C6BF031AAAD28353210F895 /* MuscleVolumeChartView.swift */; };
-		1020996E677D6B32A212C342 /* MockNetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD98BD8011FE4867137749AF /* MockNetworkService.swift */; };
 		1122BFC568049B578B6A2C91 /* MockGetExercisesUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B2FCA8FBE491BDCCC9DAC8 /* MockGetExercisesUseCase.swift */; };
 		144C1DE1178254CAF26F93DD /* NotificationPreviewCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AC5CE5D15FDB537667CBBE5 /* NotificationPreviewCard.swift */; };
 		15253ADFEF10C4DE2E338F05 /* ExerciseSeedsKettlebell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAA49EC6BA47E7D579BA9686 /* ExerciseSeedsKettlebell.swift */; };
@@ -457,7 +456,6 @@
 		AA431CFC636417059BC8E083 /* PersonalRecordsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonalRecordsView.swift; sourceTree = "<group>"; };
 		AC05BC62FC3EF0E3FA62CB76 /* PlateCalculatorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlateCalculatorViewModel.swift; sourceTree = "<group>"; };
 		AC7F568EDC1BBEBC3B9BD9B4 /* TodayDashboardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayDashboardViewModel.swift; sourceTree = "<group>"; };
-		AD98BD8011FE4867137749AF /* MockNetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockNetworkService.swift; sourceTree = "<group>"; };
 		AE2A51FBF6DFA498698CF88E /* MuscleHeatMapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MuscleHeatMapViewModel.swift; sourceTree = "<group>"; };
 		B03C4CF23E3A89E15EE539A8 /* MockWorkoutImportSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockWorkoutImportSource.swift; sourceTree = "<group>"; };
 		B0FDABBAF165CAEE31163121 /* NotificationPreferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationPreferences.swift; sourceTree = "<group>"; };
@@ -1055,7 +1053,6 @@
 				02B2FCA8FBE491BDCCC9DAC8 /* MockGetExercisesUseCase.swift */,
 				82FC35561F81208E9ECD3860 /* MockHealthRepository.swift */,
 				E5B4CC55F58DB1F895FFB86A /* MockMesocycleRepository.swift */,
-				AD98BD8011FE4867137749AF /* MockNetworkService.swift */,
 				4117DD0DE274AC210D48CEC1 /* MockNotificationPreferencesRepository.swift */,
 				BDB046DAD42D19D812A9B039 /* MockNotificationScheduler.swift */,
 				DB9864834F5642F93D4D8251 /* MockTemplateRepository.swift */,
@@ -1615,7 +1612,6 @@
 				1122BFC568049B578B6A2C91 /* MockGetExercisesUseCase.swift in Sources */,
 				F6FF5421342DAE28485FA585 /* MockHealthRepository.swift in Sources */,
 				F1FB6C88B80C2C23ACBC7C81 /* MockMesocycleRepository.swift in Sources */,
-				1020996E677D6B32A212C342 /* MockNetworkService.swift in Sources */,
 				C6309E87905E11AD6241C374 /* MockNotificationPreferencesRepository.swift in Sources */,
 				CD3402EC2ACD0EE5D20B1070 /* MockNotificationScheduler.swift in Sources */,
 				EBDDA8B292A080CC75845AFD /* MockTemplateRepository.swift in Sources */,

@@ -19,38 +19,12 @@ enum UserFacingError {
         Log.error("User-facing error in \(context.rawValue)", error: error, category: .app)
 
         // Check for specific error types first
-        if let networkError = error as? NetworkError {
-            return message(for: networkError)
-        }
-
         if let urlError = error as? URLError {
             return message(for: urlError)
         }
 
         // Return context-appropriate generic message
         return context.genericMessage
-    }
-
-    /// Network-specific error messages
-    private static func message(for error: NetworkError) -> String {
-        switch error {
-        case .invalidURL:
-            return "Unable to connect to the server. Please try again."
-        case .invalidResponse:
-            return "Received an unexpected response. Please try again."
-        case .decodingError:
-            return "Unable to process the response. Please try again."
-        case .serverError(let statusCode):
-            return httpErrorMessage(for: statusCode)
-        case .noData:
-            return "No data received. Please check your connection."
-        case .allSourcesFailed:
-            return "Unable to find results from any source. Please try again."
-        case .notConfigured:
-            return "This feature is not yet configured. Please check settings."
-        case .unknown:
-            return "An unexpected error occurred. Please try again."
-        }
     }
 
     /// URL error messages
