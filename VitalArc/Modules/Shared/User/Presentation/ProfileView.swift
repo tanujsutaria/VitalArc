@@ -126,70 +126,12 @@ struct ProfileView: View {
 
                             StatCard(
                                 title: "Calorie Goal",
-                                value: String(format: "%.0f", viewModel.tdeeResult?.adjustedCalories ?? profile.estimatedCalorieGoal),
+                                value: String(format: "%.0f", profile.estimatedCalorieGoal),
                                 icon: "flame",
                                 color: .vitalDanger
                             )
                         }
                         .padding(.horizontal, Spacing.screenPadding)
-
-                        // TDEE Breakdown
-                        if let tdee = viewModel.tdeeResult {
-                            VitalCard {
-                                VStack(alignment: .leading, spacing: Spacing.sm) {
-                                    Text("TDEE Breakdown")
-                                        .font(.vitalLabel)
-                                        .foregroundStyle(Color.vitalAdaptiveTextPrimary)
-
-                                    HStack(spacing: Spacing.lg) {
-                                        VStack(spacing: Spacing.xs) {
-                                            Text(String(format: "%.0f", tdee.bmr))
-                                                .font(.vitalNumberSmall)
-                                                .foregroundStyle(Color.vitalInfo)
-                                            Text("BMR")
-                                                .font(.vitalCaptionSmall)
-                                                .foregroundStyle(Color.vitalAdaptiveTextSecondary)
-                                        }
-
-                                        Image(systemName: "multiply")
-                                            .font(.vitalCaption)
-                                            .foregroundStyle(Color.vitalAdaptiveTextSecondary)
-
-                                        VStack(spacing: Spacing.xs) {
-                                            Text(String(format: "%.2f", tdee.activityMultiplier))
-                                                .font(.vitalNumberSmall)
-                                                .foregroundStyle(Color.vitalWarning)
-                                            Text("Activity")
-                                                .font(.vitalCaptionSmall)
-                                                .foregroundStyle(Color.vitalAdaptiveTextSecondary)
-                                        }
-
-                                        Image(systemName: "equal")
-                                            .font(.vitalCaption)
-                                            .foregroundStyle(Color.vitalAdaptiveTextSecondary)
-
-                                        VStack(spacing: Spacing.xs) {
-                                            Text(String(format: "%.0f", tdee.adjustedCalories))
-                                                .font(.vitalNumberSmall)
-                                                .foregroundStyle(Color.vitalSuccess)
-                                            Text("Goal")
-                                                .font(.vitalCaptionSmall)
-                                                .foregroundStyle(Color.vitalAdaptiveTextSecondary)
-                                        }
-                                    }
-
-                                    Divider()
-
-                                    // Macro goals
-                                    HStack(spacing: Spacing.lg) {
-                                        MacroGoalItem(label: "Protein", value: tdee.proteinGoal, unit: "g", color: .vitalDanger)
-                                        MacroGoalItem(label: "Carbs", value: tdee.carbGoal, unit: "g", color: .vitalInfo)
-                                        MacroGoalItem(label: "Fat", value: tdee.fatGoal, unit: "g", color: .vitalWarning)
-                                    }
-                                }
-                            }
-                            .padding(.horizontal, Spacing.screenPadding)
-                        }
 
                         // HealthKit Sync Status
                         if viewModel.isHealthKitAvailable {
@@ -628,39 +570,12 @@ struct ProfileView: View {
         guard let container = container else { return }
         let vm = ProfileViewModel(
             userRepository: container.userRepository,
-            healthRepository: container.healthRepository,
-            calculateTDEEUseCase: container.calculateTDEEUseCase
+            healthRepository: container.healthRepository
         )
         viewModel = vm
         Task {
             await vm.loadProfile()
         }
-    }
-}
-
-// MARK: - Macro Goal Item
-
-struct MacroGoalItem: View {
-    let label: String
-    let value: Double
-    let unit: String
-    let color: Color
-
-    var body: some View {
-        VStack(spacing: Spacing.xs) {
-            HStack(spacing: Spacing.xxs) {
-                Text(String(format: "%.0f", value))
-                    .font(.vitalLabel)
-                    .foregroundStyle(color)
-                Text(unit)
-                    .font(.vitalCaptionSmall)
-                    .foregroundStyle(Color.vitalAdaptiveTextSecondary)
-            }
-            Text(label)
-                .font(.vitalCaptionSmall)
-                .foregroundStyle(Color.vitalAdaptiveTextSecondary)
-        }
-        .frame(maxWidth: .infinity)
     }
 }
 

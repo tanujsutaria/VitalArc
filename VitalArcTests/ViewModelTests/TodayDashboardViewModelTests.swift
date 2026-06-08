@@ -13,7 +13,6 @@ final class TodayDashboardViewModelTests: XCTestCase {
 
     var mockHealthRepo: MockHealthRepository!
     var mockWorkoutRepo: MockWorkoutRepository!
-    var mockNutritionRepo: MockNutritionRepository!
     var mockUserRepo: MockUserRepository!
     var viewModel: TodayDashboardViewModel!
 
@@ -21,12 +20,10 @@ final class TodayDashboardViewModelTests: XCTestCase {
         super.setUp()
         mockHealthRepo = MockHealthRepository()
         mockWorkoutRepo = MockWorkoutRepository()
-        mockNutritionRepo = MockNutritionRepository()
         mockUserRepo = MockUserRepository()
         viewModel = TodayDashboardViewModel(
             healthRepository: mockHealthRepo,
             workoutRepository: mockWorkoutRepo,
-            nutritionRepository: mockNutritionRepo,
             userRepository: mockUserRepo
         )
     }
@@ -34,7 +31,6 @@ final class TodayDashboardViewModelTests: XCTestCase {
     override func tearDown() {
         mockHealthRepo = nil
         mockWorkoutRepo = nil
-        mockNutritionRepo = nil
         mockUserRepo = nil
         viewModel = nil
         super.tearDown()
@@ -46,7 +42,6 @@ final class TodayDashboardViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.isLoading)
         XCTAssertNil(viewModel.healthMetrics)
         XCTAssertNil(viewModel.todaysWorkout)
-        XCTAssertNil(viewModel.dailyNutrition)
         XCTAssertNil(viewModel.recoveryScore)
         XCTAssertNil(viewModel.strainResult)
         XCTAssertFalse(viewModel.showDatePicker)
@@ -89,28 +84,6 @@ final class TodayDashboardViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isLoading)
         XCTAssertNotNil(viewModel.todaysWorkout)
         XCTAssertEqual(viewModel.todaysWorkout?.name, "Push Day")
-    }
-
-    func testLoadTodayDataSetsNutrition() async {
-        // CalculateNutritionUseCase calls getFoodEntries then saveDailyNutrition
-        let entry = FoodEntry(
-            foodId: UUID(),
-            date: Date(),
-            meal: .lunch,
-            quantity: 1.0,
-            calories: 250,
-            protein: 30,
-            carbs: 0,
-            fat: 10
-        )
-        mockNutritionRepo.mockFoodEntries = [entry]
-
-        await viewModel.loadTodayData()
-
-        XCTAssertFalse(viewModel.isLoading)
-        XCTAssertNotNil(viewModel.dailyNutrition)
-        XCTAssertEqual(viewModel.dailyNutrition?.caloriesConsumed ?? 0, 250, accuracy: 0.1)
-        XCTAssertEqual(viewModel.dailyNutrition?.proteinConsumed ?? 0, 30, accuracy: 0.1)
     }
 
     func testLoadTodayDataSetsRecoveryScore() async {
@@ -169,26 +142,15 @@ final class TodayDashboardViewModelTests: XCTestCase {
         XCTAssertNil(viewModel.todaysWorkout)
     }
 
-    func testLoadTodayDataHandlesNutritionError() async {
-        mockNutritionRepo.shouldThrowOnGet = true
-
-        await viewModel.loadTodayData()
-
-        XCTAssertFalse(viewModel.isLoading)
-        XCTAssertNil(viewModel.dailyNutrition)
-    }
-
     func testLoadTodayDataHandlesAllErrorsGracefully() async {
         mockHealthRepo.shouldThrowOnGetMetrics = true
         mockWorkoutRepo.shouldThrowOnGet = true
-        mockNutritionRepo.shouldThrowOnGet = true
 
         await viewModel.loadTodayData()
 
         XCTAssertFalse(viewModel.isLoading)
         XCTAssertNil(viewModel.healthMetrics)
         XCTAssertNil(viewModel.todaysWorkout)
-        XCTAssertNil(viewModel.dailyNutrition)
     }
 
     // MARK: - Date Navigation Tests
@@ -252,16 +214,6 @@ final class TodayDashboardViewModelTests: XCTestCase {
         await viewModel.loadTodayData()
 
         XCTAssertNil(viewModel.todaysWorkout)
-    }
-
-    func testEmptyStateWhenNoNutrition() async {
-        // Don't set any food entries - use case will return a zero-calorie DailyNutrition
-        await viewModel.loadTodayData()
-
-        // CalculateNutritionUseCase creates a DailyNutrition with 0 calories when no entries
-        if let nutrition = viewModel.dailyNutrition {
-            XCTAssertEqual(nutrition.caloriesConsumed, 0, accuracy: 0.01)
-        }
     }
 
     // MARK: - Foreground Refresh Regression Tests (Bug Fix: No Refresh on Resume)

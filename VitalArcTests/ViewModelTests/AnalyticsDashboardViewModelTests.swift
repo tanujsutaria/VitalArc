@@ -18,7 +18,6 @@ final class AnalyticsDashboardViewModelTests: XCTestCase {
     var mockCalculateStrainScoreUseCase: MockCalculateStrainScoreUseCase!
     var mockAnalyticsRepository: MockAnalyticsRepository!
     var mockHealthRepository: MockHealthRepository!
-    var mockNutritionRepository: MockNutritionRepository!
     var viewModel: AnalyticsDashboardViewModel!
 
     override func setUp() {
@@ -30,7 +29,6 @@ final class AnalyticsDashboardViewModelTests: XCTestCase {
         mockCalculateStrainScoreUseCase = MockCalculateStrainScoreUseCase()
         mockAnalyticsRepository = MockAnalyticsRepository()
         mockHealthRepository = MockHealthRepository()
-        mockNutritionRepository = MockNutritionRepository()
 
         viewModel = createViewModel()
     }
@@ -43,7 +41,6 @@ final class AnalyticsDashboardViewModelTests: XCTestCase {
         mockCalculateStrainScoreUseCase = nil
         mockAnalyticsRepository = nil
         mockHealthRepository = nil
-        mockNutritionRepository = nil
         viewModel = nil
         super.tearDown()
     }
@@ -56,8 +53,7 @@ final class AnalyticsDashboardViewModelTests: XCTestCase {
             calculateRecoveryScoreUseCase: MockCalculateRecoveryScoreUseCaseAdapter(mock: mockCalculateRecoveryScoreUseCase),
             calculateStrainScoreUseCase: MockCalculateStrainScoreUseCaseAdapter(mock: mockCalculateStrainScoreUseCase),
             analyticsRepository: mockAnalyticsRepository,
-            healthDataProvider: mockHealthRepository,
-            nutritionDataProvider: mockNutritionRepository
+            healthDataProvider: mockHealthRepository
         )
     }
 
@@ -284,31 +280,6 @@ final class AnalyticsDashboardViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.sleepTrend.isEmpty)
     }
 
-    // MARK: - Nutrition Data Tests
-
-    func testLoadDataPopulatesCalorieAdherence() async {
-        setupNutritionData()
-        setupMockData()
-
-        await viewModel.loadData()
-
-        // Calorie adherence should be calculated
-        XCTAssertFalse(viewModel.calorieAdherence.isEmpty)
-    }
-
-    func testLoadDataCalculatesMacroBreakdown() async {
-        setupNutritionData()
-        setupMockData()
-
-        await viewModel.loadData()
-
-        // Macro breakdown should have values
-        let macros = viewModel.macroBreakdown
-        XCTAssertGreaterThanOrEqual(macros.protein, 0)
-        XCTAssertGreaterThanOrEqual(macros.carbs, 0)
-        XCTAssertGreaterThanOrEqual(macros.fats, 0)
-    }
-
     // MARK: - Score Calculation Tests
 
     func testSleepScoreCalculation() async {
@@ -472,26 +443,6 @@ final class AnalyticsDashboardViewModelTests: XCTestCase {
             MockAnalyticsRepository.createSampleVolumeMetrics()
         ]
     }
-
-    private func setupNutritionData() {
-        let calendar = Calendar.current
-        for dayOffset in 0..<7 {
-            guard let date = calendar.date(byAdding: .day, value: -dayOffset, to: Date()) else { continue }
-            let startOfDay = calendar.startOfDay(for: date)
-            let nutrition = DailyNutrition(
-                date: startOfDay,
-                caloriesConsumed: 2000 + Double(dayOffset * 50),
-                proteinConsumed: 150,
-                carbsConsumed: 200,
-                fatConsumed: 70,
-                calorieGoal: 2200,
-                proteinGoal: 160,
-                carbsGoal: 220,
-                fatGoal: 65
-            )
-            mockNutritionRepository.mockDailyNutrition[startOfDay] = nutrition
-        }
-    }
 }
 
 // MARK: - Use Case Adapters
@@ -540,7 +491,6 @@ private final class MockGenerateProgressReportUseCaseAdapter: GenerateProgressRe
         super.init(
             workoutDataProvider: DummyWorkoutRepository(),
             healthDataProvider: MockHealthRepository(),
-            nutritionDataProvider: MockNutritionRepository(),
             analyticsRepository: MockAnalyticsRepository(),
             calculateVolumeUseCase: CalculateVolumeUseCase(workoutDataProvider: DummyWorkoutRepository())
         )

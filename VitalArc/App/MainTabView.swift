@@ -2,7 +2,7 @@
 //  MainTabView.swift
 //  VitalArc
 //
-//  Main tab navigation for the VitalArc app (5-tab structure)
+//  Main tab navigation for the VitalArc app (4-tab structure)
 //
 
 import SwiftUI
@@ -27,26 +27,19 @@ struct MainTabView: View {
                 }
                 .tag(1)
 
-            // Nutrition Tab
-            NutritionTabContentView()
-                .tabItem {
-                    Label("Nutrition", systemImage: "fork.knife")
-                }
-                .tag(2)
-
             // Progress Tab (Analytics)
             ProgressTabView()
                 .tabItem {
                     Label("Progress", systemImage: "chart.line.uptrend.xyaxis")
                 }
-                .tag(3)
+                .tag(2)
 
             // Profile Tab
             ProfileView()
                 .tabItem {
                     Label("Profile", systemImage: "person.fill")
                 }
-                .tag(4)
+                .tag(3)
         }
         .tint(Color.vitalPrimaryV2)
         .environment(\.selectedTab, $selectedTab)

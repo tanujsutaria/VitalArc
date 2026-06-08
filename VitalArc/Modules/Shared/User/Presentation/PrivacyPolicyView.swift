@@ -32,7 +32,6 @@ struct PrivacyPolicyView: View {
                 • You can delete all data at any time from Settings
 
                 Third-Party Services:
-                • Food search uses Nutritionix, OpenFoodFacts, and USDA APIs
                 • Only search queries are sent, no personal data
 
                 Contact:

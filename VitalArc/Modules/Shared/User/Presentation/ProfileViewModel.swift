@@ -14,16 +14,12 @@ final class ProfileViewModel {
     private let userRepository: UserRepository
     private let healthRepository: HealthRepository?
     private let updatePreferencesUseCase: UpdateUserPreferencesUseCase
-    private let calculateTDEEUseCase: CalculateTDEEUseCase?
 
     // MARK: - State
     var profile: UserProfile?
     var isLoading = false
     var errorMessage: String?
     var isEditMode = false
-
-    // TDEE state
-    var tdeeResult: TDEEResult?
 
     // HealthKit sync state
     var healthKitWeight: Double? // in kg from HealthKit
@@ -47,12 +43,10 @@ final class ProfileViewModel {
 
     init(
         userRepository: UserRepository,
-        healthRepository: HealthRepository? = nil,
-        calculateTDEEUseCase: CalculateTDEEUseCase? = nil
+        healthRepository: HealthRepository? = nil
     ) {
         self.userRepository = userRepository
         self.healthRepository = healthRepository
-        self.calculateTDEEUseCase = calculateTDEEUseCase
         self.updatePreferencesUseCase = UpdateUserPreferencesUseCase(repository: userRepository)
     }
 
@@ -66,7 +60,6 @@ final class ProfileViewModel {
             profile = try await userRepository.getUserProfile()
             if let profile = profile {
                 populateEditFields(from: profile)
-                loadTDEE(for: profile)
             }
 
             // Try to sync from HealthKit
@@ -77,11 +70,6 @@ final class ProfileViewModel {
             isLoading = false
             errorMessage = UserFacingError.message(for: error, context: .loading)
         }
-    }
-
-    func loadTDEE(for profile: UserProfile) {
-        guard let useCase = calculateTDEEUseCase else { return }
-        tdeeResult = useCase.execute(for: profile)
     }
 
     func syncFromHealthKit() async {

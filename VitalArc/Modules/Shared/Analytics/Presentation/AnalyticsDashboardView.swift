@@ -18,7 +18,6 @@ struct AnalyticsDashboardView: View {
     enum DashboardSection: String, CaseIterable {
         case overview = "Overview"
         case workout = "Workout"
-        case nutrition = "Nutrition"
         case health = "Health"
         case body = "Body"
     }
@@ -47,8 +46,6 @@ struct AnalyticsDashboardView: View {
                             overviewSection
                         case .workout:
                             workoutSection
-                        case .nutrition:
-                            nutritionSection
                         case .health:
                             healthSection
                         case .body:
@@ -275,15 +272,6 @@ struct AnalyticsDashboardView: View {
                     trend: consistencyTrend(report.workoutConsistency)
                 )
 
-                MetricCard(
-                    title: "Nutrition Adherence",
-                    value: "\(Int(report.avgCalorieAdherence))",
-                    unit: "%",
-                    icon: "fork.knife",
-                    color: .vitalSuccess,
-                    trend: adherenceTrend(report.avgCalorieAdherence)
-                )
-
                 if let weightChange = report.bodyWeightChange {
                     MetricCard(
                         title: "Weight Change",
@@ -441,36 +429,6 @@ struct AnalyticsDashboardView: View {
                     }
                 }
                 .frame(height: Spacing.chartHeightExtraLarge)
-            }
-        }
-    }
-
-    // MARK: - Nutrition Section
-
-    private var nutritionSection: some View {
-        VStack(spacing: Spacing.sectionSpacing) {
-            // Calorie adherence
-            CalorieAdherenceChartView(
-                data: viewModel.calorieAdherence,
-                weeklyAverage: viewModel.weeklyCalorieAverage,
-                targetCalories: viewModel.targetCalories
-            )
-
-            // Macro breakdown
-            MacroBreakdownChartView(
-                data: viewModel.macroBreakdown,
-                proteinTarget: viewModel.proteinTarget,
-                carbsTarget: viewModel.carbsTarget,
-                fatsTarget: viewModel.fatsTarget
-            )
-
-            // Protein per body weight
-            if !viewModel.proteinTrend.isEmpty {
-                ProteinTrendChartView(
-                    data: viewModel.proteinTrend,
-                    targetPerKg: viewModel.proteinTargetPerKg,
-                    currentWeight: viewModel.currentWeight
-                )
             }
         }
     }

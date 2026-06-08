@@ -204,14 +204,11 @@ final class ProfileTests: XCTestCase {
         XCTAssertEqual(viewModel.currentStep, .profileSetup)
 
         viewModel.nextStep()
-        XCTAssertEqual(viewModel.currentStep, .goalSetup)
-
-        viewModel.nextStep()
         XCTAssertEqual(viewModel.currentStep, .healthKitPermission)
 
         // Test going back
         viewModel.previousStep()
-        XCTAssertEqual(viewModel.currentStep, .goalSetup)
+        XCTAssertEqual(viewModel.currentStep, .profileSetup)
     }
 
     @MainActor

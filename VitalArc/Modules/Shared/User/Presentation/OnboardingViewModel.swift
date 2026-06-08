@@ -12,8 +12,7 @@ import SwiftUI
 enum OnboardingStep: Int, CaseIterable {
     case welcome = 0
     case profileSetup = 1
-    case goalSetup = 2
-    case healthKitPermission = 3
+    case healthKitPermission = 2
 }
 
 /// View model for managing onboarding state and user input
@@ -69,27 +68,6 @@ final class OnboardingViewModel {
         !userName.trimmingCharacters(in: .whitespaces).isEmpty &&
         heightFeet > 0 &&
         weightLbs > 0
-    }
-
-    // MARK: - TDEE Calculation
-
-    /// Compute TDEE result from the current profile inputs (no persistence required)
-    func computeTDEEResult() -> TDEEResult {
-        let heightCm = UnitConversion.feetInchesToCm(feet: heightFeet, inches: heightInches)
-        let weightKg = UnitConversion.lbsToKg(weightLbs)
-
-        let profile = UserProfile(
-            name: userName,
-            birthDate: birthDate,
-            biologicalSex: selectedSex,
-            height: heightCm,
-            weight: weightKg,
-            activityLevel: selectedActivityLevel,
-            weightGoal: selectedWeightGoal
-        )
-
-        let useCase = CalculateTDEEUseCase(userRepository: userRepository)
-        return useCase.execute(for: profile)
     }
 
     // MARK: - Completion
