@@ -56,7 +56,7 @@ Execute the full default fix workflow immediately. Do not ask for clarification.
 
 ### Spacing
 
-Only auto-fix values that have an **exact** token match (matching the values in `VitalArc/Modules/Shared/DesignSystem/Spacing.swift`). Values with no exact token must be FLAGGED for manual review, never silently snapped to a nearby token. These mappings are kept in sync with `design-system-scanner` and `design-system-auditor`.
+Only auto-fix values that have an **exact** token match (matching the values in `VitalArc/Modules/Shared/DesignSystem/Spacing.swift`). Values with no exact token must be FLAGGED for manual review, never silently snapped to a nearby token. These mappings are kept in sync with `design-system-scanner`.
 
 | Violation | Fix (exact match) |
 |-----------|-----|

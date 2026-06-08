@@ -1,8 +1,8 @@
 # VitalArc
 
-**A unified iOS fitness platform combining workout tracking, nutrition management, and health analytics.**
+**A unified iOS fitness platform combining workout tracking and health analytics.**
 
-VitalArc integrates workout tracking, nutrition logging, and health analytics into a single app that leverages Apple Health for comprehensive fitness data.
+VitalArc integrates workout tracking and health analytics into a single app that leverages Apple Health for comprehensive fitness data.
 
 ## Current Status
 
@@ -14,13 +14,10 @@ VitalArc integrates workout tracking, nutrition logging, and health analytics in
 | Workout Tracking | ✅ Ready |
 | Exercise Library | ✅ 960+ exercises |
 | Templates & Mesocycles | ✅ Ready |
-| Nutrition Tracking | ✅ Ready |
-| Food Search (API) | ⚠️ API keys not configured |
 | Analytics Dashboard | ✅ Ready |
 | Design System | ✅ ~99% adoption |
 | Recovery Score | ✅ HRV algorithm + HealthKit integration |
 | Sleep Analysis | ✅ Stage breakdown + quality scoring + consistency |
-| Macro Goal Editing | ✅ TDEE-based recommendations |
 | Notifications | ✅ Complete architecture + goal/streak/PR types |
 | Blood Oxygen (SpO2) | ✅ HealthKit integration |
 | VO2 Max | ✅ HealthKit integration |
@@ -35,22 +32,18 @@ See `PROJECT_STATUS.md` for detailed status.
 |---------|--------|
 | Recovery Score | ✅ V2 with configurable weights + component breakdown |
 | Strain Tracking | ✅ TRIMP calculation + custom settings |
-| Nutrition Algorithm | ✅ TDEE estimation + UI integration + macro goal editing |
 | Notifications | ✅ UI, ViewModel, use cases, goal notification cancellation |
 | Sleep Analysis | ✅ Stage breakdown, quality scoring, 7-day trends, consistency |
 | Wellness Accessibility | ✅ VoiceOver labels across all wellness views |
 | Workout History & Trends | ✅ PR tracking, rest timer, supersets, plate calculator, progressive overload charts |
-| Water Tracking | ✅ Manual logging with daily goals, timezone-aware reset |
-| Body Composition | ✅ Body fat %, lean mass, waist/hip/chest/arm/thigh measurements + trends |
 | HRV Tracking | ✅ Trend visualization with 7/30/90-day windows |
 | Muscle Heat Maps | ✅ Training frequency visualization per muscle group |
 | Volume Analysis | ✅ Per-muscle-group volume breakdown + weekly/monthly trends |
-| Configurable Meal Times | ✅ User-defined breakfast/lunch/dinner/snack ranges |
 
 ### In Progress
-| Feature | Status | Remaining |
-|---------|--------|-----------|
-| Body Composition | Waist/hip/chest/arm/thigh measurements + trends | HealthKit body fat sync |
+_None currently._
+
+> **Note:** Nutrition/food tracking (food logging, search, macros, water, body composition, TDEE) was removed in Session 27.0 to refocus the app on workout + health analytics.
 
 ### Planned
 | Feature | Priority | Description |
@@ -71,14 +64,6 @@ See `PROJECT_STATUS.md` for detailed status.
 - Per-exercise progressive overload charts (weight/volume/1RM)
 - Per-set notes, rest timer, superset/circuit support
 - 960+ exercise library organized by equipment type
-
-### Nutrition Tracking
-- Timeline-based food logging
-- Multi-API food search (Nutritionix, OpenFoodFacts, USDA)
-- Macro and calorie tracking with fiber/sugar micronutrients
-- Edit food entry quantity with proportional macro recalculation
-- Quick re-log from history
-- Cached API responses for performance
 
 ### Health Analytics
 - Recovery score based on HRV trends
@@ -107,11 +92,6 @@ VitalArc/
 │   │   ├── Domain/          # Entities, repositories, use cases
 │   │   ├── Data/            # SwiftData models, exercise seeds
 │   │   ├── Infrastructure/  # Repository implementations
-│   │   └── Presentation/    # Views, ViewModels
-│   ├── Nutrition/           # Food search, logging, API integration
-│   │   ├── Domain/          # Entities, repositories, use cases
-│   │   ├── Data/            # SwiftData models
-│   │   ├── Infrastructure/  # API clients, cache, models
 │   │   └── Presentation/    # Views, ViewModels
 │   ├── Wellness/            # HealthKit, health metrics, sleep
 │   │   ├── Domain/          # Entities, repositories, use cases
@@ -143,10 +123,7 @@ VitalArc/
 5. Build and run on a physical device
 
 ### API Configuration
-Food APIs have placeholder keys that need to be configured:
-- `NutritionixAPI.swift`: Get keys from nutritionix.com
-- `USDAFoodAPI.swift`: Get key from fdc.nal.usda.gov
-- `OpenFoodFactsAPI.swift`: No key required (public API)
+No third-party API keys are required.
 
 ## Development
 
@@ -165,12 +142,10 @@ xcodebuild -scheme VitalArc -destination 'platform=iOS Simulator,name=iPhone 17 
 
 | Metric | Value |
 |--------|-------|
-| Swift files | ~230 |
-| Lines of code | ~51,600 |
-| Views | ~80 |
-| ViewModels | 14 |
-| Use cases | 27 |
-| Unit tests | 1141 |
+| Swift files | ~193 (app target) |
+| Lines of code | ~47,000 |
+| Views | ~63 |
+| ViewModels | ~19 |
 | Exercises | 960+ |
 
 ## Author

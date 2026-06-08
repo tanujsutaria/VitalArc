@@ -1,13 +1,14 @@
 # VitalArc Project Status
 
-**Last Updated**: February 23, 2026 (Session 26.0)
-**Build**: Passing
-**Tests**: 1141 passing
+**Last Updated**: June 8, 2026 (Session 27.x)
+**Build**: Passing (CI)
 **Stage**: MVP-Ready
 
 ---
 
 ## Current State
+
+> **Session 27 — major scope change:** Nutrition / food tracking was **removed** (food logging, search, macros, water, body composition, nutrition streaks, and TDEE/calorie targets), dropping the app from 5 tabs to 4 (Today, Workout, Progress, Profile). The **beads** issue-tracker integration was also removed and the agentic harness cleaned up (focus-suggester restored; path-rot / stale-tool / design-token fixes). Historical session entries below predate these removals and are retained as a changelog.
 
 The app compiles and runs with core MVP requirements addressed:
 - American units enforced across all screens

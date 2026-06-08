@@ -1,6 +1,6 @@
 ---
 name: design-system-scanner
-description: Audit VitalArc views for design system compliance. Read-only scanning - finds violations but does NOT fix them. Works on both cloud and workstation. For fixes, use design-system-fixer.
+description: Audit VitalArc SwiftUI views for design system compliance (read-only). Use automatically before commits, during code review, or when the user asks to check design consistency. Finds hardcoded colors, spacing, fonts, and icon sizes that should use design tokens; does NOT fix them (use design-system-fixer). Works on cloud and workstation. Pass --deep for a full per-file audit.
 context: fork
 agent: Explore
 allowed-tools: Read, Glob, Grep
@@ -27,6 +27,7 @@ allowed-tools: Read, Glob, Grep
 When invoked by a user with specific needs:
 - `--path=specific/path` - Scan only the specified path instead of full Presentation layer
 - `--verbose` - Include code context around each violation
+- `--deep` - Full per-file audit: report every category for every Presentation file (this mode supersedes the former separate design-system-auditor skill)
 
 ## Responsibility Split
 
