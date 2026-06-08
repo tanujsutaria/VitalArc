@@ -20,7 +20,6 @@ final class AnalyticsDashboardViewModel {
     private let calculateStrainScoreUseCase: CalculateStrainScoreUseCase
     private let analyticsRepository: AnalyticsRepository
     private let healthDataProvider: HealthDataProviding
-    private let nutritionDataProvider: NutritionDataProviding
 
     // MARK: - State
 
@@ -53,13 +52,6 @@ final class AnalyticsDashboardViewModel {
     var weightTrend: [ChartDataPoint] = []
     var bodyMeasurements: [String: [ChartDataPoint]] = [:]
 
-    // Nutrition Analytics
-    var calorieAdherence: [CalorieAdherenceData] = []
-    var weeklyCalorieAverage: Double = 0
-    var macroBreakdown: MacroBreakdownData = MacroBreakdownData(protein: 0, carbs: 0, fats: 0)
-    var proteinTrend: [ProteinTrendData] = []
-    var targetCalories: Double = 2200
-    var proteinTargetPerKg: Double = 2.0
     var currentWeight: Double = 80
 
     // Health Trends
@@ -69,11 +61,6 @@ final class AnalyticsDashboardViewModel {
     var restingHRTrend: [HealthTrendData] = []
     var sleepTrend: [SleepTrendData] = []
     var sleepTargetHours: Double = 8
-
-    // Macro targets
-    var proteinTarget: Double = 180
-    var carbsTarget: Double = 250
-    var fatsTarget: Double = 70
 
     // Sub-ViewModels for new analytics features
     var muscleHeatMapViewModel: MuscleHeatMapViewModel?
@@ -93,8 +80,7 @@ final class AnalyticsDashboardViewModel {
         calculateRecoveryScoreUseCase: CalculateRecoveryScoreUseCase,
         calculateStrainScoreUseCase: CalculateStrainScoreUseCase,
         analyticsRepository: AnalyticsRepository,
-        healthDataProvider: HealthDataProviding,
-        nutritionDataProvider: NutritionDataProviding
+        healthDataProvider: HealthDataProviding
     ) {
         self.calculateVolumeUseCase = calculateVolumeUseCase
         self.trackProgressiveOverloadUseCase = trackProgressiveOverloadUseCase
@@ -103,7 +89,6 @@ final class AnalyticsDashboardViewModel {
         self.calculateStrainScoreUseCase = calculateStrainScoreUseCase
         self.analyticsRepository = analyticsRepository
         self.healthDataProvider = healthDataProvider
-        self.nutritionDataProvider = nutritionDataProvider
     }
 
     // MARK: - Data Loading
@@ -127,9 +112,8 @@ final class AnalyticsDashboardViewModel {
             progressSnapshots = try await snapshots
             personalRecords = try await records
 
-            // Load health and nutrition data (these update state directly)
+            // Load health data (updates state directly)
             try await loadHealthData(startDate: startDate, endDate: endDate)
-            try await loadNutritionData(startDate: startDate, endDate: endDate)
 
             // Process loaded data
             processVolumeData()
@@ -205,60 +189,6 @@ final class AnalyticsDashboardViewModel {
         if let latestWeight = sortedMetrics.last?.weight {
             currentWeight = latestWeight
         }
-    }
-
-    private func loadNutritionData(startDate: Date, endDate: Date) async throws {
-        let calendar = Calendar.current
-
-        // Load daily nutrition data for the past 7 days
-        var calorieData: [CalorieAdherenceData] = []
-        var totalProtein: Double = 0
-        var totalCarbs: Double = 0
-        var totalFats: Double = 0
-        var proteinData: [ProteinTrendData] = []
-
-        for dayOffset in 0..<7 {
-            guard let date = calendar.date(byAdding: .day, value: -6 + dayOffset, to: Date()) else { continue }
-
-            if let nutrition = try await nutritionDataProvider.getDailyNutrition(for: date) {
-                // Calorie adherence
-                calorieData.append(CalorieAdherenceData(
-                    date: date,
-                    consumed: nutrition.caloriesConsumed,
-                    target: nutrition.calorieGoal ?? targetCalories
-                ))
-
-                // Accumulate macros
-                totalProtein += nutrition.proteinConsumed
-                totalCarbs += nutrition.carbsConsumed
-                totalFats += nutrition.fatConsumed
-
-                // Protein per kg
-                if currentWeight > 0 {
-                    proteinData.append(ProteinTrendData(
-                        date: date,
-                        proteinPerKg: nutrition.proteinConsumed / currentWeight
-                    ))
-                }
-            }
-        }
-
-        calorieAdherence = calorieData
-        proteinTrend = proteinData
-
-        // Calculate weekly averages
-        if !calorieData.isEmpty {
-            let totalAdherence = calorieData.map { $0.adherencePercent }.reduce(0, +)
-            weeklyCalorieAverage = totalAdherence / Double(calorieData.count)
-        }
-
-        // Average macro breakdown
-        let days = max(calorieData.count, 1)
-        macroBreakdown = MacroBreakdownData(
-            protein: totalProtein / Double(days),
-            carbs: totalCarbs / Double(days),
-            fats: totalFats / Double(days)
-        )
     }
 
     // MARK: - Data Processing

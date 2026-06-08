@@ -15,7 +15,6 @@ final class SharedContainer {
     let analyticsRepository: SwiftDataAnalyticsRepository
     let notificationPreferencesRepository: SwiftDataNotificationPreferencesRepository
     let notificationScheduler: NotificationScheduler
-    let calculateTDEEUseCase: CalculateTDEEUseCase
     let scheduleNotificationsUseCase: ScheduleNotificationsUseCase
     let requestNotificationPermissionUseCase: RequestNotificationPermissionUseCase
     let checkRecoveryAndNotifyUseCase: CheckRecoveryAndNotifyUseCase
@@ -25,7 +24,6 @@ final class SharedContainer {
         self.analyticsRepository = SwiftDataAnalyticsRepository(modelContext: modelContext)
         self.notificationPreferencesRepository = SwiftDataNotificationPreferencesRepository(modelContext: modelContext)
         self.notificationScheduler = NotificationScheduler()
-        self.calculateTDEEUseCase = CalculateTDEEUseCase(userRepository: self.userRepository)
         self.scheduleNotificationsUseCase = ScheduleNotificationsUseCase(
             notificationScheduler: self.notificationScheduler,
             preferencesRepository: self.notificationPreferencesRepository

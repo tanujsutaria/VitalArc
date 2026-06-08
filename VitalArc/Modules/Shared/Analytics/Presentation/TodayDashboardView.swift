@@ -62,9 +62,6 @@ struct TodayDashboardView: View {
                     // Today's Activity Section
                     activitySection(vm)
 
-                    // Nutrition Summary Section
-                    nutritionSection(vm)
-
                     // Quick Actions Section
                     quickActionsSection
                 }
@@ -370,107 +367,6 @@ struct TodayDashboardView: View {
         .accessibilityHint("Double tap to start a workout")
     }
 
-    // MARK: - Nutrition Section
-
-    private func nutritionSection(_ vm: TodayDashboardViewModel) -> some View {
-        VStack(alignment: .leading, spacing: Spacing.md) {
-            Text("Nutrition")
-                .font(.vitalH3V2)
-                .foregroundStyle(Color.vitalAdaptiveTextPrimaryV2)
-
-            if let nutrition = vm.dailyNutrition {
-                VitalCardV2(elevation: .elevated) {
-                    VStack(spacing: Spacing.md) {
-                        // Calories progress
-                        HStack {
-                            VStack(alignment: .leading, spacing: Spacing.xs) {
-                                Text("Calories")
-                                    .font(.vitalLabelSmallV2)
-                                    .foregroundStyle(Color.vitalAdaptiveTextSecondaryV2)
-                                HStack(alignment: .firstTextBaseline, spacing: Spacing.xs) {
-                                    Text("\(Int(nutrition.caloriesConsumed))")
-                                        .font(.vitalNumberLargeV2)
-                                        .foregroundStyle(Color.vitalAdaptiveTextPrimaryV2)
-                                    Text("/ \(Int(nutrition.calorieGoal ?? 2000)) kcal")
-                                        .font(.vitalCaptionV2)
-                                        .foregroundStyle(Color.vitalAdaptiveTextTertiaryV2)
-                                }
-                            }
-                            Spacer()
-                            let percentage = nutrition.calorieProgress ?? 0
-                            Text("\(Int(percentage))%")
-                                .font(.vitalDataMediumV2)
-                                .foregroundStyle(percentage >= 100 ? Color.vitalSuccessV2 : Color.vitalAccentV2)
-                        }
-
-                        // Macro bars
-                        HStack(spacing: Spacing.md) {
-                            macroBar(label: "Protein", current: nutrition.proteinConsumed, target: nutrition.proteinGoal ?? 150, color: .vitalPrimaryV2)
-                            macroBar(label: "Carbs", current: nutrition.carbsConsumed, target: nutrition.carbsGoal ?? 250, color: .vitalAccentV2)
-                            macroBar(label: "Fat", current: nutrition.fatConsumed, target: nutrition.fatGoal ?? 65, color: .vitalWarningV2)
-                        }
-                    }
-                }
-            } else {
-                Button {
-                    selectedTab.wrappedValue = 2
-                } label: {
-                    VitalCardV2(elevation: .raised, isTappable: true) {
-                        HStack(spacing: Spacing.md) {
-                            Image(systemName: "fork.knife")
-                                .font(.vitalIconLarge)
-                                .foregroundStyle(Color.vitalAdaptiveTextTertiaryV2)
-
-                            VStack(alignment: .leading, spacing: Spacing.xs) {
-                                Text("No food logged")
-                                    .font(.vitalLabelV2)
-                                    .foregroundStyle(Color.vitalAdaptiveTextPrimaryV2)
-                                Text("Tap to log your first meal")
-                                    .font(.vitalCaptionV2)
-                                    .foregroundStyle(Color.vitalAdaptiveTextSecondaryV2)
-                            }
-
-                            Spacer()
-
-                            Image(systemName: "chevron.right")
-                                .font(.vitalIconSmall)
-                                .foregroundStyle(Color.vitalAdaptiveTextTertiaryV2)
-                        }
-                    }
-                }
-                .buttonStyle(.plain)
-            }
-        }
-    }
-
-    private func macroBar(label: String, current: Double, target: Double, color: Color) -> some View {
-        VStack(spacing: Spacing.xs) {
-            Text(label)
-                .font(.vitalCaptionSmallV2)
-                .foregroundStyle(Color.vitalAdaptiveTextSecondaryV2)
-
-            GeometryReader { geometry in
-                ZStack(alignment: .leading) {
-                    RoundedRectangle(cornerRadius: Spacing.radiusTinyV2)
-                        .fill(Color.vitalSurfaceRaisedV2)
-                        .frame(height: Spacing.progressBarHeight)
-
-                    RoundedRectangle(cornerRadius: Spacing.radiusTinyV2)
-                        .fill(color)
-                        .frame(width: min(geometry.size.width * (current / target), geometry.size.width), height: Spacing.progressBarHeight)
-                }
-            }
-            .frame(height: Spacing.progressBarHeight)
-
-            Text("\(Int(current))g")
-                .font(.vitalUnitV2)
-                .foregroundStyle(Color.vitalAdaptiveTextTertiaryV2)
-        }
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(label)
-        .accessibilityValue("\(Int(current)) of \(Int(target)) grams")
-    }
-
     // MARK: - Quick Actions Section
 
     private var quickActionsSection: some View {
@@ -481,8 +377,7 @@ struct TodayDashboardView: View {
 
             HStack(spacing: Spacing.md) {
                 quickActionButton(icon: "plus.circle.fill", label: "Log Workout", color: .vitalPrimaryV2, tab: 1)
-                quickActionButton(icon: "fork.knife.circle.fill", label: "Log Food", color: .vitalAccentV2, tab: 2)
-                quickActionButton(icon: "chart.line.uptrend.xyaxis.circle.fill", label: "View Progress", color: .vitalSuccessV2, tab: 3)
+                quickActionButton(icon: "chart.line.uptrend.xyaxis.circle.fill", label: "View Progress", color: .vitalSuccessV2, tab: 2)
             }
         }
     }

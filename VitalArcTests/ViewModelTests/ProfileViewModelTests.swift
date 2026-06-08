@@ -364,17 +364,6 @@ final class ProfileViewModelTests: XCTestCase {
         XCTAssertNil(vmNoHealth.healthKitWeight)
     }
 
-    // MARK: - TDEE Tests
-
-    func testLoadTDEEWithNoUseCase() {
-        let vmNoTDEE = ProfileViewModel(userRepository: userRepository)
-        let profile = createSampleProfile()
-
-        vmNoTDEE.loadTDEE(for: profile)
-
-        XCTAssertNil(vmNoTDEE.tdeeResult)
-    }
-
     // MARK: - Heart Rate Display Tests
 
     func testDisplayHRMaxWithCustomValue() {

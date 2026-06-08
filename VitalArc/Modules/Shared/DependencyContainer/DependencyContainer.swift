@@ -34,21 +34,19 @@ private enum DateComputationError: LocalizedError {
 
 /// Centralized dependency injection container that orchestrates domain sub-containers.
 /// Provides backward-compatible property access while internally delegating to
-/// WorkoutContainer, NutritionContainer, WellnessContainer, and SharedContainer.
+/// WorkoutContainer, WellnessContainer, and SharedContainer.
 @MainActor
 final class DependencyContainer {
     let modelContext: ModelContext
 
     // Domain sub-containers
     let workout: WorkoutContainer
-    let nutrition: NutritionContainer
     let wellness: WellnessContainer
     let shared: SharedContainer
 
     // MARK: - Backward-compatible accessors
 
     var workoutRepository: WorkoutRepository { workout.workoutRepository }
-    var nutritionRepository: NutritionRepository { nutrition.nutritionRepository }
     var healthRepository: HealthRepository { wellness.healthRepository }
     var userRepository: UserRepository { shared.userRepository }
     var mesocycleRepository: MesocycleRepository { workout.mesocycleRepository }
@@ -57,13 +55,11 @@ final class DependencyContainer {
     var notificationPreferencesRepository: NotificationPreferencesRepository { shared.notificationPreferencesRepository }
     var notificationScheduler: NotificationScheduler { shared.notificationScheduler }
     var calculateRecoveryScoreUseCase: CalculateRecoveryScoreUseCase { wellness.calculateRecoveryScoreUseCase }
-    var calculateTDEEUseCase: CalculateTDEEUseCase { shared.calculateTDEEUseCase }
     var scheduleNotificationsUseCase: ScheduleNotificationsUseCase { shared.scheduleNotificationsUseCase }
     var requestNotificationPermissionUseCase: RequestNotificationPermissionUseCase { shared.requestNotificationPermissionUseCase }
     var checkRecoveryAndNotifyUseCase: CheckRecoveryAndNotifyUseCase { shared.checkRecoveryAndNotifyUseCase }
     var importHealthKitWorkoutsUseCase: ImportHealthKitWorkoutsUseCase { workout.importHealthKitWorkoutsUseCase }
     var getExerciseHistoryUseCase: GetExerciseHistoryUseCase { workout.getExerciseHistoryUseCase }
-    var updateFoodEntryUseCase: UpdateFoodEntryUseCase { nutrition.updateFoodEntryUseCase }
     var calculateSleepConsistencyUseCase: CalculateSleepConsistencyUseCase { wellness.calculateSleepConsistencyUseCase }
 
     init(modelContext: ModelContext) {
@@ -74,7 +70,6 @@ final class DependencyContainer {
 
         // Initialize domain sub-containers
         self.workout = WorkoutContainer(modelContext: modelContext, healthKitManager: healthKitManager)
-        self.nutrition = NutritionContainer(modelContext: modelContext)
         self.wellness = WellnessContainer(modelContext: modelContext, healthKitManager: healthKitManager)
         self.shared = SharedContainer(modelContext: modelContext)
     }
@@ -291,278 +286,6 @@ final class SwiftDataWorkoutRepository: WorkoutRepository {
         }
 
         modelContext.delete(model)
-        try modelContext.save()
-    }
-}
-
-/// SwiftData implementation of NutritionRepository
-@MainActor
-final class SwiftDataNutritionRepository: NutritionRepository {
-    private let modelContext: ModelContext
-
-    init(modelContext: ModelContext) {
-        self.modelContext = modelContext
-    }
-
-    func searchFoods(query: String) async throws -> [Food] {
-        let descriptor = FetchDescriptor<FoodModel>(
-            predicate: #Predicate { food in
-                food.name.localizedStandardContains(query)
-            },
-            sortBy: [SortDescriptor(\.name)]
-        )
-
-        let models = try modelContext.fetch(descriptor)
-        return models.map { $0.toDomain() }
-    }
-
-    func getFood(id: UUID) async throws -> Food? {
-        let descriptor = FetchDescriptor<FoodModel>(
-            predicate: #Predicate { food in
-                food.id == id
-            }
-        )
-
-        guard let model = try modelContext.fetch(descriptor).first else {
-            return nil
-        }
-
-        return model.toDomain()
-    }
-
-    func saveFood(_ food: Food) async throws {
-        // Check if food already exists
-        let foodId = food.id
-        let descriptor = FetchDescriptor<FoodModel>(
-            predicate: #Predicate { foodModel in
-                foodModel.id == foodId
-            }
-        )
-
-        if let existing = try modelContext.fetch(descriptor).first {
-            // Update existing - all fields
-            existing.name = food.name
-            existing.brand = food.brand
-            existing.servingSize = food.servingSize
-            existing.servingUnit = food.servingUnit
-            existing.calories = food.calories
-            existing.protein = food.protein
-            existing.carbs = food.carbs
-            existing.fat = food.fat
-            existing.fiber = food.fiber
-            existing.sugar = food.sugar
-            existing.source = food.source.rawValue
-            existing.barcode = food.barcode
-            existing.imageURL = food.imageURL
-            existing.isFavorite = food.isFavorite
-            existing.isCustom = food.isCustom
-            existing.recentlyUsed = food.recentlyUsed
-            existing.usageCount = food.usageCount
-        } else {
-            // Insert new
-            let model = FoodModel.fromDomain(food)
-            modelContext.insert(model)
-        }
-
-        try modelContext.save()
-    }
-
-    func getFoodEntries(for date: Date) async throws -> [FoodEntry] {
-        let calendar = Calendar.current
-        let startOfDay = calendar.startOfDay(for: date)
-        let endOfDay = try nextDayStart(after: startOfDay, calendar: calendar)
-
-        let descriptor = FetchDescriptor<FoodEntryModel>(
-            predicate: #Predicate { entry in
-                entry.date >= startOfDay && entry.date < endOfDay
-            },
-            sortBy: [SortDescriptor(\.date)]
-        )
-
-        let models = try modelContext.fetch(descriptor)
-        return models.map { $0.toDomain() }
-    }
-
-    func getFoodEntries(from startDate: Date, to endDate: Date) async throws -> [FoodEntry] {
-        let descriptor = FetchDescriptor<FoodEntryModel>(
-            predicate: #Predicate { entry in
-                entry.date >= startDate && entry.date <= endDate
-            },
-            sortBy: [SortDescriptor(\.date)]
-        )
-
-        let models = try modelContext.fetch(descriptor)
-        return models.map { $0.toDomain() }
-    }
-
-    func saveFoodEntry(_ entry: FoodEntry) async throws {
-        // Check if entry already exists
-        let entryId = entry.id
-        let descriptor = FetchDescriptor<FoodEntryModel>(
-            predicate: #Predicate { entryModel in
-                entryModel.id == entryId
-            }
-        )
-
-        if let existing = try modelContext.fetch(descriptor).first {
-            // Update existing
-            existing.foodId = entry.foodId
-            existing.foodName = entry.foodName
-            existing.date = entry.date
-            existing.meal = entry.meal.rawValue
-            existing.quantity = entry.quantity
-            existing.calories = entry.calories
-            existing.protein = entry.protein
-            existing.carbs = entry.carbs
-            existing.fat = entry.fat
-            existing.fiber = entry.fiber
-            existing.sugar = entry.sugar
-        } else {
-            // Insert new
-            let model = FoodEntryModel.fromDomain(entry)
-            modelContext.insert(model)
-        }
-
-        try modelContext.save()
-    }
-
-    func deleteFoodEntry(id: UUID) async throws {
-        let descriptor = FetchDescriptor<FoodEntryModel>(
-            predicate: #Predicate { entry in
-                entry.id == id
-            }
-        )
-
-        guard let model = try modelContext.fetch(descriptor).first else {
-            return
-        }
-
-        modelContext.delete(model)
-        try modelContext.save()
-    }
-
-    // MARK: - Favorites
-
-    func getFavoriteFoods() async throws -> [Food] {
-        let descriptor = FetchDescriptor<FoodModel>(
-            predicate: #Predicate { food in
-                food.isFavorite == true
-            },
-            sortBy: [SortDescriptor(\.name)]
-        )
-        let models = try modelContext.fetch(descriptor)
-        return models.map { $0.toDomain() }
-    }
-
-    func toggleFavorite(foodId: UUID) async throws {
-        let descriptor = FetchDescriptor<FoodModel>(
-            predicate: #Predicate { food in
-                food.id == foodId
-            }
-        )
-        guard let model = try modelContext.fetch(descriptor).first else { return }
-        model.isFavorite.toggle()
-        try modelContext.save()
-    }
-
-    // MARK: - Recent/Frequent
-
-    func getRecentFoods(limit: Int) async throws -> [Food] {
-        let descriptor = FetchDescriptor<FoodModel>(
-            predicate: #Predicate { food in
-                food.recentlyUsed != nil
-            },
-            sortBy: [SortDescriptor(\.recentlyUsed, order: .reverse)]
-        )
-        let models = try modelContext.fetch(descriptor)
-        return Array(models.prefix(limit)).map { $0.toDomain() }
-    }
-
-    // MARK: - Water Tracking
-
-    func getWaterEntries(for date: Date) async throws -> [WaterEntry] {
-        let calendar = Calendar.current
-        let startOfDay = calendar.startOfDay(for: date)
-        let endOfDay = try nextDayStart(after: startOfDay, calendar: calendar)
-
-        let descriptor = FetchDescriptor<WaterEntryModel>(
-            predicate: #Predicate { entry in
-                entry.date >= startOfDay && entry.date < endOfDay
-            },
-            sortBy: [SortDescriptor(\.date)]
-        )
-        let models = try modelContext.fetch(descriptor)
-        return models.map { $0.toDomain() }
-    }
-
-    func saveWaterEntry(_ entry: WaterEntry) async throws {
-        let model = WaterEntryModel.fromDomain(entry)
-        modelContext.insert(model)
-        try modelContext.save()
-    }
-
-    func deleteWaterEntry(id: UUID) async throws {
-        let descriptor = FetchDescriptor<WaterEntryModel>(
-            predicate: #Predicate { entry in
-                entry.id == id
-            }
-        )
-        guard let model = try modelContext.fetch(descriptor).first else { return }
-        modelContext.delete(model)
-        try modelContext.save()
-    }
-
-    // MARK: - Daily Nutrition
-
-    func getDailyNutrition(for date: Date) async throws -> DailyNutrition? {
-        let calendar = Calendar.current
-        let startOfDay = calendar.startOfDay(for: date)
-        let endOfDay = try nextDayStart(after: startOfDay, calendar: calendar)
-
-        let descriptor = FetchDescriptor<DailyNutritionModel>(
-            predicate: #Predicate { nutrition in
-                nutrition.date >= startOfDay && nutrition.date < endOfDay
-            }
-        )
-
-        guard let model = try modelContext.fetch(descriptor).first else {
-            return nil
-        }
-
-        return model.toDomain()
-    }
-
-    func saveDailyNutrition(_ nutrition: DailyNutrition) async throws {
-        let calendar = Calendar.current
-        let startOfDay = calendar.startOfDay(for: nutrition.date)
-        let endOfDay = try nextDayStart(after: startOfDay, calendar: calendar)
-
-        let descriptor = FetchDescriptor<DailyNutritionModel>(
-            predicate: #Predicate { nutritionModel in
-                nutritionModel.date >= startOfDay && nutritionModel.date < endOfDay
-            }
-        )
-
-        if let existing = try modelContext.fetch(descriptor).first {
-            // Update existing
-            existing.caloriesConsumed = nutrition.caloriesConsumed
-            existing.proteinConsumed = nutrition.proteinConsumed
-            existing.carbsConsumed = nutrition.carbsConsumed
-            existing.fatConsumed = nutrition.fatConsumed
-            existing.fiberConsumed = nutrition.fiberConsumed
-            existing.sugarConsumed = nutrition.sugarConsumed
-            existing.calorieGoal = nutrition.calorieGoal
-            existing.proteinGoal = nutrition.proteinGoal
-            existing.carbsGoal = nutrition.carbsGoal
-            existing.fatGoal = nutrition.fatGoal
-            existing.fiberGoal = nutrition.fiberGoal
-            existing.sugarGoal = nutrition.sugarGoal
-        } else {
-            // Insert new
-            let model = DailyNutritionModel.fromDomain(nutrition)
-            modelContext.insert(model)
-        }
-
         try modelContext.save()
     }
 }

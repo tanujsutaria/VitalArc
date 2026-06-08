@@ -15,7 +15,6 @@ final class TodayDashboardViewModel {
     var selectedDate = Date()
     var healthMetrics: HealthMetrics?
     var todaysWorkout: Workout?
-    var dailyNutrition: DailyNutrition?
     var isLoading = true
     var recoveryScore: RecoveryScoreResult?
     var strainResult: StrainResult?
@@ -25,7 +24,6 @@ final class TodayDashboardViewModel {
 
     private let healthRepository: HealthRepository
     private let workoutRepository: WorkoutRepository
-    private let nutritionRepository: NutritionRepository
     private let userRepository: UserRepository
 
     // MARK: - Init
@@ -33,12 +31,10 @@ final class TodayDashboardViewModel {
     init(
         healthRepository: HealthRepository,
         workoutRepository: WorkoutRepository,
-        nutritionRepository: NutritionRepository,
         userRepository: UserRepository
     ) {
         self.healthRepository = healthRepository
         self.workoutRepository = workoutRepository
-        self.nutritionRepository = nutritionRepository
         self.userRepository = userRepository
     }
 
@@ -46,7 +42,6 @@ final class TodayDashboardViewModel {
         self.init(
             healthRepository: container.healthRepository,
             workoutRepository: container.workoutRepository,
-            nutritionRepository: container.nutritionRepository,
             userRepository: container.userRepository
         )
     }
@@ -101,18 +96,6 @@ final class TodayDashboardViewModel {
             guard selectedDate == date else { return }
             todaysWorkout = nil
             Log.error("Failed to load workouts", error: error, category: .workout)
-        }
-
-        // Load nutrition
-        do {
-            let calculateUseCase = CalculateNutritionUseCase(repository: nutritionRepository)
-            let nutrition = try await calculateUseCase.execute(for: date)
-            guard selectedDate == date else { return }
-            dailyNutrition = nutrition
-        } catch {
-            guard selectedDate == date else { return }
-            dailyNutrition = nil
-            Log.error("Failed to load nutrition", error: error, category: .nutrition)
         }
 
         // Load recovery score for the selected date

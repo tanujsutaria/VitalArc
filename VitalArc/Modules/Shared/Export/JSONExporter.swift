@@ -55,44 +55,6 @@ final class JSONExporter {
         return try saveJSON(data, filename: "Workouts_\(formattedDate(startDate))")
     }
 
-    // MARK: - Nutrition Export
-
-    /// Export nutrition data to JSON
-    func exportNutrition(
-        startDate: Date,
-        endDate: Date,
-        foodEntries: [FoodEntry],
-        foods: [UUID: Food]
-    ) async throws -> URL {
-        let filteredEntries: [NutritionExport.NutritionEntry] = foodEntries.compactMap { entry in
-            guard let food = foods[entry.foodId] else { return nil }
-            return NutritionExport.NutritionEntry(
-                date: entry.date,
-                meal: entry.meal.displayName,
-                food: food.name,
-                brand: food.brand,
-                quantity: entry.quantity,
-                servingUnit: food.servingUnit,
-                calories: entry.calories,
-                protein: entry.protein,
-                carbs: entry.carbs,
-                fat: entry.fat,
-                fiber: food.fiber,
-                sugar: food.sugar
-            )
-        }
-
-        let export = NutritionExport(
-            exportDate: Date(),
-            period: ExportPeriod(start: startDate, end: endDate),
-            entryCount: filteredEntries.count,
-            entries: filteredEntries
-        )
-
-        let data = try encoder.encode(export)
-        return try saveJSON(data, filename: "Nutrition_\(formattedDate(startDate))")
-    }
-
     // MARK: - Body Metrics Export
 
     /// Export body metrics to JSON
@@ -196,28 +158,6 @@ private struct WorkoutExport: Codable {
         let weight: Double
         let rir: Int?
         let rpe: Double?
-    }
-}
-
-private struct NutritionExport: Codable {
-    let exportDate: Date
-    let period: ExportPeriod
-    let entryCount: Int
-    let entries: [NutritionEntry]
-
-    struct NutritionEntry: Codable {
-        let date: Date
-        let meal: String
-        let food: String
-        let brand: String?
-        let quantity: Double
-        let servingUnit: String
-        let calories: Double
-        let protein: Double
-        let carbs: Double
-        let fat: Double
-        let fiber: Double?
-        let sugar: Double?
     }
 }
 

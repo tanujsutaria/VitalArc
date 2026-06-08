@@ -55,47 +55,6 @@ final class CSVExporter {
         return try saveCSV(csv, filename: "Workouts_\(dateFormatter.string(from: startDate))")
     }
 
-    // MARK: - Nutrition Export
-
-    /// Export nutrition data to CSV
-    func exportNutrition(
-        startDate: Date,
-        endDate: Date,
-        foodEntries: [FoodEntry],
-        foods: [UUID: Food]
-    ) async throws -> URL {
-        var csv = "Date,Meal,Food,Brand,Quantity,Serving Unit,Calories,Protein (g),Carbs (g),Fat (g),Fiber (g),Sugar (g)\n"
-
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
-
-        for entry in foodEntries {
-            guard let food = foods[entry.foodId] else { continue }
-
-            let dateString = dateFormatter.string(from: entry.date)
-            let brand = food.brand ?? ""
-
-            let row = [
-                dateString,
-                escapeCSV(entry.meal.displayName),
-                escapeCSV(food.name),
-                escapeCSV(brand),
-                String(format: "%.1f", entry.quantity),
-                escapeCSV(food.servingUnit),
-                String(format: "%.0f", entry.calories),
-                String(format: "%.1f", entry.protein),
-                String(format: "%.1f", entry.carbs),
-                String(format: "%.1f", entry.fat),
-                String(format: "%.1f", food.fiber ?? 0),
-                String(format: "%.1f", food.sugar ?? 0)
-            ].joined(separator: ",")
-
-            csv += row + "\n"
-        }
-
-        return try saveCSV(csv, filename: "Nutrition_\(dateFormatter.string(from: startDate).prefix(10))")
-    }
-
     // MARK: - Body Metrics Export
 
     /// Export body metrics to CSV

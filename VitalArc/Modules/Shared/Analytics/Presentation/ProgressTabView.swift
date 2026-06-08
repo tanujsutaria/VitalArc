@@ -61,7 +61,6 @@ struct ProgressTabContentView: View {
             generateProgressReportUseCase: GenerateProgressReportUseCase(
                 workoutDataProvider: container.workoutRepository,
                 healthDataProvider: container.healthRepository,
-                nutritionDataProvider: container.nutritionRepository,
                 analyticsRepository: container.analyticsRepository,
                 calculateVolumeUseCase: calculateVolumeUseCase
             ),
@@ -72,8 +71,7 @@ struct ProgressTabContentView: View {
                 userProfileProvider: container.userRepository
             ),
             analyticsRepository: container.analyticsRepository,
-            healthDataProvider: container.healthRepository,
-            nutritionDataProvider: container.nutritionRepository
+            healthDataProvider: container.healthRepository
         )
 
         // Wire sub-ViewModels for muscle heat map and volume analysis

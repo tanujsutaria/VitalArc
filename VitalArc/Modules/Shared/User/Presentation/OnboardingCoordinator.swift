@@ -51,21 +51,6 @@ struct OnboardingCoordinator: View {
                                 removal: .move(edge: .leading)
                             ))
 
-                        case .goalSetup:
-                            GoalSetupView(
-                                viewModel: viewModel,
-                                onContinue: {
-                                    viewModel.nextStep()
-                                },
-                                onBack: {
-                                    viewModel.previousStep()
-                                }
-                            )
-                            .transition(.asymmetric(
-                                insertion: .move(edge: .trailing),
-                                removal: .move(edge: .leading)
-                            ))
-
                         case .healthKitPermission:
                             HealthKitPermissionView(
                                 viewModel: viewModel,

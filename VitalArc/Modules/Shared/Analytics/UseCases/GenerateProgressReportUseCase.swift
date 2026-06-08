@@ -11,20 +11,17 @@ import Foundation
 class GenerateProgressReportUseCase {
     private let workoutDataProvider: WorkoutDataProviding
     private let healthDataProvider: HealthDataProviding
-    private let nutritionDataProvider: NutritionDataProviding
     private let analyticsRepository: AnalyticsRepository
     private let calculateVolumeUseCase: CalculateVolumeUseCase
 
     init(
         workoutDataProvider: WorkoutDataProviding,
         healthDataProvider: HealthDataProviding,
-        nutritionDataProvider: NutritionDataProviding,
         analyticsRepository: AnalyticsRepository,
         calculateVolumeUseCase: CalculateVolumeUseCase
     ) {
         self.workoutDataProvider = workoutDataProvider
         self.healthDataProvider = healthDataProvider
-        self.nutritionDataProvider = nutritionDataProvider
         self.analyticsRepository = analyticsRepository
         self.calculateVolumeUseCase = calculateVolumeUseCase
     }
@@ -61,11 +58,8 @@ class GenerateProgressReportUseCase {
             endDate: endDate
         )
 
-        // Calculate calorie adherence
-        let avgCalorieAdherence = try await calculateCalorieAdherence(
-            startDate: startDate,
-            endDate: endDate
-        )
+        // Calorie adherence (nutrition module removed)
+        let avgCalorieAdherence = 0.0
 
         // Calculate sleep and HRV averages
         let metrics = try await healthMetrics
@@ -141,42 +135,6 @@ class GenerateProgressReportUseCase {
         guard expectedWorkouts > 0 else { return 0 }
 
         return min((actualWorkouts / expectedWorkouts) * 100, 100)
-    }
-
-    private func calculateCalorieAdherence(startDate: Date, endDate: Date) async throws -> Double {
-        let calendar = Calendar.current
-        var totalAdherence = 0.0
-        var daysWithData = 0
-
-        var currentDate = startDate
-        while currentDate <= endDate {
-            if let nutrition = try await nutritionDataProvider.getDailyNutrition(for: currentDate) {
-                let adherence = calculateDayAdherence(nutrition)
-                totalAdherence += adherence
-                daysWithData += 1
-            }
-            currentDate = calendar.date(byAdding: .day, value: 1, to: currentDate) ?? endDate
-        }
-
-        guard daysWithData > 0 else { return 0 }
-
-        return totalAdherence / Double(daysWithData)
-    }
-
-    private func calculateDayAdherence(_ nutrition: DailyNutrition) -> Double {
-        guard let calorieGoal = nutrition.calorieGoal, calorieGoal > 0 else { return 0 }
-
-        let difference = abs(nutrition.caloriesConsumed - calorieGoal)
-        let percentage = (difference / calorieGoal) * 100
-
-        // Perfect adherence = within 5%, decreases linearly to 0% at 25% off
-        if percentage <= 5 {
-            return 100
-        } else if percentage >= 25 {
-            return 0
-        } else {
-            return 100 - ((percentage - 5) / 20 * 100)
-        }
     }
 
     private func calculateAverageSleep(metrics: [HealthMetrics]) -> Double? {
